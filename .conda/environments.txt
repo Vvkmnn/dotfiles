@@ -1,0 +1,2 @@
+/Users/v/anaconda3/envs/default
+/Users/v/anaconda3/envs/sigmacoin
