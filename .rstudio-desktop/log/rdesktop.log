@@ -1,0 +1,1 @@
+13 Jul 2015 13:19:31 [rdesktop] ERROR Unable to locate R binary by scanning standard locations; LOGGED FROM: rstudio::core::FilePath rstudio::core::r_util::<anonymous namespace>::scanForRScript(const std::vector<std::string> &, std::string *) /Users/rstudio/rstudio/src/cpp/core/r_util/REnvironmentPosix.cpp:69
