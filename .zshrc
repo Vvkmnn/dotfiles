@@ -72,7 +72,7 @@ ZSH_THEME="dracula"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(z)
+plugins=(z brew fasd git github npm pip python)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -114,3 +114,8 @@ export PATH=~/anaconda3/bin:$PATH
 
 # Dotfiles
 alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles.git/ --work-tree=$HOME"
+
+# Iterm
+test -e "${HOME}/.iterm/iterm2_shell_integration.zsh" && source "${HOME}/.iterm/iterm2_shell_integration.zsh"
+
+

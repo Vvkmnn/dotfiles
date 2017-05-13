@@ -222,8 +222,16 @@ brew install boot2docker
 # Install developer friendly quick look plugins; see https://github.com/sindresorhus/quick-look-plugins
 brew cask install qlcolorcode qlstephen qlmarkdown quicklook-json qlprettypatch quicklook-csv betterzipql qlimagesize webpquicklook suspicious-package
 
-# Flux
-brew cask install --appdir="/Applications" flux
+
+# Iterm2 
+## Utitlities
+
+curl -L https://iterm2.com/misc/install_shell_integration_and_utilities.sh | bash
+
+# imgcat filename
+#   Displays the image inline.
+# it2dl filename
+#   Downloads the specified file, saving it in your Downloads folder.
 
 # Remove outdated versions from the cellar.
 brew cleanup
