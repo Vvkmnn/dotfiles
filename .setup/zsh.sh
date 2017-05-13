@@ -3,6 +3,9 @@
 # Ask for the administrator password upfront
 sudo -v
 
+# Alf
+curl -sSL https://raw.githubusercontent.com/psyrendust/alf/master/bootstrap/baseline.zsh | zsh
+
 # Keep-alive: update existing `sudo` time stamp until `osxprep.sh` has finished
 while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
