@@ -1,3 +1,6 @@
 [submodule ".zim"]
 	path = .zim
 	url = git@github.com:Eriner/zim.git
+[submodule ".fonts"]
+	path = .fonts
+	url = https://github.com/powerline/fonts.git

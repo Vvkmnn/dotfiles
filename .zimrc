@@ -14,7 +14,6 @@
 zmodules=(directory environment git git-info history input utility meta custom \
           syntax-highlighting history-substring-search prompt completion)
 
-
 ###################
 # MODULE SETTINGS #
 ###################
@@ -24,7 +23,7 @@ zmodules=(directory environment git git-info history input utility meta custom \
 #
 
 # Set your desired prompt here
-zprompt_theme='dracula'
+zprompt_theme='eriner'
 
 #
 # Completion
