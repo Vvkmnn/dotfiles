@@ -2,7 +2,7 @@
 # User configuration sourced by interactive shells
 #
 
-## Defaults
+## Personal Defaults
 
 # Zsh Theme
 
@@ -18,10 +18,15 @@ if type nvim > /dev/null 2>&1; then
   alias vim='nvim'
 fi
 
+# Dotfiles
+alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
+dotfiles submodule update --init --recursive 
+
+
+## General Defaults
+
 # Homebrew Cask
 export HOMEBREW_CASK_OPTS="--appdir=/Applications"
-
-## Imports
 
 #  Zim
 if [[ -s ${ZDOTDIR:-${HOME}}/.zim/init.zsh ]]; then
@@ -40,7 +45,3 @@ if [ -f ~/Code/Gcloud/google-cloud-sdk ]; then
   source 'path.zsh.inc'
   source 'completion.zsh.inc'
 fi
-
-# Dotfiles
-alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
-dotfiles submodule update --init --recursive 
