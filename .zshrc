@@ -33,7 +33,7 @@ export PATH=~/anaconda3/bin:$PATH
 # Google Go
 export GOPATH=~/Code/Go
 
-# Google Cloud SDK.
+# Google Cloud SDK
 if [ -f ~/Code/Gcloud/google-cloud-sdk ]; then
   cd ~/Code/Gcloud/google-cloud-sdk
   source 'path.zsh.inc'
