@@ -1,0 +1,59 @@
+{
+	"name": "vscode-todo",
+	"description": "Lists todo:s in the project",
+	"version": "0.8.0",
+	"publisher": "MattiasPernhult",
+	"icon": "images/vscode-todo.png",
+	"scripts": {
+		"test": "mocha --recursive test/"
+	},
+	"galleryBanner": {
+		"color": "#5c2d91",
+		"theme": "dark"
+	},
+	"engines": {
+		"vscode": "^0.10.1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/MattiasPernhult/vscode-todo.git"
+	},
+	"homepage": "https://github.com/MattiasPernhult/vscode-todo#readme",
+	"bugs": {
+		"url": "https://github.com/MattiasPernhult/vscode-todo/issues"
+	},
+	"license": "MIT",
+	"categories": [
+		"Other"
+	],
+	"activationEvents": [
+		"onCommand:extension.chooseLanguageTodo",
+		"onCommand:extension.showTodos",
+		"*"
+	],
+	"main": "./extension",
+	"contributes": {
+		"commands": [
+			{
+				"command": "extension.chooseLanguageTodo",
+				"title": "TODO: Set language"
+			},
+			{
+				"command": "extension.showTodos",
+				"title": "TODO: List all todos"
+			}
+		]
+	},
+	"devDependencies": {
+		"chai": "^3.5.0",
+		"vscode": "0.10.x"
+	},
+	"dependencies": {
+		"opener": "1.4.1"
+	},
+	"__metadata": {
+		"id": "91c8d0b3-9671-40c4-95e7-7ea6d260d368",
+		"publisherId": "a73d2e90-1ffc-46e2-8854-506a047f0e3b",
+		"publisherDisplayName": "MattiasPernhult"
+	}
+}
