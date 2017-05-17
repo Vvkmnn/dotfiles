@@ -6,7 +6,7 @@
 
 # Prompt
 # Source: http://www.lowlevelmanager.com/2012/03/smile-zsh-prompt-happysad-face.html
-RPROMPT='v@%M %(?,%F{green}[-_-]%f,%F{red}[ಠ_ಠ]%f)' #%F{gray} before to color prompt
+LPROMPT='v@%M %(?,%F{green}[-_-]%f,%F{red}[ಠ_ಠ]%f)' #%F{gray} before to color prompt
 
 # GUI Editor - VSCode
 export EDITOR='code'
