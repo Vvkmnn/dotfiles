@@ -4,9 +4,11 @@
 
 ## Defaults
 
-# Prompt
-# Source: http://www.lowlevelmanager.com/2012/03/smile-zsh-prompt-happysad-face.html
-LPROMPT='v@%M %(?,%F{green}[-_-]%f,%F{red}[ಠ_ಠ]%f)' #%F{gray} before to color prompt
+# Zsh Theme
+
+if [ ! -f ~/.zim/modules/prompt/functions/prompt_v_setup ]; then
+    ln -s ~/.assets/zsh/v.zsh-theme ~/.zim/modules/prompt/functions/prompt_v_setup
+fi
 
 # GUI Editor - VSCode
 export EDITOR='code'
@@ -18,7 +20,6 @@ fi
 
 # Homebrew Cask
 export HOMEBREW_CASK_OPTS="--appdir=/Applications"
-
 
 ## Imports
 
