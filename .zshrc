@@ -4,11 +4,6 @@
 
 ## Personal Defaults
 
-# Zsh Theme
-
-if [ ! -f ~/.zim/modules/prompt/functions/prompt_v_setup ]; then
-    ln -s ~/.assets/zsh/v.zsh-theme ~/.zim/modules/prompt/functions/prompt_v_setup
-fi
 
 # GUI Editor - VSCode
 export EDITOR='code'
@@ -20,7 +15,11 @@ fi
 
 # Dotfiles
 alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
-dotfiles submodule update --init --recursive 
+
+# Zsh Theme
+if [ ! -f ~/.zim/modules/prompt/functions/prompt_v_setup ]; then
+    ln -s ~/.assets/zsh/v.zsh-theme ~/.zim/modules/prompt/functions/prompt_v_setup
+fi
 
 
 ## General Defaults
