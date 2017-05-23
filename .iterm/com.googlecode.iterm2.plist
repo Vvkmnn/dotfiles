@@ -314,11 +314,11 @@
 	<key>NSWindow Frame SUUpdateAlert</key>
 	<string>2250 493 620 392 1920 187 1280 800 </string>
 	<key>NSWindow Frame SharedPreferences</key>
-	<string>-1088 218 918 512 -1280 201 1280 778 </string>
+	<string>-1091 343 918 512 -1280 201 1280 778 </string>
 	<key>NSWindow Frame com.apple.typography_panel_NotoMonoForPowerline</key>
 	<string>346 635 260 42 0 0 1920 1178 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
-	<string>0 0 1920 1200 0 0 1920 1178 </string>
+	<string>-1280 201 1280 800 -1280 201 1280 778 </string>
 	<key>New Bookmarks</key>
 	<array>
 		<dict>
@@ -561,7 +561,7 @@
 			<key>Custom Command</key>
 			<string>No</string>
 			<key>Custom Directory</key>
-			<string>Recycle</string>
+			<string>No</string>
 			<key>Default Bookmark</key>
 			<string>No</string>
 			<key>Description</key>
@@ -6205,7 +6205,7 @@
 													<key>Blend</key>
 													<real>0.5</real>
 													<key>Blinking Cursor</key>
-													<false/>
+													<true/>
 													<key>Blur</key>
 													<true/>
 													<key>Blur Radius</key>
@@ -6260,6 +6260,8 @@
 														<key>Red Component</key>
 														<real>1</real>
 													</dict>
+													<key>Cursor Type</key>
+													<integer>0</integer>
 													<key>Custom Command</key>
 													<string>No</string>
 													<key>Custom Directory</key>
@@ -6597,11 +6599,11 @@
 													<key>Name</key>
 													<string>Intro</string>
 													<key>Non Ascii Font</key>
-													<string>Monaco 12</string>
+													<string>KnackNerdFontC-Regular 11</string>
 													<key>Non-ASCII Anti Aliased</key>
 													<true/>
 													<key>Normal Font</key>
-													<string>NotoMonoForPowerline 12</string>
+													<string>Hack-Regular 11</string>
 													<key>Option Key Sends</key>
 													<integer>0</integer>
 													<key>Prompt Before Closing 2</key>
@@ -6687,6 +6689,12 @@
 													<string>/Users/vivek.menon</string>
 													<string>/Users/vivek.menon</string>
 													<string>/Users/vivek.menon</string>
+													<string>/Users/vivek.menon</string>
+													<string>/Users/vivek.menon</string>
+													<string>/Users/vivek.menon</string>
+													<string>/Users/vivek.menon</string>
+													<string>/Users/vivek.menon</string>
+													<string>/Users/vivek.menon</string>
 												</array>
 												<key>Environment</key>
 												<dict>
@@ -6703,9 +6711,9 @@
 													<string>Shell Launcher</string>
 												</dict>
 												<key>Rows</key>
-												<integer>26</integer>
+												<integer>30</integer>
 												<key>Server PID</key>
-												<integer>22433</integer>
+												<integer>58211</integer>
 												<key>Session Default Name</key>
 												<string>Intro</string>
 												<key>Session GUID</key>
@@ -7321,7 +7329,7 @@
 													<key>Non-ASCII Anti Aliased</key>
 													<true/>
 													<key>Normal Font</key>
-													<string>Monaco 12</string>
+													<string>Hack-Regular 11</string>
 													<key>Option Key Sends</key>
 													<integer>0</integer>
 													<key>Prompt Before Closing 2</key>
@@ -7405,6 +7413,12 @@
 													<string>/Users/vivek.menon</string>
 													<string>/Users/vivek.menon</string>
 													<string>/Users/vivek.menon</string>
+													<string>/Users/vivek.menon</string>
+													<string>/Users/vivek.menon</string>
+													<string>/Users/vivek.menon</string>
+													<string>/Users/vivek.menon</string>
+													<string>/Users/vivek.menon</string>
+													<string>/Users/vivek.menon</string>
 												</array>
 												<key>Environment</key>
 												<dict>
@@ -7421,17 +7435,17 @@
 													<string>Shell Launcher</string>
 												</dict>
 												<key>Rows</key>
-												<integer>23</integer>
+												<integer>30</integer>
 												<key>Server PID</key>
-												<integer>22435</integer>
+												<integer>58213</integer>
 												<key>Session Default Name</key>
 												<string>Glances</string>
 												<key>Session GUID</key>
 												<string>6BCEBA2B-FB99-46A8-A7DC-9785456DCB5D</string>
 												<key>Session Name</key>
-												<string>glances</string>
+												<string>~</string>
 												<key>Session Window Title</key>
-												<string>glances</string>
+												<string>vivek.menon@TOR-VMENON16-2: ~</string>
 												<key>Shell Integration Ever Used</key>
 												<false/>
 												<key>Substitutions</key>
@@ -8059,7 +8073,7 @@
 													<key>Non-ASCII Anti Aliased</key>
 													<true/>
 													<key>Normal Font</key>
-													<string>Monaco 12</string>
+													<string>SourceCodeProForPowerline-Regular 12</string>
 													<key>Option Key Sends</key>
 													<integer>0</integer>
 													<key>Prompt Before Closing 2</key>
@@ -8145,6 +8159,9 @@
 													<string>/</string>
 													<string>/</string>
 													<string>/</string>
+													<string>/</string>
+													<string>/</string>
+													<string>/</string>
 												</array>
 												<key>Environment</key>
 												<dict>
@@ -8174,9 +8191,9 @@
 													<string>Shell Launcher</string>
 												</dict>
 												<key>Rows</key>
-												<integer>23</integer>
+												<integer>24</integer>
 												<key>Server PID</key>
-												<integer>22437</integer>
+												<integer>58215</integer>
 												<key>Session Default Name</key>
 												<string>Blank</string>
 												<key>Session GUID</key>
@@ -8792,7 +8809,7 @@
 													<key>Non-ASCII Anti Aliased</key>
 													<true/>
 													<key>Normal Font</key>
-													<string>Monaco 12</string>
+													<string>Hack-Regular 11</string>
 													<key>Option Key Sends</key>
 													<integer>0</integer>
 													<key>Prompt Before Closing 2</key>
@@ -8874,6 +8891,10 @@
 													<string>/Users/vivek.menon</string>
 													<string>/Users/vivek.menon</string>
 													<string>/Users/vivek.menon</string>
+													<string>/Users/vivek.menon</string>
+													<string>/Users/vivek.menon</string>
+													<string>/Users/vivek.menon</string>
+													<string>/Users/vivek.menon</string>
 												</array>
 												<key>Environment</key>
 												<dict>
@@ -8890,9 +8911,9 @@
 													<string>Shell Launcher</string>
 												</dict>
 												<key>Rows</key>
-												<integer>23</integer>
+												<integer>30</integer>
 												<key>Server PID</key>
-												<integer>22439</integer>
+												<integer>58217</integer>
 												<key>Session Default Name</key>
 												<string>Reddit</string>
 												<key>Session GUID</key>
@@ -9198,7 +9219,7 @@
 													<key>Blend</key>
 													<real>0.5</real>
 													<key>Blinking Cursor</key>
-													<false/>
+													<true/>
 													<key>Blur</key>
 													<true/>
 													<key>Blur Radius</key>
@@ -9253,6 +9274,8 @@
 														<key>Red Component</key>
 														<real>1</real>
 													</dict>
+													<key>Cursor Type</key>
+													<integer>0</integer>
 													<key>Custom Command</key>
 													<string>No</string>
 													<key>Custom Directory</key>
@@ -9590,11 +9613,11 @@
 													<key>Name</key>
 													<string>Intro</string>
 													<key>Non Ascii Font</key>
-													<string>Monaco 12</string>
+													<string>KnackNerdFontC-Regular 11</string>
 													<key>Non-ASCII Anti Aliased</key>
 													<true/>
 													<key>Normal Font</key>
-													<string>NotoMonoForPowerline 12</string>
+													<string>Hack-Regular 11</string>
 													<key>Option Key Sends</key>
 													<integer>0</integer>
 													<key>Prompt Before Closing 2</key>
@@ -9680,6 +9703,12 @@
 													<string>/Users/vivek.menon</string>
 													<string>/Users/vivek.menon</string>
 													<string>/Users/vivek.menon</string>
+													<string>/Users/vivek.menon</string>
+													<string>/Users/vivek.menon</string>
+													<string>/Users/vivek.menon</string>
+													<string>/Users/vivek.menon</string>
+													<string>/Users/vivek.menon</string>
+													<string>/Users/vivek.menon</string>
 												</array>
 												<key>Environment</key>
 												<dict>
@@ -9696,9 +9725,9 @@
 													<string>Shell Launcher</string>
 												</dict>
 												<key>Rows</key>
-												<integer>39</integer>
+												<integer>44</integer>
 												<key>Server PID</key>
-												<integer>22441</integer>
+												<integer>58220</integer>
 												<key>Session Default Name</key>
 												<string>Intro</string>
 												<key>Session GUID</key>
@@ -9721,7 +9750,7 @@
 											<key>frame</key>
 											<dict>
 												<key>height</key>
-												<real>603</real>
+												<real>587</real>
 												<key>width</key>
 												<real>960</real>
 												<key>x</key>
@@ -10314,7 +10343,7 @@
 													<key>Non-ASCII Anti Aliased</key>
 													<true/>
 													<key>Normal Font</key>
-													<string>Monaco 12</string>
+													<string>SourceCodeProForPowerline-Regular 12</string>
 													<key>Option Key Sends</key>
 													<integer>0</integer>
 													<key>Prompt Before Closing 2</key>
@@ -10394,6 +10423,9 @@
 													<string>/Users/vivek.menon</string>
 													<string>/Users/vivek.menon</string>
 													<string>/Users/vivek.menon</string>
+													<string>/Users/vivek.menon</string>
+													<string>/Users/vivek.menon</string>
+													<string>/Users/vivek.menon</string>
 												</array>
 												<key>Environment</key>
 												<dict>
@@ -10410,9 +10442,9 @@
 													<string>Shell Launcher</string>
 												</dict>
 												<key>Rows</key>
-												<integer>34</integer>
+												<integer>38</integer>
 												<key>Server PID</key>
-												<integer>22460</integer>
+												<integer>58222</integer>
 												<key>Session Default Name</key>
 												<string>Blank</string>
 												<key>Session GUID</key>
@@ -10435,13 +10467,13 @@
 											<key>frame</key>
 											<dict>
 												<key>height</key>
-												<real>596</real>
+												<real>612</real>
 												<key>width</key>
 												<real>960</real>
 												<key>x</key>
 												<real>0.0</real>
 												<key>y</key>
-												<real>604</real>
+												<real>588</real>
 											</dict>
 										</dict>
 									</array>
@@ -11048,7 +11080,7 @@
 													<key>Non-ASCII Anti Aliased</key>
 													<true/>
 													<key>Normal Font</key>
-													<string>Monaco 12</string>
+													<string>Hack-Regular 11</string>
 													<key>Option Key Sends</key>
 													<integer>0</integer>
 													<key>Prompt Before Closing 2</key>
@@ -11130,6 +11162,10 @@
 													<string>/Users/vivek.menon</string>
 													<string>/Users/vivek.menon</string>
 													<string>/Users/vivek.menon</string>
+													<string>/Users/vivek.menon</string>
+													<string>/Users/vivek.menon</string>
+													<string>/Users/vivek.menon</string>
+													<string>/Users/vivek.menon</string>
 												</array>
 												<key>Environment</key>
 												<dict>
@@ -11146,9 +11182,9 @@
 													<string>Shell Launcher</string>
 												</dict>
 												<key>Rows</key>
-												<integer>35</integer>
+												<integer>44</integer>
 												<key>Server PID</key>
-												<integer>22502</integer>
+												<integer>58224</integer>
 												<key>Session Default Name</key>
 												<string>Glances</string>
 												<key>Session GUID</key>
@@ -11171,7 +11207,7 @@
 											<key>frame</key>
 											<dict>
 												<key>height</key>
-												<real>599</real>
+												<real>586</real>
 												<key>width</key>
 												<real>959</real>
 												<key>x</key>
@@ -11764,7 +11800,7 @@
 													<key>Non-ASCII Anti Aliased</key>
 													<true/>
 													<key>Normal Font</key>
-													<string>Monaco 12</string>
+													<string>Hack-Regular 11</string>
 													<key>Option Key Sends</key>
 													<integer>0</integer>
 													<key>Prompt Before Closing 2</key>
@@ -11846,6 +11882,10 @@
 													<string>/Users/vivek.menon</string>
 													<string>/Users/vivek.menon</string>
 													<string>/Users/vivek.menon</string>
+													<string>/Users/vivek.menon</string>
+													<string>/Users/vivek.menon</string>
+													<string>/Users/vivek.menon</string>
+													<string>/Users/vivek.menon</string>
 												</array>
 												<key>Environment</key>
 												<dict>
@@ -11862,9 +11902,9 @@
 													<string>Shell Launcher</string>
 												</dict>
 												<key>Rows</key>
-												<integer>35</integer>
+												<integer>46</integer>
 												<key>Server PID</key>
-												<integer>22510</integer>
+												<integer>58226</integer>
 												<key>Session Default Name</key>
 												<string>Reddit</string>
 												<key>Session GUID</key>
@@ -11887,13 +11927,13 @@
 											<key>frame</key>
 											<dict>
 												<key>height</key>
-												<real>600</real>
+												<real>613</real>
 												<key>width</key>
 												<real>959</real>
 												<key>x</key>
 												<real>0.0</real>
 												<key>y</key>
-												<real>600</real>
+												<real>587</real>
 											</dict>
 										</dict>
 									</array>
