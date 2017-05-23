@@ -96,7 +96,11 @@ brew tap rogual/neovim-dot-app
 brew install neovim-dot-app
 brew linkapps neovim-dot-app
 
-# Install font tools.
+# Install Fonts
+brew tap caskroom/fonts   
+brew cask install font-source-code-pro-for-powerline
+brew cask install font-source-code-pro
+
 #brew tap bramstein/webfonttools
 #brew install sfnt2woff
 #brew install sfnt2woff-zopfli
