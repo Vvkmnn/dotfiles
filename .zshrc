@@ -19,7 +19,8 @@ alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
 
 
 ## Terminal Defaults
-ZLE_RPROMPT_INDENT=0
+# ZLE_RPROMPT_INDENT=0
+
 RPROMPT='v@%M %(?,%F{green}[-_-]%f,%F{red}[ಠ_ಠ]%f)'
 
 
@@ -50,11 +51,40 @@ RPROMPT='v@%M %(?,%F{green}[-_-]%f,%F{red}[ಠ_ಠ]%f)'
 # ZLE_LPROMPT_INDENT=0
 
 # Spaceship
-SPACESHIP_PROMPT_SYMBOL=">"
+
+SPACESHIP_PROMPT_ORDER=(
+  user          # Username section
+  host          # Hostname section
+  time          # Time stampts section
+  dir           # Current directory section
+  git           # Git section (git_branch + git_status)
+  node          # Node.js section
+  ruby          # Ruby section
+  xcode         # Xcode section
+  swift         # Swift section
+  golang        # Go section
+  php           # PHP section
+  rust          # Rust section
+  julia         # Julia section
+  docker        # Docker section
+  venv          # virtualenv section
+  pyenv         # Pyenv section
+  line_sep      # Line break
+  vi_mode       # Vi-mode indicator
+  char          # Prompt character
+)
+
+
+SPACESHIP_PROMPT_SYMBOL="ॐ "
 SPACESHIP_PROMPT_SEPARATE_LINE=true
 SPACESHIP_PROMPT_ADD_NEWLINE=false
 SPACESHIP_DIR_TRUNC=2
+SPACESHIP_TIME_SHOW=false
 
+SPACESHIP_USER_SHOW=true
+SPACESHIP_USER_SUFFIX=" in"
+SPACESHIP_HOST_SHOW=true
+SPACESHIP_TIME_SHOW=true
 ## General Defaults
 
 # Homebrew Cask
