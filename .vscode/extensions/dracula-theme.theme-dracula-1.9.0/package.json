@@ -1,6 +1,6 @@
 {
 	"name": "theme-dracula",
-	"version": "1.8.0",
+	"version": "1.9.0",
 	"displayName": "Dracula Official",
 	"homepage": "https://draculatheme.com/",
 	"description": "Official Dracula Theme. A dark theme for many editors, shells, and more.",
@@ -44,7 +44,7 @@
 		]
 	},
 	"devDependencies": {
-		"js-yaml": "^3.8.2"
+		"js-yaml": "^3.8.3"
 	},
 	"__metadata": {
 		"id": "4e44877c-1c8d-4f9c-ba86-1372d0fbeeb1",
