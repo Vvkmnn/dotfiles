@@ -772,7 +772,7 @@
 	<key>NSWindow Frame NSFontPanel</key>
 	<string>685 43 670 241 0 0 1440 878 </string>
 	<key>NSWindow Frame SharedPreferences</key>
-	<string>287 311 918 495 0 0 1440 878 </string>
+	<string>287 381 770 381 0 0 1440 878 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
 	<string>0 0 1440 900 0 0 1440 878 </string>
 	<key>NSWindow Frame iTerm Window 1</key>
@@ -2635,11 +2635,11 @@
 			<key>Name</key>
 			<string>Intro</string>
 			<key>Non Ascii Font</key>
-			<string>Inconsolata-Regular 13</string>
+			<string>InconsolataForPowerline 13</string>
 			<key>Non-ASCII Anti Aliased</key>
 			<true/>
 			<key>Normal Font</key>
-			<string>Inconsolata-Regular 13</string>
+			<string>InconsolataForPowerline 13</string>
 			<key>Option Key Sends</key>
 			<integer>0</integer>
 			<key>Prompt Before Closing 2</key>

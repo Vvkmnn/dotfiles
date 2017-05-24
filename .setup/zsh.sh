@@ -15,7 +15,7 @@ git clone --recursive https://github.com/Eriner/zim.git ${ZDOTDIR:-${HOME}}/.zim
 # done
 
 # Import Powerline9k
-if [ ! -f ~/.zim/modules/prompt/external-themes/powerlevel9k/powerlevel9k.zsh-theme ]; then
+if [ ! -f ~/.zim/modultes/prompt/external-themes/powerlevel9k/powerlevel9k.zsh-theme ]; then
     git clone https://github.com/bhilburn/powerlevel9k.git ~/.zim/modules/prompt/external-themes/powerlevel9k
     ln -s ~/.zim/modules/prompt/external-themes/powerlevel9k/powerlevel9k.zsh-theme ~/.zim/modules/prompt/functions/prompt_powerlevel9k_setup
 fi
@@ -23,14 +23,12 @@ fi
 # Import Spaceship
 if [ ! -f ~/.zim/modules/prompt/external-themes/spaceship/spaceship.zsh-theme ]; then
     git clone git@github.com:denysdovhan/spaceship-zsh-theme.git ~/.zim/modules/prompt/external-themes/spaceship
-    ln -s ~/.zim/modules/prompt/external-themes/spaceship/spaceship.zsh-theme ~/.zim/modules/prompt/functions/prompt_spaceship_setup
+    cp ~/.zim/modules/prompt/external-themes/spaceship/spaceship.zsh-theme ~/.zim/modules/prompt/functions/prompt_spaceship_setup
 fi
 
 
 # Set Zsh as shell
 chsh -s =zsh
-
-
 
 # Source .zlogin
 source ${ZDOTDIR:-${HOME}}/.zlogin
