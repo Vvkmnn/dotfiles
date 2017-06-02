@@ -1,3 +1,12 @@
 // Place your settings in this file to overwrite default and user settings.
 {
+    // Defaults
+    "editor.formatOnSave": true,
+    "editor.minimap.enabled": true,
+    "editor.wordWrap": "on",
+    // Fonts
+    "editor.fontFamily": "'Inconsolata', medium",
+    "editor.fontSize": 13,
+    "workbench.colorTheme": "Dracula",
+    "window.zoomLevel": 0
 }
