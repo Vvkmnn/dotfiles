@@ -77,9 +77,9 @@ export PATH=~/anaconda3/bin:$PATH
 # Google Go
 export GOPATH=~/Code/Go
 
-# Google Cloud SDK
-if [ -f ~/Code/Gcloud/google-cloud-sdk ]; then
-  cd ~/Code/Gcloud/google-cloud-sdk
-  source 'path.zsh.inc'
-  source 'completion.zsh.inc'
-fi
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '~/.gcloud/google-cloud-sdk/path.zsh.inc' ]; then source '~/.gcloud/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '~/.gcloud/google-cloud-sdk/completion.zsh.inc' ]; then source '~/.gcloud/google-cloud-sdk/completion.zsh.inc'; fi

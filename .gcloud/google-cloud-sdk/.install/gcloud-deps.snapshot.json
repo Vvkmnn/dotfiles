@@ -1,0 +1,2762 @@
+{
+  "components": [
+    {
+      "data": {
+        "checksum": "b7b57e93b785a9a354fcb95b3dffaaafb9fb2efc34b07267d62590331d0d6ff8", 
+        "contents_checksum": "b84ed7725d1dca9cdb3d9a0f81e4829048e9b0262f4ae4a94f0fe19124a7dc48", 
+        "size": 685, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-alpha-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "core"
+      ], 
+      "details": {
+        "description": "Alpha version of gcloud commands.", 
+        "display_name": "gcloud Alpha Commands"
+      }, 
+      "id": "alpha", 
+      "is_configuration": false, 
+      "is_hidden": false, 
+      "is_required": false, 
+      "platform": {}, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "2017.05.30"
+      }
+    }, 
+    {
+      "dependencies": [
+        "core", 
+        "app-engine-python", 
+        "app-engine-go-linux-x86", 
+        "app-engine-go-linux-x86_64", 
+        "app-engine-go-darwin-x86", 
+        "app-engine-go-darwin-x86_64", 
+        "app-engine-go-windows-x86", 
+        "app-engine-go-windows-x86_64"
+      ], 
+      "details": {
+        "description": "Provides the tools to develop Go applications on App Engine.", 
+        "display_name": "App Engine Go Extensions"
+      }, 
+      "id": "app-engine-go", 
+      "is_configuration": false, 
+      "is_hidden": false, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86", 
+          "x86_64"
+        ], 
+        "operating_systems": [
+          "LINUX", 
+          "MACOSX", 
+          "WINDOWS"
+        ]
+      }, 
+      "version": {
+        "build_number": 0, 
+        "version_string": ""
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "421745cef0bd384b9e3169c5b362c527d0099f288a9ae9862c66fb2f6ac701c3", 
+        "contents_checksum": "d389365e9811617437e683a12eb3afb90022a0520c5ea36867aabce75aa9e081", 
+        "size": 97620952, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-app-engine-go-darwin-x86-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "app-engine-go"
+      ], 
+      "details": {
+        "description": "Provides the tools to develop Go applications on App Engine. (MacOS, x86)", 
+        "display_name": "App Engine Go (MacOS, x86)"
+      }, 
+      "id": "app-engine-go-darwin-x86", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86"
+        ], 
+        "operating_systems": [
+          "MACOSX"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "1.9.54"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "113cf41d62961f0cff8a0b6ab4a3cb600065b8ff21d2ac9da374fdd69139f118", 
+        "contents_checksum": "18bc407f2c8e9de9bf11228f47519a1f74c508afb40eda3c4541e4e9e40f683c", 
+        "size": 101383083, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-app-engine-go-darwin-x86_64-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "app-engine-go"
+      ], 
+      "details": {
+        "description": "Provides the tools to develop Go applications on App Engine. (MacOS, x86_64)", 
+        "display_name": "App Engine Go (MacOS, x86_64)"
+      }, 
+      "id": "app-engine-go-darwin-x86_64", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86_64"
+        ], 
+        "operating_systems": [
+          "MACOSX"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "1.9.54"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "a51136f2c73de18c84529fdd8e0a548b6871a47b847348a4281c58429b77f41f", 
+        "contents_checksum": "4ca35013db29d5a3b9b3eea8c98d0114df94cbc5173e2a03b7fa7fb4514fffb8", 
+        "size": 97894723, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-app-engine-go-linux-x86-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "app-engine-go"
+      ], 
+      "details": {
+        "description": "Provides the tools to develop Go applications on App Engine. (Linux, x86)", 
+        "display_name": "App Engine Go (Linux, x86)"
+      }, 
+      "id": "app-engine-go-linux-x86", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86"
+        ], 
+        "operating_systems": [
+          "LINUX"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "1.9.54"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "0859e5c2105f217d2c2831046ceb597b92fe6806d9aa1b2268276580bb06afa2", 
+        "contents_checksum": "1ca05e1c96a5701509b0e9e3a2c5284bc3591148ce4acc45cfb2377afaeb5d2b", 
+        "size": 101744062, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-app-engine-go-linux-x86_64-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "app-engine-go"
+      ], 
+      "details": {
+        "description": "Provides the tools to develop Go applications on App Engine. (Linux, x86_64)", 
+        "display_name": "App Engine Go (Linux, x86_64)"
+      }, 
+      "id": "app-engine-go-linux-x86_64", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86_64"
+        ], 
+        "operating_systems": [
+          "LINUX"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "1.9.54"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "a0eee6523ab38a66e5958f7f6ff71cc1d1c37a6f9c3bc7096fed2b8f45de37a4", 
+        "contents_checksum": "3813381f6646ad3bb01defcadac91dfe92a4a157078cb57666c2f16a8dfcd217", 
+        "size": 98852993, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-app-engine-go-windows-x86-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "app-engine-go"
+      ], 
+      "details": {
+        "description": "Provides the tools to develop Go applications on App Engine. (Windows, x86)", 
+        "display_name": "App Engine Go (Windows, x86)"
+      }, 
+      "id": "app-engine-go-windows-x86", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86"
+        ], 
+        "operating_systems": [
+          "WINDOWS"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "1.9.54"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "5f5980a102bbc7a1f0b0f178f469b3b95b8b257c3c3f4529f0ec236b3c5f90a8", 
+        "contents_checksum": "5bc8bdf929e75514b8ba5b7200b01c092ae30ec68be732f0d72de0e1144bc3ed", 
+        "size": 102871660, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-app-engine-go-windows-x86_64-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "app-engine-go"
+      ], 
+      "details": {
+        "description": "Provides the tools to develop Go applications on App Engine. (Windows, x86_64)", 
+        "display_name": "App Engine Go (Windows, x86_64)"
+      }, 
+      "id": "app-engine-go-windows-x86_64", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86_64"
+        ], 
+        "operating_systems": [
+          "WINDOWS"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "1.9.54"
+      }
+    }, 
+    {
+      "dependencies": [
+        "core", 
+        "app-engine-grpc-linux-x86_64", 
+        "app-engine-grpc-darwin-x86_64", 
+        "app-engine-grpc-windows-x86_64"
+      ], 
+      "details": {
+        "description": "Provides the gRPC python library for app engine.", 
+        "display_name": "gRPC python library"
+      }, 
+      "id": "app-engine-grpc", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86", 
+          "x86_64"
+        ], 
+        "operating_systems": [
+          "LINUX", 
+          "MACOSX", 
+          "WINDOWS"
+        ]
+      }, 
+      "version": {
+        "build_number": 0, 
+        "version_string": ""
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "88f116b567805a97a37c51d6d49899605ae66811660f59785379ce9057e47964", 
+        "contents_checksum": "4492315211c6ab7a001ea910655022a64651ddd0802e85b16fbda776f6b0716d", 
+        "size": 3570885, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-app-engine-grpc-darwin-x86_64-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "app-engine-grpc"
+      ], 
+      "details": {
+        "description": "Provides the gRPC python library for app engine. (Mac OSX, x86_64)", 
+        "display_name": "gRPC python library (Mac OSX, x86_64)"
+      }, 
+      "id": "app-engine-grpc-darwin-x86_64", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86_64"
+        ], 
+        "operating_systems": [
+          "MACOSX"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "1.0.0"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "174f6ac05b40cd3424d17843cf254cecaeda97bebe4acccfc8e26a7e377e2b02", 
+        "contents_checksum": "828261d65f230a08880a36cfb0851f50b30a1de30c1040a62b4c5a6976d647a9", 
+        "size": 6142039, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-app-engine-grpc-linux-x86_64-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "app-engine-grpc"
+      ], 
+      "details": {
+        "description": "Provides the gRPC python library for app engine. (Linux, x86_64)", 
+        "display_name": "gRPC python library (linux, x86_64)"
+      }, 
+      "id": "app-engine-grpc-linux-x86_64", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86_64"
+        ], 
+        "operating_systems": [
+          "LINUX"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "1.0.0"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "f331790f4476e49d20dafff8c411914448f4368833bbb54e47d6ecf397e47eaf", 
+        "contents_checksum": "610a4e290c5d67a064b28a40efd33ad17ca813c0544d6d4ee30776644199a210", 
+        "size": 2485147, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-app-engine-grpc-windows-x86_64-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "app-engine-grpc"
+      ], 
+      "details": {
+        "description": "Provides the gRPC python library for app engine. (Windows, x86_64)", 
+        "display_name": "gRPC python library (Windows, x86_64)"
+      }, 
+      "id": "app-engine-grpc-windows-x86_64", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86_64"
+        ], 
+        "operating_systems": [
+          "WINDOWS"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "1.0.0"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "43368d3437bd184cc0daf609f977a54b1c9dac824e298354815390de393cbb74", 
+        "contents_checksum": "aa338b2e411c91c604dbcd3cf02743480ab33fefd75560e1fd5ad72c30505673", 
+        "size": 138600515, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-app-engine-java-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "core", 
+        "app-engine-python"
+      ], 
+      "details": {
+        "description": "Provides the tools required to develop Java applications using gcloud.", 
+        "display_name": "gcloud app Java Extensions"
+      }, 
+      "id": "app-engine-java", 
+      "is_configuration": false, 
+      "is_hidden": false, 
+      "is_required": false, 
+      "platform": {}, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "1.9.53"
+      }
+    }, 
+    {
+      "dependencies": [
+        "core", 
+        "app-engine-python", 
+        "app-engine-php-windows", 
+        "app-engine-php-darwin"
+      ], 
+      "details": {
+        "description": "Provides the PHP runtimes for the dev_appserver.", 
+        "display_name": "gcloud app PHP Extensions"
+      }, 
+      "id": "app-engine-php", 
+      "is_configuration": false, 
+      "is_hidden": "true", 
+      "is_required": false, 
+      "platform": {}, 
+      "version": {
+        "build_number": 0, 
+        "version_string": " "
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "26319c09d15d67e226bb5a589ca363c974f75f548078b15ad751e36fb866740e", 
+        "contents_checksum": "6d5f20b4d38c2a145e9d3a824c75389b27bbd6018f254a5160f37ce7d6fa46be", 
+        "size": 22986674, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-app-engine-php-darwin-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "core", 
+        "app-engine-php"
+      ], 
+      "details": {
+        "description": "Provides the PHP runtimes for the dev_appserver.", 
+        "display_name": "gcloud app PHP Extensions (Mac OS X)"
+      }, 
+      "id": "app-engine-php-darwin", 
+      "is_configuration": false, 
+      "is_hidden": false, 
+      "is_required": false, 
+      "platform": {
+        "operating_systems": [
+          "MACOSX"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "2017.05.30"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "bbf0145ba130240f9d0a33767c9e88a8d359c934ca4fa457a05c583e66b8c7dc", 
+        "contents_checksum": "0693e8464f197e00ee09d5daa45fc177cd46e6de92e3d22387b887a54bd8484d", 
+        "size": 20073546, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-app-engine-php-windows-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "core", 
+        "app-engine-php"
+      ], 
+      "details": {
+        "description": "Provides the PHP runtimes for the dev_appserver.", 
+        "display_name": "gcloud app PHP Extensions (Windows)"
+      }, 
+      "id": "app-engine-php-windows", 
+      "is_configuration": false, 
+      "is_hidden": false, 
+      "is_required": false, 
+      "platform": {
+        "operating_systems": [
+          "WINDOWS", 
+          "CYGWIN", 
+          "MSYS"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "2017.05.30"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "5687b5201029cad1fafccdda962e432e0a3fbd6b8dc9ad94b07ab00a66210d6c", 
+        "contents_checksum": "3308c2c9b081f2d4d81f8bbde65e45b63b17f7884f4356b8d857fd63464a5dce", 
+        "size": 6678279, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-app-engine-python-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "core"
+      ], 
+      "details": {
+        "description": "Provides the tools required to develop Python and PHP applications using gcloud.", 
+        "display_name": "gcloud app Python Extensions"
+      }, 
+      "id": "app-engine-python", 
+      "is_configuration": false, 
+      "is_hidden": false, 
+      "is_required": false, 
+      "platform": {}, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "1.9.54"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "a5f9b726b7fb017aefdc76cff0167289739bc0828a68ae3ecc1c193e816f920f", 
+        "contents_checksum": "e04a0dcc9c2d368732216d8e315b741308ff2e7253d21446765a43e62690a0a4", 
+        "size": 24697679, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-app-engine-python-extras-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "core", 
+        "app-engine-python"
+      ], 
+      "details": {
+        "description": "Extra libraries for the App Engine Python Extentions.", 
+        "display_name": "gcloud app Python Extensions (Extra Libraries)"
+      }, 
+      "id": "app-engine-python-extras", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {}, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "1.9.54"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "a387eb257141a803e9460031c96e41bbb56436af28d8477b23ee0ae478106dac", 
+        "contents_checksum": "9eabe4f17045dd0b084361c1ca232348dd1d8647a5417b6bc87c7487b157fb1a", 
+        "size": 686, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-beta-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "core"
+      ], 
+      "details": {
+        "description": "Beta version of gcloud commands.", 
+        "display_name": "gcloud Beta Commands"
+      }, 
+      "id": "beta", 
+      "is_configuration": false, 
+      "is_hidden": false, 
+      "is_required": false, 
+      "platform": {}, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "2017.05.30"
+      }
+    }, 
+    {
+      "dependencies": [
+        "core", 
+        "bigtable-linux-x86", 
+        "bigtable-linux-x86_64", 
+        "bigtable-darwin-x86", 
+        "bigtable-darwin-x86_64", 
+        "bigtable-windows-x86", 
+        "bigtable-windows-x86_64"
+      ], 
+      "details": {
+        "description": "Provides a tool for local Cloud Bigtable emulation.", 
+        "display_name": "Cloud Bigtable Emulator"
+      }, 
+      "id": "bigtable", 
+      "is_configuration": false, 
+      "is_hidden": false, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86", 
+          "x86_64"
+        ], 
+        "operating_systems": [
+          "LINUX", 
+          "MACOSX", 
+          "WINDOWS"
+        ]
+      }, 
+      "version": {
+        "build_number": 0, 
+        "version_string": ""
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "74e743899674208e991478979cc3c520f47a78a9456eb8104b64666ad5a10850", 
+        "contents_checksum": "0612c70b0157a0ed0c1b3fbf5fd6a484b3488b032096f316d5d3372740d7a238", 
+        "size": 3304623, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-bigtable-darwin-x86-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "bigtable"
+      ], 
+      "details": {
+        "description": "Provides a tool for local Cloud Bigtable emulation.", 
+        "display_name": "Cloud Bigtable Emulator (MAC, x86)"
+      }, 
+      "id": "bigtable-darwin-x86", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86"
+        ], 
+        "operating_systems": [
+          "MACOSX"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "2017.05.30"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "5404252f8309d0e1f5adba4c5c38076791043600c47608edbff1280f75ac210f", 
+        "contents_checksum": "69b01e7bd790abc97e74c674abd28a692dfb6d2a1948176f93415a01f4334ea6", 
+        "size": 3503463, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-bigtable-darwin-x86_64-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "bigtable"
+      ], 
+      "details": {
+        "description": "Provides a tool for local Cloud Bigtable emulation.", 
+        "display_name": "Cloud Bigtable Emulator (MAC, x86_64)"
+      }, 
+      "id": "bigtable-darwin-x86_64", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86_64"
+        ], 
+        "operating_systems": [
+          "MACOSX"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "2017.05.30"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "d769cd01995395e8a0e7c6ffc0a524a5ab2883832f66f4b30ae9e87502945311", 
+        "contents_checksum": "914d302ccbe5af0c425c12bb7a976b15b88999394ceaeb12859f46c9f556fb9c", 
+        "size": 3289066, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-bigtable-linux-x86-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "bigtable"
+      ], 
+      "details": {
+        "description": "Provides a tool for local Cloud Bigtable emulation.", 
+        "display_name": "Cloud Bigtable Emulator (Linux, x86)"
+      }, 
+      "id": "bigtable-linux-x86", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86"
+        ], 
+        "operating_systems": [
+          "LINUX"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "2017.05.30"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "4932876f2b4e2006aae7d87a17391e5166ea90a14c92aa6098554b95478ba538", 
+        "contents_checksum": "be3aa27e8e6d2ba4f64ac33cfb1d638513c97e93dc7ecc6b19d3eded17efe19f", 
+        "size": 3507065, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-bigtable-linux-x86_64-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "bigtable"
+      ], 
+      "details": {
+        "description": "Provides a tool for local Cloud Bigtable emulation.", 
+        "display_name": "Cloud Bigtable Emulator (Linux, x86_64)"
+      }, 
+      "id": "bigtable-linux-x86_64", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86_64"
+        ], 
+        "operating_systems": [
+          "LINUX"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "2017.05.30"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "1ba3668fb8b93c2072f44d3a376ac290aca088fb0a5844de4e43658dd41e3ce4", 
+        "contents_checksum": "64dd678232dfe0d116dec4599d3c140b4ed01f91f5d64235886b0066c6828c87", 
+        "size": 3248861, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-bigtable-windows-x86-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "bigtable"
+      ], 
+      "details": {
+        "description": "Provides a tool for local Cloud Bigtable emulation.", 
+        "display_name": "Cloud Bigtable Emulator (WINDOWS, x86)"
+      }, 
+      "id": "bigtable-windows-x86", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86"
+        ], 
+        "operating_systems": [
+          "WINDOWS"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "2017.05.30"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "63d3f43e4bed5ed692dbf32dac8f5b4d9f2ce21f67a07d08325f08abcd9b541a", 
+        "contents_checksum": "91dea7e4c106cef42f3b5d303ef243ac92b2333e3749328861bf3e6be89a6378", 
+        "size": 3450456, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-bigtable-windows-x86_64-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "bigtable"
+      ], 
+      "details": {
+        "description": "Provides a tool for local Cloud Bigtable emulation.", 
+        "display_name": "Cloud Bigtable Emulator (WINDOWS, x86_64)"
+      }, 
+      "id": "bigtable-windows-x86_64", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86_64"
+        ], 
+        "operating_systems": [
+          "WINDOWS"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "2017.05.30"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "98e83d278990774aaa3e7ad380a5294ab72b5eae1771121a45f39a887f22e59f", 
+        "contents_checksum": "9be079c24e4ad526dfbb57733e5d242d2d7b9cfa7bc83ef37ab33b5d8dd17766", 
+        "size": 469440, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-bq-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "core", 
+        "bq-nix", 
+        "bq-win"
+      ], 
+      "details": {
+        "description": "Provides the bq tool for interacting with the BigQuery service.", 
+        "display_name": "BigQuery Command Line Tool"
+      }, 
+      "id": "bq", 
+      "is_configuration": false, 
+      "is_hidden": false, 
+      "is_required": false, 
+      "platform": {}, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "2.0.24"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "47ff2a627e9a350903a384262838eb44d19c3712f0293c99e0213605fdf8e86d", 
+        "contents_checksum": "1856c67f8f5b565cc208ef9c97dd30c540b13b6673ce42eeeba79b66357ae48f", 
+        "size": 1157, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-bq-nix-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "core", 
+        "bq"
+      ], 
+      "details": {
+        "description": "Provides the bq tool for interacting with the BigQuery service.", 
+        "display_name": "BigQuery Command Line Tool (Platform Specific)"
+      }, 
+      "id": "bq-nix", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "operating_systems": [
+          "LINUX", 
+          "MACOSX", 
+          "CYGWIN", 
+          "MSYS"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "2.0.24"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "7e6e164e8d4f15eef638ff084002559702d37913a6efda2d5bd0cf0d744bcca7", 
+        "contents_checksum": "cc1c6eeea701b71026a5045b5741641c84572b06a027a2e392962b8aeff06140", 
+        "size": 1663, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-bq-win-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "core", 
+        "bq"
+      ], 
+      "details": {
+        "description": "Provides the bq tool for interacting with the BigQuery service.", 
+        "display_name": "BigQuery Command Line Tool (Platform Specific)"
+      }, 
+      "id": "bq-win", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "operating_systems": [
+          "WINDOWS"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "2.0.24"
+      }
+    }, 
+    {
+      "dependencies": [
+        "core", 
+        "broker-linux-x86", 
+        "broker-linux-x86_64", 
+        "broker-darwin-x86", 
+        "broker-darwin-x86_64", 
+        "broker-windows-x86", 
+        "broker-windows-x86_64"
+      ], 
+      "details": {
+        "description": "Provides the broker tool for emulator management.", 
+        "display_name": "cloud-testenv-broker"
+      }, 
+      "id": "broker", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {}, 
+      "version": {
+        "build_number": 0, 
+        "version_string": ""
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "0fd4f52a77ce9f2d1ff83155696a6b36b9de6b7a2b8b8849ae70cc3d40593f99", 
+        "contents_checksum": "66d0489ce07af4b8f8eaedd199883fc94e5ee3922e69e04b246a783d95b2dc60", 
+        "size": 6326989, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-broker-darwin-x86-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "core"
+      ], 
+      "details": {
+        "description": "Provides the broker tool for emulator management.", 
+        "display_name": "cloud-testenv-broker (Linux, x86)"
+      }, 
+      "id": "broker-darwin-x86", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86"
+        ], 
+        "operating_systems": [
+          "MACOSX"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "2017.05.30"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "6ca5dc3870690b6750a67fcdc186ba599088858d0b510a4ebc4e5504e759c2f8", 
+        "contents_checksum": "127ac3a403dcae3be59b02f569757bd5f82ade22b917fe1594df0b5ea1140353", 
+        "size": 6761955, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-broker-darwin-x86_64-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "core"
+      ], 
+      "details": {
+        "description": "Provides the broker tool for emulator management.", 
+        "display_name": "cloud-testenv-broker (Mac, x86_64)"
+      }, 
+      "id": "broker-darwin-x86_64", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86_64"
+        ], 
+        "operating_systems": [
+          "MACOSX"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "2017.05.30"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "03c1f0c4a05b92672a3ebe07738ab2471a8e75a08be4d04e80f15126a8dc031a", 
+        "contents_checksum": "43a51f7fad13ed017520f377c9df3b51350e294164a86204c044c7a6f7f987b6", 
+        "size": 6388043, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-broker-linux-x86-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "core"
+      ], 
+      "details": {
+        "description": "Provides the broker tool for emulator management.", 
+        "display_name": "cloud-testenv-broker (Linux, x86)"
+      }, 
+      "id": "broker-linux-x86", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86"
+        ], 
+        "operating_systems": [
+          "LINUX"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "2017.05.30"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "986841a7a72831c97adf2c344526c633591573725852645dd556d300cf2fde31", 
+        "contents_checksum": "73f6a18ecc1994c2f6e6fe79c13ace3633c60930eb6575af623c960abe06142f", 
+        "size": 6866293, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-broker-linux-x86_64-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "core"
+      ], 
+      "details": {
+        "description": "Provides the broker tool for emulator management.", 
+        "display_name": "cloud-testenv-broker (Linux, x86_64)"
+      }, 
+      "id": "broker-linux-x86_64", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86_64"
+        ], 
+        "operating_systems": [
+          "LINUX"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "2017.05.30"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "c046a629ed7e80b913b502aa4f1ce6e84a767d053384ff98a1e65dfa935b8561", 
+        "contents_checksum": "1e9da730d2512a919ab4cb811cb8b5d1aa3a52dd50108e72946c1fd2f8547e23", 
+        "size": 6346062, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-broker-windows-x86-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "core"
+      ], 
+      "details": {
+        "description": "Provides the broker tool for emulator management.", 
+        "display_name": "cloud-testenv-broker (Windows, x86)"
+      }, 
+      "id": "broker-windows-x86", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86"
+        ], 
+        "operating_systems": [
+          "WINDOWS"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "2017.05.30"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "23660d428d6a5f5fe38258b4fc290e6e9b1fa876b200d62fb1fe65cbecb67382", 
+        "contents_checksum": "84caa140e2cdbe68326724a06806a5e80ba82c2f21fd1a64a5dfc1b2cac4b9d3", 
+        "size": 6806502, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-broker-windows-x86_64-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "core"
+      ], 
+      "details": {
+        "description": "Provides the broker tool for emulator management.", 
+        "display_name": "cloud-testenv-broker (Windows, x86_64)"
+      }, 
+      "id": "broker-windows-x86_64", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86_64"
+        ], 
+        "operating_systems": [
+          "WINDOWS"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "2017.05.30"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "148afad46f530c924a67d703ae2225b7262532d91c223f6af58c0dc14b8e4cb4", 
+        "contents_checksum": "3f8c7db11ad118c05fc70d32816bae840be4b7e1a76c6692956f00ffec256831", 
+        "size": 9200575, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-bundled-python-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "core"
+      ], 
+      "details": {
+        "description": "Provides stand-alone Python install.", 
+        "display_name": "Bundled Python"
+      }, 
+      "id": "bundled-python", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86", 
+          "x86_64"
+        ], 
+        "operating_systems": [
+          "WINDOWS", 
+          "CYGWIN", 
+          "MSYS"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "2.7.10"
+      }
+    }, 
+    {
+      "dependencies": [
+        "cbt-linux-x86", 
+        "cbt-linux-x86_64", 
+        "cbt-darwin-x86", 
+        "cbt-darwin-x86_64", 
+        "cbt-windows-x86", 
+        "cbt-windows-x86_64"
+      ], 
+      "details": {
+        "description": "Provides the cbt tool for interacting with the Cloud Bigtable service.", 
+        "display_name": "Cloud Bigtable Command Line Tool"
+      }, 
+      "id": "cbt", 
+      "is_configuration": false, 
+      "is_hidden": false, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86", 
+          "x86_64"
+        ], 
+        "operating_systems": [
+          "LINUX", 
+          "MACOSX", 
+          "WINDOWS"
+        ]
+      }, 
+      "version": {
+        "build_number": 0, 
+        "version_string": ""
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "2c95ac0b1c3045ffb9c99815434510ab694c0ef3704be38d522adb9d18f33b5f", 
+        "contents_checksum": "53bb0c4deaddd463b07ad5e47d3cdaf94b8e773000e9e546eb6f7e6debd51d82", 
+        "size": 3945187, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-cbt-darwin-x86-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "cbt"
+      ], 
+      "details": {
+        "description": "Provides cbt.", 
+        "display_name": "cbt (Mac OS X, x86)"
+      }, 
+      "id": "cbt-darwin-x86", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86"
+        ], 
+        "operating_systems": [
+          "MACOSX"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "0.2.0"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "559010197e87375ff2e2d2944aa031825e6761e42f626a68c7a35dedc532bb31", 
+        "contents_checksum": "3c2f1d10e41ea0366656d45dcb4aee375f399a62b33ee7233fad4f0a62b8806c", 
+        "size": 4196261, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-cbt-darwin-x86_64-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "cbt"
+      ], 
+      "details": {
+        "description": "Provides cbt.", 
+        "display_name": "cbt (Mac OS X, x86_64)"
+      }, 
+      "id": "cbt-darwin-x86_64", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86_64"
+        ], 
+        "operating_systems": [
+          "MACOSX"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "0.2.0"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "6f91711abed677dd737d66354a0f88d923c50ab098f3b93c6341ba3ede78f430", 
+        "contents_checksum": "576210e89d2e26d6d3a9072a5ccb4bc2d043761fda330c8ab662ff7c5cfb6ab4", 
+        "size": 3961244, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-cbt-linux-x86-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "cbt"
+      ], 
+      "details": {
+        "description": "Provides cbt.", 
+        "display_name": "cbt (Linux, x86)"
+      }, 
+      "id": "cbt-linux-x86", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86"
+        ], 
+        "operating_systems": [
+          "LINUX"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "0.2.0"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "9a556008d3f083bf580d004e12fddbc249e62d8dbdc3df2fe4c017516e36e56d", 
+        "contents_checksum": "5b2318879d41cfff8632a6a1515d3729f3dcbb41602e9f564050fe4e802fe7ba", 
+        "size": 4242041, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-cbt-linux-x86_64-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "cbt"
+      ], 
+      "details": {
+        "description": "Provides cbt.", 
+        "display_name": "cbt (Linux, x86_64)"
+      }, 
+      "id": "cbt-linux-x86_64", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86_64"
+        ], 
+        "operating_systems": [
+          "LINUX"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "0.2.0"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "7a5c14745d5cea64afe5f669ff3d2d14d109fd5021bf92222fcfb3e9c0b08c73", 
+        "contents_checksum": "b5a67ce2dab618306633768a8727c291413bfc27dbd842c9cac238cb52fc4ff4", 
+        "size": 3933455, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-cbt-windows-x86-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "cbt"
+      ], 
+      "details": {
+        "description": "Provides cbt (Windows).", 
+        "display_name": "cbt (Windows)"
+      }, 
+      "id": "cbt-windows-x86", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86"
+        ], 
+        "operating_systems": [
+          "WINDOWS"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "0.2.0"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "422b7dd7d7ca33a91289655d979102b70c204cf094eef2327316265e36fe2ba4", 
+        "contents_checksum": "9a77aef38ce833d8d58151e69afa60018328f49eeaa805f866fc7dc26e0a532d", 
+        "size": 4191294, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-cbt-windows-x86_64-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "cbt"
+      ], 
+      "details": {
+        "description": "Provides cbt (Windows).", 
+        "display_name": "cbt (Windows)"
+      }, 
+      "id": "cbt-windows-x86_64", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86_64"
+        ], 
+        "operating_systems": [
+          "WINDOWS"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "0.2.0"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "2d70e9030306f606bfd9977e5f6286789ded70b3801dea2167ce14509bb0e558", 
+        "contents_checksum": "d9fbb40bd2e74b7e4e67078905af8c39af39e88e6e0715f5752ff161f402f231", 
+        "size": 16186698, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-cloud-datastore-emulator-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "core"
+      ], 
+      "details": {
+        "description": "Provides a local emulator of Cloud Datastore.", 
+        "display_name": "Cloud Datastore Emulator"
+      }, 
+      "id": "cloud-datastore-emulator", 
+      "is_configuration": false, 
+      "is_hidden": false, 
+      "is_required": false, 
+      "platform": {}, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "1.2.1"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "c8592c48486662657af9e560b836aa795f8f8268fc1d32f18752f02c83d9fe43", 
+        "contents_checksum": "f94c5e7d154581d1504f504f9d7cf8d2cca04b77d181179597cd05c3dea6ec50", 
+        "size": 6428188, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-core-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "gcloud-deps", 
+        "windows-ssh-tools", 
+        "core-nix", 
+        "core-win"
+      ], 
+      "details": {
+        "description": "Handles all core functionality for the Cloud SDK.", 
+        "display_name": "Cloud SDK Core Libraries"
+      }, 
+      "id": "core", 
+      "is_configuration": false, 
+      "is_hidden": false, 
+      "is_required": true, 
+      "platform": {}, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "2017.05.30"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "418676ac0527a2d755235ed5cd697522ed7308a5a2b40c8bd3a49cbaed6dab41", 
+        "contents_checksum": "a48b91973f843059d39ee9dad2a88f8a8beef6df022f9e87fd81633c54495fc3", 
+        "size": 1464, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-core-nix-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "gcloud-deps", 
+        "windows-ssh-tools", 
+        "core"
+      ], 
+      "details": {
+        "description": "Handles all core functionality for the Cloud SDK.", 
+        "display_name": "Cloud SDK Core Libraries (Platform Specific)"
+      }, 
+      "id": "core-nix", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": true, 
+      "platform": {
+        "operating_systems": [
+          "LINUX", 
+          "MACOSX", 
+          "CYGWIN", 
+          "MSYS"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "2017.05.30"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "a7ec5aef43f5e1558ce9eefeeaa3a830bd8c1aed07fee53475d549a9c17d3704", 
+        "contents_checksum": "f1e2f0d1f15ee7cf3b580c1c04a4cca83c43500e7092eabc17b3a6c3c99c06e0", 
+        "size": 1903, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-core-win-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "gcloud-deps", 
+        "windows-ssh-tools", 
+        "core"
+      ], 
+      "details": {
+        "description": "Handles all core functionality for the Cloud SDK.", 
+        "display_name": "Cloud SDK Core Libraries (Platform Specific)"
+      }, 
+      "id": "core-win", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": true, 
+      "platform": {
+        "operating_systems": [
+          "WINDOWS"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "2017.05.30"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "7edd2c780fd73264d680926ee91b46f0cd8e9b591d27327882b78a2bee3bf79d", 
+        "contents_checksum": "3f464d33057cb233319f86bb92f99b0f0f41716ef41b271e00088ce2e423e63a", 
+        "size": 13636, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-datalab-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "core", 
+        "gcloud", 
+        "beta", 
+        "alpha", 
+        "datalab-nix", 
+        "datalab-win"
+      ], 
+      "details": {
+        "description": "Provides the datalab tool for managing Google Cloud Datalab instances.", 
+        "display_name": "Cloud Datalab Command Line Tool"
+      }, 
+      "id": "datalab", 
+      "is_configuration": false, 
+      "is_hidden": false, 
+      "is_required": false, 
+      "platform": {}, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "20170525"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "07e92c8855ce83525762f36b6e6b7e8aa7bd78f64189d04af3578d1033b068e7", 
+        "contents_checksum": "3195aa6aead84b972fee97b1b23f05d8be41a32ee8fef3eea7bf2445d27751fc", 
+        "size": 1170, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-datalab-nix-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "core", 
+        "gcloud", 
+        "beta", 
+        "alpha", 
+        "datalab"
+      ], 
+      "details": {
+        "description": "Provides the datalab tool for managing Google Cloud Datalab instances.", 
+        "display_name": "Cloud Datalab Command Line Tool (Platform Specific)"
+      }, 
+      "id": "datalab-nix", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "operating_systems": [
+          "LINUX", 
+          "MACOSX", 
+          "CYGWIN", 
+          "MSYS"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "20170525"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "35eb257b22467b0b5afd4c4ee8ab13313c1dec892599d3dddab86e1a24d47e48", 
+        "contents_checksum": "b528e737de02a57bf9ed8acde215a4bdac85706eceae69dbecf2320e710cec49", 
+        "size": 858, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-datalab-win-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "core", 
+        "gcloud", 
+        "beta", 
+        "alpha", 
+        "datalab"
+      ], 
+      "details": {
+        "description": "Provides the datalab tool for managing Google Cloud Datalab instances.", 
+        "display_name": "Cloud Datalab Command Line Tool (Platform Specific)"
+      }, 
+      "id": "datalab-win", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "operating_systems": [
+          "WINDOWS"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "20170525"
+      }
+    }, 
+    {
+      "dependencies": [
+        "docker-credential-gcr-linux-x86", 
+        "docker-credential-gcr-linux-x86_64", 
+        "docker-credential-gcr-darwin-x86", 
+        "docker-credential-gcr-darwin-x86_64", 
+        "docker-credential-gcr-windows-x86", 
+        "docker-credential-gcr-windows-x86_64"
+      ], 
+      "details": {
+        "description": "Provides docker-credential-gcr executable.", 
+        "display_name": "Google Container Registry's Docker credential helper"
+      }, 
+      "id": "docker-credential-gcr", 
+      "is_configuration": false, 
+      "is_hidden": false, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86", 
+          "x86_64"
+        ], 
+        "operating_systems": [
+          "LINUX", 
+          "MACOSX", 
+          "WINDOWS"
+        ]
+      }, 
+      "version": {
+        "build_number": 0, 
+        "version_string": ""
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "80c288505ad583c00e16698f4fb1db042cc153d218c4b3981f97556dcecb9c47", 
+        "contents_checksum": "7c0d9a2b4bcf05e7cdfa485c56b53a997effb92f48d344034f22abf41c4d8e21", 
+        "size": 2233644, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-docker-credential-gcr-darwin-x86-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "docker-credential-gcr"
+      ], 
+      "details": {
+        "description": "Provides docker-credential-gcr. See https://github.com/GoogleCloudPlatform/docker-credential-gcr", 
+        "display_name": "docker-credential-gcr (Mac OS X, x86)"
+      }, 
+      "id": "docker-credential-gcr-darwin-x86", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86"
+        ], 
+        "operating_systems": [
+          "MACOSX"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "1.4.0"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "e803db465a54d9846c51a80948f9c384255f07e0b513458da047f355f6db0ba6", 
+        "contents_checksum": "623efd7269381efc3a4537422179b649ec5a193d9035675c2a5da66175107968", 
+        "size": 2377901, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-docker-credential-gcr-darwin-x86_64-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "docker-credential-gcr"
+      ], 
+      "details": {
+        "description": "Provides docker-credential-gcr. See https://github.com/GoogleCloudPlatform/docker-credential-gcr", 
+        "display_name": "docker-credential-gcr (Mac OS X, x86_64)"
+      }, 
+      "id": "docker-credential-gcr-darwin-x86_64", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86_64"
+        ], 
+        "operating_systems": [
+          "MACOSX"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "1.4.0"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "74cd0fe896e81140cde92eced51455ce29c8cb930945f30aec5c9004d029bba1", 
+        "contents_checksum": "f099904ad5e6b5f2c5b18af72a7fdcb6e4694a3c36f982d28821733f088c9bef", 
+        "size": 2242324, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-docker-credential-gcr-linux-x86-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "docker-credential-gcr"
+      ], 
+      "details": {
+        "description": "Provides docker-credential-gcr. See https://github.com/GoogleCloudPlatform/docker-credential-gcr", 
+        "display_name": "docker-credential-gcr (Linux, x86)"
+      }, 
+      "id": "docker-credential-gcr-linux-x86", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86"
+        ], 
+        "operating_systems": [
+          "LINUX"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "1.4.0"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "395b085b9d551b5fe60c850025477e9f66d140b1695f51ceed276432acbc66fd", 
+        "contents_checksum": "53a341a023bc869fd10901b954ce2767239f6d32050ba5948a94aec57a718887", 
+        "size": 2392488, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-docker-credential-gcr-linux-x86_64-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "docker-credential-gcr"
+      ], 
+      "details": {
+        "description": "Provides docker-credential-gcr. See https://github.com/GoogleCloudPlatform/docker-credential-gcr", 
+        "display_name": "docker-credential-gcr (Linux, x86_64)"
+      }, 
+      "id": "docker-credential-gcr-linux-x86_64", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86_64"
+        ], 
+        "operating_systems": [
+          "LINUX"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "1.4.0"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "505420a8dd3c83bc04ff0c9180f10bf8fd30d91bcffda663e1fcff93fba8af5c", 
+        "contents_checksum": "5de93dca289dbdd0d256fcdd21a6369b832eb310b8442d86f5467c8335b29ec3", 
+        "size": 2177180, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-docker-credential-gcr-windows-x86-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "docker-credential-gcr"
+      ], 
+      "details": {
+        "description": "Provides docker-credential-gcr. See https://github.com/GoogleCloudPlatform/docker-credential-gcr", 
+        "display_name": "docker-credential-gcr (Windows, x86)"
+      }, 
+      "id": "docker-credential-gcr-windows-x86", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86"
+        ], 
+        "operating_systems": [
+          "WINDOWS"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "1.4.0"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "840944bf445aea2715e7b4c1adabc9ffa42a20e42e8f201c7a3939b607ef879e", 
+        "contents_checksum": "a38ab2bef8f8b0bb8f64f36d2adb25edaf59258d0251622fc07ee0ea94b4304b", 
+        "size": 2322802, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-docker-credential-gcr-windows-x86_64-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "docker-credential-gcr"
+      ], 
+      "details": {
+        "description": "Provides docker-credential-gcr. See https://github.com/GoogleCloudPlatform/docker-credential-gcr", 
+        "display_name": "docker-credential-gcr (Windows, x86_64)"
+      }, 
+      "id": "docker-credential-gcr-windows-x86_64", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86_64"
+        ], 
+        "operating_systems": [
+          "WINDOWS"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "1.4.0"
+      }
+    }, 
+    {
+      "dependencies": [
+        "emulator-reverse-proxy-linux-x86_64", 
+        "emulator-reverse-proxy-darwin-x86_64", 
+        "emulator-reverse-proxy-windows-x86_64", 
+        "emulator-reverse-proxy-nossl-x86"
+      ], 
+      "details": {
+        "description": "Provides emulator-reverse-proxy executable.", 
+        "display_name": "Emulator Reverse Proxy"
+      }, 
+      "id": "emulator-reverse-proxy", 
+      "is_configuration": false, 
+      "is_hidden": false, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86", 
+          "x86_64"
+        ], 
+        "operating_systems": [
+          "LINUX", 
+          "MACOSX", 
+          "WINDOWS"
+        ]
+      }, 
+      "version": {
+        "build_number": 0, 
+        "version_string": ""
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "76f9c7f18f14d05f082ee2ee843520290e0a546b176f81ed8e2593d7a2527bf3", 
+        "contents_checksum": "3b391d57a3b0ec7b1d3e598f20d6ab66565cc4dc58a9b2fc8d3d052827ddeb32", 
+        "size": 15162440, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-emulator-reverse-proxy-darwin-x86_64-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "emulator-reverse-proxy"
+      ], 
+      "details": {
+        "description": "Provides emulator-reverse-proxy.", 
+        "display_name": "emulator-reverse-proxy (Mac OS X, x86_64)"
+      }, 
+      "id": "emulator-reverse-proxy-darwin-x86_64", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86_64"
+        ], 
+        "operating_systems": [
+          "MACOSX"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "0.0.1"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "c75018961f23e57ead882a60002487e0597be4838a3168d0ee17b34761c9bcfd", 
+        "contents_checksum": "7960483db214afabd463d2e7c08d6862982c8d468e7ef169c0d00b4788647bdf", 
+        "size": 15182481, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-emulator-reverse-proxy-linux-x86_64-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "emulator-reverse-proxy"
+      ], 
+      "details": {
+        "description": "Provides emulator-reverse-proxy.", 
+        "display_name": "emulator-reverse-proxy (Linux, x86_64)"
+      }, 
+      "id": "emulator-reverse-proxy-linux-x86_64", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86_64"
+        ], 
+        "operating_systems": [
+          "LINUX"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "0.0.1"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "e8052bbdd4d374d1dc24b0a03e2e90ebc14d1a3848c7a612104cb5354d557ecc", 
+        "contents_checksum": "35be2b4dee135cbfd50b45c4662e93440cad0904b2b78d8567680391cde7ba90", 
+        "size": 15101518, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-emulator-reverse-proxy-nossl-x86-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "emulator-reverse-proxy"
+      ], 
+      "details": {
+        "description": "Provides emulator-reverse-proxy.", 
+        "display_name": "emulator-reverse-proxy (nossl, x86)"
+      }, 
+      "id": "emulator-reverse-proxy-nossl-x86", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86"
+        ], 
+        "operating_systems": [
+          "LINUX", 
+          "MACOSX", 
+          "WINDOWS"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "0.0.1"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "c97886dea5729d2f0dfb0be92e680b49302d620865ebddf919acc9b5adf69f83", 
+        "contents_checksum": "d6e70b96adc1e95d163e6936ac132f4396a797eecbd360ee19efa2283c65375e", 
+        "size": 15166624, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-emulator-reverse-proxy-windows-x86_64-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "emulator-reverse-proxy"
+      ], 
+      "details": {
+        "description": "Provides emulator-reverse-proxy.", 
+        "display_name": "emulator-reverse-proxy (Windows, x86_64)"
+      }, 
+      "id": "emulator-reverse-proxy-windows-x86_64", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86_64"
+        ], 
+        "operating_systems": [
+          "WINDOWS"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "0.0.1"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "4337e414ba2fedf986404d171110f1f45470806442c0f6ca0051fdde4d00da9a", 
+        "contents_checksum": "fb1f60d9046525d7cff83250b0b8940f18e4a758a04d26cdfb22a8063476b3b0", 
+        "size": 39934164, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-gcd-emulator-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "core"
+      ], 
+      "details": {
+        "description": "Provides the legacy gcd tool for local Cloud Datastore emulation. Supports Cloud Datastore API v1beta2.", 
+        "display_name": "Cloud Datastore Emulator (Legacy)"
+      }, 
+      "id": "gcd-emulator", 
+      "is_configuration": false, 
+      "is_hidden": false, 
+      "is_required": false, 
+      "platform": {}, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "v1beta3-1.0.0"
+      }
+    }, 
+    {
+      "dependencies": [
+        "core"
+      ], 
+      "details": {
+        "description": "Default set of gcloud commands.", 
+        "display_name": "Default set of gcloud commands"
+      }, 
+      "id": "gcloud", 
+      "is_configuration": false, 
+      "is_hidden": false, 
+      "is_required": false, 
+      "platform": {}, 
+      "version": {
+        "build_number": 0, 
+        "version_string": ""
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "9d6016f2c0803a75e9e53ddba92e615d0fa10f8589826d334507a55166c505e2", 
+        "contents_checksum": "75e71747387e327d01e40bfb2c7571c52ca65b3b99da15df90c95f64cd0d439c", 
+        "size": 1629630, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-gcloud-deps-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "core", 
+        "gcloud-deps-linux-x86", 
+        "gcloud-deps-linux-x86_64", 
+        "gcloud-deps-darwin-x86", 
+        "gcloud-deps-darwin-x86_64", 
+        "gcloud-deps-windows-x86", 
+        "gcloud-deps-windows-x86_64"
+      ], 
+      "details": {
+        "description": "Set of third_party gcloud cli dependencies.", 
+        "display_name": "gcloud cli dependencies"
+      }, 
+      "id": "gcloud-deps", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86", 
+          "x86_64"
+        ], 
+        "operating_systems": [
+          "LINUX", 
+          "MACOSX", 
+          "WINDOWS"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "2017.05.30"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "690c7e1210e6bbed110cccf525a185e5c110a6204c3b37409d19998468751530", 
+        "contents_checksum": "2d1b8ff85773acbd32f5ad11357164710f2b6a1db2ea472c6af7574733ed2eff", 
+        "size": 2212450, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-gcloud-deps-darwin-x86-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "gcloud-deps"
+      ], 
+      "details": {
+        "description": "Provides gcloud dependencies.", 
+        "display_name": "gcloud-deps (Mac OS X, x86)"
+      }, 
+      "id": "gcloud-deps-darwin-x86", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86"
+        ], 
+        "operating_systems": [
+          "MACOSX"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "2017.05.30"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "ed715706abf4f9fd2625a9e57c41ccb5831fec8da6916859bc56978da92e884b", 
+        "contents_checksum": "2d1b8ff85773acbd32f5ad11357164710f2b6a1db2ea472c6af7574733ed2eff", 
+        "size": 2212450, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-gcloud-deps-darwin-x86_64-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "gcloud-deps"
+      ], 
+      "details": {
+        "description": "Provides gcloud dependencies.", 
+        "display_name": "gcloud-deps (Mac OS X, x86_64)"
+      }, 
+      "id": "gcloud-deps-darwin-x86_64", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86_64"
+        ], 
+        "operating_systems": [
+          "MACOSX"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "2017.05.30"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "cb30570cf1b806caccc6474fe535738ac6b100dee8af75827cdb6f2ec4db486d", 
+        "contents_checksum": "e49a32dc573701ac3299a7f27cb8ea8721f4a0576eb765ac66d52ba347d31192", 
+        "size": 4554856, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-gcloud-deps-linux-x86-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "gcloud-deps"
+      ], 
+      "details": {
+        "description": "Provides gcloud dependencies.", 
+        "display_name": "gcloud-deps (Linux, x86)"
+      }, 
+      "id": "gcloud-deps-linux-x86", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86"
+        ], 
+        "operating_systems": [
+          "LINUX"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "2017.05.30"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "ad2480406e2785481080521641f024181da58f9ab7d5eb7ee25ae647dae1c367", 
+        "contents_checksum": "a38ca74bec4b27d1af25ce53e9b7f4f841549588f75b11e361c6842d51a20b5c", 
+        "size": 4131004, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-gcloud-deps-linux-x86_64-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "gcloud-deps"
+      ], 
+      "details": {
+        "description": "Provides gcloud dependencies.", 
+        "display_name": "gcloud-deps (Linux, x86_64)"
+      }, 
+      "id": "gcloud-deps-linux-x86_64", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86_64"
+        ], 
+        "operating_systems": [
+          "LINUX"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "2017.05.30"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "cf1abefb2823edc2263ea776439821b47f9f4d5e39c60af5be2eccc1c342bc71", 
+        "contents_checksum": "dd5374f824ba1db09281b7ee055185663201e62a5a35d8725048dbfdefc99b0e", 
+        "size": 1072608, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-gcloud-deps-windows-x86-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "gcloud-deps"
+      ], 
+      "details": {
+        "description": "Provides gcloud dependencies (Windows).", 
+        "display_name": "gcloud-deps (Windows)"
+      }, 
+      "id": "gcloud-deps-windows-x86", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86"
+        ], 
+        "operating_systems": [
+          "WINDOWS"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "2017.05.30"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "c0b7067d38bf60fca0d5bb618284f0e45e76a9ffc880ffe879f959722caee8a5", 
+        "contents_checksum": "4cad9ceb3ec142dc2f8fc35edd77fbfa43e4d8b4b4137029875814c225b69e00", 
+        "size": 1050057, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-gcloud-deps-windows-x86_64-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "gcloud-deps"
+      ], 
+      "details": {
+        "description": "Provides gcloud dependencies (Windows).", 
+        "display_name": "gcloud-deps (Windows)"
+      }, 
+      "id": "gcloud-deps-windows-x86_64", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86_64"
+        ], 
+        "operating_systems": [
+          "WINDOWS"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "2017.05.30"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "a53c4efb031e7b20bece004c1919dafb26f3b633ffc92fba3ce7bcbe590a4f8a", 
+        "contents_checksum": "a260e796d9ee79ebed0e471e96c7116baaa5d3b332b7fa896bad52d757467db1", 
+        "size": 3079369, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-gsutil-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "core", 
+        "gsutil-nix", 
+        "gsutil-win"
+      ], 
+      "details": {
+        "description": "Provides the gsutil tool for interacting with Google Cloud Storage.", 
+        "display_name": "Cloud Storage Command Line Tool"
+      }, 
+      "id": "gsutil", 
+      "is_configuration": false, 
+      "is_hidden": false, 
+      "is_required": false, 
+      "platform": {}, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "4.26"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "155b1c1808e60028e293390b0a3717d537855c486204fbc946d042fa4ae257d1", 
+        "contents_checksum": "e5feadbab247614a80c6033aa921e9cdc9e3036caca80903af2c5b49e4f43816", 
+        "size": 1170, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-gsutil-nix-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "core", 
+        "gsutil"
+      ], 
+      "details": {
+        "description": "Provides the gsutil tool for interacting with Google Cloud Storage.", 
+        "display_name": "Cloud Storage Command Line Tool (Platform Specific)"
+      }, 
+      "id": "gsutil-nix", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "operating_systems": [
+          "LINUX", 
+          "MACOSX", 
+          "CYGWIN", 
+          "MSYS"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "4.26"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "e0ae6409fc091486ef55c9122d8fe5d61c19bdb30cf509b3987924a2eb067bba", 
+        "contents_checksum": "b7163ab2626183c5bbc10963a73a388f6b4d94f87cb2c09670dc17a066d08dcb", 
+        "size": 1707, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-gsutil-win-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "core", 
+        "gsutil"
+      ], 
+      "details": {
+        "description": "Provides the gsutil tool for interacting with Google Cloud Storage.", 
+        "display_name": "Cloud Storage Command Line Tool (Platform Specific)"
+      }, 
+      "id": "gsutil-win", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "operating_systems": [
+          "WINDOWS"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "4.26"
+      }
+    }, 
+    {
+      "dependencies": [
+        "kubectl-linux-x86", 
+        "kubectl-linux-x86_64", 
+        "kubectl-darwin-x86", 
+        "kubectl-darwin-x86_64", 
+        "kubectl-windows-x86", 
+        "kubectl-windows-x86_64"
+      ], 
+      "details": {
+        "description": "Provides kubectl executable.", 
+        "display_name": "kubectl"
+      }, 
+      "id": "kubectl", 
+      "is_configuration": false, 
+      "is_hidden": false, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86", 
+          "x86_64"
+        ], 
+        "operating_systems": [
+          "LINUX", 
+          "MACOSX", 
+          "WINDOWS"
+        ]
+      }, 
+      "version": {
+        "build_number": 0, 
+        "version_string": ""
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "e41c1cdd958a02d99cb2f050aefb2ec98f4bf935ccd45660db8b4b9612331517", 
+        "contents_checksum": "bd3848b4ccaf42cc720815c8fd93e507766793be028aa23a305a8c86331436b9", 
+        "size": 14788210, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-kubectl-darwin-x86-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "kubectl"
+      ], 
+      "details": {
+        "description": "Provides kubectl.", 
+        "display_name": "kubectl (Mac OS X, x86)"
+      }, 
+      "id": "kubectl-darwin-x86", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86"
+        ], 
+        "operating_systems": [
+          "MACOSX"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "1.6.4"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "9b14d8bf4339b6593d416c55992a8e35851a550c2d449ebe3f58d5013f9c9ce4", 
+        "contents_checksum": "73b5971af2108b7d9a597e8e9377226d6a0552fc1635deb12a4924a273545410", 
+        "size": 15502085, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-kubectl-darwin-x86_64-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "kubectl"
+      ], 
+      "details": {
+        "description": "Provides kubectl.", 
+        "display_name": "kubectl (Mac OS X, x86_64)"
+      }, 
+      "id": "kubectl-darwin-x86_64", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86_64"
+        ], 
+        "operating_systems": [
+          "MACOSX"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "1.6.4"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "6eb1f6d5e6bf5681ca5ef3ee0e68cc84878b769bbd44d934a6c37585426783aa", 
+        "contents_checksum": "9ff7f51edafb270fa0ceb60d9bf8c6698866ac577a9f549db8bb19f30c2c838f", 
+        "size": 14886912, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-kubectl-linux-x86-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "kubectl"
+      ], 
+      "details": {
+        "description": "Provides kubectl.", 
+        "display_name": "kubectl (Linux, x86)"
+      }, 
+      "id": "kubectl-linux-x86", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86"
+        ], 
+        "operating_systems": [
+          "LINUX"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "1.6.4"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "6c235dd12ca0501415cde7d7122f5cd8883871ed6522c8b834e9d6cafd86f234", 
+        "contents_checksum": "7201b6fa1712997c2c225a102683593d0401c13f0e3f43804661c21783ce555c", 
+        "size": 15603339, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-kubectl-linux-x86_64-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "kubectl"
+      ], 
+      "details": {
+        "description": "Provides kubectl.", 
+        "display_name": "kubectl (Linux, x86_64)"
+      }, 
+      "id": "kubectl-linux-x86_64", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86_64"
+        ], 
+        "operating_systems": [
+          "LINUX"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "1.6.4"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "46348896691938b8da510f35bd5023bc0d8e05978d3718eb8572f972b8460804", 
+        "contents_checksum": "0da3ce9ce959298785b1836ef5e9419e258f9368d9765ed6a5329165bc37c16a", 
+        "size": 14892990, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-kubectl-windows-x86-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "kubectl"
+      ], 
+      "details": {
+        "description": "Provides kubectl (Windows).", 
+        "display_name": "kubectl (Windows)"
+      }, 
+      "id": "kubectl-windows-x86", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86"
+        ], 
+        "operating_systems": [
+          "WINDOWS"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "1.6.4"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "f753e061ed9592b522f39d392e2c7947ff1e5a9de5e241356dada061eee66984", 
+        "contents_checksum": "549364664ba0ac355b1f6236ca3a1aa25b51f2ff6bf7705070ef5bdb0eb28c8b", 
+        "size": 15627152, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-kubectl-windows-x86_64-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "kubectl"
+      ], 
+      "details": {
+        "description": "Provides kubectl (Windows).", 
+        "display_name": "kubectl (Windows)"
+      }, 
+      "id": "kubectl-windows-x86_64", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86_64"
+        ], 
+        "operating_systems": [
+          "WINDOWS"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "1.6.4"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "d74d29ac1e3201b2452e1f464c1fb3ace123d3a44664413c0c713f947bf4fff6", 
+        "contents_checksum": "8d5b764077fe0ed31fd5ccd0c9f156f4f23a5e4fa139d1fea9be77a182bad294", 
+        "size": 7170278, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-powershell-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "core"
+      ], 
+      "details": {
+        "description": "PowerShell cmdlets for the Google Cloud Platform.", 
+        "display_name": "Cloud Tools for PowerShell"
+      }, 
+      "id": "powershell", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "architectures": [
+          "x86", 
+          "x86_64"
+        ], 
+        "operating_systems": [
+          "WINDOWS"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "1.0.0.6"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "76a25be62a3b97d0e3249bf5da9dde638a07793b3a5796042ea82d7d8a73e8c5", 
+        "contents_checksum": "f403c1f8c1e4d7c2c567e2189fbcace34fbe469c1debcae637c595b8a85f7fd8", 
+        "size": 22024936, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-pubsub-emulator-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "core"
+      ], 
+      "details": {
+        "description": "Provides the Pub/Sub emulator.", 
+        "display_name": "Cloud Pub/Sub Emulator"
+      }, 
+      "id": "pubsub-emulator", 
+      "is_configuration": false, 
+      "is_hidden": false, 
+      "is_required": false, 
+      "platform": {}, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "2017.05.30"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "ee27ecb6d846208308fba13e206b53a33bd3f89df68007a6d471099be4440e90", 
+        "contents_checksum": "0116e2da125ebad6299bc24044db1ef0283fd41f167db83abb7c569e967e24ec", 
+        "size": 15849614, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-tests-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [
+        "alpha", 
+        "app-engine-go", 
+        "app-engine-go-darwin-x86", 
+        "app-engine-go-darwin-x86_64", 
+        "app-engine-go-linux-x86", 
+        "app-engine-go-linux-x86_64", 
+        "app-engine-go-windows-x86", 
+        "app-engine-go-windows-x86_64", 
+        "app-engine-grpc", 
+        "app-engine-grpc-darwin-x86_64", 
+        "app-engine-grpc-linux-x86_64", 
+        "app-engine-grpc-windows-x86_64", 
+        "app-engine-java", 
+        "app-engine-php", 
+        "app-engine-php-darwin", 
+        "app-engine-php-windows", 
+        "app-engine-python", 
+        "app-engine-python-extras", 
+        "beta", 
+        "bigtable", 
+        "bigtable-darwin-x86", 
+        "bigtable-darwin-x86_64", 
+        "bigtable-linux-x86", 
+        "bigtable-linux-x86_64", 
+        "bigtable-windows-x86", 
+        "bigtable-windows-x86_64", 
+        "bq", 
+        "broker", 
+        "broker-darwin-x86", 
+        "broker-darwin-x86_64", 
+        "broker-linux-x86", 
+        "broker-linux-x86_64", 
+        "broker-windows-x86", 
+        "broker-windows-x86_64", 
+        "bundled-python", 
+        "cbt", 
+        "cbt-darwin-x86", 
+        "cbt-darwin-x86_64", 
+        "cbt-linux-x86", 
+        "cbt-linux-x86_64", 
+        "cbt-windows-x86", 
+        "cbt-windows-x86_64", 
+        "cloud-datastore-emulator", 
+        "core", 
+        "datalab", 
+        "docker-credential-gcr", 
+        "docker-credential-gcr-darwin-x86", 
+        "docker-credential-gcr-darwin-x86_64", 
+        "docker-credential-gcr-linux-x86", 
+        "docker-credential-gcr-linux-x86_64", 
+        "docker-credential-gcr-windows-x86", 
+        "docker-credential-gcr-windows-x86_64", 
+        "emulator-reverse-proxy", 
+        "emulator-reverse-proxy-darwin-x86_64", 
+        "emulator-reverse-proxy-linux-x86_64", 
+        "emulator-reverse-proxy-nossl-x86", 
+        "emulator-reverse-proxy-windows-x86_64", 
+        "gcd-emulator", 
+        "gcloud", 
+        "gcloud-deps", 
+        "gcloud-deps-darwin-x86", 
+        "gcloud-deps-darwin-x86_64", 
+        "gcloud-deps-linux-x86", 
+        "gcloud-deps-linux-x86_64", 
+        "gcloud-deps-windows-x86", 
+        "gcloud-deps-windows-x86_64", 
+        "gsutil", 
+        "kubectl", 
+        "kubectl-darwin-x86", 
+        "kubectl-darwin-x86_64", 
+        "kubectl-linux-x86", 
+        "kubectl-linux-x86_64", 
+        "kubectl-windows-x86", 
+        "kubectl-windows-x86_64", 
+        "powershell", 
+        "pubsub-emulator", 
+        "windows-ssh-tools"
+      ], 
+      "details": {
+        "description": "Collection of tests used to verity Cloud SDK", 
+        "display_name": "Cloud SDK tests"
+      }, 
+      "id": "tests", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {}, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "2017.05.30"
+      }
+    }, 
+    {
+      "data": {
+        "checksum": "d41e2a7eb776f1c2163375bbeba38a08e58b1f0daa6bcb1e0943cfb810ddc5d2", 
+        "contents_checksum": "d4de84e948dec607c354b3ab1a977674e6fec995edd4496435831c32806ebae1", 
+        "size": 1915726, 
+        "source": "file:///tmp/tmpuSiADi/components/google-cloud-sdk-windows-ssh-tools-20170530081242.tar.gz", 
+        "type": "tar"
+      }, 
+      "dependencies": [], 
+      "details": {
+        "description": "Provides Windows command line ssh tools.", 
+        "display_name": "Windows command line ssh tools"
+      }, 
+      "id": "windows-ssh-tools", 
+      "is_configuration": false, 
+      "is_hidden": true, 
+      "is_required": false, 
+      "platform": {
+        "operating_systems": [
+          "WINDOWS"
+        ]
+      }, 
+      "version": {
+        "build_number": 20170530081242, 
+        "version_string": "2017.05.30"
+      }
+    }
+  ], 
+  "gcloud_rel_path": "lib/gcloud.py", 
+  "notifications": [
+    {
+      "condition": {
+        "check_components": true
+      }, 
+      "id": "default", 
+      "notification": {}, 
+      "trigger": {
+        "frequency": 86400
+      }
+    }
+  ], 
+  "post_processing_command": "components post-process", 
+  "release_notes_url": "file:///tmp/tmpuSiADi/RELEASE_NOTES", 
+  "revision": 20170530081242, 
+  "schema_version": {
+    "no_update": false, 
+    "url": "https://dl.google.com/dl/cloudsdk/channels/rapid/google-cloud-sdk.tar.gz", 
+    "version": 3
+  }, 
+  "version": "157.0.0"
+}
