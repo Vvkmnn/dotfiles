@@ -79,7 +79,7 @@ export GOPATH=~/Code/Go
 
 
 # The next line updates PATH for the Google Cloud SDK.
-if [ -f '~/.gcloud/google-cloud-sdk/path.zsh.inc' ]; then source '~/.gcloud/google-cloud-sdk/path.zsh.inc'; fi
+if [ -f "$HOME"/.gcloud/google-cloud-sdk/path.zsh.inc ]; then source "$HOME"/.gcloud/google-cloud-sdk/path.zsh.inc; fi
 
 # The next line enables shell command completion for gcloud.
-if [ -f '~/.gcloud/google-cloud-sdk/completion.zsh.inc' ]; then source '~/.gcloud/google-cloud-sdk/completion.zsh.inc'; fi
+if [ -f "$HOME"/.gcloud/google-cloud-sdk/completion.zsh.inc ]; then source "$HOME"/.gcloud/google-cloud-sdk/completion.zsh.inc; fi
