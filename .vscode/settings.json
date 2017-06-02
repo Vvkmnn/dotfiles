@@ -5,7 +5,7 @@
     "editor.minimap.enabled": true,
     "editor.wordWrap": "on",
     // Fonts
-    "editor.fontFamily": "'Inconsolata', medium",
+    "editor.fontFamily": "'Inconsolata for Powerline', medium",
     "editor.fontSize": 13,
     "workbench.colorTheme": "Dracula",
     "window.zoomLevel": 0
