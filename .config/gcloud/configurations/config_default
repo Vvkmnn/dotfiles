@@ -1,6 +1,8 @@
 [core]
 account = vm@redqueen.xyz
-project = vocal-162118
+project = feedback-170115
 
 [compute]
+zone = us-east1-b
+region = us-east1
 
