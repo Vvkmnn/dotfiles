@@ -17,6 +17,8 @@ fi
 # Dotfiles
 alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
 
+# z
+source /usr/local/etc/profile.d/z.sh
 
 ## Terminal Defaults
 # ZLE_RPROMPT_INDENT=0
@@ -55,6 +57,7 @@ RPROMPT='v@%M %(?,%F{green}[-_-]%f,%F{red}[ಠ_ಠ]%f)'
 SPACESHIP_PROMPT_SYMBOL="ॐ "
 SPACESHIP_PROMPT_SEPARATE_LINE=true
 SPACESHIP_PROMPT_ADD_NEWLINE=false
+SPACESHIP_PROMPT_COLOR=blue
 
 SPACESHIP_DIR_TRUNC=2
 
@@ -69,6 +72,11 @@ export HOMEBREW_CASK_OPTS="--appdir=/Applications"
 #  Zim
 if [[ -s ${ZDOTDIR:-${HOME}}/.zim/init.zsh ]]; then
   source ${ZDOTDIR:-${HOME}}/.zim/init.zsh
+
+  # Load spacesihp into the Zim plugin  
+  autoload -Uz promptinit
+  promptinit
+  prompt spaceship
 fi
 
 # Continuum Anaconda

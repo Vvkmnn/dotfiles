@@ -35,6 +35,7 @@
   zcompare ${zim_mods}/spectrum/init.zsh
   zcompare ${zim_mods}/completion/init.zsh
   zcompare ${zim_mods}/fasd/init.zsh
+  zcompare ${zim_mods}/git-prompt/zshrc.sh
 
   # zcompile all .zsh files in the custom module
   for file in ${zim_mods}/custom/**/^(README.md|*.zwc)(.); do
