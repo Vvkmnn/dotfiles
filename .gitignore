@@ -1,5 +1,9 @@
 ## From https://github.com/github/gitignore
 
+## Docker
+*/certs/*
+*/completion_cache/*
+
 ## macOS
 
 *.DS_Store
