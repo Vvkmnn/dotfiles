@@ -203,3 +203,8 @@ def GetActiveProjectAndAccount():
   project_name = properties.VALUES.core.project.Get(validate=False)
   account = properties.VALUES.core.account.Get(validate=False)
   return (project_name, account)
+
+
+# Register some other sources for credentials and project.
+c_store.DevShellCredentialProvider().Register()
+c_store.GceCredentialProvider().Register()

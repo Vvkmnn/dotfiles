@@ -112,4 +112,4 @@ export CLOUDSDK_ROOT_DIR CLOUDSDK_PYTHON_ARGS
 # </cloud-sdk-sh-preamble>
 
 
-"$CLOUDSDK_PYTHON" $CLOUDSDK_PYTHON_ARGS "${CLOUDSDK_ROOT_DIR}/lib/gcloud.py" "$@"
+exec "$CLOUDSDK_PYTHON" $CLOUDSDK_PYTHON_ARGS "${CLOUDSDK_ROOT_DIR}/lib/gcloud.py" "$@"

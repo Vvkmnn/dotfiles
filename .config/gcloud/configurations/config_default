@@ -1,6 +1,6 @@
 [core]
 account = vm@redqueen.xyz
-project = feedback-170115
+project = opiai-174214
 
 [compute]
 zone = us-east1-b

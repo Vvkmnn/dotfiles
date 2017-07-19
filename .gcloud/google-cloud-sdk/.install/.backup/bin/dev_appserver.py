@@ -11,7 +11,6 @@ import sys
 import bootstrapping.bootstrapping as bootstrapping
 from googlecloudsdk.api_lib.app import wrapper_util
 from googlecloudsdk.core import metrics
-from googlecloudsdk.core import properties
 from googlecloudsdk.core.updater import update_manager
 
 
@@ -24,8 +23,7 @@ def main():
       command=__file__)
 
   args = [
-      '--skip_sdk_update_check=True',
-      '--application={}'.format(properties.VALUES.core.project.Get())
+      '--skip_sdk_update_check=True'
   ]
 
   google_analytics_client_id = metrics.GetCIDIfMetricsEnabled()
