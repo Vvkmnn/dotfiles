@@ -4,6 +4,7 @@
 
 ## Personal Defaults
 LANG=en_US.UTF-8
+BROWSER=open
 TERM=xterm-256color
 
 # GUI Editor - VSCode
@@ -17,6 +18,8 @@ fi
 # Dotfiles
 alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
 
+# Aliases
+source $HOME/.aliases
 
 ## Terminal Defaults
 # ZLE_RPROMPT_INDENT=0
@@ -76,7 +79,6 @@ export PATH=~/anaconda3/bin:$PATH
 
 # Google Go
 export GOPATH=~/Code/Go
-
 
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f "$HOME"/.gcloud/google-cloud-sdk/path.zsh.inc ]; then source "$HOME"/.gcloud/google-cloud-sdk/path.zsh.inc; fi
