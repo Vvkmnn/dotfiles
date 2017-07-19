@@ -1,5 +1,9 @@
 ## From https://github.com/github/gitignore
 
+
+## Gcloud
+.gcloud/*
+
 ## Docker
 */certs/*
 */completion_cache/*
