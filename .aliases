@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+# Vanilla Vim
+alias pvim="vim -u NONE -N"
