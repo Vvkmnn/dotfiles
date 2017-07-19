@@ -1,2 +1,3 @@
 /Users/v/anaconda3/envs/default
 /Users/v/anaconda3/envs/sigmacoin
+/Users/vivek.menon/anaconda3/envs/pokenv

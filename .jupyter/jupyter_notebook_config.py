@@ -58,6 +58,9 @@
 #  Ignored if allow_origin is set.
 #c.NotebookApp.allow_origin_pat = ''
 
+## Whether to allow the user to run the notebook as root.
+#c.NotebookApp.allow_root = False
+
 ## DEPRECATED use base_url
 #c.NotebookApp.base_project_url = '/'
 
@@ -71,6 +74,7 @@
 #  standard library module, which allows setting of the BROWSER environment
 #  variable to override it.
 #c.NotebookApp.browser = ''
+c.NotebookApp.browser = u'open -a /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome %s'
 
 ## The full path to an SSL/TLS certificate file.
 #c.NotebookApp.certfile = ''
@@ -83,7 +87,7 @@
 #c.NotebookApp.config_manager_class = 'notebook.services.config.manager.ConfigManager'
 
 ## The notebook manager class to use.
-#c.NotebookApp.contents_manager_class = 'notebook.services.contents.filemanager.FileContentsManager'
+#c.NotebookApp.contents_manager_class = 'notebook.services.contents.largefilemanager.LargeFileManager'
 
 ## Extra keyword arguments to pass to `set_secure_cookie`. See tornado's
 #  set_secure_cookie docs for details.
@@ -143,16 +147,17 @@
 ## 
 #c.NotebookApp.file_to_run = ''
 
-## Use minified JS file or not, mainly use during dev to avoid JS recompilation
+## Deprecated: Use minified JS file or not, mainly use during dev to avoid JS
+#  recompilation
 #c.NotebookApp.ignore_minified_js = False
 
 ## (bytes/sec) Maximum rate at which messages can be sent on iopub before they
 #  are limited.
-#c.NotebookApp.iopub_data_rate_limit = 0
+#c.NotebookApp.iopub_data_rate_limit = 1000000
 
-## (msg/sec) Maximum rate at which messages can be sent on iopub before they are
+## (msgs/sec) Maximum rate at which messages can be sent on iopub before they are
 #  limited.
-#c.NotebookApp.iopub_msg_rate_limit = 0
+#c.NotebookApp.iopub_msg_rate_limit = 1000
 
 ## The IP address the notebook server will listen on.
 #c.NotebookApp.ip = 'localhost'
@@ -182,6 +187,9 @@
 ## The logout handler class to use.
 #c.NotebookApp.logout_handler_class = 'notebook.auth.logout.LogoutHandler'
 
+## The MathJax.js configuration file that is to be used.
+#c.NotebookApp.mathjax_config = 'TeX-AMS-MML_HTMLorMML-full,Safe'
+
 ## A custom url for MathJax.js. Should be in the form of a case-sensitive url to
 #  MathJax, for example:  /static/components/MathJax/MathJax.js
 #c.NotebookApp.mathjax_url = ''
@@ -209,6 +217,14 @@
 #  The string should be of the form type:salt:hashed-password.
 #c.NotebookApp.password = ''
 
+## Forces users to use a password for the Notebook server. This is useful in a
+#  multi user environment, for instance when everybody in the LAN can access each
+#  other's machine though ssh.
+#  
+#  In such a case, server the notebook server on localhost is not secure since
+#  any user can connect to the notebook server via ssh.
+#c.NotebookApp.password_required = False
+
 ## The port the notebook server will listen on.
 #c.NotebookApp.port = 8888
 
@@ -219,7 +235,7 @@
 #c.NotebookApp.pylab = 'disabled'
 
 ## (sec) Time window used to  check the message and data rate limits.
-#c.NotebookApp.rate_limit_window = 1.0
+#c.NotebookApp.rate_limit_window = 3
 
 ## Reraise exceptions encountered loading server extensions?
 #c.NotebookApp.reraise_server_extension_failures = False
@@ -233,6 +249,9 @@
 ## Supply SSL options for the tornado HTTPServer. See the tornado docs for
 #  details.
 #c.NotebookApp.ssl_options = {}
+
+## Supply overrides for terminado. Currently only supports "shell_command".
+#c.NotebookApp.terminado_settings = {}
 
 ## Token used for authenticating first-time connections to the server.
 #  
@@ -316,6 +335,9 @@
 #  kernel does not receive the option --debug if it given on the Jupyter command
 #  line.
 #c.KernelManager.kernel_cmd = []
+
+## Time to wait for a kernel to terminate before killing it, in seconds.
+#c.KernelManager.shutdown_wait_time = 5.0
 
 #------------------------------------------------------------------------------
 # Session(Configurable) configuration
@@ -408,7 +430,7 @@
 #c.Session.unpacker = 'json'
 
 ## Username for the Session. Default is your system username.
-#c.Session.username = 'v'
+#c.Session.username = 'vivek.menon'
 
 #------------------------------------------------------------------------------
 # MultiKernelManager(LoggingConfigurable) configuration
@@ -479,6 +501,9 @@
 #  - contents_manager: this ContentsManager instance
 #c.ContentsManager.pre_save_hook = None
 
+## 
+#c.ContentsManager.root_dir = '/'
+
 ## The base name used when creating untitled directories.
 #c.ContentsManager.untitled_directory = 'Untitled Folder'
 
@@ -548,10 +573,6 @@
 ## The hashing algorithm used to sign notebooks.
 #c.NotebookNotary.algorithm = 'sha256'
 
-## The number of notebook signatures to cache. When the number of signatures
-#  exceeds this value, the oldest 25% of signatures will be culled.
-#c.NotebookNotary.cache_size = 65535
-
 ## The sqlite file in which to store notebook signatures. By default, this will
 #  be in your Jupyter data directory. You can set it to ':memory:' to disable
 #  sqlite writing to the filesystem.
@@ -562,6 +583,10 @@
 
 ## The file where the secret key is stored.
 #c.NotebookNotary.secret_file = ''
+
+## A callable returning the storage backend for notebook signatures. The default
+#  uses an SQLite database.
+#c.NotebookNotary.store_factory = traitlets.Undefined
 
 #------------------------------------------------------------------------------
 # KernelSpecManager(LoggingConfigurable) configuration
