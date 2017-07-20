@@ -21,6 +21,7 @@
 
     ssh-keygen -t rsa -b 4096 -C "example@example.com"
     pbcopy < ~/.ssh/id_rsa.pub
+    /usr/bin/ssh-add -K ~/.ssh/id_rsa
     alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
     git clone --bare git@github.com:Vvkmnn/dotfiles.git $HOME/.dotfiles
     dotfiles checkout
