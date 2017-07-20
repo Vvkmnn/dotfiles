@@ -15,10 +15,10 @@ git clone --recursive https://github.com/Eriner/zim.git ${ZDOTDIR:-${HOME}}/.zim
 # done
 
 # Import Powerline9k
-if [ ! -f ~/.zim/modultes/prompt/external-themes/powerlevel9k/powerlevel9k.zsh-theme ]; then
-    git clone https://github.com/bhilburn/powerlevel9k.git ~/.zim/modules/prompt/external-themes/powerlevel9k
-    ln -s ~/.zim/modules/prompt/external-themes/powerlevel9k/powerlevel9k.zsh-theme ~/.zim/modules/prompt/functions/prompt_powerlevel9k_setup
-fi
+# if [ ! -f ~/.zim/modultes/prompt/external-themes/powerlevel9k/powerlevel9k.zsh-theme ]; then
+#     git clone https://github.com/bhilburn/powerlevel9k.git ~/.zim/modules/prompt/external-themes/powerlevel9k
+#     ln -s ~/.zim/modules/prompt/external-themes/powerlevel9k/powerlevel9k.zsh-theme ~/.zim/modules/prompt/functions/prompt_powerlevel9k_setup
+# fi
 
 # Import Spaceship
 if [ ! -f ~/.zim/modules/prompt/external-themes/spaceship/spaceship.zsh-theme ]; then
@@ -28,19 +28,17 @@ fi
 
 
 # Set Zsh as shell
-chsh -s =zsh
+chsh -s /bin/zsh
 
 # Source .zlogin
 source ${ZDOTDIR:-${HOME}}/.zlogin
 
-if [[ ! -d "../.oh-my-zsh/custom/themes/dracula" ]]; then
-  cp ../.assets/dracula/zsh/dracula.zsh-theme ../.oh-my-zsh/themes/
-fi
-
-fin "All set."
+# if [[ ! -d "../.oh-my-zsh/custom/themes/dracula" ]]; then
+#   cp ../.assets/dracula/zsh/dracula.zsh-theme ../.oh-my-zsh/themes/
+# fi
 
 # Update Zim
-zmanage update
+# zmanage update
 
- # Source .zlogin to compile new .zshrc
-source ~/.login
+# Source .zlogin to compile new .zshrc
+# source ~/.login
