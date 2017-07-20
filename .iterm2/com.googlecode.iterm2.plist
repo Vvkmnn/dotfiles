@@ -943,17 +943,9 @@
 	<true/>
 	<key>LoadPrefsFromCustomFolder</key>
 	<true/>
-	<key>NSFontPanelAttributes</key>
-	<string>1, 0</string>
-	<key>NSFontPanelPreviewHeight</key>
-	<real>100</real>
-	<key>NSFontPanelSizeSliderParams</key>
-	<string>2 0 100</string>
 	<key>NSNavLastRootDirectory</key>
-	<string>~</string>
+	<string>~/.iterm2</string>
 	<key>NSNavPanelExpandedSizeForOpenMode</key>
-	<string>{712, 448}</string>
-	<key>NSNavPanelExpandedSizeForSaveMode</key>
 	<string>{712, 448}</string>
 	<key>NSQuotedKeystrokeBinding</key>
 	<string></string>
@@ -970,7 +962,7 @@
 	gAKACoAN0xAJChEVGVdOUy5rZXlzoxITFIADgASABaMWFxiABoAHgAiACVpJZGVudGlm
 	aWVyVVdpZHRoVkhpZGRlblEwI0BowAAAAAAACNIhIiMkWiRjbGFzc25hbWVYJGNsYXNz
 	ZXNcTlNEaWN0aW9uYXJ5oiMlWE5TT2JqZWN00xAJCicrGaMSExSAA4AEgAWjLC0YgAuA
-	DIAIgAlRMSNAczGdsi0OVtIhIjM0Xk5TTXV0YWJsZUFycmF5ozM1JVdOU0FycmF5XxAP
+	DIAIgAlRMSNAdCGdsi0OVtIhIjM0Xk5TTXV0YWJsZUFycmF5ozM1JVdOU0FycmF5XxAP
 	TlNLZXllZEFyY2hpdmVy0Tg5VUFycmF5gAEACAARABoAIwAtADIANwBGAEwAUQBcAGMA
 	ZgBoAGoAbABzAHsAfwCBAIMAhQCJAIsAjQCPAJEAnACiAKkAqwC0ALUAugDFAM4A2wDe
 	AOcA7gDyAPQA9gD4APwA/gEAAQIBBAEGAQ8BFAEjAScBLwFBAUQBSgAAAAAAAAIBAAAA
@@ -986,23 +978,10 @@
 	</data>
 	<key>NSTableView Supports v2 KeyBingingTable</key>
 	<true/>
-	<key>NSToolbar Configuration com.apple.NSColorPanel</key>
-	<dict>
-		<key>TB Is Shown</key>
-		<integer>1</integer>
-	</dict>
-	<key>NSWindow Frame NSFontPanel</key>
-	<string>-933 234 819 366 -1280 201 1280 778 </string>
-	<key>NSWindow Frame SUStatusFrame</key>
-	<string>440 497 400 129 0 0 1280 778 </string>
-	<key>NSWindow Frame SUUpdateAlert</key>
-	<string>2250 493 620 392 1920 187 1280 800 </string>
 	<key>NSWindow Frame SharedPreferences</key>
-	<string>485 470 796 473 0 0 1920 1178 </string>
-	<key>NSWindow Frame com.apple.typography_panel_NotoMonoForPowerline</key>
-	<string>346 635 260 42 0 0 1920 1178 </string>
+	<string>269 122 796 473 0 0 1680 1028 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
-	<string>0 0 1920 1178 0 0 1920 1178 </string>
+	<string>191 124 570 452 0 0 1680 1028 </string>
 	<key>New Bookmarks</key>
 	<array>
 		<dict>
@@ -3577,15 +3556,13 @@
 	<key>NoSyncHaveWarnedAboutPasteConfirmationChange</key>
 	<true/>
 	<key>NoSyncInstallationId</key>
-	<string>C1515F54-9DD0-4FF3-9F18-44EDDCAB609A</string>
+	<string>38AB4084-9577-4BE9-B9B2-20AD8084A709</string>
 	<key>NoSyncNeverRemindPrefsChangesLostForFile</key>
 	<true/>
 	<key>NoSyncNeverRemindPrefsChangesLostForFile_selection</key>
 	<integer>0</integer>
-	<key>NoSyncPermissionToShowTip</key>
-	<false/>
 	<key>NoSyncTimeOfFirstLaunchOfVersionWithTip</key>
-	<real>503591517.70836699</real>
+	<real>522206612.02638602</real>
 	<key>OpenArrangementAtStartup</key>
 	<false/>
 	<key>OpenNoWindowsAtStartup</key>
@@ -3624,7 +3601,7 @@
 		</dict>
 	</dict>
 	<key>PrefsCustomFolder</key>
-	<string>~/.iterm2</string>
+	<string>/Users/v/.iterm2</string>
 	<key>QuitWhenAllWindowsClosed</key>
 	<true/>
 	<key>SUEnableAutomaticChecks</key>
@@ -3632,11 +3609,11 @@
 	<key>SUFeedAlternateAppNameKey</key>
 	<string>iTerm</string>
 	<key>SUFeedURL</key>
-	<string>https://iterm2.com/appcasts/final.xml?shard=26</string>
+	<string>https://iterm2.com/appcasts/final.xml?shard=24</string>
 	<key>SUHasLaunchedBefore</key>
 	<true/>
 	<key>SULastCheckTime</key>
-	<date>2017-07-10T13:32:35Z</date>
+	<date>2017-07-20T01:26:39Z</date>
 	<key>SUSendProfileInfo</key>
 	<false/>
 	<key>SavePasteHistory</key>
@@ -3679,7 +3656,7 @@
 				<key>Has Toolbelt</key>
 				<false/>
 				<key>Height</key>
-				<real>778</real>
+				<real>1028</real>
 				<key>Hide After Opening</key>
 				<false/>
 				<key>Hiding Toolbelt Should Resize Window</key>
@@ -4361,7 +4338,7 @@
 												<key>Bookmark Name</key>
 												<string>Intro</string>
 												<key>Columns</key>
-												<integer>89</integer>
+												<integer>118</integer>
 												<key>Commands</key>
 												<array>
 													<string>reset &amp;&amp; archey</string>
@@ -4383,11 +4360,14 @@
 													<string>/</string>
 													<string>/</string>
 													<string>/</string>
+													<string>/</string>
+													<string>/</string>
+													<string>/</string>
 												</array>
 												<key>Environment</key>
 												<dict>
 													<key>PWD</key>
-													<string>/Users/v</string>
+													<string>/</string>
 												</dict>
 												<key>Hosts</key>
 												<array>
@@ -4418,23 +4398,23 @@
 													<string>Shell Launcher</string>
 												</dict>
 												<key>Rows</key>
-												<integer>25</integer>
+												<integer>34</integer>
 												<key>Server PID</key>
-												<integer>1997</integer>
+												<integer>19212</integer>
 												<key>Session Default Name</key>
 												<string>Intro</string>
 												<key>Session GUID</key>
-												<string>35FE9338-4629-4155-95A2-E5EC1D0F858D</string>
+												<string>50F9293F-CA4B-4263-815A-B1B61618A7F7</string>
 												<key>Session Name</key>
-												<string>/</string>
+												<string>v@Viveks-MacBook-Pro:/</string>
 												<key>Session Window Title</key>
-												<string>vivek.menon@TOR-VMENON16-2: /</string>
+												<string>v@Viveks-MacBook-Pro:/</string>
 												<key>Shell Integration Ever Used</key>
 												<true/>
 												<key>Substitutions</key>
 												<dict/>
 												<key>TTY</key>
-												<string>/dev/ttys000</string>
+												<string>/dev/ttys001</string>
 												<key>Working Directory</key>
 												<string>/</string>
 											</dict>
@@ -4443,9 +4423,9 @@
 											<key>frame</key>
 											<dict>
 												<key>height</key>
-												<real>389</real>
+												<real>514</real>
 												<key>width</key>
-												<real>639.5</real>
+												<real>836</real>
 												<key>x</key>
 												<real>0.0</real>
 												<key>y</key>
@@ -5103,7 +5083,7 @@
 												<key>Bookmark Name</key>
 												<string>Reddit</string>
 												<key>Columns</key>
-												<integer>89</integer>
+												<integer>119</integer>
 												<key>Commands</key>
 												<array/>
 												<key>Directories</key>
@@ -5130,13 +5110,13 @@
 													<string>Command</string>
 												</dict>
 												<key>Rows</key>
-												<integer>25</integer>
+												<integer>34</integer>
 												<key>Server PID</key>
-												<integer>2197</integer>
+												<integer>19214</integer>
 												<key>Session Default Name</key>
 												<string>Reddit</string>
 												<key>Session GUID</key>
-												<string>E0395898-7DD0-42B0-BF2B-2FCDB5709002</string>
+												<string>FDDCCB57-46EF-4177-8E98-CE06600285C6</string>
 												<key>Session Name</key>
 												<string>rtv</string>
 												<key>Session Window Title</key>
@@ -5148,18 +5128,18 @@
 												<key>TTY</key>
 												<string>/dev/ttys002</string>
 												<key>Working Directory</key>
-												<string>/Users/vivek.menon</string>
+												<string></string>
 											</dict>
 											<key>View Type</key>
 											<string>SessionView</string>
 											<key>frame</key>
 											<dict>
 												<key>height</key>
-												<real>389</real>
+												<real>514</real>
 												<key>width</key>
-												<real>639.5</real>
+												<real>843</real>
 												<key>x</key>
-												<real>640.5</real>
+												<real>837</real>
 												<key>y</key>
 												<real>0.0</real>
 											</dict>
@@ -5170,9 +5150,9 @@
 									<key>frame</key>
 									<dict>
 										<key>height</key>
-										<real>389</real>
+										<real>514</real>
 										<key>width</key>
-										<real>1280</real>
+										<real>1680</real>
 										<key>x</key>
 										<real>0.0</real>
 										<key>y</key>
@@ -5835,7 +5815,7 @@
 												<key>Bookmark Name</key>
 												<string>Blank</string>
 												<key>Columns</key>
-												<integer>89</integer>
+												<integer>118</integer>
 												<key>Commands</key>
 												<array/>
 												<key>Directories</key>
@@ -5852,11 +5832,13 @@
 													<string>/Users/vivek.menon</string>
 													<string>/Users/vivek.menon</string>
 													<string>/Users/vivek.menon</string>
+													<string>/</string>
+													<string>/</string>
 												</array>
 												<key>Environment</key>
 												<dict>
 													<key>PWD</key>
-													<string>/Users/v</string>
+													<string>/Users/vivek.menon</string>
 												</dict>
 												<key>Hosts</key>
 												<array>
@@ -5881,34 +5863,34 @@
 													<string>Shell Launcher</string>
 												</dict>
 												<key>Rows</key>
-												<integer>25</integer>
+												<integer>33</integer>
 												<key>Server PID</key>
-												<integer>2002</integer>
+												<integer>19218</integer>
 												<key>Session Default Name</key>
 												<string>Blank</string>
 												<key>Session GUID</key>
-												<string>B5602673-33BF-4211-92BC-2C51252B499B</string>
+												<string>847A6CBB-23CD-44A8-95CD-6DB33B66DA9B</string>
 												<key>Session Name</key>
-												<string>~</string>
+												<string>v@Viveks-MacBook-Pro:/</string>
 												<key>Session Window Title</key>
-												<string>vivek.menon@TOR-VMENON16-2: ~</string>
+												<string>v@Viveks-MacBook-Pro:/</string>
 												<key>Shell Integration Ever Used</key>
 												<true/>
 												<key>Substitutions</key>
 												<dict/>
 												<key>TTY</key>
-												<string>/dev/ttys007</string>
+												<string>/dev/ttys003</string>
 												<key>Working Directory</key>
-												<string>/Users/vivek.menon</string>
+												<string>/</string>
 											</dict>
 											<key>View Type</key>
 											<string>SessionView</string>
 											<key>frame</key>
 											<dict>
 												<key>height</key>
-												<real>388</real>
+												<real>513</real>
 												<key>width</key>
-												<real>639.5</real>
+												<real>836</real>
 												<key>x</key>
 												<real>0.0</real>
 												<key>y</key>
@@ -6566,7 +6548,7 @@
 												<key>Bookmark Name</key>
 												<string>Hacker News</string>
 												<key>Columns</key>
-												<integer>89</integer>
+												<integer>119</integer>
 												<key>Commands</key>
 												<array/>
 												<key>Directories</key>
@@ -6594,13 +6576,13 @@
 													<string>Command</string>
 												</dict>
 												<key>Rows</key>
-												<integer>25</integer>
+												<integer>33</integer>
 												<key>Server PID</key>
-												<integer>2267</integer>
+												<integer>19221</integer>
 												<key>Session Default Name</key>
 												<string>Hacker News</string>
 												<key>Session GUID</key>
-												<string>3F3A16DC-7D0F-45F1-8AC9-165CAB9A9631</string>
+												<string>3381B9C8-B455-4A1A-8D0D-628DFAC65E56</string>
 												<key>Session Name</key>
 												<string>Hacker News 📰</string>
 												<key>Session Window Title</key>
@@ -6610,20 +6592,20 @@
 												<key>Substitutions</key>
 												<dict/>
 												<key>TTY</key>
-												<string>/dev/ttys003</string>
+												<string>/dev/ttys004</string>
 												<key>Working Directory</key>
-												<string>/Users/vivek.menon</string>
+												<string></string>
 											</dict>
 											<key>View Type</key>
 											<string>SessionView</string>
 											<key>frame</key>
 											<dict>
 												<key>height</key>
-												<real>388</real>
+												<real>513</real>
 												<key>width</key>
-												<real>639.5</real>
+												<real>843</real>
 												<key>x</key>
-												<real>640.5</real>
+												<real>837</real>
 												<key>y</key>
 												<real>0.0</real>
 											</dict>
@@ -6634,13 +6616,13 @@
 									<key>frame</key>
 									<dict>
 										<key>height</key>
-										<real>388</real>
+										<real>513</real>
 										<key>width</key>
-										<real>1280</real>
+										<real>1680</real>
 										<key>x</key>
 										<real>0.0</real>
 										<key>y</key>
-										<real>390</real>
+										<real>515</real>
 									</dict>
 									<key>isVertical</key>
 									<true/>
@@ -6651,9 +6633,9 @@
 							<key>frame</key>
 							<dict>
 								<key>height</key>
-								<real>778</real>
+								<real>1028</real>
 								<key>width</key>
-								<real>1280</real>
+								<real>1680</real>
 								<key>x</key>
 								<real>0.0</real>
 								<key>y</key>
@@ -6667,7 +6649,7 @@
 				<key>TerminalGuid</key>
 				<string>pty-432860CD-A86D-47A6-86CD-C3B1DD2EEB0C</string>
 				<key>Width</key>
-				<real>1280</real>
+				<real>1680</real>
 				<key>Window Type</key>
 				<integer>1</integer>
 				<key>X Origin</key>
