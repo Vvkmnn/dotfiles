@@ -1,6 +1,10 @@
 ## From https://github.com/github/gitignore
 
 
+## SSH
+./ssh
+
+
 ## Gcloud
 .gcloud/*
 
