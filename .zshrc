@@ -22,7 +22,7 @@ alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
 source $HOME/.aliases
 
 # z
-source /usr/local/etc/profile.d/z.sh
+# source /usr/local/etc/profile.d/z.sh
 
 ## Terminal Defaults
 # ZLE_RPROMPT_INDENT=0
