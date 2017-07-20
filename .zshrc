@@ -3,9 +3,10 @@
 #
 
 ## Personal Defaults
-LANG=en_US.UTF-8
-BROWSER=open
-TERM=xterm-256color
+export LANG=en_US.UTF-8
+export BROWSER=open
+export TERM=xterm-256color
+export PATH="/usr/local/bin:$PATH"
 
 # GUI Editor - VSCode
 export EDITOR='code'
