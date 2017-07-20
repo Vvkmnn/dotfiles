@@ -37,6 +37,10 @@ sudo ln -s /usr/local/bin/gsha256sum /usr/local/bin/sha256sum
 # brew tap homebrew/versions
 # brew install bash-completion2
 
+# Fun stuff
+brew install archey
+brew install rtv 
+
 # We installed the new shell, now we have to activate it
 # echo "Adding the newly installed shell to the list of allowed shells"
 # Prompts for password
@@ -213,6 +217,11 @@ brew cask install docker
 # Install developer friendly quick look plugins; see https://github.com/sindresorhus/quick-look-plugins
 brew cask install qlcolorcode qlstephen qlmarkdown quicklook-json qlprettypatch quicklook-csv betterzipql qlimagesize webpquicklook 
 
+# NodeJS
+brew install node
+
+# Postinstall
+brew doctor
 
 # Remove outdated versions from the cellar.
 brew cleanup
