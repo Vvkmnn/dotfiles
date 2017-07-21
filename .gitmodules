@@ -1,9 +1,6 @@
 [submodule ".zim"]
 	path = .zim
 	url = git@github.com:Eriner/zim.git
-[submodule ".fonts"]
-	path = .fonts
-	url = https://github.com/powerline/fonts.git
 [submodule ".assets/zsh/spaceship"]
 	path = .assets/zsh/spaceship
 	url = git@github.com:denysdovhan/spaceship-zsh-theme.git
