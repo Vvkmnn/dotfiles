@@ -122,7 +122,7 @@ brew cask install font-inconsolata
 #brew install xz
 
 # Install other useful binaries.
-
+brew cask install keepingyouawake
 # ack - excellent little search tool: https://www.youtube.com/watch?time_continue=85&v=sKmyl5D8Da8
 brew install ack
 # spectacle - hotkey window management
@@ -155,6 +155,9 @@ brew install git-flow
 # brew link libxml2 --force
 # brew link libxslt --force
 
+# Cheatsheat
+brew cask install cheatsheet 
+
 # Install Heroku
 # brew install heroku-toolbelt
 # heroku update
@@ -169,8 +172,15 @@ export HOMEBREW_CASK_OPTS="--appdir=/Applications"
 # Visual Studio Code
 brew cask install caskroom/cask/visual-studio-code
 
+# Dash 
+brew cask install dash
+
 # Transmission
 brew cask install transmission
+
+# Google Chrome	
+brew cask install google-chrome
+brew cask install chromium
 
 # Core casks
 brew cask install --appdir="/Applications" alfred
@@ -181,7 +191,7 @@ brew cask install spectacle
 
 # Github
 # brew cask install github-desktop
-brew cask install githubpulse
+# brew cask install githubpulse
 
 # Development tool casks
 # brew cask install --appdir="/Applications" atom
@@ -225,3 +235,6 @@ brew doctor
 
 # Remove outdated versions from the cellar.
 brew cleanup
+
+# Archey
+brew install archey 
