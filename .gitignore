@@ -1,5 +1,10 @@
 ## From https://github.com/github/gitignore
 
+## vscode
+.vscode/extensions/*/*
+
+## SSH
+# .ssh/
 
 ## Gcloud
 .gcloud/*
