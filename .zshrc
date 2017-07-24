@@ -26,7 +26,7 @@
 # MMMMMMMMMMMMMMMMMMMmhso+////+oshmMMMMMMMMMMMMMMMMM
 # MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
 
-## Personal Defaults 
+## Personal Defaults
 export LANG=en_US.UTF-8
 export BROWSER=open
 export TERM=xterm-256color
@@ -44,7 +44,7 @@ source $HOME/.aliases
 # Homebrew Cask
 export HOMEBREW_CASK_OPTS="--appdir=/Applications"
 
-# RVM 
+# RVM
 export PATH="$PATH:$HOME/.rvm/bin"
 
 # Continuum Anaconda
@@ -70,11 +70,14 @@ SPACESHIP_DIR_TRUNC=2
 SPACESHIP_TIME_SHOW=true
 SPACESHIP_TIME_COLOR=blue
 
-# Little Helper! 
+# Little Helper!
 RPROMPT='v@%M %(?,%F{green}[-_-]%f,%F{red}[ಠ_ಠ]%f)'
 
 # Zplug
 source ~/.zplug/init.zsh
+
+# Autosuggestions
+zplug "zsh-users/zsh-autosuggestions"
 
 # Syntax highlighting
 zplug "zsh-users/zsh-syntax-highlighting" #, defer:2
@@ -86,7 +89,7 @@ zplug "plugins/git",   from:oh-my-zsh
 zplug "denysdovhan/spaceship-zsh-theme", use:spaceship.zsh, from:github, as:theme
 
 # Athame (Vim in Shell)
-zplug "ardagnir/athame" 
+zplug "ardagnir/athame"
 
 # Z - jump around
 zplug rupa/z
