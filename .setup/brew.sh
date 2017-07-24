@@ -238,3 +238,4 @@ brew cleanup
 
 # Archey
 brew install archey 
+brew install getantibody/tap/antibody

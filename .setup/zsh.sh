@@ -42,3 +42,4 @@ source ${ZDOTDIR:-${HOME}}/.zlogin
 
 # Source .zlogin to compile new .zshrc
 # source ~/.login
+curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh| zsh
