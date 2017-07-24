@@ -35,7 +35,6 @@ call plug#begin('~/.vim/plugged')
 
 " Autoformat for Vim
 Plug 'chiel92/vim-autoformat'
-let g:autoformat_remove_trailing_spaces = 0
 
 " Dracula for Vim
 Plug 'dracula/vim'
