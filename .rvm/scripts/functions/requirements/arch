@@ -1,0 +1,145 @@
+#!/usr/bin/env bash
+
+requirements_arch_lib_installed_all_missing()
+{
+  pacman -T "$@" || true
+}
+
+requirements_arch_lib_installed() {
+  pacman -Qq "$1" >/dev/null 2>&1 || return $?
+}
+
+requirements_arch_lib_available()
+{
+  pacman -Ssq "^${1}$" >/dev/null 2>&1 || return $?
+}
+
+requirements_arch_libs_install()
+{
+  __rvm_try_sudo pacman -Sy --needed --noconfirm "$@" || return $?
+}
+
+requirements_arch_libs_remove()
+{
+  __rvm_try_sudo pacman -Rs --noconfirm "$@" || return $?
+}
+
+requirements_arch_update_system()
+{
+  # Has to be ran separately so new version can be used for installing missing libs
+  requirements_arch_libs_install pacman || return $?
+}
+
+requirements_arch_define_check_raspberry_pi()
+{
+  if
+    [[ "${_system_arch}" == "arm"* ]]
+  then
+    # assuming all arm will need this fix
+    requirements_check_fallback ntp openntpd chrony
+  fi
+}
+
+requirements_arch_define()
+{
+  requirements_arch_define_check_raspberry_pi
+  case "$1" in
+    (rvm)
+      requirements_check bash curl patch
+      ;;
+    (jruby*)
+      if
+        is_head_or_disable_binary "$1"
+      then
+        requirements_check_fallback jdk8-openjdk jdk7-openjdk
+        requirements_check curl git
+        if is_jruby_post17 "$1"
+            then __rvm_which mvn >/dev/null || requirements_check maven
+            else __rvm_which ant >/dev/null || requirements_check apache-ant
+        fi
+      else
+        requirements_check_fallback jre8-openjdk jre7-openjdk
+        requirements_check curl
+      fi
+      ;;
+    (ir*)
+      requirements_check mono
+      ;;
+    (opal)
+      requirements_check nodejs
+      ;;
+    (rbx*head|rubinius*head)
+      undesired_check clang35 llvm35 llvm35-libs
+      requirements_check clang llvm llvm-libs patch curl zlib readline autoconf automake diffutils make libtool bison git
+      ;;
+    (rbx-3*|rubinius-3*)
+      undesired_check clang35 llvm35 llvm35-libs
+      requirements_check clang llvm llvm-libs patch curl zlib readline autoconf automake diffutils make libtool bison
+      ;;
+    (rbx-2*|rubinius-2*)
+      undesired_check clang llvm llvm-libs
+      requirements_check clang35 llvm35 llvm35-libs patch curl zlib readline autoconf automake diffutils make libtool bison
+      ;;
+    (rbx-1*|rubinius-1*)
+      undesired_check clang llvm llvm-libs
+      requirements_check clang35 llvm35 llvm35-libs patch curl zlib readline autoconf automake diffutils make libtool bison
+      ;;
+    (*-head)
+      requirements_check gcc patch curl zlib readline autoconf automake diffutils make libtool bison sqlite git
+      ;;
+    (*)
+      requirements_check gcc patch curl zlib readline autoconf automake diffutils make libtool bison sqlite
+      ;;
+  esac
+}
+
+requirements_arch_service()
+{
+  systemctl $1 $3 >/dev/null ||
+  if __rvm_try_sudo systemctl $2 $3
+  then true
+  else
+    \typeset __arch_status=$?
+    rvm_error "There was a problem running 'systemctl $2 $3' with exit status '$__arch_status'."
+    return $__arch_status
+  fi
+}
+
+requirements_arch_after_check_raspberry_pi()
+{
+  if
+    [[ "${_system_arch}" == "arm"* ]]
+  then
+    ntp_servers=( ntpd systemd-timesyncd openntpd chronyd )
+    for ntp_server in "${ntp_servers[@]}"
+    do
+      if
+        systemctl list-unit-files | grep -Fq "$ntp_server.service" &&
+        systemctl is-active $ntp_server
+      then
+        return 0
+      fi
+    done
+    for ntp_server in "${ntp_servers[@]}"
+    do
+      if
+        systemctl list-unit-files | grep -Fq "$ntp_server.service"
+      then
+        requirements_arch_service is-enabled enable $ntp_server &&
+        requirements_arch_service is-active  start  $ntp_server ||
+        return $?
+      fi
+    done
+  fi
+}
+
+requirements_arch_after()
+{
+  requirements_arch_after_check_raspberry_pi
+}
+
+requirements_manjaro_define()
+{
+  __lib_type=arch
+  requirements_arch_define "$@" || return $?
+}

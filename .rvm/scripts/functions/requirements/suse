@@ -1,0 +1,113 @@
+#!/usr/bin/env bash
+
+source "$rvm_scripts_path/functions/pkg"
+
+requirements_opensuse_lib_installed()
+{
+  rpm -q --whatprovides "$1" >/dev/null || return $?
+}
+
+requirements_opensuse_libs_install()
+{
+  __rvm_try_sudo zypper install -y "$@" || return $?
+}
+
+requirements_opensuse_libs_remove()
+{
+  __rvm_try_sudo zypper rm -y "$@" || return $?
+}
+
+requirements_opensuse_update_system()
+{
+  __rvm_try_sudo zypper --gpg-auto-import-keys refresh ||
+  __rvm_try_sudo zypper refresh || # just in case the flag was not supported
+  return $?
+}
+
+requirements_opensuse_install_custom()
+{
+  requirements_rvm_pkg_libs_install "$@" || return $?
+}
+
+requirements_opensuse_define_default()
+{
+  libdb_minor_version=5
+
+  if [[ "${_system_name}" == "SuSE" ]] && __rvm_version_compare "${_system_version}" -ge 12.0
+    then libdb_minor_version=8
+  fi
+
+  undesired_check libressl-devel
+
+  requirements_check automake binutils bison bzip2 libtool m4 make patch \
+    gdbm-devel glibc-devel libffi-devel libopenssl-devel readline-devel \
+    zlib-devel libdb-4_"${libdb_minor_version}" sqlite3-devel "$@"
+
+  case ${__type} in
+    (suse)
+      requirements_opensuse_lib_installed libyaml-devel ||
+      {
+        requirements_check pkg-config
+        requirements_rvm_pkg_lib_installed_custom yaml
+      }
+      ;;
+    (*)
+      requirements_check libyaml-devel
+      ;;
+  esac
+}
+
+
+requirements_opensuse_define()
+{
+  case "$1" in
+    (rvm)
+      requirements_check bash curl patch
+      ;;
+    (jruby*)
+      if
+        is_head_or_disable_binary "$1"
+      then
+        requirements_check java-devel git
+        if is_jruby_post17 "$1"
+        then requirements_check_custom_after mvn=maven
+        else requirements_check ant
+        fi
+      else
+        requirements_check java
+      fi
+      ;;
+    (ir*)
+      requirements_check mono
+      ;;
+    (opal)
+      requirements_check nodejs
+      ;;
+    (*-head)
+      requirements_check autoconf git
+      requirements_opensuse_define "${1%-head}"
+      ;;
+    (rbx*|rubinius*)
+      requirements_opensuse_define_default llvm35 llvm-clang libLLVM35 ||
+        return $?
+      ;;
+    (*)
+      requirements_opensuse_define_default gcc gcc-c++ ||
+        return $?
+      ;;
+  esac
+}
+
+requirements_opensuse_after()
+{
+  case ${__type} in
+    (suse)
+      requirements_rvm_pkg_configure "$1" yaml
+      ;;
+  esac
+}
+
+requirements_suse_before()
+{
+  __lib_type=opensuse
+}

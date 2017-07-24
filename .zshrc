@@ -26,19 +26,12 @@
 # MMMMMMMMMMMMMMMMMMMmhso+////+oshmMMMMMMMMMMMMMMMMM
 # MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
 
-## Personal Defaults
+## Personal Defaults 
 export LANG=en_US.UTF-8
 export BROWSER=open
 export TERM=xterm-256color
 export PATH="/usr/local/bin:$PATH"
-
-# GUI Editor - VSCode
-export EDITOR='code'
-
-# Terminal Editor - Nvim
-if type nvim > /dev/null 2>&1; then
-  alias vim='nvim'
-fi
+export EDITOR='vim'
 
 # Dotfiles
 alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
@@ -46,16 +39,27 @@ alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
 # Aliases
 source $HOME/.aliases
 
-# z
-# source /usr/local/etc/profile.d/z.sh
+## Application Defaults
 
-## Terminal Defaults
-# ZLE_RPROMPT_INDENT=0
+# Homebrew Cask
+export HOMEBREW_CASK_OPTS="--appdir=/Applications"
 
-RPROMPT='v@%M %(?,%F{green}[-_-]%f,%F{red}[ಠ_ಠ]%f)'
+# RVM 
+export PATH="$PATH:$HOME/.rvm/bin"
 
+# Continuum Anaconda
+export PATH=~/anaconda3/bin:$PATH
 
-# ZLE_LPROMPT_INDENT=0
+# Google Go
+export GOPATH=~/Code/Go
+
+# Google Cloud
+if [ -f "$HOME"/.gcloud/google-cloud-sdk/path.zsh.inc ]; then source "$HOME"/.gcloud/google-cloud-sdk/path.zsh.inc; fi
+
+# Iterm2
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+
+## Shell Defaults
 
 # Spaceship
 SPACESHIP_PROMPT_SYMBOL="ॐ "
@@ -66,10 +70,8 @@ SPACESHIP_DIR_TRUNC=2
 SPACESHIP_TIME_SHOW=true
 SPACESHIP_TIME_COLOR=blue
 
-## General Defaults
-
-# Homebrew Cask
-export HOMEBREW_CASK_OPTS="--appdir=/Applications"
+# Little Helper! 
+RPROMPT='v@%M %(?,%F{green}[-_-]%f,%F{red}[ಠ_ಠ]%f)'
 
 # Zplug
 source ~/.zplug/init.zsh
@@ -94,33 +96,11 @@ zplug rupa/z
 
 # Install plugins if there are plugins that have not been installed
 if ! zplug check --verbose; then
-    printf "Install? [y/N]: "
-    if read -q; then
-        echo; zplug install
-    fi
+	printf "Install? [y/N]: "
+	if read -q; then
+		echo; zplug install
+	fi
 fi
 
 # Then, source plugins and add commands to $PATH
 zplug load # --verbose
-
-#  Zim
-# if [[ -s ${ZDOTDIR:-${HOME}}/.zim/init.zsh ]]; then
-#   source ${ZDOTDIR:-${HOME}}/.zim/init.zsh
-# 
-#   # Load spacesihp into the Zim plugin  
-#   autoload -Uz promptinit
-#   promptinit
-#   prompt spaceship
-# fi
-# 
-# Continuum Anaconda
-export PATH=~/anaconda3/bin:$PATH
-
-# Google Go
-export GOPATH=~/Code/Go
-
-# Google Cloud
-if [ -f "$HOME"/.gcloud/google-cloud-sdk/path.zsh.inc ]; then source "$HOME"/.gcloud/google-cloud-sdk/path.zsh.inc; fi
-
-# Iterm 2
-test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"

@@ -1,0 +1,435 @@
+#!/usr/bin/env bash
+
+__rvm_fix_selected_ruby()
+{
+  \typeset __ret=0
+  if (( $# ))
+  then "$@" || __ret=$?
+  fi
+  [[ -d "$GEM_HOME" && -d "$MY_RUBY_HOME" ]] ||
+  {
+    if [[ -d ${MY_RUBY_HOME%/*}/defaul ]]
+    then __rvm_use default
+    else __rvm_use system
+    fi
+  }
+}
+
+__rvm_path_match_gem_home_check_warn()
+{
+  rvm_warn "\
+Warning! PATH is not properly set up, $1.
+         Usually this is caused by shell initialization files. Search for 'PATH=...' entries.
+         You can also re-add RVM to your profile by running: 'rvm get stable --auto-dotfiles'.
+         To fix it temporarily in this shell session run: 'rvm use $2'.
+         To ignore this error add rvm_silence_path_mismatch_check_flag=1 to your ~/.rvmrc file."
+}
+
+__rvm_path_match_gem_home_check_warning()
+{
+  __rvm_path_match_gem_home_check_warn "'$GEM_HOME/bin' $1" "${GEM_HOME##*/}"
+}
+
+__rvm_path_match_gem_home_check_warning_missing()
+{
+  __rvm_path_match_gem_home_check_warn "\$GEM_HOME is not set" "$1"
+}
+
+__rvm_path_match_gem_home_check()
+{
+  (( ${rvm_silence_path_mismatch_check_flag:-0} == 0 )) || return 0
+  if
+    [[ -n "${GEM_HOME:-}" ]]
+  then
+    case "$PATH:" in
+      ($GEM_HOME/bin:*) true ;; # all fine here
+      (*:$GEM_HOME/bin:*)
+        __rvm_path_match_gem_home_check_warning "is not at first place"
+        ;;
+      (*)
+        __rvm_path_match_gem_home_check_warning "is not available"
+        ;;
+    esac
+  else
+    \typeset __path_to_ruby
+    if
+      __path_to_ruby="$( builtin command -v ruby 2>/dev/null )" &&
+      [[ "${__path_to_ruby}" == "${rvm_path}"* ]]
+    then
+      # get the ruby string from path to ruby executable
+      __path_to_ruby="${__path_to_ruby%/bin/ruby}"
+      __path_to_ruby="${__path_to_ruby##*/}"
+      # warning
+      __rvm_path_match_gem_home_check_warning_missing "${__path_to_ruby}"
+    fi
+  fi
+}
+
+__rvm_use_ruby_warnings()
+{
+  if [[ "${rvm_ruby_string}" == "system" || "${rvm_ruby_string}" == "" ]]
+  then return 0
+  fi
+  \typeset __executable __gem_version
+
+  for __executable in ruby gem irb
+  do
+    [[ -x "$MY_RUBY_HOME/bin/${__executable}" ]] ||
+      rvm_warn "Warning! Executable '${__executable}' missing, \
+something went wrong with this ruby installation!"
+  done
+
+  if
+    [[ "${rvm_ruby_interpreter}" == "ruby" ]] &&
+    {
+      __rvm_version_compare "${rvm_ruby_version}" -ge 2.0.0 ||
+      [[ "${rvm_ruby_version}" == "head" ]]
+    } &&
+    __rvm_which gem >/dev/null &&
+    __gem_version="$(RUBYGEMS_GEMDEPS= gem --version)" &&
+    [[ -n "${__gem_version}" ]] &&
+    __rvm_version_compare "${__gem_version}" -lt "2.0.0"
+  then
+    rvm_warn "Warning! You have just used ruby 2.0.0 or newer, \
+which is not fully compatible with rubygems 1.8.x or older,
+         consider upgrading rubygems with: 'rvm rubygems latest'."
+  fi
+}
+
+__rvm_cli_posix_check()
+{
+  if
+    __rvm_has_opt "posix"
+  then
+    echo "RVM can not be run with \`set -o posix\`, please turn it off and try again."
+    return 100
+  fi
+}
+
+__rvm_cli_load_rvmrc()
+{
+  if
+    (( ${rvm_ignore_rvmrc:=0} == 0 ))
+  then
+    [[ -n "${rvm_stored_umask:-}" ]] || export rvm_stored_umask=$(umask)
+    rvm_rvmrc_files=("/etc/rvmrc" "$HOME/.rvmrc")
+    if
+      [[ -n "${rvm_prefix:-}" ]] &&
+      [[ ! "$HOME/.rvmrc" -ef "${rvm_prefix}/.rvmrc" ]]
+    then
+      rvm_rvmrc_files+=( "${rvm_prefix}/.rvmrc" )
+    fi
+    for rvmrc in "${rvm_rvmrc_files[@]}"
+    do
+      if
+        [[ -f "$rvmrc" ]]
+      then
+        if
+          __rvm_grep '^\s*rvm .*$' "$rvmrc" >/dev/null 2>&1
+        then
+          printf "%b" "
+Error:
+        $rvmrc is for rvm settings only.
+        rvm CLI may NOT be called from within $rvmrc.
+        Skipping the loading of $rvmrc"
+          return 1
+        else
+          source "$rvmrc"
+        fi
+      fi
+    done
+    unset rvm_rvmrc_files
+  fi
+}
+
+__rvm_cli_rvm_reload()
+{
+  __rvm_project_rvmrc_lock=0
+  rvm_reload_flag=1
+  source "${rvm_scripts_path:-${rvm_path}/scripts}/rvm"
+}
+
+__rvm_cli_version_check()
+{
+  \typeset disk_version
+  disk_version="$(\command \cat "$rvm_path/VERSION") ($(\command \cat "$rvm_path/RELEASE" 2>/dev/null))"
+  if
+    [[ -s "$rvm_path/VERSION" &&
+      "${rvm_version:-}" != "${disk_version:-}" &&
+      " $* " != *" reload "*
+    ]]
+  then
+    if
+      (( ${rvm_auto_reload_flag:-0} ))
+    then
+      __rvm_cli_rvm_reload
+    else
+      printf "%b" "
+RVM version ${disk_version} is installed yet ${rvm_version} is loaded.
+Please do one of the following:
+  * 'rvm reload'
+  * open a new shell
+  * 'echo rvm_auto_reload_flag=1 >> ~/.rvmrc' # for auto reload with msg.
+  * 'echo rvm_auto_reload_flag=2 >> ~/.rvmrc' # for silent auto reload.
+
+"
+      return 1
+    fi
+  fi
+}
+
+__rvm_remote_version()
+{
+  __rvm_curl -s --max-time 10 https://github.com/rvm/rvm/raw/master/VERSION || true
+}
+
+__rvm_cli_autoupdate_version_old()
+{
+  online_version="$( __rvm_remote_version )"
+  version_release="$(\command \cat "$rvm_path/RELEASE" 2>/dev/null)"
+  : version_release:"${version_release:=master}"
+  [[ -s "$rvm_path/VERSION" && -n "${online_version:-}" && "${rvm_version%% *}" != "${online_version:-}" ]] || return $?
+}
+
+__rvm_cli_autoupdate_warning()
+{
+  printf "%b" "Warning, new version of rvm available '${online_version}', \
+you are using older version '${rvm_version%% *}'.
+You can disable this warning with:    echo rvm_autoupdate_flag=0 >> ~/.rvmrc
+You can enable  auto-update  with:    echo rvm_autoupdate_flag=2 >> ~/.rvmrc
+"
+}
+
+# duplication marker flnglfdjkngjndkfjhsbdjgfghdsgfklgg
+rvm_install_gpg_setup()
+{
+  {
+    rvm_gpg_command="$( \which gpg2 2>/dev/null )" &&
+    [[ ${rvm_gpg_command} != "/cygdrive/"* ]]
+  } || rvm_gpg_command=""
+
+  rvm_debug "Detected GPG program: '$rvm_gpg_command'"
+
+  [[ -n "$rvm_gpg_command" ]] || return $?
+}
+
+# duplication marker rdjgndfnghdfnhgfdhbghdbfhgbfdhbn
+verify_package_pgp()
+{
+  if
+    "${rvm_gpg_command}" --verify "$2" "$1"
+  then
+    rvm_log "GPG verified '$1'"
+  else
+    \typeset _ret=$?
+    rvm_error "\
+Warning, RVM 1.26.0 introduces signed releases and automated check of signatures when GPG software found. \
+Assuming you trust Michal Papis import the mpapis public key (downloading the signatures).
+
+GPG signature verification failed for '$1' - '$3'! Try to install GPG v2 and then fetch the public key:
+
+    ${SUDO_USER:+sudo }${rvm_gpg_command##*/} --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
+
+or if it fails:
+
+    command curl -sSL https://rvm.io/mpapis.asc | ${SUDO_USER:+sudo }${rvm_gpg_command##*/} --import -
+
+the key can be compared with:
+
+    https://rvm.io/mpapis.asc
+    https://keybase.io/mpapis
+
+NOTE: GPG version 2.1.17 have a bug which cause failures during fetching keys from remote server. Please downgrade \
+or upgrade to newer version (if available) or use the second method described above.
+"
+    return _ret
+  fi
+}
+
+__rvm_cli_get_and_verify_pgp()
+{
+  \typeset rvm_gpg_command
+  if
+    rvm_install_gpg_setup
+  then
+    pgp_signature_url="$( __rvm_curl -sSI https://get.rvm.io | \tr "\r" " " | __rvm_awk '/Location:/{print $2".asc"}' )"
+    rvm_log "Downloading $pgp_signature_url"
+    __rvm_curl -s "${pgp_signature_url}" -o "${rvm_archives_path}/rvm-installer.asc" ||
+      return $?
+    rvm_log "Verifying ${rvm_archives_path}/rvm-installer.asc"
+    verify_package_pgp "${rvm_archives_path}/rvm-installer" "${rvm_archives_path}/rvm-installer.asc" "$pgp_signature_url" ||
+      return $?
+  else
+    rvm_warn "No GPG software exists to validate rvm-installer, skipping."
+  fi
+}
+
+__rvm_cli_get_installer_cleanup()
+{
+  [[ -w "${rvm_archives_path}" ]] ||
+  {
+    rvm_error "Archives path '${rvm_archives_path}' not writable, aborting."
+    return 1
+  }
+  [[ ! -e "${rvm_archives_path}/rvm-installer" ]] ||
+  rm -f "${rvm_archives_path}/rvm-installer" ||
+  {
+    rvm_error "Previous installer '${rvm_archives_path}/rvm-installer' exists and can not be removed, aborting."
+    return 2
+  }
+}
+
+__rvm_cli_get_and_execute_installer()
+{
+  __rvm_cli_get_installer_cleanup || return $?
+
+  rvm_log "Downloading https://get.rvm.io"
+  __rvm_curl -s https://get.rvm.io -o "${rvm_archives_path}/rvm-installer" ||
+  {
+    \typeset _ret=$?
+    rvm_error "Could not download rvm-installer, get some help at #rvm IRC channel at freenode servers."
+    return ${_ret}
+  }
+
+  __rvm_cli_get_and_verify_pgp || return $?
+
+  bash "${rvm_archives_path}/rvm-installer" "$@" ||
+  {
+    \typeset _ret=$?
+    rvm_error "Could not update RVM, get some help at #rvm IRC channel at freenode servers."
+    return ${_ret}
+  }
+}
+
+__rvm_cli_rvm_get()
+{
+  case "$1" in
+    ([0-9]*.[0-9]*.[0-9]*)
+      rvm_warn "
+Hi there, it looks like you have requested updating rvm to version $1,
+if your intention was ruby installation use instead: rvm install $1
+"
+      ;;
+  esac
+  case "$1" in
+    (stable|master|head|branch|latest|latest-*|[0-9]*.[0-9]*.[0-9]*)
+      __rvm_cli_get_and_execute_installer "$@" || return $?
+
+      \typeset -x rvm_hook
+      rvm_hook="after_update"
+      source "${rvm_scripts_path:-"$rvm_path/scripts"}/hook"
+
+      rvm_reload_flag=1
+      ;;
+    (*)
+      rvm_help get
+      ;;
+  esac
+}
+
+__rvm_cli_autoupdate_execute()
+{
+  printf "%b" "Found old RVM ${rvm_version%% *} - updating.\n"
+  __rvm_cli_rvm_get "${version_release}" || return $?
+  __rvm_cli_rvm_reload
+}
+
+__rvm_cli_autoupdate()
+{
+  [[ " $* " == *" install "* && " $* " != *" help install "* ]] ||
+  [[ " $* " == *" list known "* ]] ||
+  return 0
+
+  \typeset online_version version_release
+  case "${rvm_autoupdate_flag:-1}" in
+    (0|disabled)
+      true
+      ;;
+    (1|warn)
+      if __rvm_cli_autoupdate_version_old
+      then __rvm_cli_autoupdate_warning
+      fi
+      ;;
+    (2|enabled)
+      if __rvm_cli_autoupdate_version_old
+      then __rvm_cli_autoupdate_execute || return $?
+      fi
+      ;;
+  esac
+  true
+}
+
+__rvm_cli_autoreload()
+{
+  if
+    [[ ${rvm_reload_flag:-0} -eq 1 ]]
+  then
+    if
+      [[ -s "$rvm_scripts_path/rvm" ]]
+     then
+      __rvm_project_rvmrc_lock=0
+      source "$rvm_scripts_path/rvm"
+    else
+      echo "rvm not found in $rvm_path, please install and run 'rvm reload'"
+      __rvm_teardown
+    fi
+  else
+    __rvm_teardown
+  fi
+}
+
+__rvm_cli_install_ruby()
+(
+  if
+    [[ -n "$1" ]]
+  then
+    \typeset __rubies __installed __missing __search_list
+    \typeset -a __search
+    __rvm_custom_separated_array __search , "$1"
+    __rubies="$1"
+    __search_list=""
+    __rvm_cli_rubies_select || return $?
+    if __rvm_cli_rubies_not_installed
+    then __rvm_run_wrapper manage install "${__rubies}" || return $?
+    fi
+  else
+    rvm_error "Can not use or install 'all' rubies."
+    false #report error
+  fi
+)
+
+__rvm_cli_rubies_select()
+{
+  \typeset __ruby
+  for __ruby in "${__search[@]}"
+  do
+    rvm_ruby_string="${__ruby}"
+    __rvm_select &&
+    if [[ -n "$rvm_ruby_string" ]]
+    then __search_list+="^$rvm_ruby_string\$|"
+    else
+      rvm_error "Could not detect ruby version/name for installation '${__ruby}', please be more specific."
+      return 1
+    fi
+  done
+  __search_list="${__search_list%|}"
+}
+
+__rvm_cli_rubies_not_installed()
+{
+  if
+    (( ${rvm_force_flag:-0} == 0 )) &&
+    __installed="$(
+      __rvm_list_strings | __rvm_grep -E "${__search_list}"
+    )" &&
+    [[ -n "${__installed}" ]]
+  then
+    rvm_warn "Already installed ${__installed//|/,}.
+To reinstall use:
+
+    rvm reinstall ${__installed//|/,}
+"
+    return 2
+  fi
+  true
+}

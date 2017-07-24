@@ -1,0 +1,277 @@
+#!/usr/bin/env bash
+
+__rvm_md5_for_contents()
+{
+  if   builtin command -v md5     > /dev/null
+  then md5         | __rvm_awk '{print $1}'
+  elif builtin command -v md5sum  > /dev/null
+  then md5sum      | __rvm_awk '{print $1}'
+  elif builtin command -v openssl > /dev/null
+  then openssl md5 | __rvm_awk '{print $1}'
+  else return 1
+  fi
+  true # for osx
+}
+
+__rvm_sha256_for_contents()
+{
+  if   builtin command -v sha256sum > /dev/null
+  then sha256sum           | __rvm_awk '{print $1}'
+  elif builtin command -v sha256    > /dev/null
+  then sha256              | __rvm_awk '{print $1}'
+  elif builtin command -v shasum    > /dev/null
+  then shasum -a256        | __rvm_awk '{print $1}'
+  elif builtin command -v openssl   > /dev/null
+  then openssl sha -sha256 | __rvm_awk '{print $1}'
+  else return 1
+  fi
+  true # for osx
+}
+
+__rvm_checksum_for_contents()
+{
+  \typeset __sum
+  __sum=$(  echo "$1" | \command \cat - "$1" | __rvm_md5_for_contents   ) ||
+  {
+    rvm_error "Neither md5 nor md5sum were found in the PATH"
+    return 1
+  }
+  __sum+=$( echo "$1" | \command \cat - "$1" | __rvm_sha256_for_contents ) ||
+  {
+    rvm_error "Neither sha256sum nor shasum found in the PATH"
+    return 1
+  }
+  echo ${__sum}
+}
+
+__rvm_rvmrc_key()
+{
+  printf "%b" "$1" | \command \tr '[#/.=()]' _
+  return $?
+}
+
+__rvm_reset_rvmrc_trust()
+{
+  if [[ "$1" == all ]]
+  then
+    echo "" > "${rvm_user_path:-${rvm_path}/user}/rvmrcs"
+  else
+    __rvm_db_ "${rvm_user_path:-${rvm_path}/user}/rvmrcs" "$(__rvm_rvmrc_key "$1")" "delete" >/dev/null 2>&1
+  fi
+}
+
+__rvm_trust_rvmrc()
+{
+  [[ -f "$1" ]] || return 1
+  __rvm_reset_rvmrc_trust "$1"
+  __rvm_db_ "${rvm_user_path:-${rvm_path}/user}/rvmrcs" "$(__rvm_rvmrc_key "$1")" "1;$(__rvm_checksum_for_contents "$1")" >/dev/null 2>&1 ||
+  return $?
+}
+
+__rvm_untrust_rvmrc()
+{
+  [[ -f "$1" ]] || return 1
+  __rvm_reset_rvmrc_trust "$1"
+  __rvm_db_ "${rvm_user_path:-${rvm_path}/user}/rvmrcs" "$(__rvm_rvmrc_key "$1")" "0;$(__rvm_checksum_for_contents "$1")" >/dev/null 2>&1 ||
+  return $?
+}
+
+__rvm_rvmrc_stored_trust()
+{
+  [[ -f "$1" ]] || return 1
+  __rvm_db_ "${rvm_user_path:-${rvm_path}/user}/rvmrcs" "$(__rvm_rvmrc_key "$1")" ||
+  return $?
+}
+
+__rvm_rvmrc_stored_trust_check()
+{
+  \typeset _first _second _rvmrc _rvmrc_base
+  if [[ -n "${ZSH_VERSION:-}" ]]
+  then _first=1
+  else _first=0
+  fi
+  _second=$(( _first + 1 ))
+  _rvmrc="${1}"
+  _rvmrc_base="$(basename "${_rvmrc}")"
+
+  if [[ -f "$_rvmrc" ]]
+  then
+    saveIFS=$IFS
+    IFS=$';'
+    trust=($(__rvm_rvmrc_stored_trust "$_rvmrc"))
+    IFS=$saveIFS
+
+    if
+      [[ "${trust[${_second}]:-'#'}" != "$(__rvm_checksum_for_contents "$_rvmrc")" ]]
+    then
+      echo "The '$_rvmrc' contains unreviewed changes."
+      return 1
+    elif
+      [[ "${trust[${_first}]}" == '1' ]]
+    then
+      echo "The '$_rvmrc' is currently trusted."
+      return 0
+    elif
+      [[ "${trust[${_first}]}" == '0' ]]
+    then
+      echo "The '$_rvmrc' is currently untrusted."
+      return 1
+    else
+      echo "The trustiworthiness of '$_rvmrc' is currently unknown."
+      return 1
+    fi
+  else
+    echo "There is no '$_rvmrc'"
+    return 1
+  fi
+}
+
+__rvm_check_rvmrc_trustworthiness()
+{
+  # Trust when they have the flag... of doom!
+  (( ${rvm_trust_rvmrcs_flag:-0} == 0 )) || return 0
+
+  # Fail if no file given or no extra params
+  [[ -n "$1" ]] || (( $# > 1 )) || return 1
+
+  \typeset _first _second saveIFS
+
+  if [[ -n "${ZSH_VERSION:-}" ]]
+  then _first=1
+  else _first=0
+  fi
+  _second=$(( _first + 1 ))
+  saveIFS="$IFS"
+  IFS=$';'
+  \typeset -a trust
+  trust=( $( __rvm_rvmrc_stored_trust "$1" ) )
+  IFS="$saveIFS"
+  if
+    [[ "${trust[${_second}]:-'#'}" == "$(__rvm_checksum_for_contents "$1")" ]]
+  then
+    [[ "${trust[${_first}]}" == '1' ]] || return $?
+  else
+    __rvm_ask_to_trust "$@" || return $?
+  fi
+  true
+}
+
+__rvm_display_rvmrc()
+{
+  __rvm_file_notice_display_pre
+  __rvm_wait_anykey "(( press a key to review the ${_rvmrc_base} file ))"
+  printf "%b" "${rvm_warn_clr}"
+  command cat -v "${_rvmrc}"
+  printf "%b" "${rvm_reset_clr}"
+  __rvm_file_notice_display_post
+}
+
+__rvm_ask_to_trust()
+{
+  \typeset trusted value anykey _rvmrc _rvmrc_base
+  _rvmrc="${1}"
+  _rvmrc_base="$(basename "${_rvmrc}")"
+
+  if [[ ! -t 0 || -n "$MC_SID" ]] || (( ${rvm_promptless:=0} == 1 ))
+  then return 2
+  fi
+
+  __rvm_file_notice_initial
+  trusted=0
+  while (( ! trusted ))
+  do
+    printf "%b" 'y[es], n[o], v[iew], c[ancel]> '
+
+    builtin read response
+    value="$(echo -n "${response}" | \command \tr '[[:upper:]]' '[[:lower:]]' | __rvm_strip)"
+
+    case "${value:-n}" in
+      v|view)
+        __rvm_display_rvmrc
+        ;;
+      y|yes)
+        trusted=1
+        ;;
+      n|no)
+        break
+        ;;
+      c|cancel)
+        return 1
+        ;;
+    esac
+  done
+
+  if (( trusted ))
+  then
+    __rvm_trust_rvmrc "$1"
+    return 0
+  else
+    __rvm_untrust_rvmrc "$1"
+    return 1
+  fi
+}
+
+__rvm_file_notice_initial()
+{
+  case "${_rvmrc}" in
+    (*/.rvmrc) __rvm_rvmrc_notice_initial    ;;
+    (*)        __rvm_env_file_notice_initial ;;
+  esac
+}
+
+__rvm_rvmrc_notice_initial()
+{
+  __rvm_table "NOTICE" <<-TEXT
+RVM has encountered a new or modified ${_rvmrc_base} file in the current directory, this is a shell script and therefore may contain any shell commands.
+
+Examine the contents of this file carefully to be sure the contents are safe before trusting it!
+Do you wish to trust '${_rvmrc}'?
+Choose v[iew] below to view the contents
+TEXT
+}
+
+__rvm_env_file_notice_initial()
+{
+  __rvm_table "NOTICE" <<-TEXT
+RVM has encountered a new or modified ${_rvmrc_base} file in the current directory, environment variables from this file will be exported and therefore may influence your shell.
+
+Examine the contents of this file carefully to be sure the contents are safe before trusting it!
+Do you wish to trust '${_rvmrc}'?
+Choose v[iew] below to view the contents
+TEXT
+}
+
+__rvm_file_notice_display_pre()
+{
+  __rvm_table <<-TEXT
+The contents of the ${_rvmrc_base} file will now be displayed.
+After reading the file, you will be prompted again for 'yes or no' to set the trust level for this particular version of the file.
+
+Note: You will be re-prompted each time the ${_rvmrc_base} file's contents change
+changes, and may change the trust setting manually at any time.
+TEXT
+}
+
+__rvm_file_notice_display_post()
+{
+  case "${_rvmrc}" in
+    (*/.rvmrc) __rvm_rvmrc_notice_display_post    ;;
+    (*)        __rvm_env_file_notice_display_post ;;
+  esac
+}
+
+__rvm_rvmrc_notice_display_post()
+{
+  __rvm_table "Viewing of ${_rvmrc} complete." <<-TEXT
+Trusting an ${_rvmrc_base} file means that whenever you cd into this directory, RVM will run this ${_rvmrc_base} shell script.
+Note that if the contents of the file change, you will be re-prompted to review the file and adjust its trust settings. You may also change the trust settings manually at any time with the 'rvm rvmrc' command.
+TEXT
+}
+
+__rvm_env_file_notice_display_post()
+{
+  __rvm_table "Viewing of ${_rvmrc} complete." <<-TEXT
+Trusting an ${_rvmrc_base} file means that whenever you cd into this directory, RVM will export environment variables from ${_rvmrc_base}.
+Note that if the contents of the file change, you will be re-prompted to review the file and adjust its trust settings. You may also change the trust settings manually at any time with the 'rvm rvmrc' command.
+TEXT
+}
