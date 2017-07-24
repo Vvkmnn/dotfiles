@@ -40,30 +40,60 @@ SPACESHIP_PROMPT_ADD_NEWLINE=false
 SPACESHIP_PROMPT_COLOR=blue
 SPACESHIP_DIR_TRUNC=2
 SPACESHIP_TIME_SHOW=true
+SPACESHIP_TIME_COLOR=blue
 
 ## General Defaults
 
 # Homebrew Cask
 export HOMEBREW_CASK_OPTS="--appdir=/Applications"
 
-#  Zim
-if [[ -s ${ZDOTDIR:-${HOME}}/.zim/init.zsh ]]; then
-  source ${ZDOTDIR:-${HOME}}/.zim/init.zsh
+# Zplug
+source ~/.zplug/init.zsh
 
-  # Load spacesihp into the Zim plugin  
-  autoload -Uz promptinit
-  promptinit
-  prompt spaceship
+# Syntax highlighting
+zplug "zsh-users/zsh-syntax-highlighting" #, defer:2
+
+# Git Plugin
+zplug "plugins/git",   from:oh-my-zsh
+
+# Spaceship Theme
+zplug "denysdovhan/spaceship-zsh-theme", use:spaceship.zsh, from:github, as:theme
+
+# Athame (Vim in Shell)
+zplug "ardagnir/athame" 
+
+# Load theme file
+# zplug 'dracula/zsh', as:theme
+
+# Install plugins if there are plugins that have not been installed
+if ! zplug check --verbose; then
+    printf "Install? [y/N]: "
+    if read -q; then
+        echo; zplug install
+    fi
 fi
 
+# Then, source plugins and add commands to $PATH
+zplug load # --verbose
+
+#  Zim
+# if [[ -s ${ZDOTDIR:-${HOME}}/.zim/init.zsh ]]; then
+#   source ${ZDOTDIR:-${HOME}}/.zim/init.zsh
+# 
+#   # Load spacesihp into the Zim plugin  
+#   autoload -Uz promptinit
+#   promptinit
+#   prompt spaceship
+# fi
+# 
 # Continuum Anaconda
 export PATH=~/anaconda3/bin:$PATH
 
 # Google Go
 export GOPATH=~/Code/Go
 
-# The next line updates PATH for the Google Cloud SDK.
+# Google Cloud
 if [ -f "$HOME"/.gcloud/google-cloud-sdk/path.zsh.inc ]; then source "$HOME"/.gcloud/google-cloud-sdk/path.zsh.inc; fi
 
-# Iterm Integration
+# Iterm 2
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
