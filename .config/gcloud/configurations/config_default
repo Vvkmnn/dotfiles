@@ -1,8 +1,0 @@
-[core]
-account = vm@redqueen.xyz
-project = opiai-174214
-
-[compute]
-zone = us-east1-b
-region = us-east1
-

@@ -62,6 +62,9 @@ zplug "denysdovhan/spaceship-zsh-theme", use:spaceship.zsh, from:github, as:them
 # Athame (Vim in Shell)
 zplug "ardagnir/athame" 
 
+# Z - jump around
+zplug rupa/z
+
 # Load theme file
 # zplug 'dracula/zsh', as:theme
 
