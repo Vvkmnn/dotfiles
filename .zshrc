@@ -43,21 +43,21 @@ source $HOME/.aliases
 
 # Homebrew Cask
 export HOMEBREW_CASK_OPTS="--appdir=/Applications"
-
+# 
 # RVM
 export PATH="$PATH:$HOME/.rvm/bin"
 
 # Continuum Anaconda
-export PATH=~/anaconda3/bin:$PATH
+# export PATH=~/anaconda3/bin:$PATH
 
 # Google Go
-export GOPATH=~/Code/Go
+# export GOPATH=~/Code/Go
 
 # Google Cloud
-if [ -f "$HOME"/.gcloud/google-cloud-sdk/path.zsh.inc ]; then source "$HOME"/.gcloud/google-cloud-sdk/path.zsh.inc; fi
+# if [ -f "$HOME"/.gcloud/google-cloud-sdk/path.zsh.inc ]; then source "$HOME"/.gcloud/google-cloud-sdk/path.zsh.inc; fi
 
 # Iterm2
-test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+# test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
 ## Shell Defaults
 
@@ -80,10 +80,10 @@ source ~/.zplug/init.zsh
 zplug "zsh-users/zsh-autosuggestions"
 
 # Syntax highlighting
-zplug "zsh-users/zsh-syntax-highlighting" #, defer:2
+zplug "zsh-users/zsh-syntax-highlighting", defer:2
 
 # Git Plugin
-zplug "plugins/git",   from:oh-my-zsh
+zplug "plugins/git", from:oh-my-zsh
 
 # Spaceship Theme
 zplug "denysdovhan/spaceship-zsh-theme", use:spaceship.zsh, from:github, as:theme
@@ -92,7 +92,7 @@ zplug "denysdovhan/spaceship-zsh-theme", use:spaceship.zsh, from:github, as:them
 zplug "ardagnir/athame"
 
 # Z - jump around
-zplug rupa/z
+zplug "rupa/z"
 
 # Load theme file
 # zplug 'dracula/zsh', as:theme
