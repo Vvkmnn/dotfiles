@@ -1,30 +1,30 @@
 # Vivek Menon - vvkmnn.xyz
 
-# MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
-# MMMMMMMMMMMMMMMMMMMMMMNNmmmmNNMMMMMMMMMMMMMMMMMMMM
-# MMMMMMMMMMMMMMMMNho:.`        `-:ohNMMMMMMMMMMMMMM
-# MMMMMMMMMMMMMd+.                    .+dMMMMMMMMMMM
-# MMMMMMMMMMNs.                .shs+:.   .sMMMMMMMMM
-# MMMMMMMMMs`                -yMMMMMy.     `sMMMMMMM
-# MMMMMMMm-                 `MMMMMs`         -mMMMMM
-# MMMMMMd`                  .MMMMm            `dMMMM
-# MMMMMd`                   :MMMMd             `mMMM
-# MMMMM-            `odyo:. +MMMMy              -MMM
-# MMMMy           .sNMMMMh: oMMMMo               yMM
-# MMMM/           oMMMMy.   :MMMM+               /MM
-# MMMM.            sMMMd`    /MMM:               .MM
-# MMMM-             sMMMd`    /MM-               -MM
-# MMMM+              sMMMd`    /M`               +MM
-# MMMMm               sMMMh`    :                mMM
-# MMMMMo               yMMMh`                   oMMM
-# MMMMMM/               yMMMh                  /MMMM
-# MMMMMMMo               yMMMh                oMMMMM
-# MMMMMMMMh.              yMMMh             .hMMMMMM
-# MMMMMMMMMMs.             oydMh          .sMMMMMMMM
-# MMMMMMMMMMMMh:               .`       :hMMMMMMMMMM
-# MMMMMMMMMMMMMMNh+-                -+hNMMMMMMMMMMMM
-# MMMMMMMMMMMMMMMMMMMmhso+////+oshmMMMMMMMMMMMMMMMMM
-# MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
+# ##################################################
+# ##################################################
+# ######################        ####################
+# ################                    ##############
+# #############                #######   ###########
+# ###########                #########     #########
+# #########                 ########         #######
+# ########                  ######            ######
+# #######                   ######             #####
+# ######            ####### ######              ####
+# #####           ######### ######               ###
+# #####           #######   ######               ###
+# #####            ######    #####               ###
+# #####             ######    ####               ###
+# #####              ######    ###               ###
+# #####               ######    #                ###
+# ######               ######                   ####
+# #######               #####                  #####
+# ########               #####                ######
+# ##########              #####             ########
+# ############             #####          ##########
+# ##############               ##       ############
+# ##################                ################
+# ##################################################
+# ##################################################
 
 ## Personal Defaults
 export LANG=en_US.UTF-8
@@ -45,7 +45,7 @@ source $HOME/.aliases
 export HOMEBREW_CASK_OPTS="--appdir=/Applications"
 # 
 # RVM
-export PATH="$PATH:$HOME/.rvm/bin"
+# export PATH="$PATH:$HOME/.rvm/bin"
 
 # Continuum Anaconda
 # export PATH=~/anaconda3/bin:$PATH
@@ -60,6 +60,8 @@ export PATH="$PATH:$HOME/.rvm/bin"
 # test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
 ## Shell Defaults
+
+ZLE_LPROMPT_INDENT=0
 
 # Spaceship
 SPACESHIP_PROMPT_SYMBOL="ॐ "
