@@ -31,7 +31,7 @@ export LANG=en_US.UTF-8
 export BROWSER=open
 export TERM=xterm-256color
 export PATH="/usr/local/bin:$PATH"
-export EDITOR='vim'
+# export EDITOR='vim'
 
 # Dotfiles
 alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
