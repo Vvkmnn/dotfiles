@@ -37,7 +37,7 @@ export EDITOR='vim'
 alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
 
 # Aliases
-source $HOME/.aliases
+# source $HOME/.aliases
 
 ## Application Defaults
 
@@ -57,7 +57,7 @@ export HOMEBREW_CASK_OPTS="--appdir=/Applications"
 # if [ -f "$HOME"/.gcloud/google-cloud-sdk/path.zsh.inc ]; then source "$HOME"/.gcloud/google-cloud-sdk/path.zsh.inc; fi
 
 # Iterm2
-# test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+test -e "${HOME}/.iterm2/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2/.iterm2_shell_integration.zsh"
 
 ## Shell Defaults
 
