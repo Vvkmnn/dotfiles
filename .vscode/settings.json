@@ -1,12 +1,22 @@
 // Place your settings in this file to overwrite default and user settings.
 {
+    // Vim
+    "vim.easymotion": true,
+    "vim.incsearch": true,
+    "vim.useSystemClipboard": true,
+    "vim.useCtrlKeys": true,
+    "vim.hlsearch": true,
+    "vim.leader": "<space>",
     // Defaults
     "editor.formatOnSave": true,
     "editor.minimap.enabled": true,
-    "editor.wordWrap": "on",
+    "editor.cursorStyle": "block",
+    "editor.wordWrap": "wordWrapColumn",
+    "editor.acceptSuggestionOnEnter": "off",
+    "workbench.colorTheme": "Dracula",
+    "window.zoomLevel": 0,
+    "editor.autoIndent": true,
     // Fonts
     "editor.fontFamily": "'Inconsolata for Powerline', medium",
-    "editor.fontSize": 13,
-    "workbench.colorTheme": "Dracula",
-    "window.zoomLevel": 0
+    "editor.fontSize": 14
 }

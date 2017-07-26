@@ -12,3 +12,7 @@ npm update
 
 # XO Linter
 npm install -g xo
+
+# Semantic Release CLI (Semver)
+npm install -g semantic-release-cli
+
