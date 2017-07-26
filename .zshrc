@@ -94,7 +94,7 @@ zplug "denysdovhan/spaceship-zsh-theme", use:spaceship.zsh, from:github, as:them
 zplug "ardagnir/athame"
 
 # Z - jump around
-zplug "rupa/z"
+zplug "rupa/z", use:z.sh
 
 # Load theme file
 # zplug 'dracula/zsh', as:theme
@@ -109,3 +109,9 @@ fi
 
 # Then, source plugins and add commands to $PATH
 zplug load # --verbose
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f "${HOME}/.google-cloud/google-cloud-sdk/path.zsh.inc" ]; then source "${HOME}/.google-cloud/google-cloud-sdk/path.zsh.inc"; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f "${HOME}/.google-cloud/google-cloud-sdk/completion.zsh.inc" ]; then source "${HOME}/.google-cloud/google-cloud-sdk/completion.zsh.inc"; fi
