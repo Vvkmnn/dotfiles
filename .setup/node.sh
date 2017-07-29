@@ -16,3 +16,4 @@ npm install -g xo
 # Semantic Release CLI (Semver)
 npm install -g semantic-release-cli
 
+npm install -g ngrok
