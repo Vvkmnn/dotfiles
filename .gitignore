@@ -1,5 +1,8 @@
 ## From https://github.com/github/gitignore
 
+## dash	
+.dash-license 
+
 ## vscode
 .vscode/extensions/*/*
 
