@@ -11,12 +11,36 @@
     "editor.formatOnSave": true,
     "editor.minimap.enabled": true,
     "editor.cursorStyle": "block",
-    "editor.wordWrap": "wordWrapColumn",
+    "editor.wordWrap": "on",
     "editor.acceptSuggestionOnEnter": "off",
     "workbench.colorTheme": "Dracula",
     "window.zoomLevel": 0,
     "editor.autoIndent": true,
     // Fonts
     "editor.fontFamily": "'Inconsolata for Powerline', medium",
-    "editor.fontSize": 14
+    "editor.fontSize": 14,
+    "vim.disableAnnoyingNeovimMessage": true,
+    // Linting
+    "eslint.autoFixOnSave": true,
+    "eslint.enable": true,
+    "eslint.options": {
+        "extensions": [
+            ".html",
+            ".js",
+            ".vue",
+            ".jsx"
+        ]
+    },
+    // An array of language ids which should be validated by ESLint
+    "eslint.validate": [
+        "javascript",
+        "javascriptreact",
+        {
+            "language": "html",
+            "autoFix": true
+        }
+    ],
+    // Run the linter on save (onSave) or on type (onType)
+    "eslint.run": "onSave"
+    // Turns auto fix on save on or off.
 }

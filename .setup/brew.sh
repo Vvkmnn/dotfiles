@@ -242,3 +242,4 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 	brew install z
 	brew install vim --with-client-server
 brew install rvm
+brew cask install transmission
