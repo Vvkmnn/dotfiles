@@ -17,3 +17,4 @@ npm install -g xo
 npm install -g semantic-release-cli
 
 npm install -g ngrok
+npm install -g live-server
