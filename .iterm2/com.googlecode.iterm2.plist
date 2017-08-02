@@ -3628,6 +3628,8 @@
 	</dict>
 	<key>PrefsCustomFolder</key>
 	<string>/Users/v/.iterm2</string>
+	<key>PromptOnQuit</key>
+	<false/>
 	<key>QuitWhenAllWindowsClosed</key>
 	<true/>
 	<key>SUEnableAutomaticChecks</key>
@@ -3639,7 +3641,7 @@
 	<key>SUHasLaunchedBefore</key>
 	<true/>
 	<key>SULastCheckTime</key>
-	<date>2017-07-24T23:47:54Z</date>
+	<date>2017-07-30T01:41:28Z</date>
 	<key>SUSendProfileInfo</key>
 	<false/>
 	<key>SavePasteHistory</key>
