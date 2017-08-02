@@ -5715,7 +5715,7 @@
                   "attr":{},
                   "category":"",
                   "choices":[],
-                  "description":"A regular expression to filter the names of the results on. Any names\nthat do not match the entire regular expression will be filtered out.",
+                  "description":"(DEPRECATED)         A regular expression to filter the names of the results  on. Any names\n        that do not match the entire regular expression will be filtered out.         \n+\nThis flag is deprecated. Use `--filter=\"name ~ REGEXP\"` instead.",
                   "group":"",
                   "hidden":false,
                   "name":"--regexp",
@@ -5756,7 +5756,7 @@
                   "category":"",
                   "choices":[],
                   "default":[],
-                  "description":"If provided, only resources from the given zones are queried.",
+                  "description":"(DEPRECATED) If provided, only resources from the given zones are queried. \n+\nThis flag is deprecated. Use ```--filter=\"zone :( *ZONE ... )\"``` instead.",
                   "group":"",
                   "hidden":false,
                   "name":"--zones",
@@ -5779,7 +5779,7 @@
               "positionals":[
                 {
                   "default":[],
-                  "description":"If provided, show details for the specified names and/or URIs of resources.",
+                  "description":"(DEPRECATED) If provided, show details for the specified names and/or URIs of resources. \n+\nThis argument is deprecated. Use `--filter=\"name =( NAME ... )\"` instead.",
                   "name":"names",
                   "nargs":"*",
                   "required":false,
@@ -6195,7 +6195,7 @@
                   "attr":{},
                   "category":"",
                   "choices":[],
-                  "description":"A regular expression to filter the names of the results on. Any names\nthat do not match the entire regular expression will be filtered out.",
+                  "description":"(DEPRECATED)         A regular expression to filter the names of the results  on. Any names\n        that do not match the entire regular expression will be filtered out.         \n+\nThis flag is deprecated. Use `--filter=\"name ~ REGEXP\"` instead.",
                   "group":"",
                   "hidden":false,
                   "name":"--regexp",
@@ -6236,7 +6236,7 @@
                   "category":"",
                   "choices":[],
                   "default":[],
-                  "description":"If provided, only resources from the given zones are queried.",
+                  "description":"(DEPRECATED) If provided, only resources from the given zones are queried. \n+\nThis flag is deprecated. Use ```--filter=\"zone :( *ZONE ... )\"``` instead.",
                   "group":"",
                   "hidden":false,
                   "name":"--zones",
@@ -6259,7 +6259,7 @@
               "positionals":[
                 {
                   "default":[],
-                  "description":"If provided, show details for the specified names and/or URIs of resources.",
+                  "description":"(DEPRECATED) If provided, show details for the specified names and/or URIs of resources. \n+\nThis argument is deprecated. Use `--filter=\"name =( NAME ... )\"` instead.",
                   "name":"names",
                   "nargs":"*",
                   "required":false,
@@ -10930,7 +10930,7 @@
                   "name":"--state",
                   "nargs":"0",
                   "required":true,
-                  "type":"__calliope__command__.64f5d5614bed42dd8fdcbcadf5c9e675.gcloud.compute.images.deprecate.<lambda>",
+                  "type":"__calliope__command__.e42831ee261246fb8f78404f4f1f5a73.gcloud.compute.images.deprecate.<lambda>",
                   "value":"STATE"
                 }
               },
@@ -13944,7 +13944,7 @@
                       "attr":{},
                       "category":"",
                       "choices":[],
-                      "description":"A regular expression to filter the names of the results on. Any names\nthat do not match the entire regular expression will be filtered out.",
+                      "description":"(DEPRECATED)         A regular expression to filter the names of the results  on. Any names\n        that do not match the entire regular expression will be filtered out.         \n+\nThis flag is deprecated. Use `--filter=\"name ~ REGEXP\"` instead.",
                       "group":"",
                       "hidden":false,
                       "name":"--regexp",
@@ -13985,7 +13985,7 @@
                       "category":"",
                       "choices":[],
                       "default":[],
-                      "description":"If provided, only resources from the given zones are queried.",
+                      "description":"(DEPRECATED) If provided, only resources from the given zones are queried. \n+\nThis flag is deprecated. Use ```--filter=\"zone :( *ZONE ... )\"``` instead.",
                       "group":"",
                       "hidden":false,
                       "name":"--zones",
@@ -14009,7 +14009,7 @@
                   "positionals":[
                     {
                       "default":[],
-                      "description":"If provided, show details for the specified names and/or URIs of resources.",
+                      "description":"(DEPRECATED) If provided, show details for the specified names and/or URIs of resources. \n+\nThis argument is deprecated. Use `--filter=\"name =( NAME ... )\"` instead.",
                       "name":"names",
                       "nargs":"*",
                       "required":false,
@@ -15378,6 +15378,20 @@
                   "type":"string",
                   "value":"ADDRESS"
                 },
+                "--async":{
+                  "attr":{},
+                  "category":"",
+                  "choices":[],
+                  "default":false,
+                  "description":"Display information about the operation in progress, without waiting for\nthe operation to complete.",
+                  "group":"",
+                  "hidden":false,
+                  "name":"--async",
+                  "nargs":"0",
+                  "required":false,
+                  "type":"bool",
+                  "value":"ASYNC"
+                },
                 "--boot-disk-auto-delete":{
                   "attr":{
                     "inverted_synopsis":true
@@ -16281,7 +16295,7 @@
                   "attr":{},
                   "category":"",
                   "choices":[],
-                  "description":"A regular expression to filter the names of the results on. Any names\nthat do not match the entire regular expression will be filtered out.",
+                  "description":"(DEPRECATED)         A regular expression to filter the names of the results  on. Any names\n        that do not match the entire regular expression will be filtered out.         \n+\nThis flag is deprecated. Use `--filter=\"name ~ REGEXP\"` instead.",
                   "group":"",
                   "hidden":false,
                   "name":"--regexp",
@@ -16322,7 +16336,7 @@
                   "category":"",
                   "choices":[],
                   "default":[],
-                  "description":"If provided, only resources from the given zones are queried.",
+                  "description":"(DEPRECATED) If provided, only resources from the given zones are queried. \n+\nThis flag is deprecated. Use ```--filter=\"zone :( *ZONE ... )\"``` instead.",
                   "group":"",
                   "hidden":false,
                   "name":"--zones",
@@ -16345,7 +16359,7 @@
               "positionals":[
                 {
                   "default":[],
-                  "description":"If provided, show details for the specified names and/or URIs of resources.",
+                  "description":"(DEPRECATED) If provided, show details for the specified names and/or URIs of resources. \n+\nThis argument is deprecated. Use `--filter=\"name =( NAME ... )\"` instead.",
                   "name":"names",
                   "nargs":"*",
                   "required":false,
@@ -17470,7 +17484,7 @@
                   "attr":{},
                   "category":"",
                   "choices":[],
-                  "description":"A regular expression to filter the names of the results on. Any names\nthat do not match the entire regular expression will be filtered out.",
+                  "description":"(DEPRECATED)         A regular expression to filter the names of the results  on. Any names\n        that do not match the entire regular expression will be filtered out.         \n+\nThis flag is deprecated. Use `--filter=\"name ~ REGEXP\"` instead.",
                   "group":"",
                   "hidden":false,
                   "name":"--regexp",
@@ -17511,7 +17525,7 @@
                   "category":"",
                   "choices":[],
                   "default":[],
-                  "description":"If provided, only resources from the given zones are queried.",
+                  "description":"(DEPRECATED) If provided, only resources from the given zones are queried. \n+\nThis flag is deprecated. Use ```--filter=\"zone :( *ZONE ... )\"``` instead.",
                   "group":"",
                   "hidden":false,
                   "name":"--zones",
@@ -17534,7 +17548,7 @@
               "positionals":[
                 {
                   "default":[],
-                  "description":"If provided, show details for the specified names and/or URIs of resources.",
+                  "description":"(DEPRECATED) If provided, show details for the specified names and/or URIs of resources. \n+\nThis argument is deprecated. Use `--filter=\"name =( NAME ... )\"` instead.",
                   "name":"names",
                   "nargs":"*",
                   "required":false,
@@ -18460,7 +18474,7 @@
                       "choices":[],
                       "default":false,
                       "description":"Enable/disable access to Google Cloud APIs from this subnet for instances without a public ip address.",
-                      "group":"",
+                      "group":"update.1",
                       "hidden":false,
                       "name":"--enable-private-ip-google-access",
                       "nargs":"0",
@@ -18487,7 +18501,13 @@
                     }
                   },
                   "group":false,
-                  "groups":{},
+                  "groups":{
+                    "update.1":{
+                      "description":"At most one of these may be specified:",
+                      "is_mutex":true,
+                      "is_required":false
+                    }
+                  },
                   "hidden":false,
                   "name":"update",
                   "path":[
@@ -22360,7 +22380,7 @@
                   "attr":{},
                   "category":"",
                   "choices":[],
-                  "description":"A regular expression to filter the names of the results on. Any names\nthat do not match the entire regular expression will be filtered out.",
+                  "description":"(DEPRECATED)         A regular expression to filter the names of the results  on. Any names\n        that do not match the entire regular expression will be filtered out.         \n+\nThis flag is deprecated. Use `--filter=\"name ~ REGEXP\"` instead.",
                   "group":"",
                   "hidden":false,
                   "name":"--regexp",
@@ -22401,7 +22421,7 @@
                   "category":"",
                   "choices":[],
                   "default":[],
-                  "description":"If provided, only resources from the given zones are queried.",
+                  "description":"(DEPRECATED) If provided, only resources from the given zones are queried. \n+\nThis flag is deprecated. Use ```--filter=\"zone :( *ZONE ... )\"``` instead.",
                   "group":"",
                   "hidden":false,
                   "name":"--zones",
@@ -22424,7 +22444,7 @@
               "positionals":[
                 {
                   "default":[],
-                  "description":"If provided, show details for the specified names and/or URIs of resources.",
+                  "description":"(DEPRECATED) If provided, show details for the specified names and/or URIs of resources. \n+\nThis argument is deprecated. Use `--filter=\"name =( NAME ... )\"` instead.",
                   "name":"names",
                   "nargs":"*",
                   "required":false,
@@ -25121,7 +25141,7 @@
                   "name":"--shared-secret",
                   "nargs":"0",
                   "required":true,
-                  "type":"__calliope__command__.64f5d5614bed42dd8fdcbcadf5c9e675.gcloud.compute.vpn_tunnels.create.ValidateSimpleSharedSecret",
+                  "type":"__calliope__command__.e42831ee261246fb8f78404f4f1f5a73.gcloud.compute.vpn_tunnels.create.ValidateSimpleSharedSecret",
                   "value":"SHARED_SECRET"
                 },
                 "--target-vpn-gateway":{
@@ -26993,7 +27013,7 @@
                   "attr":{},
                   "category":"",
                   "choices":[],
-                  "description":"List of cluster addons to disable. Options are HttpLoadBalancing, HorizontalPodAutoscaling. _DISABLE_ADDONS_ must be one of: *HttpLoadBalancing*, *HorizontalPodAutoscaling*.",
+                  "description":"List of cluster addons to disable. Options are HttpLoadBalancing, HorizontalPodAutoscaling, KubernetesDashboard. _DISABLE_ADDONS_ must be one of: *HttpLoadBalancing*, *HorizontalPodAutoscaling*, *KubernetesDashboard*.",
                   "group":"",
                   "hidden":false,
                   "name":"--disable-addons",
@@ -27564,7 +27584,7 @@
                   "attr":{},
                   "category":"",
                   "choices":[],
-                  "description":"Cluster addons to enable or disable. Options are\nHorizontalPodAutoscaling=ENABLED|DISABLED\nHttpLoadBalancing=ENABLED|DISABLED",
+                  "description":"Cluster addons to enable or disable. Options are\nHorizontalPodAutoscaling=ENABLED|DISABLED\nHttpLoadBalancing=ENABLED|DISABLED\nKubernetesDashboard=ENABLED|DISABLED",
                   "group":"update.1",
                   "hidden":false,
                   "name":"--update-addons",
@@ -34838,7 +34858,6 @@
             "asia.gcr.io",
             "l.gcr.io",
             "launcher.gcr.io",
-            "appengine.gcr.io",
             "us-mirror.gcr.io",
             "eu-mirror.gcr.io",
             "asia-mirror.gcr.io",
@@ -45592,7 +45611,7 @@
                   "category":"",
                   "choices":[],
                   "default":false,
-                  "description":"Specified if the instance must be assigned an IP address.",
+                  "description":"The instance must be assigned an IP address.",
                   "group":"",
                   "hidden":false,
                   "name":"--assign-ip",
@@ -45619,7 +45638,6 @@
                   "attr":{},
                   "category":"",
                   "choices":[],
-                  "default":[],
                   "description":"First Generation instances only. List of IDs for App Engine applications running in the Standard environment that can access this instance.",
                   "group":"",
                   "hidden":false,
@@ -46356,7 +46374,7 @@
                     "NEVER",
                     "ON_DEMAND"
                   ],
-                  "description":"The activation policy for this instance. This specifies when the instance should be activated and is applicable only when the instance state is RUNNABLE. _ACTIVATION_POLICY_ must be one of: *ALWAYS*, *NEVER*, *ON_DEMAND*.",
+                  "description":"The activation policy for this instance. This specifies when the instance should be activated and is applicable only when the instance state is RUNNABLE. More information on activation policies can be found here: https://cloud.google.com/sql/faq#activation_policy. _ACTIVATION_POLICY_ must be one of: *ALWAYS*, *NEVER*, *ON_DEMAND*.",
                   "group":"",
                   "hidden":false,
                   "name":"--activation-policy",
@@ -46410,6 +46428,7 @@
                   "attr":{},
                   "category":"",
                   "choices":[],
+                  "default":[],
                   "description":"The list of external networks that are allowed to connect to the instance. Specified in CIDR notation, also known as 'slash' notation (e.g. 192.168.100.0/24).",
                   "group":"patch.2",
                   "hidden":false,
@@ -46519,7 +46538,7 @@
                   "category":"",
                   "choices":[],
                   "default":false,
-                  "description":"Enable binary log. If backup configuration is disabled, binary log should be disabled as well.",
+                  "description":"Specified if binary log should be enabled. If backup configuration is disabled, binary log must be disabled as well.",
                   "group":"",
                   "hidden":false,
                   "name":"--enable-bin-log",
