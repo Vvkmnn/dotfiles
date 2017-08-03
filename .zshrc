@@ -43,21 +43,22 @@ alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
 
 # Homebrew Cask
 export HOMEBREW_CASK_OPTS="--appdir=/Applications"
-# 
+ 
 # RVM
 # export PATH="$PATH:$HOME/.rvm/bin"
 
-# Continuum Anaconda
-# export PATH=~/anaconda3/bin:$PATH
 
 # Google Go
 # export GOPATH=~/Code/Go
 
 # Google Cloud
-# if [ -f "$HOME"/.gcloud/google-cloud-sdk/path.zsh.inc ]; then source "$HOME"/.gcloud/google-cloud-sdk/path.zsh.inc; fi
+if [ -f "$HOME"/.gcloud/google-cloud-sdk/path.zsh.inc ]; then source "$HOME"/.gcloud/google-cloud-sdk/path.zsh.inc; fi
 
 # Iterm2
 test -e "${HOME}/.iterm2/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2/.iterm2_shell_integration.zsh"
+
+# Autoenv - Load .envs magically
+source /usr/local/opt/autoenv/activate.sh
 
 ## Shell Defaults
 
