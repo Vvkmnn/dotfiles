@@ -11,9 +11,10 @@ if test ! $(which npm); then
 npm update
 
 # XO Linter
-npm install -g xo
+# npm install -g xo
 
 # Semantic Release CLI (Semver)
-npm install -g semantic-release-cli
+# npm install -g semantic-release-cli
 
 npm install -g ngrok
+npm install -g firebase-tools
