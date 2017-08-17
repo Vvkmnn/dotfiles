@@ -21,7 +21,7 @@
 
 ## macOS
 .swp
-*.DS_Store
+*/*.DS_Store
 
 # Thumbnails
 ._*

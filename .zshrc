@@ -26,7 +26,7 @@
 # ##################################################
 # ##################################################
 
-## Personal Defaults
+## Personal Defaults -------------------------------
 export LANG=en_US.UTF-8
 export BROWSER=open
 export TERM=xterm-256color
@@ -52,15 +52,19 @@ export HOMEBREW_CASK_OPTS="--appdir=/Applications"
 # export GOPATH=~/Code/Go
 
 # Google Cloud
-if [ -f "$HOME"/.gcloud/google-cloud-sdk/path.zsh.inc ]; then source "$HOME"/.gcloud/google-cloud-sdk/path.zsh.inc; fi
+if [ -f "${HOME}/.google-cloud/google-cloud-sdk/path.zsh.inc" ]; then source "${HOME}/.google-cloud/google-cloud-sdk/path.zsh.inc"; fi
+if [ -f "${HOME}/.google-cloud/google-cloud-sdk/completion.zsh.inc" ]; then source "${HOME}/.google-cloud/google-cloud-sdk/completion.zsh.inc"; fi
+
+# Anaconda
+PREFIX=${HOME}/.anaconda
 
 # Iterm2
 test -e "${HOME}/.iterm2/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2/.iterm2_shell_integration.zsh"
 
-# Autoenv - Load .envs magically
+# Autoenv - Load .envs automagically
 source /usr/local/opt/autoenv/activate.sh
 
-## Shell Defaults
+## Shell Defaults -------------------------------
 
 ZLE_LPROMPT_INDENT=0
 
@@ -110,9 +114,3 @@ fi
 
 # Then, source plugins and add commands to $PATH
 zplug load # --verbose
-
-# The next line updates PATH for the Google Cloud SDK.
-if [ -f "${HOME}/.google-cloud/google-cloud-sdk/path.zsh.inc" ]; then source "${HOME}/.google-cloud/google-cloud-sdk/path.zsh.inc"; fi
-
-# The next line enables shell command completion for gcloud.
-if [ -f "${HOME}/.google-cloud/google-cloud-sdk/completion.zsh.inc" ]; then source "${HOME}/.google-cloud/google-cloud-sdk/completion.zsh.inc"; fi
