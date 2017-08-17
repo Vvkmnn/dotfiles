@@ -1,0 +1,25 @@
+{
+  "arch": "x86_64",
+  "build": "py36_1",
+  "build_number": 1,
+  "depends": [
+    "python 3.6*"
+  ],
+  "files": [
+    "lib/python3.6/site-packages/HeapDict-1.0.0-py3.6.egg-info",
+    "lib/python3.6/site-packages/__pycache__/heapdict.cpython-36.pyc",
+    "lib/python3.6/site-packages/heapdict.py"
+  ],
+  "installed_by": "Anaconda3-4.4.0-MacOSX-x86_64",
+  "license": "BSD",
+  "link": {
+    "source": "/Users/v/.anaconda/pkgs/heapdict-1.0.0-py36_1",
+    "type": "hard-link"
+  },
+  "md5": "82998a74a66d5bda6c51d831fc72e96e",
+  "name": "heapdict",
+  "platform": "osx",
+  "subdir": "osx-64",
+  "url": "https://repo.continuum.io/pkgs/free/osx-64/heapdict-1.0.0-py36_1.tar.bz2",
+  "version": "1.0.0"
+}

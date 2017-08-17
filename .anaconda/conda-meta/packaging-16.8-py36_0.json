@@ -1,0 +1,44 @@
+{
+  "arch": "x86_64",
+  "build": "py36_0",
+  "build_number": 0,
+  "depends": [
+    "pyparsing",
+    "python 3.6*",
+    "six"
+  ],
+  "files": [
+    "lib/python3.6/site-packages/packaging-16.8-py3.6.egg-info",
+    "lib/python3.6/site-packages/packaging/__about__.py",
+    "lib/python3.6/site-packages/packaging/__init__.py",
+    "lib/python3.6/site-packages/packaging/__pycache__/__about__.cpython-36.pyc",
+    "lib/python3.6/site-packages/packaging/__pycache__/__init__.cpython-36.pyc",
+    "lib/python3.6/site-packages/packaging/__pycache__/_compat.cpython-36.pyc",
+    "lib/python3.6/site-packages/packaging/__pycache__/_structures.cpython-36.pyc",
+    "lib/python3.6/site-packages/packaging/__pycache__/markers.cpython-36.pyc",
+    "lib/python3.6/site-packages/packaging/__pycache__/requirements.cpython-36.pyc",
+    "lib/python3.6/site-packages/packaging/__pycache__/specifiers.cpython-36.pyc",
+    "lib/python3.6/site-packages/packaging/__pycache__/utils.cpython-36.pyc",
+    "lib/python3.6/site-packages/packaging/__pycache__/version.cpython-36.pyc",
+    "lib/python3.6/site-packages/packaging/_compat.py",
+    "lib/python3.6/site-packages/packaging/_structures.py",
+    "lib/python3.6/site-packages/packaging/markers.py",
+    "lib/python3.6/site-packages/packaging/requirements.py",
+    "lib/python3.6/site-packages/packaging/specifiers.py",
+    "lib/python3.6/site-packages/packaging/utils.py",
+    "lib/python3.6/site-packages/packaging/version.py"
+  ],
+  "installed_by": "Anaconda3-4.4.0-MacOSX-x86_64",
+  "license": "BSD or Apache 2.0",
+  "license_family": "Apache",
+  "link": {
+    "source": "/Users/v/.anaconda/pkgs/packaging-16.8-py36_0",
+    "type": "hard-link"
+  },
+  "md5": "b0d9202f7a0296419c963508a63c2f16",
+  "name": "packaging",
+  "platform": "osx",
+  "subdir": "osx-64",
+  "url": "https://repo.continuum.io/pkgs/free/osx-64/packaging-16.8-py36_0.tar.bz2",
+  "version": "16.8"
+}

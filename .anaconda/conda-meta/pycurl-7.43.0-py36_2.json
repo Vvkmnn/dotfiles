@@ -1,0 +1,30 @@
+{
+  "arch": "x86_64",
+  "build": "py36_2",
+  "build_number": 2,
+  "depends": [
+    "curl 7.52.*",
+    "openssl 1.0.2*",
+    "python 3.6*",
+    "zlib 1.2.*"
+  ],
+  "files": [
+    "lib/python3.6/site-packages/curl/__init__.py",
+    "lib/python3.6/site-packages/curl/__pycache__/__init__.cpython-36.pyc",
+    "lib/python3.6/site-packages/pycurl-7.43.0-py3.6.egg-info",
+    "lib/python3.6/site-packages/pycurl.cpython-36m-darwin.so"
+  ],
+  "installed_by": "Anaconda3-4.4.0-MacOSX-x86_64",
+  "license": "LGPL, MIT",
+  "license_family": "LGPL",
+  "link": {
+    "source": "/Users/v/.anaconda/pkgs/pycurl-7.43.0-py36_2",
+    "type": "hard-link"
+  },
+  "md5": "dabb5be6269edc7c493956d4c88ab9b3",
+  "name": "pycurl",
+  "platform": "osx",
+  "subdir": "osx-64",
+  "url": "https://repo.continuum.io/pkgs/free/osx-64/pycurl-7.43.0-py36_2.tar.bz2",
+  "version": "7.43.0"
+}

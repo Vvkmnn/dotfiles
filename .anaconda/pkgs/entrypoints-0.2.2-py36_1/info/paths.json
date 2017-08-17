@@ -1,0 +1,23 @@
+{
+  "paths": [
+    {
+      "_path": "lib/python3.6/site-packages/__pycache__/entrypoints.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "bfeef15bd6d3966495e2c692b8402f3a488f305a1f930817dbfbf371d3d7858a",
+      "size_in_bytes": 6599
+    },
+    {
+      "_path": "lib/python3.6/site-packages/entrypoints-0.2.2-py3.6.egg-info",
+      "path_type": "hardlink",
+      "sha256": "eee38b6bd9d30ddee219733bf93605faf2623f802f7b6f343778832d3598bfd9",
+      "size_in_bytes": 185
+    },
+    {
+      "_path": "lib/python3.6/site-packages/entrypoints.py",
+      "path_type": "hardlink",
+      "sha256": "cfd71071e96cd1463fa4a0d06657d4793794cdda73ace8f9db131189c8e1b9bb",
+      "size_in_bytes": 6880
+    }
+  ],
+  "paths_version": 1
+}

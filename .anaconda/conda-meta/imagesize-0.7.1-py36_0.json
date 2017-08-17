@@ -1,0 +1,30 @@
+{
+  "arch": "x86_64",
+  "build": "py36_0",
+  "build_number": 0,
+  "depends": [
+    "python 3.6*"
+  ],
+  "files": [
+    "lib/python3.6/site-packages/imagesize-0.7.1-py3.6.egg-info/PKG-INFO",
+    "lib/python3.6/site-packages/imagesize-0.7.1-py3.6.egg-info/SOURCES.txt",
+    "lib/python3.6/site-packages/imagesize-0.7.1-py3.6.egg-info/dependency_links.txt",
+    "lib/python3.6/site-packages/imagesize-0.7.1-py3.6.egg-info/top_level.txt",
+    "lib/python3.6/site-packages/imagesize/__init__.py",
+    "lib/python3.6/site-packages/imagesize/__pycache__/__init__.cpython-36.pyc",
+    "lib/python3.6/site-packages/imagesize/__pycache__/get.cpython-36.pyc",
+    "lib/python3.6/site-packages/imagesize/get.py"
+  ],
+  "installed_by": "Anaconda3-4.4.0-MacOSX-x86_64",
+  "license": "MIT",
+  "link": {
+    "source": "/Users/v/.anaconda/pkgs/imagesize-0.7.1-py36_0",
+    "type": "hard-link"
+  },
+  "md5": "f46d0495f865e32bfb0e4a93db558285",
+  "name": "imagesize",
+  "platform": "osx",
+  "subdir": "osx-64",
+  "url": "https://repo.continuum.io/pkgs/free/osx-64/imagesize-0.7.1-py36_0.tar.bz2",
+  "version": "0.7.1"
+}

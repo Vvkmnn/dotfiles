@@ -1,0 +1,8 @@
+bin/sip
+include/python3.6m/sip.h
+lib/python3.6/site-packages/__pycache__/sipconfig.cpython-36.pyc
+lib/python3.6/site-packages/__pycache__/sipdistutils.cpython-36.pyc
+lib/python3.6/site-packages/sip.pyi
+lib/python3.6/site-packages/sip.so
+lib/python3.6/site-packages/sipconfig.py
+lib/python3.6/site-packages/sipdistutils.py

@@ -1,0 +1,23 @@
+{
+  "paths": [
+    {
+      "_path": "lib/python3.6/site-packages/__pycache__/pandocfilters.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "b76dc1a27519128ff4872f22c6a437e542a0722d6819a1cfaa9f3fda40cb5e90",
+      "size_in_bytes": 7775
+    },
+    {
+      "_path": "lib/python3.6/site-packages/pandocfilters-1.4.1-py3.6.egg-info",
+      "path_type": "hardlink",
+      "sha256": "2d064a059485c63e881fa5a133b4e4412550ab857842b86fc078f52ee3e687e1",
+      "size_in_bytes": 9122
+    },
+    {
+      "_path": "lib/python3.6/site-packages/pandocfilters.py",
+      "path_type": "hardlink",
+      "sha256": "0e92849869768881f7b5b62f296ac4c05a3ae52ac5dd1c1bc0f21ba200674995",
+      "size_in_bytes": 8261
+    }
+  ],
+  "paths_version": 1
+}

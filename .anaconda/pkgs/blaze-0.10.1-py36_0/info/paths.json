@@ -1,0 +1,1537 @@
+{
+  "paths": [
+    {
+      "_path": "bin/blaze-server",
+      "file_mode": "text",
+      "path_type": "hardlink",
+      "prefix_placeholder": "/opt/anaconda1anaconda2anaconda3",
+      "sha256": "829d6b56db02c1b9559d19666fdf79924cb685e238e2f0c0711ec71a40503133",
+      "size_in_bytes": 162
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze-0.10.1-py3.6.egg-info/PKG-INFO",
+      "path_type": "hardlink",
+      "sha256": "b453b5f75a16d6bf54a5b70aa4505d01bd85c6110a6680acc3f64dc0859f6484",
+      "size_in_bytes": 7077
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze-0.10.1-py3.6.egg-info/SOURCES.txt",
+      "path_type": "hardlink",
+      "sha256": "3942c8e06563a23d230ef7b13010e81261d644f848f07e66893dd46df705dea9",
+      "size_in_bytes": 4965
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze-0.10.1-py3.6.egg-info/dependency_links.txt",
+      "path_type": "hardlink",
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "size_in_bytes": 1
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze-0.10.1-py3.6.egg-info/entry_points.txt",
+      "path_type": "hardlink",
+      "sha256": "f631c6bfadb90e7febc77624873c9d9fcfceca2abfcf5d2c2d266ec52d84836b",
+      "size_in_bytes": 60
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze-0.10.1-py3.6.egg-info/not-zip-safe",
+      "path_type": "hardlink",
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "size_in_bytes": 1
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze-0.10.1-py3.6.egg-info/requires.txt",
+      "path_type": "hardlink",
+      "sha256": "09b2731a9bce5c00af8e899e53f0ba135ba621a064fb3b4096bbd8565230b3fc",
+      "size_in_bytes": 72
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze-0.10.1-py3.6.egg-info/top_level.txt",
+      "path_type": "hardlink",
+      "sha256": "92efb7ec97d143f6384b64e1a31b076fe977d7b3634a16f35219bfb4ee617411",
+      "size_in_bytes": 75
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/__init__.py",
+      "path_type": "hardlink",
+      "sha256": "e93185f93134f0143efce5a507401089a832393179c5e076544c9c5626ecea82",
+      "size_in_bytes": 2538
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/__pycache__/__init__.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "e86fc47a0e3ebba093cdeb4a553e84e833468d9a8eb894a1dd45c2ce65ca65ef",
+      "size_in_bytes": 2632
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/__pycache__/_version.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "f111a2668a9d555c2ea104474c13c71ad579cb11f679f1f2bb1da811f454a21a",
+      "size_in_bytes": 450
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/__pycache__/cached.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "ffcd454ca7483ebfea5bd0fa37227f9fe2516822d1a7e3425545ebad63b38ff9",
+      "size_in_bytes": 3279
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/__pycache__/compatibility.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "3c70fd59c4fa2dc3361c2640e95694febdb101747eef941a951656124d2ab9e0",
+      "size_in_bytes": 2494
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/__pycache__/dispatch.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "8f5bd07670113a552208b40bb518556624f373b2cba1fba060a695e4dfb51fa2",
+      "size_in_bytes": 438
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/__pycache__/index.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "0d27287fb7dcc6f8fcf3cba227f89f2a05f11a5f7ec06f6cf61022f7c8ea6a99",
+      "size_in_bytes": 1788
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/__pycache__/interactive.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "5250e8f3995480b934e5f7db3547922135d19a673a3c6c82bb80c9e77c3400bd",
+      "size_in_bytes": 14024
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/__pycache__/mongo.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "fe4575ade65ffcb50e43cebf23acec15f828ee022754c524d341a40974176dab",
+      "size_in_bytes": 1569
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/__pycache__/partition.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "6fcc0b60995963e7544ae151798f266c62338a1ac38eed96dd48083b5da99bac",
+      "size_in_bytes": 3853
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/__pycache__/sql.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "6b14d1ede35336e21240c152c277f1548445727088227174ae620ea629701778",
+      "size_in_bytes": 2288
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/__pycache__/utils.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "e528c030cdfc700a8b61978a974895464244e7b7791d5f71084fd236f907a02c",
+      "size_in_bytes": 10360
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/_version.py",
+      "path_type": "hardlink",
+      "sha256": "a1498ec321196bac0ed997a242c2284bd0b5128d66b26413e12c40a4fc5456ee",
+      "size_in_bytes": 472
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/cached.py",
+      "path_type": "hardlink",
+      "sha256": "49e6d2e82433d8639e6a58480fd19f5989702efc3f03b007532e1c3bf83e564b",
+      "size_in_bytes": 3128
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compatibility.py",
+      "path_type": "hardlink",
+      "sha256": "3387070b7b257a62c396b28294ef03a95c777dbbed726ae4ea5a3c9d396dc5e8",
+      "size_in_bytes": 3769
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/__init__.py",
+      "path_type": "hardlink",
+      "sha256": "d696d8bae9f90c00521f78de6de83a748650b6eaa6875a7173c9f45747dfae28",
+      "size_in_bytes": 104
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/__pycache__/__init__.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "0bee88e42f473e696d3c6545611d7ea6da572cadcd62e91f045915240a5f517f",
+      "size_in_bytes": 315
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/__pycache__/bcolz.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "e75defee7aadf5ed9577442d01eff14ebe1beaf01081f3256f8545b4253d7611",
+      "size_in_bytes": 6069
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/__pycache__/chunks.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "22325f56384fbe043beb1f75fa7b8b553b843cdec94ec7687e3a71a200096aa5",
+      "size_in_bytes": 2253
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/__pycache__/core.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "7d825226d4ad0e1ee04082e8559f1d10b41c961adce4df631bee60b192a795ba",
+      "size_in_bytes": 14576
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/__pycache__/csv.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "749270dde50e84079968d602d31ecb6db8dda9ac059f6e54056aad9b7e97469f",
+      "size_in_bytes": 3097
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/__pycache__/dask.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "ff257c84ffc946cc98a8cfafec480a098ba455d39e1aa117213e453bd2b39490",
+      "size_in_bytes": 3497
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/__pycache__/h5py.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "7a132cde58dbd3c798eba0333c8453b252312894685e649f3d570849e6092275",
+      "size_in_bytes": 5566
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/__pycache__/hdfstore.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "b59030d242994078506ba382e4498dfcdad073be178af14e4adcbb130aa762ff",
+      "size_in_bytes": 1312
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/__pycache__/json.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "045e5f76c352fc3db36f655b7c952e81ccfd971d81a76ebe65a7726ca68262e7",
+      "size_in_bytes": 863
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/__pycache__/mongo.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "74ab62f47ab024a794260eea8c76d6a13755048467aae3a35d64d9a8e12bb92e",
+      "size_in_bytes": 15626
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/__pycache__/numba.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "a34a4b61233ee3efbfea7dc1f837d0cb88d7e9ab3d89e56d66c14d766ec4f672",
+      "size_in_bytes": 4782
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/__pycache__/numexpr.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "05fd57bd40dfd8cb2fe96335366dd546e5beb901eccc2c065bc18b2feb0b74b7",
+      "size_in_bytes": 2216
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/__pycache__/numpy.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "c682a31e9aef3ebf684d9c2a3013d00677edc6076b9e72ef4111bd2a84b90d7a",
+      "size_in_bytes": 13742
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/__pycache__/pandas.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "b0dc73c5d14fbaf17bce3282578f079be5a457ab08188bde8f43163c58ad9305",
+      "size_in_bytes": 21413
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/__pycache__/pmap.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "462ff56336a49daf79ccf034fe0d226bf25a8c3786a2491e4007fd254288b749",
+      "size_in_bytes": 498
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/__pycache__/pydatetime.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "6aed8d9cd4a1b29e1dd25919caea42d63d2a8fff1528df20885a9859293046fe",
+      "size_in_bytes": 6404
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/__pycache__/pyfunc.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "fa0b637daebb612124b411cde6bdac31fde9ef1fcb02afd331cbe16d3f1a8acd",
+      "size_in_bytes": 8587
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/__pycache__/pytables.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "898f75ed5d85117c84d0b9ccc72d41de60650d92d078526b3496ffa6420e4181",
+      "size_in_bytes": 5662
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/__pycache__/python.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "ddafebb041a7444f51759686f18abd98f2ebaea130207010610478924832661c",
+      "size_in_bytes": 23229
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/__pycache__/spark.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "8ddea8fb0e8a3f71d59f3d12e54a3954e07b0311dc51966ec6aa67550e2c15f8",
+      "size_in_bytes": 6540
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/__pycache__/sparksql.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "db1362edc8e04bd63dfc92bb8c5a3ea5b1e1ed2eaf47fb5a582d09f46f95258e",
+      "size_in_bytes": 3180
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/__pycache__/sql.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "7b4ccb3a9b93a42a066ca2d239d7f43a547d4b5a6ce1c36ff2945d15683c9dca",
+      "size_in_bytes": 40642
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/__pycache__/utils.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "843eabce41ffdee0ffbebc9550b5c13c5a1a1bc16b496f710ea9e1071c29ed73",
+      "size_in_bytes": 2301
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/bcolz.py",
+      "path_type": "hardlink",
+      "sha256": "5f5c8775376f5580535f6de2edd499e5e5d553b0487e2ad31238765164e22af2",
+      "size_in_bytes": 5577
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/chunks.py",
+      "path_type": "hardlink",
+      "sha256": "d132782db373d2bc1818ac62fc878dd68bd4b9445c6a9604b894d59e0547a342",
+      "size_in_bytes": 1826
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/core.py",
+      "path_type": "hardlink",
+      "sha256": "afec3312adcb54ab61c3d86af366d882c121ee29befb84e0cb046554ab4ea524",
+      "size_in_bytes": 14257
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/csv.py",
+      "path_type": "hardlink",
+      "sha256": "a62796937a2f791f4b32eba5386c626265dfe66f932262f06af18b8cf19295f3",
+      "size_in_bytes": 3048
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/dask.py",
+      "path_type": "hardlink",
+      "sha256": "13a2e246aca5bfbd60c68ca5e2315370d55029057f79e1b4b2847d5a4860b2f3",
+      "size_in_bytes": 2886
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/h5py.py",
+      "path_type": "hardlink",
+      "sha256": "84ba74f6f349a355e3b74cb7f459dda0b735d06892ad24547760e78c621cd6c5",
+      "size_in_bytes": 6002
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/hdfstore.py",
+      "path_type": "hardlink",
+      "sha256": "ca9a3f366ebe15b9dca287d5440747c9a102bfdd2497294411e6f60352d041c5",
+      "size_in_bytes": 1018
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/json.py",
+      "path_type": "hardlink",
+      "sha256": "407dca4844607fd208c1683657ad866abbedd9b7b99a7be6f2525cad83411f7c",
+      "size_in_bytes": 621
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/mongo.py",
+      "path_type": "hardlink",
+      "sha256": "67afaafa9adef1889aee72a4ed32b2bef2970d22f1dd1220d4348214c60df7b1",
+      "size_in_bytes": 14310
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/numba.py",
+      "path_type": "hardlink",
+      "sha256": "db38dfb454ad9040d41fc39cab43d780d154e242dec30371b0e96b743b492c79",
+      "size_in_bytes": 5004
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/numexpr.py",
+      "path_type": "hardlink",
+      "sha256": "adea458fae8eedc31d4f0f0432b60f4d49d212c9bfaaf1a2724a05072a036ad0",
+      "size_in_bytes": 2164
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/numpy.py",
+      "path_type": "hardlink",
+      "sha256": "cb5104a8dc95b39f81bd2dcb20f4719813f124dc2c5343e0da4139f223df2a35",
+      "size_in_bytes": 13500
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/pandas.py",
+      "path_type": "hardlink",
+      "sha256": "0afa781455d377c279cf84f1929f05bd757294ab046a442cc4c750211cbbedc2",
+      "size_in_bytes": 21185
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/pmap.py",
+      "path_type": "hardlink",
+      "sha256": "41272e631ee7d9fe288a399521fbbc4bc8338b67c4901cd8240e0f93095de3bd",
+      "size_in_bytes": 209
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/pydatetime.py",
+      "path_type": "hardlink",
+      "sha256": "4053edf2b7bb706ad9aeb60cfea2243827d858acfd9ca87e25e04d3cb15aacd8",
+      "size_in_bytes": 6133
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/pyfunc.py",
+      "path_type": "hardlink",
+      "sha256": "f46a6937f1f8fc5268fdea90b25143b2e84fe79a9a506c91cbf41447110d507f",
+      "size_in_bytes": 7748
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/pytables.py",
+      "path_type": "hardlink",
+      "sha256": "e932fcea945e8ab512bb8b395926ca0eef35235aaf12f89c514ac3bf9910c5a3",
+      "size_in_bytes": 4840
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/python.py",
+      "path_type": "hardlink",
+      "sha256": "6a7854bcda414324a0c70ddb0fc0005069abbf262da87cc6ecfa7485d0cb7878",
+      "size_in_bytes": 19697
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/spark.py",
+      "path_type": "hardlink",
+      "sha256": "c81fce2562c8b75300fac0ad4c281585b62ed33c87605818c994cde17212333f",
+      "size_in_bytes": 5642
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/sparksql.py",
+      "path_type": "hardlink",
+      "sha256": "c962c1ea8f18e6a952199aac4c0d4f74c09bc361007bc1981c79283a8d1b60b0",
+      "size_in_bytes": 2841
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/sql.py",
+      "path_type": "hardlink",
+      "sha256": "5155c32f4b962369e5596932310a00af5b3d2386b57ac134a6229ef476e6e43d",
+      "size_in_bytes": 42728
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/tests/__pycache__/conftest.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "50687eb92f9b52b254ecb44bc5f8a6a54cd75ae83728f0593afb841ae77e5d59",
+      "size_in_bytes": 390
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/tests/__pycache__/test_bcolz_compute.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "d5ccf847b02b9b18840cefc17bac2467b5f805dccd268cd882a39fba88fc22a4",
+      "size_in_bytes": 6946
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/tests/__pycache__/test_chunks.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "1cb24bb9f2d844836be2eaeb42178827532b43660bf7a1a7d11ca3af8ab5e126",
+      "size_in_bytes": 1447
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/tests/__pycache__/test_comprehensive.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "318a4dd2125ccf08bea4ad6856c701cce1bcfbeea2a04bb568b0aee55c94c686",
+      "size_in_bytes": 3640
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/tests/__pycache__/test_core_compute.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "746e1c2af54f150d2c8574ce03e9650e3178b09f50db3083a1babd01e2190d8c",
+      "size_in_bytes": 6217
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/tests/__pycache__/test_csv_compute.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "f0e423020aac5092ac184af97d8e63f6fad48cc986f0f2572a965c965e926c19",
+      "size_in_bytes": 4773
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/tests/__pycache__/test_dask.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "2899e02b2bcc67a5e438e3259b7740bfc1664a38308acd6a59353626aba568a7",
+      "size_in_bytes": 5497
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/tests/__pycache__/test_dask_dataframe.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "7551e533807be3b4329a61c99566decc3bf418a972460c3ab20f15ab462559e7",
+      "size_in_bytes": 6439
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/tests/__pycache__/test_h5py.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "d9981e577c3c43fd15dc5403f722208e971f07acd35256cec720fb7e91d3b754",
+      "size_in_bytes": 6930
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/tests/__pycache__/test_hdfstore.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "bde8886f77d0ec8608d9e2b285fd1feee5396c1f2604dc802de050604f8b69e0",
+      "size_in_bytes": 2040
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/tests/__pycache__/test_json.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "833394af20ae87540ab0a83162a36536614087cd1ddc2e2b9515f031df3d6967",
+      "size_in_bytes": 1240
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/tests/__pycache__/test_mongo_compute.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "2b2a35b6c6a98dc4978c5008628f7ace428f105b9db2ed5a16339a4cb658cd59",
+      "size_in_bytes": 16442
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/tests/__pycache__/test_mysql_compute.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "3e679e092d7e26cfca2762716c29a058889c9c7db20f3c35d39ff72a1db96bf1",
+      "size_in_bytes": 2446
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/tests/__pycache__/test_numba.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "f3a17ad3741a901b3f468230b6f3164144c0ec71e903f15462dc98032141ce1f",
+      "size_in_bytes": 2075
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/tests/__pycache__/test_numpy_compute.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "b5f676ce438fd909fe49a0fa95da42abb715db18d18b46ae40bb1fef685e1e52",
+      "size_in_bytes": 23607
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/tests/__pycache__/test_optimize_compute.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "1191e75f0dcaa4f67788bd78820b6aa1cd8167a8331360f7248d1cd7161a22a3",
+      "size_in_bytes": 1200
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/tests/__pycache__/test_pandas_compute.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "2a796935691daa03eebff7e3e86713ab065a6b7ec3f4463001f2e276f5752cf7",
+      "size_in_bytes": 35102
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/tests/__pycache__/test_pmap.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "4a7d597c672339091880df914418ae6aa2305d2870061a181f3383f44158e954",
+      "size_in_bytes": 769
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/tests/__pycache__/test_postgresql_compute.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "782e897628f85fdb2e87a991979986471f551c67c7cd7c5d096c798442eff974",
+      "size_in_bytes": 25187
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/tests/__pycache__/test_pydatetime.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "f19d43081ff8bab1201b2102070a19c10e5ad4b61fa5e5df8a8c9cde828a1f59",
+      "size_in_bytes": 1514
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/tests/__pycache__/test_pyfunc.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "9ca37d68b7d3580de1838d65950eda0c2c121913e4c3258f37673bb0233c0518",
+      "size_in_bytes": 3167
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/tests/__pycache__/test_pytables_compute.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "bbdd4d4330a9216df9b78086508aa723e45a93143b778c9b879c0779b0313b98",
+      "size_in_bytes": 10655
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/tests/__pycache__/test_python_compute.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "8dc48118757ed30bf4aa9907fd9280946888a932c97c7b4fc18a9c48fe4d13d4",
+      "size_in_bytes": 37078
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/tests/__pycache__/test_spark.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "f5e88200e9082ffd7f2636ddd9906c87a2846990dda40b73e0ec5e7eb299dfb7",
+      "size_in_bytes": 9129
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/tests/__pycache__/test_sparksql.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "b33c0b4f4f99384b3e2dc3b32035b57ae49d0d687f8032b940461a0b265aa5e9",
+      "size_in_bytes": 13241
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/tests/__pycache__/test_sql_compute.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "785b411edd6361bbed37dab7a3feffcb481dba496b6c8bf2a4270623188ed366",
+      "size_in_bytes": 66126
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/tests/__pycache__/test_url_csv_compute.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "8551909e2a1b61710a422aded5380bef2e233596f67c1a546e37366e4e3898de",
+      "size_in_bytes": 1458
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/tests/conftest.py",
+      "path_type": "hardlink",
+      "sha256": "86dd7ba22e70cbe6716b64e2f7549b216556432ce1a7ad97d89420d79dd0efae",
+      "size_in_bytes": 154
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/tests/test_bcolz_compute.py",
+      "path_type": "hardlink",
+      "sha256": "25192f3accea58ceb91aa939efcca71a1fd3783bea40b7b9c9081dddefa50788",
+      "size_in_bytes": 5784
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/tests/test_chunks.py",
+      "path_type": "hardlink",
+      "sha256": "2cfeebadbbaaca8cdea7a2b70a6dd20c1a94dfc79646de4346be5907c7da4aa2",
+      "size_in_bytes": 869
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/tests/test_comprehensive.py",
+      "path_type": "hardlink",
+      "sha256": "35045bc76c33db1cfebd0508251eb37e68967ed9460ea7c2d918597faae76f7b",
+      "size_in_bytes": 4559
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/tests/test_core_compute.py",
+      "path_type": "hardlink",
+      "sha256": "5b1dca26a78ee30bd894454955abe75abf73028a91b5b74d404dcd3c2652cd42",
+      "size_in_bytes": 5175
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/tests/test_csv_compute.py",
+      "path_type": "hardlink",
+      "sha256": "315335647de0fbc030451486819b3047e32eaeb563518f996e19075c8d2df5a7",
+      "size_in_bytes": 4260
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/tests/test_dask.py",
+      "path_type": "hardlink",
+      "sha256": "c00c8ddf757c426010d43d3294d1bd4fb4eadd127d09c829e367da83ae6f0de6",
+      "size_in_bytes": 4532
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/tests/test_dask_dataframe.py",
+      "path_type": "hardlink",
+      "sha256": "965b1f274ebcfb40cfab8efabe614c9dc9d6e8ed5f1d8528107d5fb72b1e57d4",
+      "size_in_bytes": 5001
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/tests/test_h5py.py",
+      "path_type": "hardlink",
+      "sha256": "7fe911b3d11fefdc3c2f6d9f7cfe3f819efdf2622f64aa68e0481c036f1d182a",
+      "size_in_bytes": 5494
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/tests/test_hdfstore.py",
+      "path_type": "hardlink",
+      "sha256": "054ad2071a6cd66941c2fe4b098036a6070a6944a88dc68f9cd2ed88a0179fbd",
+      "size_in_bytes": 1836
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/tests/test_json.py",
+      "path_type": "hardlink",
+      "sha256": "b7f1a5cd9d639b4fc17dd97f4a4660003a621d7e57f4afff3b94eb69f6a451a6",
+      "size_in_bytes": 722
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/tests/test_mongo_compute.py",
+      "path_type": "hardlink",
+      "sha256": "34588abed3a42c81fd11a6640b2f95c1c5d389664617a02557219e4047b01ee9",
+      "size_in_bytes": 12633
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/tests/test_mysql_compute.py",
+      "path_type": "hardlink",
+      "sha256": "cc362a2997e631645cb731f4f955565a7a23403557e221889a809355c8e6205f",
+      "size_in_bytes": 2140
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/tests/test_numba.py",
+      "path_type": "hardlink",
+      "sha256": "dc3d1c1cfc3ce25e012bdadfeacc8b9341354bd351853d53a68b5433c5994ef7",
+      "size_in_bytes": 1792
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/tests/test_numpy_compute.py",
+      "path_type": "hardlink",
+      "sha256": "82c25a6fdf6ce382de4f8b6c88f447ab80ccde52e4d6497503e47290e2938206",
+      "size_in_bytes": 20852
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/tests/test_optimize_compute.py",
+      "path_type": "hardlink",
+      "sha256": "8b1a675597b172f62d3b22d6baa049f21c5795fae0a78d8ba71136b6fce84018",
+      "size_in_bytes": 592
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/tests/test_pandas_compute.py",
+      "path_type": "hardlink",
+      "sha256": "b4bf60728d28530eb7edb359af7ce2131599b94dbee44010eafdd1042f62b39f",
+      "size_in_bytes": 33407
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/tests/test_pmap.py",
+      "path_type": "hardlink",
+      "sha256": "d9451065f18cad30466332026306054c17543348aeffc25efff01e984f56e651",
+      "size_in_bytes": 410
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/tests/test_postgresql_compute.py",
+      "path_type": "hardlink",
+      "sha256": "a1ba10cd3cd13264049113d0a40efa30a4643642c527eac296b910194b44b68b",
+      "size_in_bytes": 24360
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/tests/test_pydatetime.py",
+      "path_type": "hardlink",
+      "sha256": "d97803d278e20ec3ff9d528fc0bffdf0c72b4b8252c6892ecd8a87d007fb7487",
+      "size_in_bytes": 1169
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/tests/test_pyfunc.py",
+      "path_type": "hardlink",
+      "sha256": "54c39f87ed39db9ac44d12f413abf6a78b65b3973d1b615b05b21a25ab9f3f95",
+      "size_in_bytes": 2071
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/tests/test_pytables_compute.py",
+      "path_type": "hardlink",
+      "sha256": "29efb6d6f3ef55cdf35ec25ee30568ffc7e6f8980a79b353a900ebb5eafa1ac7",
+      "size_in_bytes": 7657
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/tests/test_python_compute.py",
+      "path_type": "hardlink",
+      "sha256": "6da163fc32e56c6075bd729bd465274cb2808cfb1d99720ab68163a1418ffd80",
+      "size_in_bytes": 28545
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/tests/test_spark.py",
+      "path_type": "hardlink",
+      "sha256": "8bda5be03d8db52e8429ac1ca813af621d2d679c82b8d24492f7582eb4b7679a",
+      "size_in_bytes": 7897
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/tests/test_sparksql.py",
+      "path_type": "hardlink",
+      "sha256": "c2178ae935128d279c0af1ce19e5c714e72deed64da7cfb34bfc94ae6bf26a6c",
+      "size_in_bytes": 13177
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/tests/test_sql_compute.py",
+      "path_type": "hardlink",
+      "sha256": "ae243294e6cd6c568667bf3fdbbadfba4cd40cc4d8c6a09de49ee73ea67b4a7b",
+      "size_in_bytes": 68966
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/tests/test_url_csv_compute.py",
+      "path_type": "hardlink",
+      "sha256": "d7e989b546ce47b08f69fdddbf77be3d56d9e35d07edaab2c5a6f17c58c85f79",
+      "size_in_bytes": 1200
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/compute/utils.py",
+      "path_type": "hardlink",
+      "sha256": "2d571000d589b43d8d4e41d5533c439a24c34806efe0c95440d977e290703d03",
+      "size_in_bytes": 2274
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/dispatch.py",
+      "path_type": "hardlink",
+      "sha256": "837156e7411d6d6b98ff6cea564e0ecdc5df6d285aea6853565762e01c1e1b6e",
+      "size_in_bytes": 264
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/examples/data/accounts-datetimes.csv",
+      "path_type": "hardlink",
+      "sha256": "cd31ae43e39212e0e14ded991e384fcdfe1fd56c3bc39bb4e4e0d0449a192896",
+      "size_in_bytes": 199
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/examples/data/accounts-streaming.json",
+      "path_type": "hardlink",
+      "sha256": "097d626c6300f87216ffbab3dde4e4a19fc1ed439afd23761c0698285d4f3aa7",
+      "size_in_bytes": 180
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/examples/data/accounts-streaming.json.gz",
+      "path_type": "hardlink",
+      "sha256": "df0455fa6a3ef65888e1e052838da904e71b1e2562ff332f8c2af04434e1fc23",
+      "size_in_bytes": 132
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/examples/data/accounts-streaming2.json",
+      "path_type": "hardlink",
+      "sha256": "097d626c6300f87216ffbab3dde4e4a19fc1ed439afd23761c0698285d4f3aa7",
+      "size_in_bytes": 180
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/examples/data/accounts.csv",
+      "path_type": "hardlink",
+      "sha256": "f9b5a1a348e0d3a8e156349aa3e9922c9af5d1795e95f86e9609a5217a8bfe88",
+      "size_in_bytes": 88
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/examples/data/accounts.h5",
+      "path_type": "hardlink",
+      "sha256": "7b0e1b8a943a7396fd525d97538400909b9a3fc65486b3360aff807ddb25d3ea",
+      "size_in_bytes": 69615
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/examples/data/accounts.json",
+      "path_type": "hardlink",
+      "sha256": "b8fc5ed558f0f5542bf8febf1a226039de2dd1f4c9211149601aacefcdd6af58",
+      "size_in_bytes": 190
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/examples/data/accounts.json.gz",
+      "path_type": "hardlink",
+      "sha256": "0e8e929b7957707d6c0869996e2dbc044fcd40f67385483783f3c5d5ab87be4a",
+      "size_in_bytes": 126
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/examples/data/accounts_1.csv",
+      "path_type": "hardlink",
+      "sha256": "9edff63eb063c21d5c2a919e6b6bc73dd6496faf14101d30a5b5f90d262186a1",
+      "size_in_bytes": 43
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/examples/data/accounts_1.csv.gz",
+      "path_type": "hardlink",
+      "sha256": "f51c68ea9d6b5086e877b1cda085f34b1cc5a8a09ebf2758a7d7abbb6cc65332",
+      "size_in_bytes": 75
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/examples/data/accounts_2.csv",
+      "path_type": "hardlink",
+      "sha256": "09cb46754449eefe4e1353825571db2c51f112d4c949c7405cc49fbc72bedd8c",
+      "size_in_bytes": 59
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/examples/data/accounts_2.csv.gz",
+      "path_type": "hardlink",
+      "sha256": "7d55c8ab8c3ae45b1fe2f17b5782395b940cd7743ad7ac0635c5ac5544f3f1fc",
+      "size_in_bytes": 90
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/examples/data/hmda-small.csv",
+      "path_type": "hardlink",
+      "sha256": "31af2e0a3dc757676d18c79e65582658e8c0f1135b48bb09bdf0f49def5494a2",
+      "size_in_bytes": 317088
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/examples/data/iris-latin1.tsv",
+      "path_type": "hardlink",
+      "sha256": "880997051f8442a2c50236419a4090f0a8676fcfb0ad9c67d5934184fdc695be",
+      "size_in_bytes": 4608
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/examples/data/iris.csv",
+      "path_type": "hardlink",
+      "sha256": "09d1766be79ec606b4c045059bc4b0d3e6a693b61d1cdfc6bdd45af42531df65",
+      "size_in_bytes": 4608
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/examples/data/iris.db",
+      "path_type": "hardlink",
+      "sha256": "09d6c3198761f8dcc7585faee787692f879b2fdda60abb74f8172add9d91d085",
+      "size_in_bytes": 10240
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/examples/data/nyc.csv",
+      "path_type": "hardlink",
+      "sha256": "e6f1006747a7cd1e60334904864114ff70f56798808912a1714dd3899cc8d6a3",
+      "size_in_bytes": 5799
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/examples/data/teams.db",
+      "path_type": "hardlink",
+      "sha256": "9ad254493eda463f713c8c0368cb6635474f09341390fc8d18ee8d92e9c59c47",
+      "size_in_bytes": 539648
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/__init__.py",
+      "path_type": "hardlink",
+      "sha256": "e8f8373bd134e1723c14a3ec9983ea1d36d9ad70bf3d655ba001beb656c07049",
+      "size_in_bytes": 382
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/__pycache__/__init__.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "871b6b8d2db2b6055cc37f0e8156171b8152e53a2f9b31ae0d485a6b5a4e7e75",
+      "size_in_bytes": 532
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/__pycache__/arithmetic.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "431321be7a502f69aa1a11e0a6d5daa10475a3031ae7502a09747a65f9754035",
+      "size_in_bytes": 12764
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/__pycache__/arrays.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "c936539202550a9174ae1e9f13aaf643f01eb2d8f5e3ca14bfbf8b8b9898e4bb",
+      "size_in_bytes": 4542
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/__pycache__/broadcast.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "3900710db020f10ac1699f34285b213a49372c1e03a8a52f2c4898d0b7c57586",
+      "size_in_bytes": 5204
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/__pycache__/collections.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "abfb5c82c2c0894e0c8c8b76927a98955bd9f044d201a7ec0b694fcf0d91ae4b",
+      "size_in_bytes": 25052
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/__pycache__/core.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "f94b68daf5d873123e383434c0bc296e36af4a63a645a40a51fb70dd77d29189",
+      "size_in_bytes": 15099
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/__pycache__/datetime.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "59b5b838c8ab497658f62d1d1687de9eca97746f8552b18f0037165e43ee2f8d",
+      "size_in_bytes": 6697
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/__pycache__/expressions.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "b9ff017d35efcf11588481e749654b83d27f82f8bb18cca913431fb31db77ed0",
+      "size_in_bytes": 29685
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/__pycache__/functions.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "ad95c022976c46ec033434ce9f7ca486c50e82b0510498de4a87cc6c6839d060",
+      "size_in_bytes": 2479
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/__pycache__/math.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "391a6004e592762adbcfe7d05ab1bd416f5c20d136e9d004bc359f4a84827c20",
+      "size_in_bytes": 3851
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/__pycache__/method_dispatch.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "cad7408317e9e40a3618f74eb5e0548d63eefd1cdb946db064e02cc332960758",
+      "size_in_bytes": 1656
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/__pycache__/optimize.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "eca2ff7c235cb83c69fd7bb7d639dd6e7921b58fb045ee1395e9ccb13e9b1da6",
+      "size_in_bytes": 7338
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/__pycache__/parser.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "b0247e1f49f32f45b85d6a57236055f3c38be39e7023428eb2e744c8694bd454",
+      "size_in_bytes": 4347
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/__pycache__/reductions.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "51dd1b2596e96e91bd32eb12e25e9ee1393c345d4145dba82cd4db5d1063acc7",
+      "size_in_bytes": 11299
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/__pycache__/split.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "bea33ee6d1238a11c89f5785554998f36fbee3bd829d4b9da8760b9f0bf8b82a",
+      "size_in_bytes": 11831
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/__pycache__/split_apply_combine.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "9bbd47db8aeb9e004e207f9f87d621713f2e4f7ef5bd9de69b767c33edd49072",
+      "size_in_bytes": 3448
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/__pycache__/strings.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "38eb22605874569c275ce1810a23844dcc8dc4087e377078f4d7041c0ffeebd4",
+      "size_in_bytes": 5680
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/__pycache__/utils.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "6a0c2992aa485556fd85467578db8994a7d48c2b533fc62fe74e7dd80b46132a",
+      "size_in_bytes": 3549
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/arithmetic.py",
+      "path_type": "hardlink",
+      "sha256": "dc67e6c163b7ef4976c2adf98bc3abfda6a385b11ef635a34ab2b1eee8a55985",
+      "size_in_bytes": 10676
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/arrays.py",
+      "path_type": "hardlink",
+      "sha256": "547e143e83ab26d641bb8fef06fc1439918acb6f23d544a9b0aa4095e2bc6b2d",
+      "size_in_bytes": 3762
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/broadcast.py",
+      "path_type": "hardlink",
+      "sha256": "47c1c54522dec2c04198944d0bd9e984ae559307837ade40a53886a44756f5cf",
+      "size_in_bytes": 4540
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/collections.py",
+      "path_type": "hardlink",
+      "sha256": "2aff7a0647ec45fa79e90999d37a2c9c780f3a8ce98af20892e01113268b8b9e",
+      "size_in_bytes": 22971
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/core.py",
+      "path_type": "hardlink",
+      "sha256": "2bb1c29742b746338bca1008f1fa2a8cf7435456fdaf27893f21071f4805e8d2",
+      "size_in_bytes": 12447
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/datetime.py",
+      "path_type": "hardlink",
+      "sha256": "503a41c43fc805d17c796f383786c9abcc1b4cf037c841ba02b466e513f7307f",
+      "size_in_bytes": 4901
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/expressions.py",
+      "path_type": "hardlink",
+      "sha256": "4db692f9a5b5d774592350814b45b98d89747504a515b0d40492b700aa011290",
+      "size_in_bytes": 27284
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/functions.py",
+      "path_type": "hardlink",
+      "sha256": "6e8689d6510af8c7e3dc94813e044a13e4899ef11c0305eea9678363b8e78a8a",
+      "size_in_bytes": 3572
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/math.py",
+      "path_type": "hardlink",
+      "sha256": "c865b6e55b3ab1c88e55b857865d1f10effc21ae02fbfb59895db9ea69235431",
+      "size_in_bytes": 3150
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/method_dispatch.py",
+      "path_type": "hardlink",
+      "sha256": "a3e78c7e3b01c090acba9457f6c11b47e969a8fb13ddf66cbf8a326a4d24f391",
+      "size_in_bytes": 1334
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/optimize.py",
+      "path_type": "hardlink",
+      "sha256": "4d969507cfc37ad4dbb7018ba96af40d0a8a91a56db86158e30d6168da0f4baa",
+      "size_in_bytes": 6734
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/parser.py",
+      "path_type": "hardlink",
+      "sha256": "ecd6dfb5ffc24594508286c4d637f432ec3b72ad8a8ebae755c7ac9f733b6e8d",
+      "size_in_bytes": 3548
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/reductions.py",
+      "path_type": "hardlink",
+      "sha256": "6f6ccdcc2c8e77b987c77d4e0b0220f25de76e78fe837d790da053d34b0e7873",
+      "size_in_bytes": 9259
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/split.py",
+      "path_type": "hardlink",
+      "sha256": "565430930138a4991d711fd041e33ca6ccf12d3b3a9ebd4ee24092ef1bc484dc",
+      "size_in_bytes": 11988
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/split_apply_combine.py",
+      "path_type": "hardlink",
+      "sha256": "b8545b6f141962ae03768b938604322bbd67129288a0733cfff819f644fb9c50",
+      "size_in_bytes": 2943
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/strings.py",
+      "path_type": "hardlink",
+      "sha256": "f7ae5f5c419f16b0d271d24b6ec33a124ab7edc8b8d4b9ea9daf3c4808dac43c",
+      "size_in_bytes": 5434
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/tests/__pycache__/test_arithmetic.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "b5a87366922534e367c98a8318d7918a8792dce3ae1f8c868bd5e3edcd3e73ff",
+      "size_in_bytes": 4639
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/tests/__pycache__/test_array.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "8949baeee0c1d0ae00f292f40af8595a1345a131ed2a1d34415b20889075405a",
+      "size_in_bytes": 1981
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/tests/__pycache__/test_broadcast.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "efbe368878dd55786937a62a5a7990c8227edb330a5ac80b450de3245aea592d",
+      "size_in_bytes": 3914
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/tests/__pycache__/test_collections.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "1433ffdffd289d298cd1b2f89609bc4769032b52df199d03ffe50c6c46c213f1",
+      "size_in_bytes": 10872
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/tests/__pycache__/test_datetime.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "7c329e17fe9de8508ed984f1b2de475a4bdfcf24b9de237e24871ebf39f14471",
+      "size_in_bytes": 3713
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/tests/__pycache__/test_expr.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "bc398248079757852ad658cb1d2f4203c09df5272799a9649febdd5b1a317ede",
+      "size_in_bytes": 10071
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/tests/__pycache__/test_functions.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "d9e172c6e287a31a5932e28592433bb0011db3fc43c4dc5a627a9f4fb1db2052",
+      "size_in_bytes": 1257
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/tests/__pycache__/test_math.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "5f1ec7c4ee798f46a779ca4a4c69397152cff989fb0b4a596463e901856c3092",
+      "size_in_bytes": 601
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/tests/__pycache__/test_method_dispatch.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "9e5c008fef0d7a2d07194c8c2f1a47f8fcb637e77140aefba1350640a6969ddd",
+      "size_in_bytes": 1714
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/tests/__pycache__/test_optimize.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "f90cdedf85c35e812f01be9ca0632448d5555216e2f388679686f1dcc29f8b73",
+      "size_in_bytes": 4142
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/tests/__pycache__/test_reductions.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "3d44ba738ad725d5a936c1658397ed3e733aa8639652b76b174c33cc79c0795c",
+      "size_in_bytes": 4712
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/tests/__pycache__/test_scalar.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "6f31fba835139dff58928909649ac4376ee0f486127c60c722c56dbd617ad175",
+      "size_in_bytes": 9306
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/tests/__pycache__/test_slicing.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "2bf3bcf3eeea65d52e4827cf6e4cc095418db6d13dc6a70c76c7419603b9fa67",
+      "size_in_bytes": 2737
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/tests/__pycache__/test_split.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "9544d0f3e39d429bfff219efdc3b9a76bc48455a0ae16d30738c4355ae034640",
+      "size_in_bytes": 10948
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/tests/__pycache__/test_split_apply_combine.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "bcd4294e3df4141cad57fb538a68d8b3cd5bf0bce97bf58a4e595355461be222",
+      "size_in_bytes": 591
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/tests/__pycache__/test_strings.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "9369c17f5db8e09d46e71605628d2b681b1d8823b637f65209f27b2ef1cba85a",
+      "size_in_bytes": 2387
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/tests/__pycache__/test_symbol.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "ccdb815b054e701ac3687b0e312d65d2b7f661edb0e791205f43770b6d6108b1",
+      "size_in_bytes": 30833
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/tests/__pycache__/test_utils_expr.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "8d1beea39ae6977b40f1cb226955f7003f119b4fea869fa2580b4272d895f269",
+      "size_in_bytes": 466
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/tests/test_arithmetic.py",
+      "path_type": "hardlink",
+      "sha256": "17493e95162fcba8019ec469ce41804fa3eda2f2763d74b1c4eba641561087c0",
+      "size_in_bytes": 3868
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/tests/test_array.py",
+      "path_type": "hardlink",
+      "sha256": "f1ca5ace700d520c477e576ccd5d6e0c9bfc550ccf34d6ecc1a24d2e07e6460a",
+      "size_in_bytes": 1042
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/tests/test_broadcast.py",
+      "path_type": "hardlink",
+      "sha256": "8f750faa0dd94994e692f3801fd5d682f5d3618fb489b325a3ea3396c83e2af7",
+      "size_in_bytes": 3036
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/tests/test_collections.py",
+      "path_type": "hardlink",
+      "sha256": "27d786d94c701c7a5c87537361b2eba04baeb1aa6e532dd05e5cc7ce385dcaf2",
+      "size_in_bytes": 8829
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/tests/test_datetime.py",
+      "path_type": "hardlink",
+      "sha256": "b4651aaefb9bb129d85a69986a1ecfde0222b037c581ba603c26e4942f1eb25e",
+      "size_in_bytes": 2587
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/tests/test_expr.py",
+      "path_type": "hardlink",
+      "sha256": "f6412b07676f1cb5da6196b842698a0169986f215dc4f71817a749b48d10e316",
+      "size_in_bytes": 10191
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/tests/test_functions.py",
+      "path_type": "hardlink",
+      "sha256": "037c4ca1f15df66865a95a8ecb075934f0d343cc7538ed728a7da3478e4981cd",
+      "size_in_bytes": 803
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/tests/test_math.py",
+      "path_type": "hardlink",
+      "sha256": "a2464f6fcb4cf5acc0f158889be1cb1243c3de7e93c7ce29ebb33cf695ed4c13",
+      "size_in_bytes": 249
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/tests/test_method_dispatch.py",
+      "path_type": "hardlink",
+      "sha256": "73ef5679edc121958f6c028a0a653c2e3c22b65ef3308e3fb668ac23c19582d6",
+      "size_in_bytes": 969
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/tests/test_optimize.py",
+      "path_type": "hardlink",
+      "sha256": "01ed0bb5c5b84445936cd27a071c150be36944e574adbcb9d56c5f19e8716871",
+      "size_in_bytes": 2884
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/tests/test_reductions.py",
+      "path_type": "hardlink",
+      "sha256": "7963e7ca78eb22220720a827a0f8b379bbba8f5096e0f2eb2b2cce392a60a4c0",
+      "size_in_bytes": 3723
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/tests/test_scalar.py",
+      "path_type": "hardlink",
+      "sha256": "e3b79ea3cb297eef2575511ec31214c70d7ca900de261a6b133d35d5817c9e37",
+      "size_in_bytes": 8241
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/tests/test_slicing.py",
+      "path_type": "hardlink",
+      "sha256": "11a6aa6874c6525307a5f20d241b0db51c21e8f77be61f0950e338224aec4552",
+      "size_in_bytes": 1690
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/tests/test_split.py",
+      "path_type": "hardlink",
+      "sha256": "9e0a049f70241e96a869162f4254bc222d881201d794adaa1e8077a701897699",
+      "size_in_bytes": 12231
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/tests/test_split_apply_combine.py",
+      "path_type": "hardlink",
+      "sha256": "74eafebb18909e2526c26ea461289112534959da398191118e839224cdf87022",
+      "size_in_bytes": 281
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/tests/test_strings.py",
+      "path_type": "hardlink",
+      "sha256": "58889b2d01bbe4ebfc0839f89848b487a8a92e481db31c3e4dfd420b0f62a9d4",
+      "size_in_bytes": 2015
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/tests/test_symbol.py",
+      "path_type": "hardlink",
+      "sha256": "e354e7943731ea596dcb535494974284162b2e8e610a6340bdda38ed8d3547cf",
+      "size_in_bytes": 25201
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/tests/test_utils_expr.py",
+      "path_type": "hardlink",
+      "sha256": "ed259540a367d566d5541d008e3d88dbf1046d2500552e548971bcffa41a8d64",
+      "size_in_bytes": 218
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/expr/utils.py",
+      "path_type": "hardlink",
+      "sha256": "0ecaac35034dd1dbb3c56aaa79b12e5cace07412f18c32c7c314d41fb27fa472",
+      "size_in_bytes": 2812
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/index.py",
+      "path_type": "hardlink",
+      "sha256": "25c046b265aef307670e87497da083ac0adeb9e604784597d57468658a628b19",
+      "size_in_bytes": 1659
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/interactive.py",
+      "path_type": "hardlink",
+      "sha256": "f3b7b253ea936e46da1625a0d5bda0281ed30f894ae824288600c9f1a39d22c6",
+      "size_in_bytes": 14942
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/mongo.py",
+      "path_type": "hardlink",
+      "sha256": "15971e68a8d3830f61df087dd79a093710e9467a10b598c8e472a6fcc9a4dd1b",
+      "size_in_bytes": 1202
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/partition.py",
+      "path_type": "hardlink",
+      "sha256": "1044c51be33c512bb599ebcd2ff856279a94ac7cbab80d8e7bdbbc2d6c9900ed",
+      "size_in_bytes": 3179
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/server/__init__.py",
+      "path_type": "hardlink",
+      "sha256": "8fa5480a2086eded05b117a2cdcffa497f438524a2dd92526655e7722a01f6d9",
+      "size_in_bytes": 668
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/server/__pycache__/__init__.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "63e70e58cdbfb95cc6b1a56387ecc31a67c205178d6f0802030aca7333bc42d9",
+      "size_in_bytes": 818
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/server/__pycache__/client.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "2728ea3ec2caa112b26a4002e96d2962c14cbc80273b27290d08ddfa74293836",
+      "size_in_bytes": 7703
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/server/__pycache__/serialization.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "19259693175b9d90dcff17b5ffeddfbee956e9222d47ff4c9f774f2b741fb416",
+      "size_in_bytes": 5848
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/server/__pycache__/server.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "3103b1652a13c93f6873e71ae1d99d4fd1ceb018f979c6f9fd8379a424b8a037",
+      "size_in_bytes": 18677
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/server/__pycache__/spider.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "b54a06baf32d57f15fca442983eaf83775b40f9b0ad428d056f499cb5db85eba",
+      "size_in_bytes": 5672
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/server/client.py",
+      "path_type": "hardlink",
+      "sha256": "18367235444035caa641c1276b2754ca231f5b52c26ce9999d9659e4079339ab",
+      "size_in_bytes": 8029
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/server/serialization.py",
+      "path_type": "hardlink",
+      "sha256": "76880ee5d3f28701bd950bd2158c723347e955b3dbf4f063a19d0dbe04e1259b",
+      "size_in_bytes": 6789
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/server/server.py",
+      "path_type": "hardlink",
+      "sha256": "f436603e5c8032a0236e5c4f48c11dabb779a7701df00e120c2aa2e909657a81",
+      "size_in_bytes": 22176
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/server/spider.py",
+      "path_type": "hardlink",
+      "sha256": "d5f2dd9460b52f8fc09d60af624dec887af4cb3ca597447fec02bc57139b7a9d",
+      "size_in_bytes": 6911
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/server/tests/__init__.py",
+      "path_type": "hardlink",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_in_bytes": 0
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/server/tests/__pycache__/__init__.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "38bbce1b9856b2df634423e143659bdce05cf0003e0d96265abc562eddacf4ae",
+      "size_in_bytes": 164
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/server/tests/__pycache__/test_client.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "f0d9ff094299d6c69e4ba2c7afc8a7dce4d63f32760a32781c35b260fae5453a",
+      "size_in_bytes": 5462
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/server/tests/__pycache__/test_server.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "a2b0953cd807d1d4583827723b550ba3890bcc567750e7e80d90024b1c1c0c7d",
+      "size_in_bytes": 22568
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/server/tests/__pycache__/test_spider.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "df1fcd9e2921b67301d42977cbcd4762ef907c0458387ebbebb5779ed90918df",
+      "size_in_bytes": 2094
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/server/tests/test_client.py",
+      "path_type": "hardlink",
+      "sha256": "54f4d865b7eec09d81d5551b51d8e1cc926d38eeea6165580083e9104f3ecfdf",
+      "size_in_bytes": 4346
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/server/tests/test_server.py",
+      "path_type": "hardlink",
+      "sha256": "ae2935a57815df62fc7884cc19bb5a99f15a5c488a67ff76aafc10cc384db807",
+      "size_in_bytes": 27701
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/server/tests/test_spider.py",
+      "path_type": "hardlink",
+      "sha256": "d9842606acfb3b42677afbb50861def665846c029e4b69225b7d0a00f11e0c78",
+      "size_in_bytes": 1830
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/sql.py",
+      "path_type": "hardlink",
+      "sha256": "12f3c1691112d2510afeec68b636daf8c3f81725d6bb65c522641ffe6e5b8e37",
+      "size_in_bytes": 2200
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/tests/__init__.py",
+      "path_type": "hardlink",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_in_bytes": 0
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/tests/__pycache__/__init__.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "22da2394432bd63fa2f869d3d6c8bb4a12bcfd86f3f9bef21190f4fab65e72cb",
+      "size_in_bytes": 157
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/tests/__pycache__/test_cached.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "fa83a9798af5ed68daed7d15193f679e231eaadde82b91e9ac547a454888a9f9",
+      "size_in_bytes": 1265
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/tests/__pycache__/test_core.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "da6578eb19bfbb71dc1ef4fd52bbe14d365bdecb3e6fc3318a985b3e4d88835d",
+      "size_in_bytes": 649
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/tests/__pycache__/test_imports.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "f6dcab6571356aa954d5792ff1d7f067fede7a5b6f3074f7f844b6b7fb18a83b",
+      "size_in_bytes": 495
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/tests/__pycache__/test_interactive.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "fe9b662b9bdf6bfebfb416d7ecbb78ab619cec6574ec9c94fcadff189812e037",
+      "size_in_bytes": 18821
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/tests/__pycache__/test_partition.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "ee5cccdba8d97a9e29b7d0635aba25ffa0b38f8ac9660772d8c3ff1eed80c2d8",
+      "size_in_bytes": 3169
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/tests/__pycache__/test_sql.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "7766c630dfeca70b7e6499520b7fac06dbdef29c044fd80f5ae38a831f3a1f9d",
+      "size_in_bytes": 3041
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/tests/__pycache__/test_utils.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "89ec747b1ff054616fa6b541215baefff5187669436ed3ee6ee36d621c7b7f7e",
+      "size_in_bytes": 1246
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/tests/dummydata.csv",
+      "path_type": "hardlink",
+      "sha256": "4b3959eb753e7ae8e2293ff143a07f97415afabd0756f08f3b31c5b56d5fc7c5",
+      "size_in_bytes": 413
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/tests/test_cached.py",
+      "path_type": "hardlink",
+      "sha256": "3651257b946805eb81229956c9a5518acf3a7a5b26a9da8fca3b31ed7cc0da41",
+      "size_in_bytes": 944
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/tests/test_core.py",
+      "path_type": "hardlink",
+      "sha256": "07f99eed0d85bf79213b5fa3bbff9b3b5df39310e231b486c7709ed1e2d84eb5",
+      "size_in_bytes": 380
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/tests/test_imports.py",
+      "path_type": "hardlink",
+      "sha256": "60d2272edffc337b4e432fa43fb4074c0e04311f2db6aff0d951732984e81844",
+      "size_in_bytes": 289
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/tests/test_interactive.py",
+      "path_type": "hardlink",
+      "sha256": "cfd4649cbf1f4d8e16b5f5a1d4795beb64ff8fb367b56f3893f9c54535b4c5bc",
+      "size_in_bytes": 15657
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/tests/test_partition.py",
+      "path_type": "hardlink",
+      "sha256": "809daf963bbfbbe7e8faa5d63ade2067152c98f58ae486fe03db74cf54a7b7d0",
+      "size_in_bytes": 2329
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/tests/test_sql.py",
+      "path_type": "hardlink",
+      "sha256": "2960d0f4d885bff94846363e98e565c8bfbe13b5c8dde3d402cdea9478c06f60",
+      "size_in_bytes": 2317
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/tests/test_utils.py",
+      "path_type": "hardlink",
+      "sha256": "ea76eef30a8682227ca6a8662f994c6b6def18dbddce5e9020752bca4d508545",
+      "size_in_bytes": 906
+    },
+    {
+      "_path": "lib/python3.6/site-packages/blaze/utils.py",
+      "path_type": "hardlink",
+      "sha256": "452edfbda699cf7c9f5f22a2a31477a74698f810d3d2601e8eaa89741d62cc34",
+      "size_in_bytes": 9498
+    }
+  ],
+  "paths_version": 1
+}

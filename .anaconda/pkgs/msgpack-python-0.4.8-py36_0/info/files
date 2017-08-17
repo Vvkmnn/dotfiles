@@ -1,0 +1,14 @@
+lib/python3.6/site-packages/msgpack/__init__.py
+lib/python3.6/site-packages/msgpack/__pycache__/__init__.cpython-36.pyc
+lib/python3.6/site-packages/msgpack/__pycache__/_version.cpython-36.pyc
+lib/python3.6/site-packages/msgpack/__pycache__/exceptions.cpython-36.pyc
+lib/python3.6/site-packages/msgpack/__pycache__/fallback.cpython-36.pyc
+lib/python3.6/site-packages/msgpack/_packer.cpython-36m-darwin.so
+lib/python3.6/site-packages/msgpack/_unpacker.cpython-36m-darwin.so
+lib/python3.6/site-packages/msgpack/_version.py
+lib/python3.6/site-packages/msgpack/exceptions.py
+lib/python3.6/site-packages/msgpack/fallback.py
+lib/python3.6/site-packages/msgpack_python-0.4.8-py3.6.egg-info/PKG-INFO
+lib/python3.6/site-packages/msgpack_python-0.4.8-py3.6.egg-info/SOURCES.txt
+lib/python3.6/site-packages/msgpack_python-0.4.8-py3.6.egg-info/dependency_links.txt
+lib/python3.6/site-packages/msgpack_python-0.4.8-py3.6.egg-info/top_level.txt

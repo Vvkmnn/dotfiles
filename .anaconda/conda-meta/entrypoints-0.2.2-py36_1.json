@@ -1,0 +1,25 @@
+{
+  "arch": "x86_64",
+  "build": "py36_1",
+  "build_number": 1,
+  "depends": [
+    "python 3.6*"
+  ],
+  "files": [
+    "lib/python3.6/site-packages/__pycache__/entrypoints.cpython-36.pyc",
+    "lib/python3.6/site-packages/entrypoints-0.2.2-py3.6.egg-info",
+    "lib/python3.6/site-packages/entrypoints.py"
+  ],
+  "installed_by": "Anaconda3-4.4.0-MacOSX-x86_64",
+  "license": "MIT",
+  "link": {
+    "source": "/Users/v/.anaconda/pkgs/entrypoints-0.2.2-py36_1",
+    "type": "hard-link"
+  },
+  "md5": "cff8161c99ede4b5cd69cc7f9b528d6b",
+  "name": "entrypoints",
+  "platform": "osx",
+  "subdir": "osx-64",
+  "url": "https://repo.continuum.io/pkgs/free/osx-64/entrypoints-0.2.2-py36_1.tar.bz2",
+  "version": "0.2.2"
+}

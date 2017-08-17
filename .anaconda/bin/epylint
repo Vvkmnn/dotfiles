@@ -1,0 +1,3 @@
+#!/Users/v/.anaconda/bin/python
+from pylint import epylint
+epylint.Run()

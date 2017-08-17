@@ -1,0 +1,16 @@
+lib/python3.6/site-packages/bleach-1.5.0-py3.6.egg-info/PKG-INFO
+lib/python3.6/site-packages/bleach-1.5.0-py3.6.egg-info/SOURCES.txt
+lib/python3.6/site-packages/bleach-1.5.0-py3.6.egg-info/dependency_links.txt
+lib/python3.6/site-packages/bleach-1.5.0-py3.6.egg-info/not-zip-safe
+lib/python3.6/site-packages/bleach-1.5.0-py3.6.egg-info/requires.txt
+lib/python3.6/site-packages/bleach-1.5.0-py3.6.egg-info/top_level.txt
+lib/python3.6/site-packages/bleach/__init__.py
+lib/python3.6/site-packages/bleach/__pycache__/__init__.cpython-36.pyc
+lib/python3.6/site-packages/bleach/__pycache__/callbacks.cpython-36.pyc
+lib/python3.6/site-packages/bleach/__pycache__/encoding.cpython-36.pyc
+lib/python3.6/site-packages/bleach/__pycache__/sanitizer.cpython-36.pyc
+lib/python3.6/site-packages/bleach/__pycache__/version.cpython-36.pyc
+lib/python3.6/site-packages/bleach/callbacks.py
+lib/python3.6/site-packages/bleach/encoding.py
+lib/python3.6/site-packages/bleach/sanitizer.py
+lib/python3.6/site-packages/bleach/version.py

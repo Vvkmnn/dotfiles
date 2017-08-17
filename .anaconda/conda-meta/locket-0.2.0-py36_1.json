@@ -1,0 +1,25 @@
+{
+  "arch": "x86_64",
+  "build": "py36_1",
+  "build_number": 1,
+  "depends": [
+    "python 3.6*"
+  ],
+  "files": [
+    "lib/python3.6/site-packages/locket-0.2.0-py3.6.egg-info",
+    "lib/python3.6/site-packages/locket/__init__.py",
+    "lib/python3.6/site-packages/locket/__pycache__/__init__.cpython-36.pyc"
+  ],
+  "installed_by": "Anaconda3-4.4.0-MacOSX-x86_64",
+  "license": "BSD",
+  "link": {
+    "source": "/Users/v/.anaconda/pkgs/locket-0.2.0-py36_1",
+    "type": "hard-link"
+  },
+  "md5": "fd8516eecc07709856dd70f95d60d39b",
+  "name": "locket",
+  "platform": "osx",
+  "subdir": "osx-64",
+  "url": "https://repo.continuum.io/pkgs/free/osx-64/locket-0.2.0-py36_1.tar.bz2",
+  "version": "0.2.0"
+}

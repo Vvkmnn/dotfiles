@@ -1,0 +1,29 @@
+{
+  "paths": [
+    {
+      "_path": "lib/python3.6/site-packages/__pycache__/test_pycosat.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "7228cf3004edc2196f6ae6bfb46a0af1ef7c465b513f68071ebefcacea0f2c3b",
+      "size_in_bytes": 14529
+    },
+    {
+      "_path": "lib/python3.6/site-packages/pycosat-0.6.2-py3.6.egg-info",
+      "path_type": "hardlink",
+      "sha256": "4cbc1e1a3dbd0c601a72dcf827141fd6050e4ecff27e3f040ad6788e5aa612cd",
+      "size_in_bytes": 6371
+    },
+    {
+      "_path": "lib/python3.6/site-packages/pycosat.cpython-36m-darwin.so",
+      "path_type": "hardlink",
+      "sha256": "7431aa5032e6eb0e3f1384f092398638a5f2a8d0900ffa78901a8730bc284267",
+      "size_in_bytes": 124200
+    },
+    {
+      "_path": "lib/python3.6/site-packages/test_pycosat.py",
+      "path_type": "hardlink",
+      "sha256": "f7bcef178eabacb9c477ba20b88e8646ade28c86c23ed9327eecc8144777d8b2",
+      "size_in_bytes": 8806
+    }
+  ],
+  "paths_version": 1
+}

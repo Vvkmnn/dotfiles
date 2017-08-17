@@ -1,0 +1,41 @@
+{
+  "arch": "x86_64",
+  "build": "py36_0",
+  "build_number": 0,
+  "depends": [
+    "python 3.6*"
+  ],
+  "files": [
+    "lib/python3.6/site-packages/idna-2.5-py3.6.egg-info/PKG-INFO",
+    "lib/python3.6/site-packages/idna-2.5-py3.6.egg-info/SOURCES.txt",
+    "lib/python3.6/site-packages/idna-2.5-py3.6.egg-info/dependency_links.txt",
+    "lib/python3.6/site-packages/idna-2.5-py3.6.egg-info/pbr.json",
+    "lib/python3.6/site-packages/idna-2.5-py3.6.egg-info/top_level.txt",
+    "lib/python3.6/site-packages/idna/__init__.py",
+    "lib/python3.6/site-packages/idna/__pycache__/__init__.cpython-36.pyc",
+    "lib/python3.6/site-packages/idna/__pycache__/codec.cpython-36.pyc",
+    "lib/python3.6/site-packages/idna/__pycache__/compat.cpython-36.pyc",
+    "lib/python3.6/site-packages/idna/__pycache__/core.cpython-36.pyc",
+    "lib/python3.6/site-packages/idna/__pycache__/idnadata.cpython-36.pyc",
+    "lib/python3.6/site-packages/idna/__pycache__/intranges.cpython-36.pyc",
+    "lib/python3.6/site-packages/idna/__pycache__/uts46data.cpython-36.pyc",
+    "lib/python3.6/site-packages/idna/codec.py",
+    "lib/python3.6/site-packages/idna/compat.py",
+    "lib/python3.6/site-packages/idna/core.py",
+    "lib/python3.6/site-packages/idna/idnadata.py",
+    "lib/python3.6/site-packages/idna/intranges.py",
+    "lib/python3.6/site-packages/idna/uts46data.py"
+  ],
+  "installed_by": "Anaconda3-4.4.0-MacOSX-x86_64",
+  "license": "BSD",
+  "link": {
+    "source": "/Users/v/.anaconda/pkgs/idna-2.5-py36_0",
+    "type": "hard-link"
+  },
+  "md5": "3d12cb921c98d173c1f26a1f04c0407f",
+  "name": "idna",
+  "platform": "osx",
+  "subdir": "osx-64",
+  "url": "https://repo.continuum.io/pkgs/free/osx-64/idna-2.5-py36_0.tar.bz2",
+  "version": "2.5"
+}

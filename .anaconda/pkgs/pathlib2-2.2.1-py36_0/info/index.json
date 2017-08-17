@@ -1,0 +1,14 @@
+{
+  "arch": "x86_64", 
+  "build": "py36_0", 
+  "build_number": 0, 
+  "depends": [
+    "python 3.6*", 
+    "six"
+  ], 
+  "license": "MIT", 
+  "name": "pathlib2", 
+  "platform": "osx", 
+  "subdir": "osx-64", 
+  "version": "2.2.1"
+}

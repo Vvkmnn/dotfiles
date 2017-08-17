@@ -1,0 +1,17 @@
+{
+  "paths": [
+    {
+      "_path": "lib/python3.6/site-packages/pyodbc-4.0.16-py3.6.egg-info",
+      "path_type": "hardlink",
+      "sha256": "ed06d9bde07e21e948d166703a3f78788fffc22a6403b6de495a40a995677b6c",
+      "size_in_bytes": 858
+    },
+    {
+      "_path": "lib/python3.6/site-packages/pyodbc.cpython-36m-darwin.so",
+      "path_type": "hardlink",
+      "sha256": "2e99fb41842b1655a64ea734a54cebe4cc8458c2944cdb49385a4368d35d3313",
+      "size_in_bytes": 145000
+    }
+  ],
+  "paths_version": 1
+}

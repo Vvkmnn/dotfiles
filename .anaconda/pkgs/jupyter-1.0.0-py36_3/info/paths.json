@@ -1,0 +1,11 @@
+{
+  "paths": [
+    {
+      "_path": "lib/python3.6/site-packages/jupyter-1.0.0-py3.6.egg-info",
+      "path_type": "hardlink",
+      "sha256": "318eabc46a0d0ab371637e3ded559060cffd02f21d3eea18976deddb3603cae5",
+      "size_in_bytes": 849
+    }
+  ],
+  "paths_version": 1
+}

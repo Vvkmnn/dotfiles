@@ -1,0 +1,51 @@
+{
+  "arch": "x86_64",
+  "build": "py36_0",
+  "build_number": 0,
+  "depends": [
+    "ipykernel",
+    "ipython",
+    "jupyter_client",
+    "prompt_toolkit >=1.0,<2.0",
+    "pygments",
+    "python 3.6*"
+  ],
+  "files": [
+    "bin/jupyter-console",
+    "lib/python3.6/site-packages/jupyter_console-5.1.0-py3.6.egg-info",
+    "lib/python3.6/site-packages/jupyter_console/__init__.py",
+    "lib/python3.6/site-packages/jupyter_console/__main__.py",
+    "lib/python3.6/site-packages/jupyter_console/__pycache__/__init__.cpython-36.pyc",
+    "lib/python3.6/site-packages/jupyter_console/__pycache__/__main__.cpython-36.pyc",
+    "lib/python3.6/site-packages/jupyter_console/__pycache__/_version.cpython-36.pyc",
+    "lib/python3.6/site-packages/jupyter_console/__pycache__/app.cpython-36.pyc",
+    "lib/python3.6/site-packages/jupyter_console/__pycache__/completer.cpython-36.pyc",
+    "lib/python3.6/site-packages/jupyter_console/__pycache__/ptshell.cpython-36.pyc",
+    "lib/python3.6/site-packages/jupyter_console/__pycache__/zmqhistory.cpython-36.pyc",
+    "lib/python3.6/site-packages/jupyter_console/_version.py",
+    "lib/python3.6/site-packages/jupyter_console/app.py",
+    "lib/python3.6/site-packages/jupyter_console/completer.py",
+    "lib/python3.6/site-packages/jupyter_console/ptshell.py",
+    "lib/python3.6/site-packages/jupyter_console/tests/__init__.py",
+    "lib/python3.6/site-packages/jupyter_console/tests/__pycache__/__init__.cpython-36.pyc",
+    "lib/python3.6/site-packages/jupyter_console/tests/__pycache__/test_console.cpython-36.pyc",
+    "lib/python3.6/site-packages/jupyter_console/tests/__pycache__/test_image_handler.cpython-36.pyc",
+    "lib/python3.6/site-packages/jupyter_console/tests/__pycache__/writetofile.cpython-36.pyc",
+    "lib/python3.6/site-packages/jupyter_console/tests/test_console.py",
+    "lib/python3.6/site-packages/jupyter_console/tests/test_image_handler.py",
+    "lib/python3.6/site-packages/jupyter_console/tests/writetofile.py",
+    "lib/python3.6/site-packages/jupyter_console/zmqhistory.py"
+  ],
+  "installed_by": "Anaconda3-4.4.0-MacOSX-x86_64",
+  "license": "BSD",
+  "link": {
+    "source": "/Users/v/.anaconda/pkgs/jupyter_console-5.1.0-py36_0",
+    "type": "hard-link"
+  },
+  "md5": "fd7d1990aa2a0b4e73dc68b1ee5bf7cd",
+  "name": "jupyter_console",
+  "platform": "osx",
+  "subdir": "osx-64",
+  "url": "https://repo.continuum.io/pkgs/free/osx-64/jupyter_console-5.1.0-py36_0.tar.bz2",
+  "version": "5.1.0"
+}

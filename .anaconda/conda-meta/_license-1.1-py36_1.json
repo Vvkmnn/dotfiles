@@ -1,0 +1,27 @@
+{
+  "arch": "x86_64",
+  "build": "py36_1",
+  "build_number": 1,
+  "depends": [
+    "python 3.6*"
+  ],
+  "files": [
+    "lib/python3.6/site-packages/_license.so"
+  ],
+  "installed_by": "Anaconda3-4.4.0-MacOSX-x86_64",
+  "license": "proprietary - Continuum Analytics, Inc.",
+  "license_family": "Proprietary",
+  "link": {
+    "source": "/Users/v/.anaconda/pkgs/_license-1.1-py36_1",
+    "type": "hard-link"
+  },
+  "md5": "7b6fdd593f8115c6503b0f929136788a",
+  "name": "_license",
+  "platform": "osx",
+  "requires": [
+    "python 3.6"
+  ],
+  "subdir": "osx-64",
+  "url": "https://repo.continuum.io/pkgs/free/osx-64/_license-1.1-py36_1.tar.bz2",
+  "version": "1.1"
+}

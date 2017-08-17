@@ -1,0 +1,20 @@
+{
+  "arch": "x86_64", 
+  "build": "py36_0", 
+  "build_number": 0, 
+  "depends": [
+    "asn1crypto >=0.21.0", 
+    "cffi >=1.4.1", 
+    "idna >=2.1", 
+    "openssl 1.0.2*", 
+    "packaging", 
+    "python 3.6*", 
+    "setuptools", 
+    "six >=1.4.1"
+  ], 
+  "license": "Apache", 
+  "name": "cryptography", 
+  "platform": "osx", 
+  "subdir": "osx-64", 
+  "version": "1.8.1"
+}

@@ -1,0 +1,25 @@
+{
+  "arch": "x86_64",
+  "build": "py36_0",
+  "build_number": 0,
+  "depends": [
+    "python 3.6*"
+  ],
+  "files": [
+    "include/python3.6m/greenlet/greenlet.h",
+    "lib/python3.6/site-packages/greenlet-0.4.12-py3.6.egg-info",
+    "lib/python3.6/site-packages/greenlet.cpython-36m-darwin.so"
+  ],
+  "installed_by": "Anaconda3-4.4.0-MacOSX-x86_64",
+  "license": "MIT",
+  "link": {
+    "source": "/Users/v/.anaconda/pkgs/greenlet-0.4.12-py36_0",
+    "type": "hard-link"
+  },
+  "md5": "c672b642627927fdefb9b53e04077131",
+  "name": "greenlet",
+  "platform": "osx",
+  "subdir": "osx-64",
+  "url": "https://repo.continuum.io/pkgs/free/osx-64/greenlet-0.4.12-py36_0.tar.bz2",
+  "version": "0.4.12"
+}
