@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-# ~/pydata.sh
-
 # Removed user's cached credentials
 # This script might be run with .dots, which uses elevated privileges
 sudo -K
@@ -32,7 +30,7 @@ EXTRA_PATH=~/.extra
 echo $EXTRA_PATH
 echo "" >> $EXTRA_PATH
 echo "" >> $EXTRA_PATH
-echo "# Source virtualenvwrapper, added by pydata.sh" >> $EXTRA_PATH
+echo "# Source virtualenvwrapper, added by python.sh" >> $EXTRA_PATH
 echo "export WORKON_HOME=~/.virtualenvs" >> $EXTRA_PATH
 echo "source /usr/local/bin/virtualenvwrapper.sh" >> $EXTRA_PATH
 echo "" >> $BASH_PROFILE_PATH
@@ -104,7 +102,26 @@ echo "Installing IPython Notebook Default Profile"
 mkdir -p ~/.ipython
 cp -r .init/profile_default/ ~/.ipython/profile_default
 
+###############################################################################
+# Install Jupyter Profile
+###############################################################################
+
+echo "------------------------------"
+echo "Installing Jupyter Notebook Default Profile"
+
+pip3 install jupyter
+pip3 install jupyter_contrib_nbextensions
+
 echo "------------------------------"
 echo "Script completed."
 echo "Usage: workon py2 for Python2"
 echo "Usage: workon py3 for Python3"
+# Create required directory in case (optional)
+mkdir -p /Users/v/Library/Jupyter/nbextensions
+# Clone the repository
+cd /Users/v/Library/Jupyter/nbextensions
+git clone https://github.com/lambdalisue/jupyter-vim-binding vim_binding
+# Activate the extension
+jupyter nbextension enable vim_binding/vim_binding
+curl -O https://repo.continuum.io/archive/Anaconda3-4.4.0-MacOSX-x86_64.sh
+#Run the above in bash; TODO: Clean this file up.
