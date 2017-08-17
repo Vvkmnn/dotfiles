@@ -7,26 +7,18 @@
 # Google
 .google-cloud-sdk/*
 
-## vscode
-#.vscode/extensions/*/*
+# Docker
+.docker/*
 
-## SSH
-# .ssh/
+## vscode
+.vscode/*
 
 ## SSH
 ./ssh
 
-
-## Gcloud
-.gcloud/*
-
-## Docker
-*/certs/*
-*/completion_cache/*
-
 ## macOS
 .swp
-*/*.DS_Store
+.DS_Store
 
 # Thumbnails
 ._*
