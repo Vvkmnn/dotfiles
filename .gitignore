@@ -3,15 +3,19 @@
 
 # Anaconda
 .anaconda/*
+!.anaconda/*
 
 # Google
-.google-cloud-sdk/*
+google-cloud-sdk/*
+!google-cloud-sdk/*
 
 # Docker
-.docker/*
+docker/*
+!docker/*
 
 ## vscode
-.vscode/*
+vscode/*
+!vscode/*
 
 ## SSH
 ./ssh
