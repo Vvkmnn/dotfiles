@@ -2,7 +2,7 @@
 
 
 # Anaconda
-anaconda/*
+.anaconda/*
 
 # Google
 */google-cloud-sdk
