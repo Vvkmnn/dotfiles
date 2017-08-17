@@ -56,7 +56,7 @@ if [ -f "${HOME}/.google-cloud/google-cloud-sdk/path.zsh.inc" ]; then source "${
 if [ -f "${HOME}/.google-cloud/google-cloud-sdk/completion.zsh.inc" ]; then source "${HOME}/.google-cloud/google-cloud-sdk/completion.zsh.inc"; fi
 
 # Anaconda
-PREFIX=${HOME}/.anaconda
+export PATH="${HOME}/.anaconda/bin:$PATH"
 
 # Iterm2
 test -e "${HOME}/.iterm2/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2/.iterm2_shell_integration.zsh"
