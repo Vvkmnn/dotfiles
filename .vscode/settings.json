@@ -20,6 +20,28 @@
     "editor.fontFamily": "'Inconsolata for Powerline', medium",
     "editor.fontSize": 14,
     "vim.disableAnnoyingNeovimMessage": true,
+    // Projects
+    "git.enableSmartCommit": true,
+    "projectManager.git.baseFolders": [
+        {
+            "name": "Projects",
+            "rootPath": "$home\\Documents\\projects",
+            "paths": [],
+            "group": ""
+        },
+        {
+            "name": "RedQueen",
+            "rootPath": "$home\\Documents\\redqueen",
+            "paths": [],
+            "group": ""
+        },
+        {
+            "name": "Udacity",
+            "rootPath": "$home\\Documents\\udacity",
+            "paths": [],
+            "group": ""
+        }
+    ],
     // Linting
     /// Javascript
     "eslint.autoFixOnSave": true,
@@ -47,26 +69,5 @@
     /// Python
     "python.formatting.provider": "yapf",
     "python.linting.lintOnSave": true,
-    "python.formatting.formatOnSave": true,
-    "git.enableSmartCommit": true,
-    "projectManager.git.baseFolders": [
-        {
-            "name": "Projects",
-            "rootPath": "$home\\Documents\\projects",
-            "paths": [],
-            "group": ""
-        },
-        {
-            "name": "RedQueen",
-            "rootPath": "$home\\Documents\\redqueen",
-            "paths": [],
-            "group": ""
-        },
-        {
-            "name": "Udacity",
-            "rootPath": "$home\\Documents\\udacity",
-            "paths": [],
-            "group": ""
-        }
-    ]
+    "python.formatting.formatOnSave": true
 }
