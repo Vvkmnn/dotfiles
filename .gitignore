@@ -5,7 +5,7 @@
 .anaconda/*
 
 # Google
-*/google-cloud-sdk
+.google-cloud-sdk/*
 
 ## vscode
 #.vscode/extensions/*/*
