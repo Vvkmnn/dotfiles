@@ -21,6 +21,7 @@
     "editor.fontSize": 14,
     "vim.disableAnnoyingNeovimMessage": true,
     // Linting
+    /// Javascript
     "eslint.autoFixOnSave": true,
     "eslint.enable": true,
     "eslint.options": {
@@ -41,6 +42,31 @@
         }
     ],
     // Run the linter on save (onSave) or on type (onType)
-    "eslint.run": "onSave"
+    "eslint.run": "onSave",
     // Turns auto fix on save on or off.
+    /// Python
+    "python.formatting.provider": "yapf",
+    "python.linting.lintOnSave": true,
+    "python.formatting.formatOnSave": true,
+    "git.enableSmartCommit": true,
+    "projectManager.git.baseFolders": [
+        {
+            "name": "Projects",
+            "rootPath": "$home\\Documents\\projects",
+            "paths": [],
+            "group": ""
+        },
+        {
+            "name": "RedQueen",
+            "rootPath": "$home\\Documents\\redqueen",
+            "paths": [],
+            "group": ""
+        },
+        {
+            "name": "Udacity",
+            "rootPath": "$home\\Documents\\udacity",
+            "paths": [],
+            "group": ""
+        }
+    ]
 }
