@@ -1379,10 +1379,11 @@
                   "category":"",
                   "choices":[
                     "cookie",
-                    "ip"
+                    "ip",
+                    "random"
                   ],
                   "default":"ip",
-                  "description":"Whether to split traffic based on cookies or IP addresses. _SPLIT_BY_ must be one of: *cookie*, *ip*.",
+                  "description":"Whether to split traffic based on cookie, IP address or random. _SPLIT_BY_ must be one of: *cookie*, *ip*, *random*.",
                   "group":"",
                   "hidden":false,
                   "name":"--split-by",
@@ -5715,7 +5716,7 @@
                   "attr":{},
                   "category":"",
                   "choices":[],
-                  "description":"(DEPRECATED)         A regular expression to filter the names of the results  on. Any names\n        that do not match the entire regular expression will be filtered out.         \n+\nThis flag is deprecated. Use `--filter=\"name ~ REGEXP\"` instead.",
+                  "description":"(DEPRECATED)         A regular expression to filter the names of the results  on. Any names\n        that do not match the entire regular expression will be filtered out.\n+\nThis flag is deprecated. Use `--filter=\"name ~ 'REGEXP'\"` instead.",
                   "group":"",
                   "hidden":false,
                   "name":"--regexp",
@@ -5756,7 +5757,7 @@
                   "category":"",
                   "choices":[],
                   "default":[],
-                  "description":"(DEPRECATED) If provided, only resources from the given zones are queried. \n+\nThis flag is deprecated. Use ```--filter=\"zone :( *ZONE ... )\"``` instead.",
+                  "description":"(DEPRECATED) If provided, only resources from the given zones are queried.\n+\nThis flag is deprecated. Use ```--filter=\"zone :( *ZONE ... )\"``` instead.\n+\nFor example ```--filter=\"zone :(*europe-west1-b *europe-west1-c)\"```.",
                   "group":"",
                   "hidden":false,
                   "name":"--zones",
@@ -5779,7 +5780,7 @@
               "positionals":[
                 {
                   "default":[],
-                  "description":"(DEPRECATED) If provided, show details for the specified names and/or URIs of resources. \n+\nThis argument is deprecated. Use `--filter=\"name =( NAME ... )\"` instead.",
+                  "description":"(DEPRECATED) If provided, show details for the specified names and/or URIs of resources.\n+\nThis argument is deprecated. Use `--filter=\"name =('NAME' ...)\"` instead.",
                   "name":"names",
                   "nargs":"*",
                   "required":false,
@@ -6195,7 +6196,7 @@
                   "attr":{},
                   "category":"",
                   "choices":[],
-                  "description":"(DEPRECATED)         A regular expression to filter the names of the results  on. Any names\n        that do not match the entire regular expression will be filtered out.         \n+\nThis flag is deprecated. Use `--filter=\"name ~ REGEXP\"` instead.",
+                  "description":"(DEPRECATED)         A regular expression to filter the names of the results  on. Any names\n        that do not match the entire regular expression will be filtered out.\n+\nThis flag is deprecated. Use `--filter=\"name ~ 'REGEXP'\"` instead.",
                   "group":"",
                   "hidden":false,
                   "name":"--regexp",
@@ -6236,7 +6237,7 @@
                   "category":"",
                   "choices":[],
                   "default":[],
-                  "description":"(DEPRECATED) If provided, only resources from the given zones are queried. \n+\nThis flag is deprecated. Use ```--filter=\"zone :( *ZONE ... )\"``` instead.",
+                  "description":"(DEPRECATED) If provided, only resources from the given zones are queried.\n+\nThis flag is deprecated. Use ```--filter=\"zone :( *ZONE ... )\"``` instead.\n+\nFor example ```--filter=\"zone :(*europe-west1-b *europe-west1-c)\"```.",
                   "group":"",
                   "hidden":false,
                   "name":"--zones",
@@ -6259,7 +6260,7 @@
               "positionals":[
                 {
                   "default":[],
-                  "description":"(DEPRECATED) If provided, show details for the specified names and/or URIs of resources. \n+\nThis argument is deprecated. Use `--filter=\"name =( NAME ... )\"` instead.",
+                  "description":"(DEPRECATED) If provided, show details for the specified names and/or URIs of resources.\n+\nThis argument is deprecated. Use `--filter=\"name =('NAME' ...)\"` instead.",
                   "name":"names",
                   "nargs":"*",
                   "required":false,
@@ -10701,6 +10702,20 @@
                   "type":"string",
                   "value":"FAMILY"
                 },
+                "--force":{
+                  "attr":{},
+                  "category":"",
+                  "choices":[],
+                  "default":false,
+                  "description":"By default, image creation fails when it is created from a disk that\nis attached to a running instance. When this flag is used, image\ncreation from disk will proceed even if the disk is in use.",
+                  "group":"",
+                  "hidden":false,
+                  "name":"--force",
+                  "nargs":"0",
+                  "required":false,
+                  "type":"bool",
+                  "value":"FORCE"
+                },
                 "--labels":{
                   "attr":{},
                   "category":"",
@@ -10930,7 +10945,7 @@
                   "name":"--state",
                   "nargs":"0",
                   "required":true,
-                  "type":"__calliope__command__.e42831ee261246fb8f78404f4f1f5a73.gcloud.compute.images.deprecate.<lambda>",
+                  "type":"__calliope__command__.4480ce3f1b66448b87694fc3118c93c3.gcloud.compute.images.deprecate.<lambda>",
                   "value":"STATE"
                 }
               },
@@ -11598,7 +11613,7 @@
                   "attr":{},
                   "category":"",
                   "choices":[],
-                  "description":"A regular expression to filter the names of the results on. Any names\nthat do not match the entire regular expression will be filtered out.",
+                  "description":"(DEPRECATED)         A regular expression to filter the names of the results  on. Any names\n        that do not match the entire regular expression will be filtered out.\n+\nThis flag is deprecated. Use `--filter=\"name ~ 'REGEXP'\"` instead.",
                   "group":"",
                   "hidden":false,
                   "name":"--regexp",
@@ -11611,7 +11626,7 @@
                   "attr":{},
                   "category":"",
                   "choices":[],
-                  "description":"If provided, only regional resources are shown. If arguments are provided, only resources from the given regions are shown.",
+                  "description":"(DEPRECATED) If provided, only regional resources are shown. If arguments are provided, only resources from the given regions are shown.\n+\nFlag `--regions` is deprecated. Use ```--filter=\"region :( *REGION ... )\"``` instead.\n+\nFor example ```--filter=\"region :(*europe-west1 *europe-west2)\"```.",
                   "group":"list.2",
                   "hidden":false,
                   "name":"--regions",
@@ -11651,7 +11666,7 @@
                   "attr":{},
                   "category":"",
                   "choices":[],
-                  "description":"If provided, only zonal resources are shown. If arguments are provided, only resources from the given zones are shown.",
+                  "description":"(DEPRECATED) If provided, only zonal resources are shown. If arguments are provided, only resources from the given zones are shown.\n+\nFlag `--zones` is deprecated. Use ```--filter=\"zone :( *ZONE ... )\"``` instead.\n+\nFor example ```--filter=\"zone :(*europe-west1-b *europe-west1-c)\"```.",
                   "group":"list.2",
                   "hidden":false,
                   "name":"--zones",
@@ -11685,7 +11700,7 @@
               "positionals":[
                 {
                   "default":[],
-                  "description":"If provided, show details for the specified names and/or URIs of resources.",
+                  "description":"(DEPRECATED) If provided, show details for the specified names and/or URIs of resources.\n+\nThis argument is deprecated. Use `--filter=\"name =('NAME' ...)\"` instead.",
                   "name":"names",
                   "nargs":"*",
                   "required":false,
@@ -13944,7 +13959,7 @@
                       "attr":{},
                       "category":"",
                       "choices":[],
-                      "description":"(DEPRECATED)         A regular expression to filter the names of the results  on. Any names\n        that do not match the entire regular expression will be filtered out.         \n+\nThis flag is deprecated. Use `--filter=\"name ~ REGEXP\"` instead.",
+                      "description":"(DEPRECATED)         A regular expression to filter the names of the results  on. Any names\n        that do not match the entire regular expression will be filtered out.\n+\nThis flag is deprecated. Use `--filter=\"name ~ 'REGEXP'\"` instead.",
                       "group":"",
                       "hidden":false,
                       "name":"--regexp",
@@ -13985,7 +14000,7 @@
                       "category":"",
                       "choices":[],
                       "default":[],
-                      "description":"(DEPRECATED) If provided, only resources from the given zones are queried. \n+\nThis flag is deprecated. Use ```--filter=\"zone :( *ZONE ... )\"``` instead.",
+                      "description":"(DEPRECATED) If provided, only resources from the given zones are queried.\n+\nThis flag is deprecated. Use ```--filter=\"zone :( *ZONE ... )\"``` instead.\n+\nFor example ```--filter=\"zone :(*europe-west1-b *europe-west1-c)\"```.",
                       "group":"",
                       "hidden":false,
                       "name":"--zones",
@@ -14009,7 +14024,7 @@
                   "positionals":[
                     {
                       "default":[],
-                      "description":"(DEPRECATED) If provided, show details for the specified names and/or URIs of resources. \n+\nThis argument is deprecated. Use `--filter=\"name =( NAME ... )\"` instead.",
+                      "description":"(DEPRECATED) If provided, show details for the specified names and/or URIs of resources.\n+\nThis argument is deprecated. Use `--filter=\"name =('NAME' ...)\"` instead.",
                       "name":"names",
                       "nargs":"*",
                       "required":false,
@@ -14593,6 +14608,19 @@
                   "required":false,
                   "type":"string",
                   "value":"NETWORK"
+                },
+                "--network-interface":{
+                  "attr":{},
+                  "category":"",
+                  "choices":[],
+                  "description":"Adds a network interface to the instance. Mutually exclusive with\n--address, --network, --network-tier, --subnet, and --private-network-ip\nflags.\n+\nThe following keys are allowed:\n*address*::: Assigns the given external address to the instance that is\ncreated. Specifying an empty string will assign an ephemeral IP.\nMutually exclusive with no-address. If neither key is present the\ninstance will get an ephemeral IP.\n+\n*network*::: Specifies the network that the interface will be part of.\nIf subnet is also specified it must be subnetwork of this network. If\nneither is specified, this defaults to the \"default\" network.\n+\n*no-address*::: If specified the interface will have no external IP.\nMutually exclusive with address. If neither key is present the\ninstance will get an ephemeral IP.\n+\n*subnet*::: Specifies the subnet that the interface will be part of.\nIf network key is also specified this must be a subnetwork of the\nspecified network.",
+                  "group":"",
+                  "hidden":false,
+                  "name":"--network-interface",
+                  "nargs":"0",
+                  "required":false,
+                  "type":"dict",
+                  "value":"PROPERTY=VALUE"
                 },
                 "--no-address":{
                   "attr":{},
@@ -15675,6 +15703,19 @@
                   "type":"string",
                   "value":"NETWORK"
                 },
+                "--network-interface":{
+                  "attr":{},
+                  "category":"",
+                  "choices":[],
+                  "description":"Adds a network interface to the instance. Mutually exclusive with\n--address, --network, --network-tier, --subnet, and --private-network-ip\nflags.\n+\nThe following keys are allowed:\n*address*::: Assigns the given external address to the instance that is\ncreated. Specifying an empty string will assign an ephemeral IP.\nMutually exclusive with no-address. If neither key is present the\ninstance will get an ephemeral IP.\n+\n*network*::: Specifies the network that the interface will be part of.\nIf subnet is also specified it must be subnetwork of this network. If\nneither is specified, this defaults to the \"default\" network.\n+\n*no-address*::: If specified the interface will have no external IP.\nMutually exclusive with address. If neither key is present the\ninstance will get an ephemeral IP.\n+\n*private-network-ip*::: Assigns the given RFC1918 IP address to the\ninterface.\n+\n*subnet*::: Specifies the subnet that the interface will be part of.\nIf network key is also specified this must be a subnetwork of the\nspecified network.",
+                  "group":"",
+                  "hidden":false,
+                  "name":"--network-interface",
+                  "nargs":"0",
+                  "required":false,
+                  "type":"dict",
+                  "value":"PROPERTY=VALUE"
+                },
                 "--no-address":{
                   "attr":{},
                   "category":"",
@@ -16295,7 +16336,7 @@
                   "attr":{},
                   "category":"",
                   "choices":[],
-                  "description":"(DEPRECATED)         A regular expression to filter the names of the results  on. Any names\n        that do not match the entire regular expression will be filtered out.         \n+\nThis flag is deprecated. Use `--filter=\"name ~ REGEXP\"` instead.",
+                  "description":"(DEPRECATED)         A regular expression to filter the names of the results  on. Any names\n        that do not match the entire regular expression will be filtered out.\n+\nThis flag is deprecated. Use `--filter=\"name ~ 'REGEXP'\"` instead.",
                   "group":"",
                   "hidden":false,
                   "name":"--regexp",
@@ -16336,7 +16377,7 @@
                   "category":"",
                   "choices":[],
                   "default":[],
-                  "description":"(DEPRECATED) If provided, only resources from the given zones are queried. \n+\nThis flag is deprecated. Use ```--filter=\"zone :( *ZONE ... )\"``` instead.",
+                  "description":"(DEPRECATED) If provided, only resources from the given zones are queried.\n+\nThis flag is deprecated. Use ```--filter=\"zone :( *ZONE ... )\"``` instead.\n+\nFor example ```--filter=\"zone :(*europe-west1-b *europe-west1-c)\"```.",
                   "group":"",
                   "hidden":false,
                   "name":"--zones",
@@ -16359,7 +16400,7 @@
               "positionals":[
                 {
                   "default":[],
-                  "description":"(DEPRECATED) If provided, show details for the specified names and/or URIs of resources. \n+\nThis argument is deprecated. Use `--filter=\"name =( NAME ... )\"` instead.",
+                  "description":"(DEPRECATED) If provided, show details for the specified names and/or URIs of resources.\n+\nThis argument is deprecated. Use `--filter=\"name =('NAME' ...)\"` instead.",
                   "name":"names",
                   "nargs":"*",
                   "required":false,
@@ -17484,7 +17525,7 @@
                   "attr":{},
                   "category":"",
                   "choices":[],
-                  "description":"(DEPRECATED)         A regular expression to filter the names of the results  on. Any names\n        that do not match the entire regular expression will be filtered out.         \n+\nThis flag is deprecated. Use `--filter=\"name ~ REGEXP\"` instead.",
+                  "description":"(DEPRECATED)         A regular expression to filter the names of the results  on. Any names\n        that do not match the entire regular expression will be filtered out.\n+\nThis flag is deprecated. Use `--filter=\"name ~ 'REGEXP'\"` instead.",
                   "group":"",
                   "hidden":false,
                   "name":"--regexp",
@@ -17525,7 +17566,7 @@
                   "category":"",
                   "choices":[],
                   "default":[],
-                  "description":"(DEPRECATED) If provided, only resources from the given zones are queried. \n+\nThis flag is deprecated. Use ```--filter=\"zone :( *ZONE ... )\"``` instead.",
+                  "description":"(DEPRECATED) If provided, only resources from the given zones are queried.\n+\nThis flag is deprecated. Use ```--filter=\"zone :( *ZONE ... )\"``` instead.\n+\nFor example ```--filter=\"zone :(*europe-west1-b *europe-west1-c)\"```.",
                   "group":"",
                   "hidden":false,
                   "name":"--zones",
@@ -17548,7 +17589,7 @@
               "positionals":[
                 {
                   "default":[],
-                  "description":"(DEPRECATED) If provided, show details for the specified names and/or URIs of resources. \n+\nThis argument is deprecated. Use `--filter=\"name =( NAME ... )\"` instead.",
+                  "description":"(DEPRECATED) If provided, show details for the specified names and/or URIs of resources.\n+\nThis argument is deprecated. Use `--filter=\"name =('NAME' ...)\"` instead.",
                   "name":"names",
                   "nargs":"*",
                   "required":false,
@@ -19157,7 +19198,7 @@
                   "attr":{},
                   "category":"",
                   "choices":[],
-                  "description":"A regular expression to filter the names of the results on. Any names\nthat do not match the entire regular expression will be filtered out.",
+                  "description":"(DEPRECATED)         A regular expression to filter the names of the results  on. Any names\n        that do not match the entire regular expression will be filtered out.\n+\nThis flag is deprecated. Use `--filter=\"name ~ 'REGEXP'\"` instead.",
                   "group":"",
                   "hidden":false,
                   "name":"--regexp",
@@ -19207,7 +19248,7 @@
               "positionals":[
                 {
                   "default":[],
-                  "description":"If provided, show details for the specified names and/or URIs of resources.",
+                  "description":"(DEPRECATED) If provided, show details for the specified names and/or URIs of resources.\n+\nThis argument is deprecated. Use `--filter=\"name =('NAME' ...)\"` instead.",
                   "name":"names",
                   "nargs":"*",
                   "required":false,
@@ -19794,7 +19835,7 @@
                   "attr":{},
                   "category":"",
                   "choices":[],
-                  "description":"A regular expression to filter the names of the results on. Any names\nthat do not match the entire regular expression will be filtered out.",
+                  "description":"(DEPRECATED)         A regular expression to filter the names of the results  on. Any names\n        that do not match the entire regular expression will be filtered out.\n+\nThis flag is deprecated. Use `--filter=\"name ~ 'REGEXP'\"` instead.",
                   "group":"",
                   "hidden":false,
                   "name":"--regexp",
@@ -19808,7 +19849,7 @@
                   "category":"",
                   "choices":[],
                   "default":[],
-                  "description":"If provided, only resources from the given regions are queried.",
+                  "description":"(DEPRECATED) If provided, only resources from the given regions are queried.\n+\nThis flag is deprecated. Use ```--filter=\"region :( *REGION ... )\"``` instead.",
                   "group":"",
                   "hidden":false,
                   "name":"--regions",
@@ -19858,7 +19899,7 @@
               "positionals":[
                 {
                   "default":[],
-                  "description":"If provided, show details for the specified names and/or URIs of resources.",
+                  "description":"(DEPRECATED) If provided, show details for the specified names and/or URIs of resources.\n+\nThis argument is deprecated. Use `--filter=\"name =('NAME' ...)\"` instead.",
                   "name":"names",
                   "nargs":"*",
                   "required":false,
@@ -20942,7 +20983,7 @@
                   "attr":{},
                   "category":"",
                   "choices":[],
-                  "description":"A regular expression to filter the names of the results on. Any names\nthat do not match the entire regular expression will be filtered out.",
+                  "description":"(DEPRECATED)         A regular expression to filter the names of the results  on. Any names\n        that do not match the entire regular expression will be filtered out.\n+\nThis flag is deprecated. Use `--filter=\"name ~ 'REGEXP'\"` instead.",
                   "group":"",
                   "hidden":false,
                   "name":"--regexp",
@@ -20992,7 +21033,7 @@
               "positionals":[
                 {
                   "default":[],
-                  "description":"If provided, show details for the specified names and/or URIs of resources.",
+                  "description":"(DEPRECATED) If provided, show details for the specified names and/or URIs of resources.\n+\nThis argument is deprecated. Use `--filter=\"name =('NAME' ...)\"` instead.",
                   "name":"names",
                   "nargs":"*",
                   "required":false,
@@ -21300,7 +21341,7 @@
           "release":"GA",
           "sections":{
             "DESCRIPTION":"*gcloud compute ssh* is a thin wrapper around the *ssh(1)* command that\ntakes care of authentication and the translation of the\ninstance name into an IP address.\n\nThis command ensures that the user's public SSH key is present\nin the project's metadata. If the user does not have a public\nSSH key, one is generated using *ssh-keygen(1)* (if the `--quiet`\nflag is given, the generated key will have an empty passphrase).\n",
-            "EXAMPLES":"To SSH into 'example-instance' in zone ``us-central1-a'', run:\n\n  $ gcloud compute ssh example-instance --zone us-central1-a\n\nYou can also run a command on the virtual machine. For\nexample, to get a snapshot of the guest's process tree, run:\n\n  $ gcloud compute ssh example-instance --zone us-central1-a --command \"ps -ejH\"\n\nIf you are using the Google container virtual machine image, you\ncan SSH into one of your containers with:\n\n  $ gcloud compute ssh example-instance --zone us-central1-a --container CONTAINER\n"
+            "EXAMPLES":"To SSH into 'example-instance' in zone ``us-central1-a'', run:\n\n  $ gcloud compute ssh example-instance --zone us-central1-a\n\nYou can also run a command on the virtual machine. For\nexample, to get a snapshot of the guest's process tree, run:\n\n  $ gcloud compute ssh example-instance --zone us-central1-a --command \"ps -ejH\"\n\nIf you are using the Google Container-Optimized virtual machine image,\nyou can SSH into one of your containers with:\n\n  $ gcloud compute ssh example-instance --zone us-central1-a --container CONTAINER\n"
           }
         },
         "ssl-certificates":{
@@ -21477,7 +21518,7 @@
                   "attr":{},
                   "category":"",
                   "choices":[],
-                  "description":"A regular expression to filter the names of the results on. Any names\nthat do not match the entire regular expression will be filtered out.",
+                  "description":"(DEPRECATED)         A regular expression to filter the names of the results  on. Any names\n        that do not match the entire regular expression will be filtered out.\n+\nThis flag is deprecated. Use `--filter=\"name ~ 'REGEXP'\"` instead.",
                   "group":"",
                   "hidden":false,
                   "name":"--regexp",
@@ -21527,7 +21568,7 @@
               "positionals":[
                 {
                   "default":[],
-                  "description":"If provided, show details for the specified names and/or URIs of resources.",
+                  "description":"(DEPRECATED) If provided, show details for the specified names and/or URIs of resources.\n+\nThis argument is deprecated. Use `--filter=\"name =('NAME' ...)\"` instead.",
                   "name":"names",
                   "nargs":"*",
                   "required":false,
@@ -22014,7 +22055,7 @@
                   "attr":{},
                   "category":"",
                   "choices":[],
-                  "description":"A regular expression to filter the names of the results on. Any names\nthat do not match the entire regular expression will be filtered out.",
+                  "description":"(DEPRECATED)         A regular expression to filter the names of the results  on. Any names\n        that do not match the entire regular expression will be filtered out.\n+\nThis flag is deprecated. Use `--filter=\"name ~ 'REGEXP'\"` instead.",
                   "group":"",
                   "hidden":false,
                   "name":"--regexp",
@@ -22064,7 +22105,7 @@
               "positionals":[
                 {
                   "default":[],
-                  "description":"If provided, show details for the specified names and/or URIs of resources.",
+                  "description":"(DEPRECATED) If provided, show details for the specified names and/or URIs of resources.\n+\nThis argument is deprecated. Use `--filter=\"name =('NAME' ...)\"` instead.",
                   "name":"names",
                   "nargs":"*",
                   "required":false,
@@ -22380,7 +22421,7 @@
                   "attr":{},
                   "category":"",
                   "choices":[],
-                  "description":"(DEPRECATED)         A regular expression to filter the names of the results  on. Any names\n        that do not match the entire regular expression will be filtered out.         \n+\nThis flag is deprecated. Use `--filter=\"name ~ REGEXP\"` instead.",
+                  "description":"(DEPRECATED)         A regular expression to filter the names of the results  on. Any names\n        that do not match the entire regular expression will be filtered out.\n+\nThis flag is deprecated. Use `--filter=\"name ~ 'REGEXP'\"` instead.",
                   "group":"",
                   "hidden":false,
                   "name":"--regexp",
@@ -22421,7 +22462,7 @@
                   "category":"",
                   "choices":[],
                   "default":[],
-                  "description":"(DEPRECATED) If provided, only resources from the given zones are queried. \n+\nThis flag is deprecated. Use ```--filter=\"zone :( *ZONE ... )\"``` instead.",
+                  "description":"(DEPRECATED) If provided, only resources from the given zones are queried.\n+\nThis flag is deprecated. Use ```--filter=\"zone :( *ZONE ... )\"``` instead.\n+\nFor example ```--filter=\"zone :(*europe-west1-b *europe-west1-c)\"```.",
                   "group":"",
                   "hidden":false,
                   "name":"--zones",
@@ -22444,7 +22485,7 @@
               "positionals":[
                 {
                   "default":[],
-                  "description":"(DEPRECATED) If provided, show details for the specified names and/or URIs of resources. \n+\nThis argument is deprecated. Use `--filter=\"name =( NAME ... )\"` instead.",
+                  "description":"(DEPRECATED) If provided, show details for the specified names and/or URIs of resources.\n+\nThis argument is deprecated. Use `--filter=\"name =('NAME' ...)\"` instead.",
                   "name":"names",
                   "nargs":"*",
                   "required":false,
@@ -22944,7 +22985,7 @@
                   "attr":{},
                   "category":"",
                   "choices":[],
-                  "description":"A regular expression to filter the names of the results on. Any names\nthat do not match the entire regular expression will be filtered out.",
+                  "description":"(DEPRECATED)         A regular expression to filter the names of the results  on. Any names\n        that do not match the entire regular expression will be filtered out.\n+\nThis flag is deprecated. Use `--filter=\"name ~ 'REGEXP'\"` instead.",
                   "group":"",
                   "hidden":false,
                   "name":"--regexp",
@@ -22958,7 +22999,7 @@
                   "category":"",
                   "choices":[],
                   "default":[],
-                  "description":"If provided, only resources from the given regions are queried.",
+                  "description":"(DEPRECATED) If provided, only resources from the given regions are queried.\n+\nThis flag is deprecated. Use ```--filter=\"region :( *REGION ... )\"``` instead.",
                   "group":"",
                   "hidden":false,
                   "name":"--regions",
@@ -23008,7 +23049,7 @@
               "positionals":[
                 {
                   "default":[],
-                  "description":"If provided, show details for the specified names and/or URIs of resources.",
+                  "description":"(DEPRECATED) If provided, show details for the specified names and/or URIs of resources.\n+\nThis argument is deprecated. Use `--filter=\"name =('NAME' ...)\"` instead.",
                   "name":"names",
                   "nargs":"*",
                   "required":false,
@@ -24132,7 +24173,7 @@
                   "attr":{},
                   "category":"",
                   "choices":[],
-                  "description":"A regular expression to filter the names of the results on. Any names\nthat do not match the entire regular expression will be filtered out.",
+                  "description":"(DEPRECATED)         A regular expression to filter the names of the results  on. Any names\n        that do not match the entire regular expression will be filtered out.\n+\nThis flag is deprecated. Use `--filter=\"name ~ 'REGEXP'\"` instead.",
                   "group":"",
                   "hidden":false,
                   "name":"--regexp",
@@ -24146,7 +24187,7 @@
                   "category":"",
                   "choices":[],
                   "default":[],
-                  "description":"If provided, only resources from the given regions are queried.",
+                  "description":"(DEPRECATED) If provided, only resources from the given regions are queried.\n+\nThis flag is deprecated. Use ```--filter=\"region :( *REGION ... )\"``` instead.",
                   "group":"",
                   "hidden":false,
                   "name":"--regions",
@@ -24196,7 +24237,7 @@
               "positionals":[
                 {
                   "default":[],
-                  "description":"If provided, show details for the specified names and/or URIs of resources.",
+                  "description":"(DEPRECATED) If provided, show details for the specified names and/or URIs of resources.\n+\nThis argument is deprecated. Use `--filter=\"name =('NAME' ...)\"` instead.",
                   "name":"names",
                   "nargs":"*",
                   "required":false,
@@ -25141,7 +25182,7 @@
                   "name":"--shared-secret",
                   "nargs":"0",
                   "required":true,
-                  "type":"__calliope__command__.e42831ee261246fb8f78404f4f1f5a73.gcloud.compute.vpn_tunnels.create.ValidateSimpleSharedSecret",
+                  "type":"__calliope__command__.4480ce3f1b66448b87694fc3118c93c3.gcloud.compute.vpn_tunnels.create.ValidateSimpleSharedSecret",
                   "value":"SHARED_SECRET"
                 },
                 "--target-vpn-gateway":{
@@ -25338,7 +25379,7 @@
                   "attr":{},
                   "category":"",
                   "choices":[],
-                  "description":"A regular expression to filter the names of the results on. Any names\nthat do not match the entire regular expression will be filtered out.",
+                  "description":"(DEPRECATED)         A regular expression to filter the names of the results  on. Any names\n        that do not match the entire regular expression will be filtered out.\n+\nThis flag is deprecated. Use `--filter=\"name ~ 'REGEXP'\"` instead.",
                   "group":"",
                   "hidden":false,
                   "name":"--regexp",
@@ -25352,7 +25393,7 @@
                   "category":"",
                   "choices":[],
                   "default":[],
-                  "description":"If provided, only resources from the given regions are queried.",
+                  "description":"(DEPRECATED) If provided, only resources from the given regions are queried.\n+\nThis flag is deprecated. Use ```--filter=\"region :( *REGION ... )\"``` instead.",
                   "group":"",
                   "hidden":false,
                   "name":"--regions",
@@ -25402,7 +25443,7 @@
               "positionals":[
                 {
                   "default":[],
-                  "description":"If provided, show details for the specified names and/or URIs of resources.",
+                  "description":"(DEPRECATED) If provided, show details for the specified names and/or URIs of resources.\n+\nThis argument is deprecated. Use `--filter=\"name =('NAME' ...)\"` instead.",
                   "name":"names",
                   "nargs":"*",
                   "required":false,
@@ -26037,7 +26078,7 @@
                   "attr":{},
                   "category":"",
                   "choices":[],
-                  "description":"A regular expression to filter the names of the results on. Any names\nthat do not match the entire regular expression will be filtered out.",
+                  "description":"(DEPRECATED)         A regular expression to filter the names of the results  on. Any names\n        that do not match the entire regular expression will be filtered out.\n+\nThis flag is deprecated. Use `--filter=\"name ~ 'REGEXP'\"` instead.",
                   "group":"",
                   "hidden":false,
                   "name":"--regexp",
@@ -26087,7 +26128,7 @@
               "positionals":[
                 {
                   "default":[],
-                  "description":"If provided, show details for the specified names and/or URIs of resources.",
+                  "description":"(DEPRECATED) If provided, show details for the specified names and/or URIs of resources.\n+\nThis argument is deprecated. Use `--filter=\"name =('NAME' ...)\"` instead.",
                   "name":"names",
                   "nargs":"*",
                   "required":false,
@@ -26389,7 +26430,7 @@
           ],
           "release":"GA",
           "sections":{
-            "DESCRIPTION":"gcloud config get-value prints the property value from your active configuration only.\n\n## AVAILABLE PROPERTIES\n\n_core_::\n\n\n*account*:::\n\nThe account gcloud should use for authentication.  You can run `gcloud auth list` to see the accounts you currently have available.\n\n\n*custom_ca_certs_file*:::\n\nAbsolute path to a custom CA cert file.\n\n\n*default_regional_backend_service*:::\n\nIf True, backend services in `gcloud compute backend-services` will be regional by default. The `--global` flag will be required for global backend services.\n\n\n*disable_color*:::\n\nIf True, color will not be used when printing messages in the terminal.\n\n\n*disable_prompts*:::\n\nIf True, the default answer will be assumed for all user prompts.  For any prompts that require user input, an error will be raised. This is equivalent to either using the global `--quiet` flag or setting the environment variable `CLOUDSDK_CORE_DISABLE_PROMPTS` to 1.\n\n\n*disable_usage_reporting*:::\n\nIf True, anonymous statistics on SDK usage will not be collected.  This is value is set based on your choices during installation, but can be changed at any time.  For more information, see: https://cloud.google.com/sdk/usage-statistics\n\n\n*log_http*:::\n\nIf True, log HTTP requests and responses to the logs.  You may need to adjust your `verbosity` setting if you want to see in the terminal, otherwise it is available in the log files.\n\n\n*max_log_days*:::\n\nMaximum number of days to retain log files before deleting. If set to 0, turns off log garbage collection and does not delete log files. If unset, defaults to 30.\n\n\n*pass_credentials_to_gsutil*:::\n\nIf True, pass the configured Cloud SDK authentication to gsutil.\n\n\n*project*:::\n\nThe project id of the Cloud Platform project to operate on by default.  This can be overridden by using the global `--project` flag.\n\n\n*show_structured_logs*:::\n\nControls when JSON structured log messages for the current verbosity and above will be written to standard error. The default is text format when disabled. Valid values are: `never` - Log messages as text, `always` - Always log messages as JSON, `log` - Only log messages as JSON if stderr is a file, `terminal` - Only log messages as JSON if stderr is a terminal. If unset default is `never`.\n\n\n*trace_token*:::\n\nToken used to route traces of service requests for investigation of issues. This token will be provided by Google support.\n\n\n*user_output_enabled*:::\n\nIf False, messages to the user and command output on both standard output and standard error will be suppressed.\n\n\n*verbosity*:::\n\nThe default logging verbosity for gcloud commands.  This is the equivalent of using the global `--verbosity` flag.\n\n\n_app_::\n\n\n*cloud_build_timeout*:::\n\nThe timeout, in seconds, to wait for Docker builds to complete during deployments. All Docker builds now use the Container Builder API.\n\n\n*promote_by_default*:::\n\nIf True, when deploying a new version of a service, that version will be promoted to receive all traffic for the service. The flag can be overridden via the `--promote-by-default` or `--no-promote-by-default` flags.\n\n\n*stop_previous_version*:::\n\nIf True, when deploying a new version of a service, the previously deployed version is stopped. If False, older versions must be stopped manually.\n\n\n_auth_::\n\n\n*disable_credentials*:::\n\nIf true, gcloud will not attempt to load any credentials or authenticate any requests. This is useful if you are behind a proxy that adds authentication to your requests.\n\n\n_component_manager_::\n\n\n*additional_repositories*:::\n\nA comma separated list of additional repositories to check for components.  This property is automatically managed by the `gcloud components repositories` commands.\n\n\n*disable_update_check*:::\n\nIf True, the Cloud SDK will not automatically check for updates.\n\n\n_compute_::\n\n\n*region*:::\n\nThe default region to use when working with regional Compute Engine resources. When a `--region` flag is required but not provided, the command will fall back to this value, if set. To see valid choices, run `gcloud compute regions list`.\n\n\n*zone*:::\n\nThe default zone to use when working with zonal Compute Engine resources. When a `--zone` flag is required but not provided, the command will fall back to this value, if set. To see valid choices, run `gcloud compute zones list`.\n\n\n_container_::\n\n\n*build_timeout*:::\n\nThe timeout, in seconds, to wait for container builds to complete.\n\n\n*cluster*:::\n\nThe name of the cluster to use by default when working with Container Engine.\n\n\n*use_application_default_credentials*:::\n\nUse application default credentials to authenticate to the cluster API server.\n\n\n*use_client_certificate*:::\n\nUse the cluster's client certificate to authenticate to the cluster API server.\n\n\n_dataproc_::\n\n\n*region*:::\n\nSpecifies the Cloud Dataproc region to use. Each Cloud Dataproc region constitutes an independent resource namespace constrained to deploying instances into Google Compute Engine zones inside the region. The default value of \"global\" is a special multi-region namespace which is capable of deploying instances into all Google Compute Engine zones globally, and is disjoint from other Cloud Dataproc regions.\n\n\n_functions_::\n\n\n*region*:::\n\nThe default region to use when working with Google Compute functions resources. When a `--region` flag is required but not provided, the command will fall back to this value, if set. To see valid choices, run `gcloud functions regions list`.\n\n\n_ml_engine_::\n\n\n*polling_interval*:::\n\nThe interval (in seconds) at which to poll logs from your Cloud ML Engine jobs. Note that making it much faster than the default (60) will quickly use all of your quota.\n\n\n_proxy_::\n\n\n*address*:::\n\nThe hostname or IP address of your proxy server.\n\n\n*password*:::\n\nIf your proxy requires authentication, the password to use when connecting.\n\n\n*port*:::\n\nThe port to use when connected to your proxy server.\n\n\n*type*:::\n\nThe type of proxy you are using.  Supported proxy types are: [http, http_no_tunnel, socks4, socks5].\n\n\n*username*:::\n\nIf your proxy requires authentication, the username to use when connecting.\n\n\n_spanner_::\n\n\n*instance*:::\n\nThe default instance to use when working with Cloud Spanner resources. When an `instance` is required but not provided by a flag, the command will fall back to this value, if set.\n\n## EXAMPLES\n\nTo print the project property in the core section, run:\n\n  $ gcloud config get-value project\n\nTo print the zone property in the compute section, run:\n\n  $ gcloud config get-value compute/zone"
+            "DESCRIPTION":"gcloud config get-value prints the property value from your active configuration only.\n\n## AVAILABLE PROPERTIES\n\n_core_::\n\n\n*account*:::\n\nThe account gcloud should use for authentication.  You can run `gcloud auth list` to see the accounts you currently have available.\n\n\n*custom_ca_certs_file*:::\n\nAbsolute path to a custom CA cert file.\n\n\n*default_regional_backend_service*:::\n\nIf True, backend services in `gcloud compute backend-services` will be regional by default. The `--global` flag will be required for global backend services.\n\n\n*disable_color*:::\n\nIf True, color will not be used when printing messages in the terminal.\n\n\n*disable_prompts*:::\n\nIf True, the default answer will be assumed for all user prompts.  For any prompts that require user input, an error will be raised. This is equivalent to either using the global `--quiet` flag or setting the environment variable `CLOUDSDK_CORE_DISABLE_PROMPTS` to 1.\n\n\n*disable_usage_reporting*:::\n\nIf True, anonymous statistics on SDK usage will not be collected.  This is value is set based on your choices during installation, but can be changed at any time.  For more information, see: https://cloud.google.com/sdk/usage-statistics\n\n\n*log_http*:::\n\nIf True, log HTTP requests and responses to the logs.  You may need to adjust your `verbosity` setting if you want to see in the terminal, otherwise it is available in the log files.\n\n\n*max_log_days*:::\n\nMaximum number of days to retain log files before deleting. If set to 0, turns off log garbage collection and does not delete log files. If unset, defaults to 30.\n\n\n*pass_credentials_to_gsutil*:::\n\nIf True, pass the configured Cloud SDK authentication to gsutil.\n\n\n*project*:::\n\nThe project id of the Cloud Platform project to operate on by default.  This can be overridden by using the global `--project` flag.\n\n\n*show_structured_logs*:::\n\nControls when JSON structured log messages for the current verbosity and above will be written to standard error. The default is text format when disabled. Valid values are: `never` - Log messages as text, `always` - Always log messages as JSON, `log` - Only log messages as JSON if stderr is a file, `terminal` - Only log messages as JSON if stderr is a terminal. If unset default is `never`.\n\n\n*trace_token*:::\n\nToken used to route traces of service requests for investigation of issues. This token will be provided by Google support.\n\n\n*user_output_enabled*:::\n\nIf False, messages to the user and command output on both standard output and standard error will be suppressed.\n\n\n*verbosity*:::\n\nThe default logging verbosity for gcloud commands.  This is the equivalent of using the global `--verbosity` flag.\n\n\n_app_::\n\n\n*cloud_build_timeout*:::\n\nThe timeout, in seconds, to wait for Docker builds to complete during deployments. All Docker builds now use the Container Builder API.\n\n\n*promote_by_default*:::\n\nIf True, when deploying a new version of a service, that version will be promoted to receive all traffic for the service. The flag can be overridden via the `--promote-by-default` or `--no-promote-by-default` flags.\n\n\n*stop_previous_version*:::\n\nIf True, when deploying a new version of a service, the previously deployed version is stopped. If False, older versions must be stopped manually.\n\n\n*use_runtime_builders*:::\n\nIf set, opt in/out to a new code path for building applications using pre-fabricated runtimes that can be updated independently of client tooling. (If not set, will use the default path for each runtime.)\n\n\n_auth_::\n\n\n*disable_credentials*:::\n\nIf true, gcloud will not attempt to load any credentials or authenticate any requests. This is useful if you are behind a proxy that adds authentication to your requests.\n\n\n_component_manager_::\n\n\n*additional_repositories*:::\n\nA comma separated list of additional repositories to check for components.  This property is automatically managed by the `gcloud components repositories` commands.\n\n\n*disable_update_check*:::\n\nIf True, the Cloud SDK will not automatically check for updates.\n\n\n_compute_::\n\n\n*region*:::\n\nThe default region to use when working with regional Compute Engine resources. When a `--region` flag is required but not provided, the command will fall back to this value, if set. To see valid choices, run `gcloud compute regions list`.\n\n\n*zone*:::\n\nThe default zone to use when working with zonal Compute Engine resources. When a `--zone` flag is required but not provided, the command will fall back to this value, if set. To see valid choices, run `gcloud compute zones list`.\n\n\n_container_::\n\n\n*build_timeout*:::\n\nThe timeout, in seconds, to wait for container builds to complete.\n\n\n*cluster*:::\n\nThe name of the cluster to use by default when working with Container Engine.\n\n\n*use_application_default_credentials*:::\n\nUse application default credentials to authenticate to the cluster API server.\n\n\n*use_client_certificate*:::\n\nUse the cluster's client certificate to authenticate to the cluster API server.\n\n\n_dataproc_::\n\n\n*region*:::\n\nSpecifies the Cloud Dataproc region to use. Each Cloud Dataproc region constitutes an independent resource namespace constrained to deploying instances into Google Compute Engine zones inside the region. The default value of \"global\" is a special multi-region namespace which is capable of deploying instances into all Google Compute Engine zones globally, and is disjoint from other Cloud Dataproc regions.\n\n\n_functions_::\n\n\n*region*:::\n\nThe default region to use when working with Google Compute functions resources. When a `--region` flag is required but not provided, the command will fall back to this value, if set. To see valid choices, run `gcloud functions regions list`.\n\n\n_ml_engine_::\n\n\n*polling_interval*:::\n\nThe interval (in seconds) at which to poll logs from your Cloud ML Engine jobs. Note that making it much faster than the default (60) will quickly use all of your quota.\n\n\n_proxy_::\n\n\n*address*:::\n\nThe hostname or IP address of your proxy server.\n\n\n*password*:::\n\nIf your proxy requires authentication, the password to use when connecting.\n\n\n*port*:::\n\nThe port to use when connected to your proxy server.\n\n\n*type*:::\n\nThe type of proxy you are using.  Supported proxy types are: [http, http_no_tunnel, socks4, socks5].\n\n\n*username*:::\n\nIf your proxy requires authentication, the username to use when connecting.\n\n\n_spanner_::\n\n\n*instance*:::\n\nThe default instance to use when working with Cloud Spanner resources. When an `instance` is required but not provided by a flag, the command will fall back to this value, if set.\n\n## EXAMPLES\n\nTo print the project property in the core section, run:\n\n  $ gcloud config get-value project\n\nTo print the zone property in the compute section, run:\n\n  $ gcloud config get-value compute/zone"
           }
         },
         "list":{
@@ -26470,7 +26511,7 @@
           ],
           "release":"GA",
           "sections":{
-            "DESCRIPTION":"Lists all properties in your active configuration. These include the\naccount used to authorize access to the Cloud Platform, the current Cloud\nPlatform project, and the default Compute Engine region and zone, if set. See\n`gcloud topic configurations` for more information.\n\n## AVAILABLE PROPERTIES\n\n_core_::\n\n\n*account*:::\n\nThe account gcloud should use for authentication.  You can run `gcloud auth list` to see the accounts you currently have available.\n\n\n*custom_ca_certs_file*:::\n\nAbsolute path to a custom CA cert file.\n\n\n*default_regional_backend_service*:::\n\nIf True, backend services in `gcloud compute backend-services` will be regional by default. The `--global` flag will be required for global backend services.\n\n\n*disable_color*:::\n\nIf True, color will not be used when printing messages in the terminal.\n\n\n*disable_prompts*:::\n\nIf True, the default answer will be assumed for all user prompts.  For any prompts that require user input, an error will be raised. This is equivalent to either using the global `--quiet` flag or setting the environment variable `CLOUDSDK_CORE_DISABLE_PROMPTS` to 1.\n\n\n*disable_usage_reporting*:::\n\nIf True, anonymous statistics on SDK usage will not be collected.  This is value is set based on your choices during installation, but can be changed at any time.  For more information, see: https://cloud.google.com/sdk/usage-statistics\n\n\n*log_http*:::\n\nIf True, log HTTP requests and responses to the logs.  You may need to adjust your `verbosity` setting if you want to see in the terminal, otherwise it is available in the log files.\n\n\n*max_log_days*:::\n\nMaximum number of days to retain log files before deleting. If set to 0, turns off log garbage collection and does not delete log files. If unset, defaults to 30.\n\n\n*pass_credentials_to_gsutil*:::\n\nIf True, pass the configured Cloud SDK authentication to gsutil.\n\n\n*project*:::\n\nThe project id of the Cloud Platform project to operate on by default.  This can be overridden by using the global `--project` flag.\n\n\n*show_structured_logs*:::\n\nControls when JSON structured log messages for the current verbosity and above will be written to standard error. The default is text format when disabled. Valid values are: `never` - Log messages as text, `always` - Always log messages as JSON, `log` - Only log messages as JSON if stderr is a file, `terminal` - Only log messages as JSON if stderr is a terminal. If unset default is `never`.\n\n\n*trace_token*:::\n\nToken used to route traces of service requests for investigation of issues. This token will be provided by Google support.\n\n\n*user_output_enabled*:::\n\nIf False, messages to the user and command output on both standard output and standard error will be suppressed.\n\n\n*verbosity*:::\n\nThe default logging verbosity for gcloud commands.  This is the equivalent of using the global `--verbosity` flag.\n\n\n_app_::\n\n\n*cloud_build_timeout*:::\n\nThe timeout, in seconds, to wait for Docker builds to complete during deployments. All Docker builds now use the Container Builder API.\n\n\n*promote_by_default*:::\n\nIf True, when deploying a new version of a service, that version will be promoted to receive all traffic for the service. The flag can be overridden via the `--promote-by-default` or `--no-promote-by-default` flags.\n\n\n*stop_previous_version*:::\n\nIf True, when deploying a new version of a service, the previously deployed version is stopped. If False, older versions must be stopped manually.\n\n\n_auth_::\n\n\n*disable_credentials*:::\n\nIf true, gcloud will not attempt to load any credentials or authenticate any requests. This is useful if you are behind a proxy that adds authentication to your requests.\n\n\n_component_manager_::\n\n\n*additional_repositories*:::\n\nA comma separated list of additional repositories to check for components.  This property is automatically managed by the `gcloud components repositories` commands.\n\n\n*disable_update_check*:::\n\nIf True, the Cloud SDK will not automatically check for updates.\n\n\n_compute_::\n\n\n*region*:::\n\nThe default region to use when working with regional Compute Engine resources. When a `--region` flag is required but not provided, the command will fall back to this value, if set. To see valid choices, run `gcloud compute regions list`.\n\n\n*zone*:::\n\nThe default zone to use when working with zonal Compute Engine resources. When a `--zone` flag is required but not provided, the command will fall back to this value, if set. To see valid choices, run `gcloud compute zones list`.\n\n\n_container_::\n\n\n*build_timeout*:::\n\nThe timeout, in seconds, to wait for container builds to complete.\n\n\n*cluster*:::\n\nThe name of the cluster to use by default when working with Container Engine.\n\n\n*use_application_default_credentials*:::\n\nUse application default credentials to authenticate to the cluster API server.\n\n\n*use_client_certificate*:::\n\nUse the cluster's client certificate to authenticate to the cluster API server.\n\n\n_dataproc_::\n\n\n*region*:::\n\nSpecifies the Cloud Dataproc region to use. Each Cloud Dataproc region constitutes an independent resource namespace constrained to deploying instances into Google Compute Engine zones inside the region. The default value of \"global\" is a special multi-region namespace which is capable of deploying instances into all Google Compute Engine zones globally, and is disjoint from other Cloud Dataproc regions.\n\n\n_functions_::\n\n\n*region*:::\n\nThe default region to use when working with Google Compute functions resources. When a `--region` flag is required but not provided, the command will fall back to this value, if set. To see valid choices, run `gcloud functions regions list`.\n\n\n_ml_engine_::\n\n\n*polling_interval*:::\n\nThe interval (in seconds) at which to poll logs from your Cloud ML Engine jobs. Note that making it much faster than the default (60) will quickly use all of your quota.\n\n\n_proxy_::\n\n\n*address*:::\n\nThe hostname or IP address of your proxy server.\n\n\n*password*:::\n\nIf your proxy requires authentication, the password to use when connecting.\n\n\n*port*:::\n\nThe port to use when connected to your proxy server.\n\n\n*type*:::\n\nThe type of proxy you are using.  Supported proxy types are: [http, http_no_tunnel, socks4, socks5].\n\n\n*username*:::\n\nIf your proxy requires authentication, the username to use when connecting.\n\n\n_spanner_::\n\n\n*instance*:::\n\nThe default instance to use when working with Cloud Spanner resources. When an `instance` is required but not provided by a flag, the command will fall back to this value, if set.\n\n## EXAMPLES\n\nTo list the project property in the core section, run:\n\n  $ gcloud config list project\n\nTo list the zone property in the compute section, run:\n\n  $ gcloud config list compute/zone\n\nTo list all the properties, run:\n\n  $ gcloud config list --all\n\nNote you cannot specify both --all and a property name."
+            "DESCRIPTION":"Lists all properties in your active configuration. These include the\naccount used to authorize access to the Cloud Platform, the current Cloud\nPlatform project, and the default Compute Engine region and zone, if set. See\n`gcloud topic configurations` for more information.\n\n## AVAILABLE PROPERTIES\n\n_core_::\n\n\n*account*:::\n\nThe account gcloud should use for authentication.  You can run `gcloud auth list` to see the accounts you currently have available.\n\n\n*custom_ca_certs_file*:::\n\nAbsolute path to a custom CA cert file.\n\n\n*default_regional_backend_service*:::\n\nIf True, backend services in `gcloud compute backend-services` will be regional by default. The `--global` flag will be required for global backend services.\n\n\n*disable_color*:::\n\nIf True, color will not be used when printing messages in the terminal.\n\n\n*disable_prompts*:::\n\nIf True, the default answer will be assumed for all user prompts.  For any prompts that require user input, an error will be raised. This is equivalent to either using the global `--quiet` flag or setting the environment variable `CLOUDSDK_CORE_DISABLE_PROMPTS` to 1.\n\n\n*disable_usage_reporting*:::\n\nIf True, anonymous statistics on SDK usage will not be collected.  This is value is set based on your choices during installation, but can be changed at any time.  For more information, see: https://cloud.google.com/sdk/usage-statistics\n\n\n*log_http*:::\n\nIf True, log HTTP requests and responses to the logs.  You may need to adjust your `verbosity` setting if you want to see in the terminal, otherwise it is available in the log files.\n\n\n*max_log_days*:::\n\nMaximum number of days to retain log files before deleting. If set to 0, turns off log garbage collection and does not delete log files. If unset, defaults to 30.\n\n\n*pass_credentials_to_gsutil*:::\n\nIf True, pass the configured Cloud SDK authentication to gsutil.\n\n\n*project*:::\n\nThe project id of the Cloud Platform project to operate on by default.  This can be overridden by using the global `--project` flag.\n\n\n*show_structured_logs*:::\n\nControls when JSON structured log messages for the current verbosity and above will be written to standard error. The default is text format when disabled. Valid values are: `never` - Log messages as text, `always` - Always log messages as JSON, `log` - Only log messages as JSON if stderr is a file, `terminal` - Only log messages as JSON if stderr is a terminal. If unset default is `never`.\n\n\n*trace_token*:::\n\nToken used to route traces of service requests for investigation of issues. This token will be provided by Google support.\n\n\n*user_output_enabled*:::\n\nIf False, messages to the user and command output on both standard output and standard error will be suppressed.\n\n\n*verbosity*:::\n\nThe default logging verbosity for gcloud commands.  This is the equivalent of using the global `--verbosity` flag.\n\n\n_app_::\n\n\n*cloud_build_timeout*:::\n\nThe timeout, in seconds, to wait for Docker builds to complete during deployments. All Docker builds now use the Container Builder API.\n\n\n*promote_by_default*:::\n\nIf True, when deploying a new version of a service, that version will be promoted to receive all traffic for the service. The flag can be overridden via the `--promote-by-default` or `--no-promote-by-default` flags.\n\n\n*stop_previous_version*:::\n\nIf True, when deploying a new version of a service, the previously deployed version is stopped. If False, older versions must be stopped manually.\n\n\n*use_runtime_builders*:::\n\nIf set, opt in/out to a new code path for building applications using pre-fabricated runtimes that can be updated independently of client tooling. (If not set, will use the default path for each runtime.)\n\n\n_auth_::\n\n\n*disable_credentials*:::\n\nIf true, gcloud will not attempt to load any credentials or authenticate any requests. This is useful if you are behind a proxy that adds authentication to your requests.\n\n\n_component_manager_::\n\n\n*additional_repositories*:::\n\nA comma separated list of additional repositories to check for components.  This property is automatically managed by the `gcloud components repositories` commands.\n\n\n*disable_update_check*:::\n\nIf True, the Cloud SDK will not automatically check for updates.\n\n\n_compute_::\n\n\n*region*:::\n\nThe default region to use when working with regional Compute Engine resources. When a `--region` flag is required but not provided, the command will fall back to this value, if set. To see valid choices, run `gcloud compute regions list`.\n\n\n*zone*:::\n\nThe default zone to use when working with zonal Compute Engine resources. When a `--zone` flag is required but not provided, the command will fall back to this value, if set. To see valid choices, run `gcloud compute zones list`.\n\n\n_container_::\n\n\n*build_timeout*:::\n\nThe timeout, in seconds, to wait for container builds to complete.\n\n\n*cluster*:::\n\nThe name of the cluster to use by default when working with Container Engine.\n\n\n*use_application_default_credentials*:::\n\nUse application default credentials to authenticate to the cluster API server.\n\n\n*use_client_certificate*:::\n\nUse the cluster's client certificate to authenticate to the cluster API server.\n\n\n_dataproc_::\n\n\n*region*:::\n\nSpecifies the Cloud Dataproc region to use. Each Cloud Dataproc region constitutes an independent resource namespace constrained to deploying instances into Google Compute Engine zones inside the region. The default value of \"global\" is a special multi-region namespace which is capable of deploying instances into all Google Compute Engine zones globally, and is disjoint from other Cloud Dataproc regions.\n\n\n_functions_::\n\n\n*region*:::\n\nThe default region to use when working with Google Compute functions resources. When a `--region` flag is required but not provided, the command will fall back to this value, if set. To see valid choices, run `gcloud functions regions list`.\n\n\n_ml_engine_::\n\n\n*polling_interval*:::\n\nThe interval (in seconds) at which to poll logs from your Cloud ML Engine jobs. Note that making it much faster than the default (60) will quickly use all of your quota.\n\n\n_proxy_::\n\n\n*address*:::\n\nThe hostname or IP address of your proxy server.\n\n\n*password*:::\n\nIf your proxy requires authentication, the password to use when connecting.\n\n\n*port*:::\n\nThe port to use when connected to your proxy server.\n\n\n*type*:::\n\nThe type of proxy you are using.  Supported proxy types are: [http, http_no_tunnel, socks4, socks5].\n\n\n*username*:::\n\nIf your proxy requires authentication, the username to use when connecting.\n\n\n_spanner_::\n\n\n*instance*:::\n\nThe default instance to use when working with Cloud Spanner resources. When an `instance` is required but not provided by a flag, the command will fall back to this value, if set.\n\n## EXAMPLES\n\nTo list the project property in the core section, run:\n\n  $ gcloud config list project\n\nTo list the zone property in the compute section, run:\n\n  $ gcloud config list compute/zone\n\nTo list all the properties, run:\n\n  $ gcloud config list --all\n\nNote you cannot specify both --all and a property name."
           }
         },
         "set":{
@@ -26519,7 +26560,7 @@
           ],
           "release":"GA",
           "sections":{
-            "DESCRIPTION":"By default, sets the property in your active configuration only. Use the\n`--installation` flag to set the property across all configurations. See\n`gcloud topic configurations` for more information.\n\n## AVAILABLE PROPERTIES\n\n_core_::\n\n\n*account*:::\n\nThe account gcloud should use for authentication.  You can run `gcloud auth list` to see the accounts you currently have available.\n\n\n*custom_ca_certs_file*:::\n\nAbsolute path to a custom CA cert file.\n\n\n*default_regional_backend_service*:::\n\nIf True, backend services in `gcloud compute backend-services` will be regional by default. The `--global` flag will be required for global backend services.\n\n\n*disable_color*:::\n\nIf True, color will not be used when printing messages in the terminal.\n\n\n*disable_prompts*:::\n\nIf True, the default answer will be assumed for all user prompts.  For any prompts that require user input, an error will be raised. This is equivalent to either using the global `--quiet` flag or setting the environment variable `CLOUDSDK_CORE_DISABLE_PROMPTS` to 1.\n\n\n*disable_usage_reporting*:::\n\nIf True, anonymous statistics on SDK usage will not be collected.  This is value is set based on your choices during installation, but can be changed at any time.  For more information, see: https://cloud.google.com/sdk/usage-statistics\n\n\n*log_http*:::\n\nIf True, log HTTP requests and responses to the logs.  You may need to adjust your `verbosity` setting if you want to see in the terminal, otherwise it is available in the log files.\n\n\n*max_log_days*:::\n\nMaximum number of days to retain log files before deleting. If set to 0, turns off log garbage collection and does not delete log files. If unset, defaults to 30.\n\n\n*pass_credentials_to_gsutil*:::\n\nIf True, pass the configured Cloud SDK authentication to gsutil.\n\n\n*project*:::\n\nThe project id of the Cloud Platform project to operate on by default.  This can be overridden by using the global `--project` flag.\n\n\n*show_structured_logs*:::\n\nControls when JSON structured log messages for the current verbosity and above will be written to standard error. The default is text format when disabled. Valid values are: `never` - Log messages as text, `always` - Always log messages as JSON, `log` - Only log messages as JSON if stderr is a file, `terminal` - Only log messages as JSON if stderr is a terminal. If unset default is `never`.\n\n\n*trace_token*:::\n\nToken used to route traces of service requests for investigation of issues. This token will be provided by Google support.\n\n\n*user_output_enabled*:::\n\nIf False, messages to the user and command output on both standard output and standard error will be suppressed.\n\n\n*verbosity*:::\n\nThe default logging verbosity for gcloud commands.  This is the equivalent of using the global `--verbosity` flag.\n\n\n_app_::\n\n\n*cloud_build_timeout*:::\n\nThe timeout, in seconds, to wait for Docker builds to complete during deployments. All Docker builds now use the Container Builder API.\n\n\n*promote_by_default*:::\n\nIf True, when deploying a new version of a service, that version will be promoted to receive all traffic for the service. The flag can be overridden via the `--promote-by-default` or `--no-promote-by-default` flags.\n\n\n*stop_previous_version*:::\n\nIf True, when deploying a new version of a service, the previously deployed version is stopped. If False, older versions must be stopped manually.\n\n\n_auth_::\n\n\n*disable_credentials*:::\n\nIf true, gcloud will not attempt to load any credentials or authenticate any requests. This is useful if you are behind a proxy that adds authentication to your requests.\n\n\n_component_manager_::\n\n\n*additional_repositories*:::\n\nA comma separated list of additional repositories to check for components.  This property is automatically managed by the `gcloud components repositories` commands.\n\n\n*disable_update_check*:::\n\nIf True, the Cloud SDK will not automatically check for updates.\n\n\n_compute_::\n\n\n*region*:::\n\nThe default region to use when working with regional Compute Engine resources. When a `--region` flag is required but not provided, the command will fall back to this value, if set. To see valid choices, run `gcloud compute regions list`.\n\n\n*zone*:::\n\nThe default zone to use when working with zonal Compute Engine resources. When a `--zone` flag is required but not provided, the command will fall back to this value, if set. To see valid choices, run `gcloud compute zones list`.\n\n\n_container_::\n\n\n*build_timeout*:::\n\nThe timeout, in seconds, to wait for container builds to complete.\n\n\n*cluster*:::\n\nThe name of the cluster to use by default when working with Container Engine.\n\n\n*use_application_default_credentials*:::\n\nUse application default credentials to authenticate to the cluster API server.\n\n\n*use_client_certificate*:::\n\nUse the cluster's client certificate to authenticate to the cluster API server.\n\n\n_dataproc_::\n\n\n*region*:::\n\nSpecifies the Cloud Dataproc region to use. Each Cloud Dataproc region constitutes an independent resource namespace constrained to deploying instances into Google Compute Engine zones inside the region. The default value of \"global\" is a special multi-region namespace which is capable of deploying instances into all Google Compute Engine zones globally, and is disjoint from other Cloud Dataproc regions.\n\n\n_functions_::\n\n\n*region*:::\n\nThe default region to use when working with Google Compute functions resources. When a `--region` flag is required but not provided, the command will fall back to this value, if set. To see valid choices, run `gcloud functions regions list`.\n\n\n_ml_engine_::\n\n\n*polling_interval*:::\n\nThe interval (in seconds) at which to poll logs from your Cloud ML Engine jobs. Note that making it much faster than the default (60) will quickly use all of your quota.\n\n\n_proxy_::\n\n\n*address*:::\n\nThe hostname or IP address of your proxy server.\n\n\n*password*:::\n\nIf your proxy requires authentication, the password to use when connecting.\n\n\n*port*:::\n\nThe port to use when connected to your proxy server.\n\n\n*type*:::\n\nThe type of proxy you are using.  Supported proxy types are: [http, http_no_tunnel, socks4, socks5].\n\n\n*username*:::\n\nIf your proxy requires authentication, the username to use when connecting.\n\n\n_spanner_::\n\n\n*instance*:::\n\nThe default instance to use when working with Cloud Spanner resources. When an `instance` is required but not provided by a flag, the command will fall back to this value, if set.\n\n## EXAMPLES\n\nTo set the project property in the core section, run:\n\n  $ gcloud config set project myProject\n\nTo set the zone property in the compute section, run:\n\n  $ gcloud config set compute/zone zone3"
+            "DESCRIPTION":"By default, sets the property in your active configuration only. Use the\n`--installation` flag to set the property across all configurations. See\n`gcloud topic configurations` for more information.\n\n## AVAILABLE PROPERTIES\n\n_core_::\n\n\n*account*:::\n\nThe account gcloud should use for authentication.  You can run `gcloud auth list` to see the accounts you currently have available.\n\n\n*custom_ca_certs_file*:::\n\nAbsolute path to a custom CA cert file.\n\n\n*default_regional_backend_service*:::\n\nIf True, backend services in `gcloud compute backend-services` will be regional by default. The `--global` flag will be required for global backend services.\n\n\n*disable_color*:::\n\nIf True, color will not be used when printing messages in the terminal.\n\n\n*disable_prompts*:::\n\nIf True, the default answer will be assumed for all user prompts.  For any prompts that require user input, an error will be raised. This is equivalent to either using the global `--quiet` flag or setting the environment variable `CLOUDSDK_CORE_DISABLE_PROMPTS` to 1.\n\n\n*disable_usage_reporting*:::\n\nIf True, anonymous statistics on SDK usage will not be collected.  This is value is set based on your choices during installation, but can be changed at any time.  For more information, see: https://cloud.google.com/sdk/usage-statistics\n\n\n*log_http*:::\n\nIf True, log HTTP requests and responses to the logs.  You may need to adjust your `verbosity` setting if you want to see in the terminal, otherwise it is available in the log files.\n\n\n*max_log_days*:::\n\nMaximum number of days to retain log files before deleting. If set to 0, turns off log garbage collection and does not delete log files. If unset, defaults to 30.\n\n\n*pass_credentials_to_gsutil*:::\n\nIf True, pass the configured Cloud SDK authentication to gsutil.\n\n\n*project*:::\n\nThe project id of the Cloud Platform project to operate on by default.  This can be overridden by using the global `--project` flag.\n\n\n*show_structured_logs*:::\n\nControls when JSON structured log messages for the current verbosity and above will be written to standard error. The default is text format when disabled. Valid values are: `never` - Log messages as text, `always` - Always log messages as JSON, `log` - Only log messages as JSON if stderr is a file, `terminal` - Only log messages as JSON if stderr is a terminal. If unset default is `never`.\n\n\n*trace_token*:::\n\nToken used to route traces of service requests for investigation of issues. This token will be provided by Google support.\n\n\n*user_output_enabled*:::\n\nIf False, messages to the user and command output on both standard output and standard error will be suppressed.\n\n\n*verbosity*:::\n\nThe default logging verbosity for gcloud commands.  This is the equivalent of using the global `--verbosity` flag.\n\n\n_app_::\n\n\n*cloud_build_timeout*:::\n\nThe timeout, in seconds, to wait for Docker builds to complete during deployments. All Docker builds now use the Container Builder API.\n\n\n*promote_by_default*:::\n\nIf True, when deploying a new version of a service, that version will be promoted to receive all traffic for the service. The flag can be overridden via the `--promote-by-default` or `--no-promote-by-default` flags.\n\n\n*stop_previous_version*:::\n\nIf True, when deploying a new version of a service, the previously deployed version is stopped. If False, older versions must be stopped manually.\n\n\n*use_runtime_builders*:::\n\nIf set, opt in/out to a new code path for building applications using pre-fabricated runtimes that can be updated independently of client tooling. (If not set, will use the default path for each runtime.)\n\n\n_auth_::\n\n\n*disable_credentials*:::\n\nIf true, gcloud will not attempt to load any credentials or authenticate any requests. This is useful if you are behind a proxy that adds authentication to your requests.\n\n\n_component_manager_::\n\n\n*additional_repositories*:::\n\nA comma separated list of additional repositories to check for components.  This property is automatically managed by the `gcloud components repositories` commands.\n\n\n*disable_update_check*:::\n\nIf True, the Cloud SDK will not automatically check for updates.\n\n\n_compute_::\n\n\n*region*:::\n\nThe default region to use when working with regional Compute Engine resources. When a `--region` flag is required but not provided, the command will fall back to this value, if set. To see valid choices, run `gcloud compute regions list`.\n\n\n*zone*:::\n\nThe default zone to use when working with zonal Compute Engine resources. When a `--zone` flag is required but not provided, the command will fall back to this value, if set. To see valid choices, run `gcloud compute zones list`.\n\n\n_container_::\n\n\n*build_timeout*:::\n\nThe timeout, in seconds, to wait for container builds to complete.\n\n\n*cluster*:::\n\nThe name of the cluster to use by default when working with Container Engine.\n\n\n*use_application_default_credentials*:::\n\nUse application default credentials to authenticate to the cluster API server.\n\n\n*use_client_certificate*:::\n\nUse the cluster's client certificate to authenticate to the cluster API server.\n\n\n_dataproc_::\n\n\n*region*:::\n\nSpecifies the Cloud Dataproc region to use. Each Cloud Dataproc region constitutes an independent resource namespace constrained to deploying instances into Google Compute Engine zones inside the region. The default value of \"global\" is a special multi-region namespace which is capable of deploying instances into all Google Compute Engine zones globally, and is disjoint from other Cloud Dataproc regions.\n\n\n_functions_::\n\n\n*region*:::\n\nThe default region to use when working with Google Compute functions resources. When a `--region` flag is required but not provided, the command will fall back to this value, if set. To see valid choices, run `gcloud functions regions list`.\n\n\n_ml_engine_::\n\n\n*polling_interval*:::\n\nThe interval (in seconds) at which to poll logs from your Cloud ML Engine jobs. Note that making it much faster than the default (60) will quickly use all of your quota.\n\n\n_proxy_::\n\n\n*address*:::\n\nThe hostname or IP address of your proxy server.\n\n\n*password*:::\n\nIf your proxy requires authentication, the password to use when connecting.\n\n\n*port*:::\n\nThe port to use when connected to your proxy server.\n\n\n*type*:::\n\nThe type of proxy you are using.  Supported proxy types are: [http, http_no_tunnel, socks4, socks5].\n\n\n*username*:::\n\nIf your proxy requires authentication, the username to use when connecting.\n\n\n_spanner_::\n\n\n*instance*:::\n\nThe default instance to use when working with Cloud Spanner resources. When an `instance` is required but not provided by a flag, the command will fall back to this value, if set.\n\n## EXAMPLES\n\nTo set the project property in the core section, run:\n\n  $ gcloud config set project myProject\n\nTo set the zone property in the compute section, run:\n\n  $ gcloud config set compute/zone zone3"
           }
         },
         "unset":{
@@ -26561,7 +26602,7 @@
           ],
           "release":"GA",
           "sections":{
-            "DESCRIPTION":"By default, unsets the property in your active configuration only. Use the\n`--installation` flag to unset the property across all configurations. See\n`gcloud topic configurations` for more information.\n\n## AVAILABLE PROPERTIES\n\n_core_::\n\n\n*account*:::\n\nThe account gcloud should use for authentication.  You can run `gcloud auth list` to see the accounts you currently have available.\n\n\n*custom_ca_certs_file*:::\n\nAbsolute path to a custom CA cert file.\n\n\n*default_regional_backend_service*:::\n\nIf True, backend services in `gcloud compute backend-services` will be regional by default. The `--global` flag will be required for global backend services.\n\n\n*disable_color*:::\n\nIf True, color will not be used when printing messages in the terminal.\n\n\n*disable_prompts*:::\n\nIf True, the default answer will be assumed for all user prompts.  For any prompts that require user input, an error will be raised. This is equivalent to either using the global `--quiet` flag or setting the environment variable `CLOUDSDK_CORE_DISABLE_PROMPTS` to 1.\n\n\n*disable_usage_reporting*:::\n\nIf True, anonymous statistics on SDK usage will not be collected.  This is value is set based on your choices during installation, but can be changed at any time.  For more information, see: https://cloud.google.com/sdk/usage-statistics\n\n\n*log_http*:::\n\nIf True, log HTTP requests and responses to the logs.  You may need to adjust your `verbosity` setting if you want to see in the terminal, otherwise it is available in the log files.\n\n\n*max_log_days*:::\n\nMaximum number of days to retain log files before deleting. If set to 0, turns off log garbage collection and does not delete log files. If unset, defaults to 30.\n\n\n*pass_credentials_to_gsutil*:::\n\nIf True, pass the configured Cloud SDK authentication to gsutil.\n\n\n*project*:::\n\nThe project id of the Cloud Platform project to operate on by default.  This can be overridden by using the global `--project` flag.\n\n\n*show_structured_logs*:::\n\nControls when JSON structured log messages for the current verbosity and above will be written to standard error. The default is text format when disabled. Valid values are: `never` - Log messages as text, `always` - Always log messages as JSON, `log` - Only log messages as JSON if stderr is a file, `terminal` - Only log messages as JSON if stderr is a terminal. If unset default is `never`.\n\n\n*trace_token*:::\n\nToken used to route traces of service requests for investigation of issues. This token will be provided by Google support.\n\n\n*user_output_enabled*:::\n\nIf False, messages to the user and command output on both standard output and standard error will be suppressed.\n\n\n*verbosity*:::\n\nThe default logging verbosity for gcloud commands.  This is the equivalent of using the global `--verbosity` flag.\n\n\n_app_::\n\n\n*cloud_build_timeout*:::\n\nThe timeout, in seconds, to wait for Docker builds to complete during deployments. All Docker builds now use the Container Builder API.\n\n\n*promote_by_default*:::\n\nIf True, when deploying a new version of a service, that version will be promoted to receive all traffic for the service. The flag can be overridden via the `--promote-by-default` or `--no-promote-by-default` flags.\n\n\n*stop_previous_version*:::\n\nIf True, when deploying a new version of a service, the previously deployed version is stopped. If False, older versions must be stopped manually.\n\n\n_auth_::\n\n\n*disable_credentials*:::\n\nIf true, gcloud will not attempt to load any credentials or authenticate any requests. This is useful if you are behind a proxy that adds authentication to your requests.\n\n\n_component_manager_::\n\n\n*additional_repositories*:::\n\nA comma separated list of additional repositories to check for components.  This property is automatically managed by the `gcloud components repositories` commands.\n\n\n*disable_update_check*:::\n\nIf True, the Cloud SDK will not automatically check for updates.\n\n\n_compute_::\n\n\n*region*:::\n\nThe default region to use when working with regional Compute Engine resources. When a `--region` flag is required but not provided, the command will fall back to this value, if set. To see valid choices, run `gcloud compute regions list`.\n\n\n*zone*:::\n\nThe default zone to use when working with zonal Compute Engine resources. When a `--zone` flag is required but not provided, the command will fall back to this value, if set. To see valid choices, run `gcloud compute zones list`.\n\n\n_container_::\n\n\n*build_timeout*:::\n\nThe timeout, in seconds, to wait for container builds to complete.\n\n\n*cluster*:::\n\nThe name of the cluster to use by default when working with Container Engine.\n\n\n*use_application_default_credentials*:::\n\nUse application default credentials to authenticate to the cluster API server.\n\n\n*use_client_certificate*:::\n\nUse the cluster's client certificate to authenticate to the cluster API server.\n\n\n_dataproc_::\n\n\n*region*:::\n\nSpecifies the Cloud Dataproc region to use. Each Cloud Dataproc region constitutes an independent resource namespace constrained to deploying instances into Google Compute Engine zones inside the region. The default value of \"global\" is a special multi-region namespace which is capable of deploying instances into all Google Compute Engine zones globally, and is disjoint from other Cloud Dataproc regions.\n\n\n_functions_::\n\n\n*region*:::\n\nThe default region to use when working with Google Compute functions resources. When a `--region` flag is required but not provided, the command will fall back to this value, if set. To see valid choices, run `gcloud functions regions list`.\n\n\n_ml_engine_::\n\n\n*polling_interval*:::\n\nThe interval (in seconds) at which to poll logs from your Cloud ML Engine jobs. Note that making it much faster than the default (60) will quickly use all of your quota.\n\n\n_proxy_::\n\n\n*address*:::\n\nThe hostname or IP address of your proxy server.\n\n\n*password*:::\n\nIf your proxy requires authentication, the password to use when connecting.\n\n\n*port*:::\n\nThe port to use when connected to your proxy server.\n\n\n*type*:::\n\nThe type of proxy you are using.  Supported proxy types are: [http, http_no_tunnel, socks4, socks5].\n\n\n*username*:::\n\nIf your proxy requires authentication, the username to use when connecting.\n\n\n_spanner_::\n\n\n*instance*:::\n\nThe default instance to use when working with Cloud Spanner resources. When an `instance` is required but not provided by a flag, the command will fall back to this value, if set.\n\n## EXAMPLES\n\nTo unset the project property in the core section, run:\n\n  $ gcloud config unset project\n\nTo unset the zone property in the compute section, run:\n\n  $ gcloud config unset compute/zone"
+            "DESCRIPTION":"By default, unsets the property in your active configuration only. Use the\n`--installation` flag to unset the property across all configurations. See\n`gcloud topic configurations` for more information.\n\n## AVAILABLE PROPERTIES\n\n_core_::\n\n\n*account*:::\n\nThe account gcloud should use for authentication.  You can run `gcloud auth list` to see the accounts you currently have available.\n\n\n*custom_ca_certs_file*:::\n\nAbsolute path to a custom CA cert file.\n\n\n*default_regional_backend_service*:::\n\nIf True, backend services in `gcloud compute backend-services` will be regional by default. The `--global` flag will be required for global backend services.\n\n\n*disable_color*:::\n\nIf True, color will not be used when printing messages in the terminal.\n\n\n*disable_prompts*:::\n\nIf True, the default answer will be assumed for all user prompts.  For any prompts that require user input, an error will be raised. This is equivalent to either using the global `--quiet` flag or setting the environment variable `CLOUDSDK_CORE_DISABLE_PROMPTS` to 1.\n\n\n*disable_usage_reporting*:::\n\nIf True, anonymous statistics on SDK usage will not be collected.  This is value is set based on your choices during installation, but can be changed at any time.  For more information, see: https://cloud.google.com/sdk/usage-statistics\n\n\n*log_http*:::\n\nIf True, log HTTP requests and responses to the logs.  You may need to adjust your `verbosity` setting if you want to see in the terminal, otherwise it is available in the log files.\n\n\n*max_log_days*:::\n\nMaximum number of days to retain log files before deleting. If set to 0, turns off log garbage collection and does not delete log files. If unset, defaults to 30.\n\n\n*pass_credentials_to_gsutil*:::\n\nIf True, pass the configured Cloud SDK authentication to gsutil.\n\n\n*project*:::\n\nThe project id of the Cloud Platform project to operate on by default.  This can be overridden by using the global `--project` flag.\n\n\n*show_structured_logs*:::\n\nControls when JSON structured log messages for the current verbosity and above will be written to standard error. The default is text format when disabled. Valid values are: `never` - Log messages as text, `always` - Always log messages as JSON, `log` - Only log messages as JSON if stderr is a file, `terminal` - Only log messages as JSON if stderr is a terminal. If unset default is `never`.\n\n\n*trace_token*:::\n\nToken used to route traces of service requests for investigation of issues. This token will be provided by Google support.\n\n\n*user_output_enabled*:::\n\nIf False, messages to the user and command output on both standard output and standard error will be suppressed.\n\n\n*verbosity*:::\n\nThe default logging verbosity for gcloud commands.  This is the equivalent of using the global `--verbosity` flag.\n\n\n_app_::\n\n\n*cloud_build_timeout*:::\n\nThe timeout, in seconds, to wait for Docker builds to complete during deployments. All Docker builds now use the Container Builder API.\n\n\n*promote_by_default*:::\n\nIf True, when deploying a new version of a service, that version will be promoted to receive all traffic for the service. The flag can be overridden via the `--promote-by-default` or `--no-promote-by-default` flags.\n\n\n*stop_previous_version*:::\n\nIf True, when deploying a new version of a service, the previously deployed version is stopped. If False, older versions must be stopped manually.\n\n\n*use_runtime_builders*:::\n\nIf set, opt in/out to a new code path for building applications using pre-fabricated runtimes that can be updated independently of client tooling. (If not set, will use the default path for each runtime.)\n\n\n_auth_::\n\n\n*disable_credentials*:::\n\nIf true, gcloud will not attempt to load any credentials or authenticate any requests. This is useful if you are behind a proxy that adds authentication to your requests.\n\n\n_component_manager_::\n\n\n*additional_repositories*:::\n\nA comma separated list of additional repositories to check for components.  This property is automatically managed by the `gcloud components repositories` commands.\n\n\n*disable_update_check*:::\n\nIf True, the Cloud SDK will not automatically check for updates.\n\n\n_compute_::\n\n\n*region*:::\n\nThe default region to use when working with regional Compute Engine resources. When a `--region` flag is required but not provided, the command will fall back to this value, if set. To see valid choices, run `gcloud compute regions list`.\n\n\n*zone*:::\n\nThe default zone to use when working with zonal Compute Engine resources. When a `--zone` flag is required but not provided, the command will fall back to this value, if set. To see valid choices, run `gcloud compute zones list`.\n\n\n_container_::\n\n\n*build_timeout*:::\n\nThe timeout, in seconds, to wait for container builds to complete.\n\n\n*cluster*:::\n\nThe name of the cluster to use by default when working with Container Engine.\n\n\n*use_application_default_credentials*:::\n\nUse application default credentials to authenticate to the cluster API server.\n\n\n*use_client_certificate*:::\n\nUse the cluster's client certificate to authenticate to the cluster API server.\n\n\n_dataproc_::\n\n\n*region*:::\n\nSpecifies the Cloud Dataproc region to use. Each Cloud Dataproc region constitutes an independent resource namespace constrained to deploying instances into Google Compute Engine zones inside the region. The default value of \"global\" is a special multi-region namespace which is capable of deploying instances into all Google Compute Engine zones globally, and is disjoint from other Cloud Dataproc regions.\n\n\n_functions_::\n\n\n*region*:::\n\nThe default region to use when working with Google Compute functions resources. When a `--region` flag is required but not provided, the command will fall back to this value, if set. To see valid choices, run `gcloud functions regions list`.\n\n\n_ml_engine_::\n\n\n*polling_interval*:::\n\nThe interval (in seconds) at which to poll logs from your Cloud ML Engine jobs. Note that making it much faster than the default (60) will quickly use all of your quota.\n\n\n_proxy_::\n\n\n*address*:::\n\nThe hostname or IP address of your proxy server.\n\n\n*password*:::\n\nIf your proxy requires authentication, the password to use when connecting.\n\n\n*port*:::\n\nThe port to use when connected to your proxy server.\n\n\n*type*:::\n\nThe type of proxy you are using.  Supported proxy types are: [http, http_no_tunnel, socks4, socks5].\n\n\n*username*:::\n\nIf your proxy requires authentication, the username to use when connecting.\n\n\n_spanner_::\n\n\n*instance*:::\n\nThe default instance to use when working with Cloud Spanner resources. When an `instance` is required but not provided by a flag, the command will fall back to this value, if set.\n\n## EXAMPLES\n\nTo unset the project property in the core section, run:\n\n  $ gcloud config unset project\n\nTo unset the zone property in the compute section, run:\n\n  $ gcloud config unset compute/zone"
           }
         }
       },
@@ -26577,7 +26618,7 @@
       "positionals":[],
       "release":"GA",
       "sections":{
-        "DESCRIPTION":"The gcloud config command group lets you set, view and unset properties used by\nCloud SDK.\n\nA configuration is a set of properties that govern the behavior of gcloud\nand other Cloud SDK tools. The initial `default` configuration is set when\n`gcloud init` is run. You can create additional named configurations using\n`gcloud init` or `gcloud config configurations create`.\n\nTo switch between configurations, use `gcloud config configurations activate`.\n\ngcloud supports several flags that have the same effect as properties in\na configuration (for example, gcloud supports both the `--project` flag and\n`project` property). Properties differ from flags in that flags affect command\nbehavior on a per-invocation basis. Properties allow you to maintain the same\nsettings across command executions.\n\nFor more information on configurations, see `gcloud topic configurations`.\n\n## AVAILABLE PROPERTIES\n\n_core_::\n\n\n*account*:::\n\nThe account gcloud should use for authentication.  You can run `gcloud auth list` to see the accounts you currently have available.\n\n\n*custom_ca_certs_file*:::\n\nAbsolute path to a custom CA cert file.\n\n\n*default_regional_backend_service*:::\n\nIf True, backend services in `gcloud compute backend-services` will be regional by default. The `--global` flag will be required for global backend services.\n\n\n*disable_color*:::\n\nIf True, color will not be used when printing messages in the terminal.\n\n\n*disable_prompts*:::\n\nIf True, the default answer will be assumed for all user prompts.  For any prompts that require user input, an error will be raised. This is equivalent to either using the global `--quiet` flag or setting the environment variable `CLOUDSDK_CORE_DISABLE_PROMPTS` to 1.\n\n\n*disable_usage_reporting*:::\n\nIf True, anonymous statistics on SDK usage will not be collected.  This is value is set based on your choices during installation, but can be changed at any time.  For more information, see: https://cloud.google.com/sdk/usage-statistics\n\n\n*log_http*:::\n\nIf True, log HTTP requests and responses to the logs.  You may need to adjust your `verbosity` setting if you want to see in the terminal, otherwise it is available in the log files.\n\n\n*max_log_days*:::\n\nMaximum number of days to retain log files before deleting. If set to 0, turns off log garbage collection and does not delete log files. If unset, defaults to 30.\n\n\n*pass_credentials_to_gsutil*:::\n\nIf True, pass the configured Cloud SDK authentication to gsutil.\n\n\n*project*:::\n\nThe project id of the Cloud Platform project to operate on by default.  This can be overridden by using the global `--project` flag.\n\n\n*show_structured_logs*:::\n\nControls when JSON structured log messages for the current verbosity and above will be written to standard error. The default is text format when disabled. Valid values are: `never` - Log messages as text, `always` - Always log messages as JSON, `log` - Only log messages as JSON if stderr is a file, `terminal` - Only log messages as JSON if stderr is a terminal. If unset default is `never`.\n\n\n*trace_token*:::\n\nToken used to route traces of service requests for investigation of issues. This token will be provided by Google support.\n\n\n*user_output_enabled*:::\n\nIf False, messages to the user and command output on both standard output and standard error will be suppressed.\n\n\n*verbosity*:::\n\nThe default logging verbosity for gcloud commands.  This is the equivalent of using the global `--verbosity` flag.\n\n\n_app_::\n\n\n*cloud_build_timeout*:::\n\nThe timeout, in seconds, to wait for Docker builds to complete during deployments. All Docker builds now use the Container Builder API.\n\n\n*promote_by_default*:::\n\nIf True, when deploying a new version of a service, that version will be promoted to receive all traffic for the service. The flag can be overridden via the `--promote-by-default` or `--no-promote-by-default` flags.\n\n\n*stop_previous_version*:::\n\nIf True, when deploying a new version of a service, the previously deployed version is stopped. If False, older versions must be stopped manually.\n\n\n_auth_::\n\n\n*disable_credentials*:::\n\nIf true, gcloud will not attempt to load any credentials or authenticate any requests. This is useful if you are behind a proxy that adds authentication to your requests.\n\n\n_component_manager_::\n\n\n*additional_repositories*:::\n\nA comma separated list of additional repositories to check for components.  This property is automatically managed by the `gcloud components repositories` commands.\n\n\n*disable_update_check*:::\n\nIf True, the Cloud SDK will not automatically check for updates.\n\n\n_compute_::\n\n\n*region*:::\n\nThe default region to use when working with regional Compute Engine resources. When a `--region` flag is required but not provided, the command will fall back to this value, if set. To see valid choices, run `gcloud compute regions list`.\n\n\n*zone*:::\n\nThe default zone to use when working with zonal Compute Engine resources. When a `--zone` flag is required but not provided, the command will fall back to this value, if set. To see valid choices, run `gcloud compute zones list`.\n\n\n_container_::\n\n\n*build_timeout*:::\n\nThe timeout, in seconds, to wait for container builds to complete.\n\n\n*cluster*:::\n\nThe name of the cluster to use by default when working with Container Engine.\n\n\n*use_application_default_credentials*:::\n\nUse application default credentials to authenticate to the cluster API server.\n\n\n*use_client_certificate*:::\n\nUse the cluster's client certificate to authenticate to the cluster API server.\n\n\n_dataproc_::\n\n\n*region*:::\n\nSpecifies the Cloud Dataproc region to use. Each Cloud Dataproc region constitutes an independent resource namespace constrained to deploying instances into Google Compute Engine zones inside the region. The default value of \"global\" is a special multi-region namespace which is capable of deploying instances into all Google Compute Engine zones globally, and is disjoint from other Cloud Dataproc regions.\n\n\n_functions_::\n\n\n*region*:::\n\nThe default region to use when working with Google Compute functions resources. When a `--region` flag is required but not provided, the command will fall back to this value, if set. To see valid choices, run `gcloud functions regions list`.\n\n\n_ml_engine_::\n\n\n*polling_interval*:::\n\nThe interval (in seconds) at which to poll logs from your Cloud ML Engine jobs. Note that making it much faster than the default (60) will quickly use all of your quota.\n\n\n_proxy_::\n\n\n*address*:::\n\nThe hostname or IP address of your proxy server.\n\n\n*password*:::\n\nIf your proxy requires authentication, the password to use when connecting.\n\n\n*port*:::\n\nThe port to use when connected to your proxy server.\n\n\n*type*:::\n\nThe type of proxy you are using.  Supported proxy types are: [http, http_no_tunnel, socks4, socks5].\n\n\n*username*:::\n\nIf your proxy requires authentication, the username to use when connecting.\n\n\n_spanner_::\n\n\n*instance*:::\n\nThe default instance to use when working with Cloud Spanner resources. When an `instance` is required but not provided by a flag, the command will fall back to this value, if set."
+        "DESCRIPTION":"The gcloud config command group lets you set, view and unset properties used by\nCloud SDK.\n\nA configuration is a set of properties that govern the behavior of gcloud\nand other Cloud SDK tools. The initial `default` configuration is set when\n`gcloud init` is run. You can create additional named configurations using\n`gcloud init` or `gcloud config configurations create`.\n\nTo switch between configurations, use `gcloud config configurations activate`.\n\ngcloud supports several flags that have the same effect as properties in\na configuration (for example, gcloud supports both the `--project` flag and\n`project` property). Properties differ from flags in that flags affect command\nbehavior on a per-invocation basis. Properties allow you to maintain the same\nsettings across command executions.\n\nFor more information on configurations, see `gcloud topic configurations`.\n\n## AVAILABLE PROPERTIES\n\n_core_::\n\n\n*account*:::\n\nThe account gcloud should use for authentication.  You can run `gcloud auth list` to see the accounts you currently have available.\n\n\n*custom_ca_certs_file*:::\n\nAbsolute path to a custom CA cert file.\n\n\n*default_regional_backend_service*:::\n\nIf True, backend services in `gcloud compute backend-services` will be regional by default. The `--global` flag will be required for global backend services.\n\n\n*disable_color*:::\n\nIf True, color will not be used when printing messages in the terminal.\n\n\n*disable_prompts*:::\n\nIf True, the default answer will be assumed for all user prompts.  For any prompts that require user input, an error will be raised. This is equivalent to either using the global `--quiet` flag or setting the environment variable `CLOUDSDK_CORE_DISABLE_PROMPTS` to 1.\n\n\n*disable_usage_reporting*:::\n\nIf True, anonymous statistics on SDK usage will not be collected.  This is value is set based on your choices during installation, but can be changed at any time.  For more information, see: https://cloud.google.com/sdk/usage-statistics\n\n\n*log_http*:::\n\nIf True, log HTTP requests and responses to the logs.  You may need to adjust your `verbosity` setting if you want to see in the terminal, otherwise it is available in the log files.\n\n\n*max_log_days*:::\n\nMaximum number of days to retain log files before deleting. If set to 0, turns off log garbage collection and does not delete log files. If unset, defaults to 30.\n\n\n*pass_credentials_to_gsutil*:::\n\nIf True, pass the configured Cloud SDK authentication to gsutil.\n\n\n*project*:::\n\nThe project id of the Cloud Platform project to operate on by default.  This can be overridden by using the global `--project` flag.\n\n\n*show_structured_logs*:::\n\nControls when JSON structured log messages for the current verbosity and above will be written to standard error. The default is text format when disabled. Valid values are: `never` - Log messages as text, `always` - Always log messages as JSON, `log` - Only log messages as JSON if stderr is a file, `terminal` - Only log messages as JSON if stderr is a terminal. If unset default is `never`.\n\n\n*trace_token*:::\n\nToken used to route traces of service requests for investigation of issues. This token will be provided by Google support.\n\n\n*user_output_enabled*:::\n\nIf False, messages to the user and command output on both standard output and standard error will be suppressed.\n\n\n*verbosity*:::\n\nThe default logging verbosity for gcloud commands.  This is the equivalent of using the global `--verbosity` flag.\n\n\n_app_::\n\n\n*cloud_build_timeout*:::\n\nThe timeout, in seconds, to wait for Docker builds to complete during deployments. All Docker builds now use the Container Builder API.\n\n\n*promote_by_default*:::\n\nIf True, when deploying a new version of a service, that version will be promoted to receive all traffic for the service. The flag can be overridden via the `--promote-by-default` or `--no-promote-by-default` flags.\n\n\n*stop_previous_version*:::\n\nIf True, when deploying a new version of a service, the previously deployed version is stopped. If False, older versions must be stopped manually.\n\n\n*use_runtime_builders*:::\n\nIf set, opt in/out to a new code path for building applications using pre-fabricated runtimes that can be updated independently of client tooling. (If not set, will use the default path for each runtime.)\n\n\n_auth_::\n\n\n*disable_credentials*:::\n\nIf true, gcloud will not attempt to load any credentials or authenticate any requests. This is useful if you are behind a proxy that adds authentication to your requests.\n\n\n_component_manager_::\n\n\n*additional_repositories*:::\n\nA comma separated list of additional repositories to check for components.  This property is automatically managed by the `gcloud components repositories` commands.\n\n\n*disable_update_check*:::\n\nIf True, the Cloud SDK will not automatically check for updates.\n\n\n_compute_::\n\n\n*region*:::\n\nThe default region to use when working with regional Compute Engine resources. When a `--region` flag is required but not provided, the command will fall back to this value, if set. To see valid choices, run `gcloud compute regions list`.\n\n\n*zone*:::\n\nThe default zone to use when working with zonal Compute Engine resources. When a `--zone` flag is required but not provided, the command will fall back to this value, if set. To see valid choices, run `gcloud compute zones list`.\n\n\n_container_::\n\n\n*build_timeout*:::\n\nThe timeout, in seconds, to wait for container builds to complete.\n\n\n*cluster*:::\n\nThe name of the cluster to use by default when working with Container Engine.\n\n\n*use_application_default_credentials*:::\n\nUse application default credentials to authenticate to the cluster API server.\n\n\n*use_client_certificate*:::\n\nUse the cluster's client certificate to authenticate to the cluster API server.\n\n\n_dataproc_::\n\n\n*region*:::\n\nSpecifies the Cloud Dataproc region to use. Each Cloud Dataproc region constitutes an independent resource namespace constrained to deploying instances into Google Compute Engine zones inside the region. The default value of \"global\" is a special multi-region namespace which is capable of deploying instances into all Google Compute Engine zones globally, and is disjoint from other Cloud Dataproc regions.\n\n\n_functions_::\n\n\n*region*:::\n\nThe default region to use when working with Google Compute functions resources. When a `--region` flag is required but not provided, the command will fall back to this value, if set. To see valid choices, run `gcloud functions regions list`.\n\n\n_ml_engine_::\n\n\n*polling_interval*:::\n\nThe interval (in seconds) at which to poll logs from your Cloud ML Engine jobs. Note that making it much faster than the default (60) will quickly use all of your quota.\n\n\n_proxy_::\n\n\n*address*:::\n\nThe hostname or IP address of your proxy server.\n\n\n*password*:::\n\nIf your proxy requires authentication, the password to use when connecting.\n\n\n*port*:::\n\nThe port to use when connected to your proxy server.\n\n\n*type*:::\n\nThe type of proxy you are using.  Supported proxy types are: [http, http_no_tunnel, socks4, socks5].\n\n\n*username*:::\n\nIf your proxy requires authentication, the username to use when connecting.\n\n\n_spanner_::\n\n\n*instance*:::\n\nThe default instance to use when working with Cloud Spanner resources. When an `instance` is required but not provided by a flag, the command will fall back to this value, if set."
       }
     },
     "container":{
@@ -26822,7 +26863,7 @@
                   "attr":{},
                   "category":"",
                   "choices":[],
-                  "description":"Directory in Google Cloud Storage to hold build logs. If not set, `gs://<project num>.cloudbuild-logs.googleusercontent.com/` will be created and used.",
+                  "description":"Directory in Google Cloud Storage to hold build logs. If not set, ```gs://<project num>.cloudbuild-logs.googleusercontent.com/``` will be created and used.",
                   "group":"",
                   "hidden":false,
                   "name":"--gcs-log-dir",
@@ -26835,7 +26876,7 @@
                   "attr":{},
                   "category":"",
                   "choices":[],
-                  "description":"Directory in Google Cloud Storage to stage a copy of the source used for the build. If the bucket does not exist, it will be created. If not set, `gs://<project id>_cloudbuild/source` is used.",
+                  "description":"Directory in Google Cloud Storage to stage a copy of the source used for the build. If the bucket does not exist, it will be created. If not set, ```gs://<project id>_cloudbuild/source``` is used.",
                   "group":"",
                   "hidden":false,
                   "name":"--gcs-source-staging-dir",
@@ -26929,7 +26970,7 @@
               ],
               "release":"GA",
               "sections":{
-                "DESCRIPTION":"Submit a build using the Google Container Builder service."
+                "DESCRIPTION":"Submit a build using the Google Container Builder service.\n\n## NOTES\n\nYou can also run a build locally using the\nseparate component: `gcloud components install container-builder-local`."
               }
             }
           },
@@ -27179,6 +27220,7 @@
                   "attr":{},
                   "category":"",
                   "choices":[],
+                  "default":[],
                   "description":"Specifies scopes for the node instances. The project's default\nservice account is used. Examples:\n+\n  $ {command} example-cluster --scopes https://www.googleapis.com/auth/devstorage.read_only\n+\n  $ {command} example-cluster --scopes bigquery,storage-rw,compute-ro\n+\nMultiple SCOPEs can specified, separated by commas. The scopes\nnecessary for the cluster to function properly (compute-rw, storage-ro),\nare always added, even if not explicitly specified.\n+\nSCOPE can be either the full URI of the scope or an alias.\nAvailable aliases are:\n+\n[format=\"csv\",options=\"header\"]\n|========\nAlias,URI\nbigquery,https://www.googleapis.com/auth/bigquery\ncloud-platform,https://www.googleapis.com/auth/cloud-platform\ncloud-source-repos,https://www.googleapis.com/auth/source.full_control\ncloud-source-repos-ro,https://www.googleapis.com/auth/source.read_only\ncompute-ro,https://www.googleapis.com/auth/compute.readonly\ncompute-rw,https://www.googleapis.com/auth/compute\ndatastore,https://www.googleapis.com/auth/datastore\ndefault,https://www.googleapis.com/auth/cloud.useraccounts.readonly\n,https://www.googleapis.com/auth/devstorage.read_only\n,https://www.googleapis.com/auth/logging.write\n,https://www.googleapis.com/auth/monitoring.write\n,https://www.googleapis.com/auth/pubsub\n,https://www.googleapis.com/auth/service.management.readonly\n,https://www.googleapis.com/auth/servicecontrol\n,https://www.googleapis.com/auth/trace.append\nlogging-write,https://www.googleapis.com/auth/logging.write\nmonitoring,https://www.googleapis.com/auth/monitoring\nmonitoring-write,https://www.googleapis.com/auth/monitoring.write\nservice-control,https://www.googleapis.com/auth/servicecontrol\nservice-management,https://www.googleapis.com/auth/service.management.readonly\nsql,https://www.googleapis.com/auth/sqlservice\nsql-admin,https://www.googleapis.com/auth/sqlservice.admin\nstorage-full,https://www.googleapis.com/auth/devstorage.full_control\nstorage-ro,https://www.googleapis.com/auth/devstorage.read_only\nstorage-rw,https://www.googleapis.com/auth/devstorage.read_write\ntaskqueue,https://www.googleapis.com/auth/taskqueue\nuseraccounts-ro,https://www.googleapis.com/auth/cloud.useraccounts.readonly\nuseraccounts-rw,https://www.googleapis.com/auth/cloud.useraccounts\nuserinfo-email,https://www.googleapis.com/auth/userinfo.email\n|========\n+\n\n      DEPRECATION WARNING: 'https://www.googleapis.com/auth/sqlservice' account scope and\n      `sql` alias do not provide SQL instance management capabilities and have been deprecated.\n      Please, use 'https://www.googleapis.com/auth/sqlservice.admin' or `sql.admin` to manage\n      your Google SQL Service instances.\n+",
                   "group":"",
                   "hidden":false,
@@ -27876,49 +27918,6 @@
                 "EXAMPLES":"Deletes the image (and tags) from the input IMAGE_NAME:\n\n  $ gcloud container images delete <IMAGE_NAME>\n\n"
               }
             },
-            "describe":{
-              "capsule":"Lists container analysis data for a given image.",
-              "commands":{},
-              "flags":{
-                "--occurrence-filter":{
-                  "attr":{},
-                  "category":"",
-                  "choices":[],
-                  "default":"kind = \"BUILD_DETAILS\" OR kind = \"PACKAGE_VULNERABILITY\" OR kind = \"IMAGE_BASIS\"",
-                  "description":"Additional filter to fetch occurrences for a given fully qualified image reference.",
-                  "group":"",
-                  "hidden":false,
-                  "name":"--occurrence-filter",
-                  "nargs":"0",
-                  "required":false,
-                  "type":"string",
-                  "value":"OCCURRENCE_FILTER"
-                }
-              },
-              "group":false,
-              "groups":{},
-              "hidden":false,
-              "name":"describe",
-              "path":[
-                "gcloud",
-                "container",
-                "images",
-                "describe"
-              ],
-              "positionals":[
-                {
-                  "description":"The fully qualified name(s) of image(s) to describe. The name(s) should be formatted as *.gcr.io/project_id/image_path@sha256:<digest> or *.gcr.io/project_id/image_path[:<tag>].",
-                  "name":"image-name",
-                  "nargs":"1",
-                  "required":true,
-                  "value":"IMAGE_NAME"
-                }
-              ],
-              "release":"GA",
-              "sections":{
-                "DESCRIPTION":"Lists container analysis data for a valid image.\n\n## EXAMPLES\n\nDescribe container analysis data for a specified image:\n\n  $ gcloud container images describe gcr.io/myproject/myimage@digest\n        OR\n  $ gcloud container images describe gcr.io/myproject/myimage:tag"
-              }
-            },
             "list":{
               "capsule":"List existing images.",
               "commands":{},
@@ -28260,7 +28259,8 @@
                   "attr":{},
                   "category":"",
                   "choices":[],
-                  "description":"Specifies scopes for the node instances. The project's default\nservice account is used. Examples:\n+\n  $ {command} node-pool-1 --cluster=example-cluster --scopes https://www.googleapis.com/auth/devstorage.read_only\n+\n  $ {command} node-pool-1 --cluster=example-cluster --scopes bigquery,storage-rw,compute-ro\n+\nMultiple SCOPEs can specified, separated by commas. The scopes\nnecessary for the cluster to function properly (compute-rw, storage-ro),\nare always added, even if not explicitly specified.\n+\nSCOPE can be either the full URI of the scope or an alias.\nAvailable aliases are:\n+\n[options=\"header\",format=\"csv\",grid=\"none\",frame=\"none\"]\n|========\nAlias,URI\nbigquery,https://www.googleapis.com/auth/bigquery\ncloud-platform,https://www.googleapis.com/auth/cloud-platform\ncloud-source-repos,https://www.googleapis.com/auth/source.full_control\ncloud-source-repos-ro,https://www.googleapis.com/auth/source.read_only\ncompute-ro,https://www.googleapis.com/auth/compute.readonly\ncompute-rw,https://www.googleapis.com/auth/compute\ndatastore,https://www.googleapis.com/auth/datastore\ndefault,https://www.googleapis.com/auth/cloud.useraccounts.readonly\n,https://www.googleapis.com/auth/devstorage.read_only\n,https://www.googleapis.com/auth/logging.write\n,https://www.googleapis.com/auth/monitoring.write\n,https://www.googleapis.com/auth/pubsub\n,https://www.googleapis.com/auth/service.management.readonly\n,https://www.googleapis.com/auth/servicecontrol\n,https://www.googleapis.com/auth/trace.append\nlogging-write,https://www.googleapis.com/auth/logging.write\nmonitoring,https://www.googleapis.com/auth/monitoring\nmonitoring-write,https://www.googleapis.com/auth/monitoring.write\nservice-control,https://www.googleapis.com/auth/servicecontrol\nservice-management,https://www.googleapis.com/auth/service.management.readonly\nsql,https://www.googleapis.com/auth/sqlservice\nsql-admin,https://www.googleapis.com/auth/sqlservice.admin\nstorage-full,https://www.googleapis.com/auth/devstorage.full_control\nstorage-ro,https://www.googleapis.com/auth/devstorage.read_only\nstorage-rw,https://www.googleapis.com/auth/devstorage.read_write\ntaskqueue,https://www.googleapis.com/auth/taskqueue\nuseraccounts-ro,https://www.googleapis.com/auth/cloud.useraccounts.readonly\nuseraccounts-rw,https://www.googleapis.com/auth/cloud.useraccounts\nuserinfo-email,https://www.googleapis.com/auth/userinfo.email\n|========\n+\n\n      DEPRECATION WARNING: 'https://www.googleapis.com/auth/sqlservice' account scope and\n      `sql` alias do not provide SQL instance management capabilities and have been deprecated.\n      Please, use 'https://www.googleapis.com/auth/sqlservice.admin' or `sql.admin` to manage\n      your Google SQL Service instances.\n+",
+                  "default":[],
+                  "description":"Specifies scopes for the node instances. The project's default\nservice account is used. Examples:\n+\n  $ {command} node-pool-1 --cluster=example-cluster --scopes https://www.googleapis.com/auth/devstorage.read_only\n+\n  $ {command} node-pool-1 --cluster=example-cluster --scopes bigquery,storage-rw,compute-ro\n+\nMultiple SCOPEs can specified, separated by commas. The scopes\nnecessary for the cluster to function properly (compute-rw, storage-ro),\nare always added, even if not explicitly specified.\n+\nSCOPE can be either the full URI of the scope or an alias.\nAvailable aliases are:\n+\n[format=\"csv\",options=\"header\"]\n|========\nAlias,URI\nbigquery,https://www.googleapis.com/auth/bigquery\ncloud-platform,https://www.googleapis.com/auth/cloud-platform\ncloud-source-repos,https://www.googleapis.com/auth/source.full_control\ncloud-source-repos-ro,https://www.googleapis.com/auth/source.read_only\ncompute-ro,https://www.googleapis.com/auth/compute.readonly\ncompute-rw,https://www.googleapis.com/auth/compute\ndatastore,https://www.googleapis.com/auth/datastore\ndefault,https://www.googleapis.com/auth/cloud.useraccounts.readonly\n,https://www.googleapis.com/auth/devstorage.read_only\n,https://www.googleapis.com/auth/logging.write\n,https://www.googleapis.com/auth/monitoring.write\n,https://www.googleapis.com/auth/pubsub\n,https://www.googleapis.com/auth/service.management.readonly\n,https://www.googleapis.com/auth/servicecontrol\n,https://www.googleapis.com/auth/trace.append\nlogging-write,https://www.googleapis.com/auth/logging.write\nmonitoring,https://www.googleapis.com/auth/monitoring\nmonitoring-write,https://www.googleapis.com/auth/monitoring.write\nservice-control,https://www.googleapis.com/auth/servicecontrol\nservice-management,https://www.googleapis.com/auth/service.management.readonly\nsql,https://www.googleapis.com/auth/sqlservice\nsql-admin,https://www.googleapis.com/auth/sqlservice.admin\nstorage-full,https://www.googleapis.com/auth/devstorage.full_control\nstorage-ro,https://www.googleapis.com/auth/devstorage.read_only\nstorage-rw,https://www.googleapis.com/auth/devstorage.read_write\ntaskqueue,https://www.googleapis.com/auth/taskqueue\nuseraccounts-ro,https://www.googleapis.com/auth/cloud.useraccounts.readonly\nuseraccounts-rw,https://www.googleapis.com/auth/cloud.useraccounts\nuserinfo-email,https://www.googleapis.com/auth/userinfo.email\n|========\n+\n\n      DEPRECATION WARNING: 'https://www.googleapis.com/auth/sqlservice' account scope and\n      `sql` alias do not provide SQL instance management capabilities and have been deprecated.\n      Please, use 'https://www.googleapis.com/auth/sqlservice.admin' or `sql.admin` to manage\n      your Google SQL Service instances.\n+",
                   "group":"",
                   "hidden":false,
                   "name":"--scopes",
@@ -32500,16 +32500,29 @@
                   "type":"bool",
                   "value":"AUTOMATIC_ROLLBACK_ON_ERROR"
                 },
+                "--composite-type":{
+                  "attr":{},
+                  "category":"",
+                  "choices":[],
+                  "description":"Name of a composite type to deploy.",
+                  "group":"create.2",
+                  "hidden":false,
+                  "name":"--composite-type",
+                  "nargs":"0",
+                  "required":false,
+                  "type":"string",
+                  "value":"COMPOSITE_TYPE"
+                },
                 "--config":{
                   "attr":{},
                   "category":"",
                   "choices":[],
-                  "description":"Filename of config that specifies resources to deploy. More information is available at https://cloud.google.com/deployment-manager/docs/configuration/.",
-                  "group":"",
+                  "description":"Filename of a top-level yaml config that specifies resources to deploy.",
+                  "group":"create.2",
                   "hidden":false,
                   "name":"--config",
                   "nargs":"0",
-                  "required":true,
+                  "required":false,
                   "type":"string",
                   "value":"CONFIG"
                 },
@@ -32557,7 +32570,7 @@
                   "attr":{},
                   "category":"",
                   "choices":[],
-                  "description":"A comma separated, key:value, map to be used when deploying a template file directly.",
+                  "description":"A comma separated, key:value, map to be used when deploying a template file or composite type directly.",
                   "group":"",
                   "hidden":false,
                   "name":"--properties",
@@ -32565,6 +32578,19 @@
                   "required":false,
                   "type":"dict",
                   "value":"PROPERTIES"
+                },
+                "--template":{
+                  "attr":{},
+                  "category":"",
+                  "choices":[],
+                  "description":"Filename of a top-level jinja or python config template.",
+                  "group":"create.2",
+                  "hidden":false,
+                  "name":"--template",
+                  "nargs":"0",
+                  "required":false,
+                  "type":"string",
+                  "value":"TEMPLATE"
                 }
               },
               "group":false,
@@ -32573,6 +32599,11 @@
                   "description":"At most one of these may be specified:",
                   "is_mutex":true,
                   "is_required":false
+                },
+                "create.2":{
+                  "description":"Exactly one of these must be specified:",
+                  "is_mutex":true,
+                  "is_required":true
                 }
               },
               "hidden":false,
@@ -32595,7 +32626,7 @@
               "release":"GA",
               "sections":{
                 "DESCRIPTION":"This command inserts (creates) a new deployment based on a provided config\nfile.",
-                "EXAMPLES":"To create a new deployment, run:\n\n  $ gcloud deployment-manager deployments create my-deployment --config config.yaml --description \"My deployment\"\n\nTo preview a deployment without actually creating resources, run:\n\n  $ gcloud deployment-manager deployments create my-new-deployment --config config.yaml --preview\n\nTo instantiate a deployment that has been previewed, issue an update command for that deployment without specifying a config file.\n"
+                "EXAMPLES":"To create a new deployment from a top-level yaml file, run:\n\n  $ gcloud deployment-manager deployments create my-deployment --config config.yaml --description \"My deployment\"\n\nTo create a new deployment from a top-level template file, run:\n\n  $ gcloud deployment-manager deployments create my-deployment             --template template.{jinja|py}             --properties \"string-key:'string-value',integer-key:12345\"\n\nTo create a new deployment directly from a composite type, run:\n\n  $ gcloud deployment-manager deployments create my-deployment             --composite-type <project-id>/composite:<type-name>             --properties \"string-key:'string-value',integer-key:12345\"\n\nTo preview a deployment without actually creating resources, run:\n\n  $ gcloud deployment-manager deployments create my-new-deployment --config config.yaml --preview\n\nTo instantiate a deployment that has been previewed, issue an update command for that deployment without specifying a config file.\n\nMore information is available at https://cloud.google.com/deployment-manager/docs/configuration/.\n"
               }
             },
             "delete":{
@@ -32865,12 +32896,25 @@
                   "type":"bool",
                   "value":"ASYNC"
                 },
+                "--composite-type":{
+                  "attr":{},
+                  "category":"",
+                  "choices":[],
+                  "description":"Name of a composite type to deploy.",
+                  "group":"update.1",
+                  "hidden":false,
+                  "name":"--composite-type",
+                  "nargs":"0",
+                  "required":false,
+                  "type":"string",
+                  "value":"COMPOSITE_TYPE"
+                },
                 "--config":{
                   "attr":{},
                   "category":"",
                   "choices":[],
-                  "description":"Filename of config that specifies resources to deploy. Required unless launching an already-previewed update to this deployment. More information is available at https://cloud.google.com/deployment-manager/docs/configuration/.",
-                  "group":"",
+                  "description":"Filename of a top-level yaml config that specifies resources to deploy.",
+                  "group":"update.1",
                   "hidden":false,
                   "name":"--config",
                   "nargs":"0",
@@ -32956,7 +33000,7 @@
                   "attr":{},
                   "category":"",
                   "choices":[],
-                  "description":"A comma separated, key:value, map to be used when deploying a template file directly.",
+                  "description":"A comma separated, key:value, map to be used when deploying a template file or composite type directly.",
                   "group":"",
                   "hidden":false,
                   "name":"--properties",
@@ -32978,6 +33022,19 @@
                   "type":"list",
                   "value":"KEY"
                 },
+                "--template":{
+                  "attr":{},
+                  "category":"",
+                  "choices":[],
+                  "description":"Filename of a top-level jinja or python config template.",
+                  "group":"update.1",
+                  "hidden":false,
+                  "name":"--template",
+                  "nargs":"0",
+                  "required":false,
+                  "type":"string",
+                  "value":"TEMPLATE"
+                },
                 "--update-labels":{
                   "attr":{},
                   "category":"",
@@ -32993,7 +33050,13 @@
                 }
               },
               "group":false,
-              "groups":{},
+              "groups":{
+                "update.1":{
+                  "description":"At most one of these may be specified:",
+                  "is_mutex":true,
+                  "is_required":false
+                }
+              },
               "hidden":false,
               "name":"update",
               "path":[
@@ -33014,7 +33077,7 @@
               "release":"GA",
               "sections":{
                 "DESCRIPTION":"This command will update a deployment with the new config file provided.\nDifferent policies for create, update, and delete policies can be specified.",
-                "EXAMPLES":"To update an existing deployment with a new config file, run:\n\n  $ gcloud deployment-manager deployments update my-deployment --config new_config.yaml\n\nTo preview an update to an existing deployment without actually modifying the resources, run:\n\n  $ gcloud deployment-manager deployments update my-deployment --config new_config.yaml --preview\n\nTo apply an update that has been previewed, provide the name of the previewed deployment, and no config file:\n\n  $ gcloud deployment-manager deployments update my-deployment\n\nTo specify different create, update, or delete policies, include any subset of the following flags;\n\n  $ gcloud deployment-manager deployments update my-deployment --config new_config.yaml --create-policy ACQUIRE --delete-policy ABANDON\n\nTo perform an update without waiting for the operation to complete, run:\n\n  $ gcloud deployment-manager deployments update my-deployment --config new_config.yaml --async\n\nTo update an existing deployment with a new config file and a fingerprint, run:\n\n  $ gcloud deployment-manager deployments update my-deployment --config new_config.yaml --fingerprint deployment-fingerprint\n"
+                "EXAMPLES":"To update an existing deployment with a new config yaml file, run:\n\n  $ gcloud deployment-manager deployments update my-deployment --config new_config.yaml\n\nTo update an existing deployment with a new config template file, run:\n\n  $ gcloud deployment-manager deployments update my-deployment --template new_config.{jinja|py}\n\nTo update an existing deployment with a composite type as a new config, run:\n\n  $ gcloud deployment-manager deployments update my-deployment --composite-type <project-id>/composite:<new-config>\n\n\nTo preview an update to an existing deployment without actually modifying the resources, run:\n\n  $ gcloud deployment-manager deployments update my-deployment --config new_config.yaml --preview\n\nTo apply an update that has been previewed, provide the name of the previewed deployment, and no config file:\n\n  $ gcloud deployment-manager deployments update my-deployment\n\nTo specify different create, update, or delete policies, include any subset of the following flags;\n\n  $ gcloud deployment-manager deployments update my-deployment --config new_config.yaml --create-policy ACQUIRE --delete-policy ABANDON\n\nTo perform an update without waiting for the operation to complete, run:\n\n  $ gcloud deployment-manager deployments update my-deployment --config new_config.yaml --async\n\nTo update an existing deployment with a new config file and a fingerprint, run:\n\n  $ gcloud deployment-manager deployments update my-deployment --config new_config.yaml --fingerprint deployment-fingerprint\n\nEither the --config, --template, or --composite-type flag is required unless launching an already-previewed update to a deployment.\n\nMore information is available at https://cloud.google.com/deployment-manager/docs/configuration/.\n"
               }
             }
           },
@@ -35976,7 +36039,7 @@
               ],
               "positionals":[
                 {
-                  "description":"The service account whose policy to add bindings to. The account should be formatted as an email, like this: my-iam-account@somedomain.com.",
+                  "description":"The service account whose policy to add bindings to. The account should be formatted either as a numeric service account ID or as an email, like this: 123456789876543212345 or my-iam-account@somedomain.com.",
                   "name":"service-account",
                   "nargs":"1",
                   "required":true,
@@ -35985,7 +36048,7 @@
               ],
               "release":"GA",
               "sections":{
-                "DESCRIPTION":"This command adds a policy binding to the IAM policy of a service account,\ngiven an IAM_ACCOUNT and the binding.",
+                "DESCRIPTION":"This command adds a policy binding to the IAM policy of a service account,\ngiven an IAM_ACCOUNT and the binding.\n\nWhen managing IAM roles, you can treat a service account either as a resource or as an identity. This command is to add iam policy bindings to a service account resource. There are other gcloud commands to manage IAM policies for other types of resources. For example, to manage IAM policies on a project, use the ```gcloud projects``` commands.",
                 "EXAMPLES":"The following command will add an IAM policy binding for the role\nof 'roles/editor' for the user 'test-user@gmail.com' on a service account with\nidentifier 'my-iam-account@somedomain.com'\n\n  $ gcloud iam service-accounts add-iam-policy-binding my-iam-account@somedomain.com --member='user:test-user@gmail.com' --role='roles/editor'\n\nSee https://cloud.google.com/iam/docs/managing-policies for details\nof policy role and member types.\n"
               }
             },
@@ -36048,7 +36111,7 @@
               ],
               "positionals":[
                 {
-                  "description":"The service account to delete. The account should be formatted as an email, like this: my-iam-account@somedomain.com.",
+                  "description":"The service account to delete. The account should be formatted either as a numeric service account ID or as an email, like this: 123456789876543212345 or my-iam-account@somedomain.com.",
                   "name":"service-account",
                   "nargs":"1",
                   "required":true,
@@ -36077,7 +36140,7 @@
               ],
               "positionals":[
                 {
-                  "description":"The service account to describe. The account should be formatted as an email, like this: my-iam-account@somedomain.com.",
+                  "description":"The service account to describe. The account should be formatted either as a numeric service account ID or as an email, like this: 123456789876543212345 or my-iam-account@somedomain.com.",
                   "name":"service-account",
                   "nargs":"1",
                   "required":true,
@@ -36159,7 +36222,7 @@
               ],
               "positionals":[
                 {
-                  "description":"The service account whose policy to get. The account should be formatted as an email, like this: my-iam-account@somedomain.com.",
+                  "description":"The service account whose policy to get. The account should be formatted either as a numeric service account ID or as an email, like this: 123456789876543212345 or my-iam-account@somedomain.com.",
                   "name":"service-account",
                   "nargs":"1",
                   "required":true,
@@ -36168,7 +36231,7 @@
               ],
               "release":"GA",
               "sections":{
-                "DESCRIPTION":"This command gets the IAM policy for a service account. If formatted as\nJSON, the output can be edited and used as a policy file for\nset-iam-policy. The output includes an \"etag\" field identifying the version\nemitted and allowing detection of concurrent policy updates; see\n$ gcloud iam service-accounts set-iam-policy for additional details.",
+                "DESCRIPTION":"This command gets the IAM policy for a service account. If formatted as\nJSON, the output can be edited and used as a policy file for\nset-iam-policy. The output includes an \"etag\" field identifying the version\nemitted and allowing detection of concurrent policy updates; see\n$ gcloud iam service-accounts set-iam-policy for additional details.\n\nWhen managing IAM roles, you can treat a service account either as a resource or as an identity. This command is to get the iam policy of a service account resource. There are other gcloud commands to manage IAM policies for other types of resources. For example, to manage IAM policies on a project, use the ```gcloud projects``` commands.",
                 "EXAMPLES":"To print the IAM policy for a given service account, run:\n\n  $ gcloud iam service-accounts get-iam-policy my-iam-account@somedomain.com\n"
               }
             },
@@ -36548,7 +36611,7 @@
               ],
               "positionals":[
                 {
-                  "description":"The service account to remove the policy binding from. The account should be formatted as an email, like this: my-iam-account@somedomain.com.",
+                  "description":"The service account to remove the policy binding from. The account should be formatted either as a numeric service account ID or as an email, like this: 123456789876543212345 or my-iam-account@somedomain.com.",
                   "name":"service-account",
                   "nargs":"1",
                   "required":true,
@@ -36557,7 +36620,7 @@
               ],
               "release":"GA",
               "sections":{
-                "DESCRIPTION":"This command removes a policy binding to the IAM policy of a service account,\ngiven an IAM_ACCOUNT and the binding.",
+                "DESCRIPTION":"This command removes a policy binding to the IAM policy of a service account,\ngiven an IAM_ACCOUNT and the binding.\n\nWhen managing IAM roles, you can treat a service account either as a resource or as an identity. This command is to remove a policy binding from a service account resource. There are other gcloud commands to manage IAM policies for other types of resources. For example, to manage IAM policies on a project, use the ```gcloud projects``` commands.",
                 "EXAMPLES":"The following command will remove a IAM policy binding for the role\nof 'roles/editor' for the user 'test-user@gmail.com' on service account with\nidentifier 'my-iam-account@somedomain.com'\n\n  $ gcloud iam service-accounts remove-iam-policy-binding my-iam-account@somedomain.com --member='user:test-user@gmail.com' --role='roles/editor'\n\nSee https://cloud.google.com/iam/docs/managing-policies for details\nof policy role and member types.\n"
               }
             },
@@ -36577,7 +36640,7 @@
               ],
               "positionals":[
                 {
-                  "description":"The service account whose policy to set. The account should be formatted as an email, like this: my-iam-account@somedomain.com.",
+                  "description":"The service account whose policy to set. The account should be formatted either as a numeric service account ID or as an email, like this: 123456789876543212345 or my-iam-account@somedomain.com.",
                   "name":"service-account",
                   "nargs":"1",
                   "required":true,
@@ -36593,7 +36656,7 @@
               ],
               "release":"GA",
               "sections":{
-                "DESCRIPTION":"This command replaces the existing IAM policy for a service account, given\nan IAM_ACCOUNT and a file encoded in JSON or YAML that contains the IAM\npolicy. If the given policy file specifies an \"etag\" value, then the\nreplacement will succeed only if the policy already in place matches that\netag. (An etag obtained via $ gcloud iam service-accounts get-iam-policy will\nprevent the replacement if the policy for the service account has been\nsubsequently updated.) A policy file that does not contain an etag value will\nreplace any existing policy for the service account.",
+                "DESCRIPTION":"This command replaces the existing IAM policy for a service account, given\nan IAM_ACCOUNT and a file encoded in JSON or YAML that contains the IAM\npolicy. If the given policy file specifies an \"etag\" value, then the\nreplacement will succeed only if the policy already in place matches that\netag. (An etag obtained via $ gcloud iam service-accounts get-iam-policy will\nprevent the replacement if the policy for the service account has been\nsubsequently updated.) A policy file that does not contain an etag value will\nreplace any existing policy for the service account.\n\nWhen managing IAM roles, you can treat a service account either as a resource or as an identity. This command is to set the iam policy of a service account resource. There are other gcloud commands to manage IAM policies for other types of resources. For example, to manage IAM policies on a project, use the ```gcloud projects``` commands.",
                 "EXAMPLES":"The following command will read an IAM policy defined in a JSON file\n'policy.json' and set it for a service account with identifier 'my-iam-account@somedomain.com'\n\n  $ gcloud iam service-accounts set-iam-policy my-iam-account@somedomain.com policy.json\n\n\nSee https://cloud.google.com/iam/docs/managing-policies for details\nof the policy file format and contents."
               }
             },
@@ -36678,7 +36741,7 @@
               ],
               "positionals":[
                 {
-                  "description":"The service account to update. The account should be formatted as an email, like this: my-iam-account@somedomain.com.",
+                  "description":"The service account to update. The account should be formatted either as a numeric service account ID or as an email, like this: 123456789876543212345 or my-iam-account@somedomain.com.",
                   "name":"service-account",
                   "nargs":"1",
                   "required":true,
@@ -39012,6 +39075,19 @@
                   "capsule":"Start a Cloud ML Engine batch prediction job.",
                   "commands":{},
                   "flags":{
+                    "--batch-size":{
+                      "attr":{},
+                      "category":"",
+                      "choices":[],
+                      "description":"The number of records per batch. The service will buffer batch_size number of records in memory before invoking TensorFlow. Defaults to 64 if not specified.",
+                      "group":"",
+                      "hidden":false,
+                      "name":"--batch-size",
+                      "nargs":"0",
+                      "required":false,
+                      "type":"string",
+                      "value":"BATCH_SIZE"
+                    },
                     "--data-format":{
                       "attr":{},
                       "category":"",
@@ -39452,7 +39528,7 @@
               "positionals":[],
               "release":"GA",
               "sections":{
-                "DESCRIPTION":"*gcloud ml-engine local predict* performs prediction locally with the given instances. It requires\nthe TensorFlow SDK be installed locally.\n"
+                "DESCRIPTION":"*gcloud ml-engine local predict* performs prediction locally with the given instances. It requires\nthe TensorFlow SDK be installed locally. The output format mirrors\n`gcloud ml-engine predict` (online prediction)\n"
               }
             },
             "train":{
@@ -40348,7 +40424,7 @@
                   "attr":{},
                   "category":"",
                   "choices":[],
-                  "description":"Path to a YAML configuration file containing configuration parameters\nfor the\n[Version](https://cloud.google.com/ml/reference/rest/v1/projects.models.versions)\nto create.\n+\nThe file is in YAML format. Note that not all attributes of a Version\nare configurable; available attributes (with example values) are:\n+\n    description: A free-form description of the version.\n    deploymentUri: gs://path/to/source\n    runtimeVersion: '1.0'\n    manualScaling:\n      nodes: 10  # The number of nodes to allocate for this model.\n+\nThe name of the version must always be specified via the required\nVERSION argument.\n+\nIf an option is specified both in the configuration file and via\ncommand line arguments, the command line arguments override the\nconfiguration file.",
+                  "description":"Path to a YAML configuration file containing configuration parameters\nfor the\n[Version](https://cloud.google.com/ml/reference/rest/v1/projects.models.versions)\nto create.\n+\nThe file is in YAML format. Note that not all attributes of a Version\nare configurable; available attributes (with example values) are:\n+\n    description: A free-form description of the version.\n    deploymentUri: gs://path/to/source\n    runtimeVersion: '1.0'\n    manualScaling:\n      nodes: 10  # The number of nodes to allocate for this model.\n    autoScaling:\n      minNodes: 0  # The minimum number of nodes to allocate for this model.\n+\nThe name of the version must always be specified via the required\nVERSION argument.\n+\nOnly one of manualScaling or autoScaling must be specified. If both\nare specified in same yaml file an error will be returned.\n+\nIf an option is specified both in the configuration file and via\ncommand line arguments, the command line arguments override the\nconfiguration file.",
                   "group":"",
                   "hidden":false,
                   "name":"--config",
@@ -42574,7 +42650,7 @@
                   "category":"",
                   "choices":[],
                   "default":false,
-                  "description":"(DEPRECATED) If provided, skip the delete confirmation prompt. \n+\nThe --force option is deprecated; use --quiet to suppress prompting.",
+                  "description":"(DEPRECATED) If provided, skip the delete confirmation prompt.\n+\nThe --force option is deprecated; use --quiet to suppress prompting.",
                   "group":"",
                   "hidden":false,
                   "name":"--force",
@@ -47144,7 +47220,7 @@
                   "attr":{},
                   "category":"",
                   "choices":[],
-                  "description":"(DEPRECATED) Cloud SQL instance ID. \n+\nStarting on 2017-06-30, --instance will no longer be a valid flag: Run the same command but omit this flag.",
+                  "description":"(DEPRECATED) Cloud SQL instance ID.\n+\nStarting on 2017-06-30, --instance will no longer be a valid flag: Run the same command but omit this flag.",
                   "group":"",
                   "hidden":false,
                   "name":"--instance",
@@ -47286,7 +47362,7 @@
                   "attr":{},
                   "category":"",
                   "choices":[],
-                  "description":"(DEPRECATED) Cloud SQL instance ID. \n+\nStarting on 2017-06-30, --instance will no longer be a valid flag: Run the same command but omit this flag.",
+                  "description":"(DEPRECATED) Cloud SQL instance ID.\n+\nStarting on 2017-06-30, --instance will no longer be a valid flag: Run the same command but omit this flag.",
                   "group":"",
                   "hidden":false,
                   "name":"--instance",
@@ -48121,7 +48197,7 @@
           "positionals":[],
           "release":"GA",
           "sections":{
-            "DESCRIPTION":"gcloud properties can be stored in *named configurations*, which\nare collections of key-value pairs that influence the behavior of\ngcloud.\n\nNamed configurations are intended to be an advanced feature,\nand you can probably ignore them entirely if you only work with one\nproject.\n\nProperties that are commonly stored in configurations include\ndefault Google Compute Engine zone, verbosity level, project ID, and\nactive user or service account. Configurations allow you to define\nand enable these and other settings together as a group.\n\nConfigurations are especially useful if you:\n  - Work with multiple projects. You can create a separate\n    configuration for each project.\n  - Use multiple accounts, for example, a user account and a\n    service account, etc.\n  - Perform generally orthogonal tasks (work on an appengine app in\n    project foo, administer a Google Compute Engine cluster in zone\n    user-central-1a, manage the network configurations for region\n    asia-east-1, etc.)\n\nProperty information stored in named configurations are readable by\nall gcloud commands and may be modified by `gcloud config set`\nand `gcloud config unset`.\n\n# Creating configurations\n\nNamed configurations maybe be defined by users or built into gcloud.\n\nUser defined configurations have lowercase names, such as\n'johndoe', 'default', 'jeff-staging', or 'foo2'.  These are defined\nby the following regular expression: ```^[a-z][-a-z0-9]*$```\n\nAdditionally there is a builtin configuration named NONE that has\nno properties set.\n\nThe easiest way to create a brand new configuration is by\nrunning\n\n  $ gcloud init\n\nThis will guide you through setting up your first named configuration,\ncreating a new named configuration, or reinitializing an existing\nnamed configuration. (Note: reinitializing an existing configuration\nwill remove all its existing properties!)\n\nYou can create a new empty configuration with\n\n  $ gcloud config configurations create my-config\n\n# Using configurations\n\ngcloud may have at most one *active* configuration which provides\nproperty values.  Inactive configurations have no effect on\ngcloud executions.\n\nYou can activate a configuration with\n\n  $ gcloud config configurations activate my-config\n\nYou can view and change the properties of your active configuration\nusing the following commands:\n\n  $ gcloud config list\n  $ gcloud config set\n\nAdditionally, commands under `gcloud config configurations`\nallow you to to list, activate, describe, and delete configurations\nthat may or may not be active.\n\nYou can activate a configuration for a single gcloud invocation using\nflag, `--configuration my-config`, or environment variable\n`CLOUDSDK_ACTIVE_CONFIG_NAME=my-config`.\n\n## AVAILABLE PROPERTIES\n\n_core_::\n\n\n*account*:::\n\nThe account gcloud should use for authentication.  You can run `gcloud auth list` to see the accounts you currently have available.\n\n\n*custom_ca_certs_file*:::\n\nAbsolute path to a custom CA cert file.\n\n\n*default_regional_backend_service*:::\n\nIf True, backend services in `gcloud compute backend-services` will be regional by default. The `--global` flag will be required for global backend services.\n\n\n*disable_color*:::\n\nIf True, color will not be used when printing messages in the terminal.\n\n\n*disable_prompts*:::\n\nIf True, the default answer will be assumed for all user prompts.  For any prompts that require user input, an error will be raised. This is equivalent to either using the global `--quiet` flag or setting the environment variable `CLOUDSDK_CORE_DISABLE_PROMPTS` to 1.\n\n\n*disable_usage_reporting*:::\n\nIf True, anonymous statistics on SDK usage will not be collected.  This is value is set based on your choices during installation, but can be changed at any time.  For more information, see: https://cloud.google.com/sdk/usage-statistics\n\n\n*log_http*:::\n\nIf True, log HTTP requests and responses to the logs.  You may need to adjust your `verbosity` setting if you want to see in the terminal, otherwise it is available in the log files.\n\n\n*max_log_days*:::\n\nMaximum number of days to retain log files before deleting. If set to 0, turns off log garbage collection and does not delete log files. If unset, defaults to 30.\n\n\n*pass_credentials_to_gsutil*:::\n\nIf True, pass the configured Cloud SDK authentication to gsutil.\n\n\n*project*:::\n\nThe project id of the Cloud Platform project to operate on by default.  This can be overridden by using the global `--project` flag.\n\n\n*show_structured_logs*:::\n\nControls when JSON structured log messages for the current verbosity and above will be written to standard error. The default is text format when disabled. Valid values are: `never` - Log messages as text, `always` - Always log messages as JSON, `log` - Only log messages as JSON if stderr is a file, `terminal` - Only log messages as JSON if stderr is a terminal. If unset default is `never`.\n\n\n*trace_token*:::\n\nToken used to route traces of service requests for investigation of issues. This token will be provided by Google support.\n\n\n*user_output_enabled*:::\n\nIf False, messages to the user and command output on both standard output and standard error will be suppressed.\n\n\n*verbosity*:::\n\nThe default logging verbosity for gcloud commands.  This is the equivalent of using the global `--verbosity` flag.\n\n\n_app_::\n\n\n*cloud_build_timeout*:::\n\nThe timeout, in seconds, to wait for Docker builds to complete during deployments. All Docker builds now use the Container Builder API.\n\n\n*promote_by_default*:::\n\nIf True, when deploying a new version of a service, that version will be promoted to receive all traffic for the service. The flag can be overridden via the `--promote-by-default` or `--no-promote-by-default` flags.\n\n\n*stop_previous_version*:::\n\nIf True, when deploying a new version of a service, the previously deployed version is stopped. If False, older versions must be stopped manually.\n\n\n_auth_::\n\n\n*disable_credentials*:::\n\nIf true, gcloud will not attempt to load any credentials or authenticate any requests. This is useful if you are behind a proxy that adds authentication to your requests.\n\n\n_component_manager_::\n\n\n*additional_repositories*:::\n\nA comma separated list of additional repositories to check for components.  This property is automatically managed by the `gcloud components repositories` commands.\n\n\n*disable_update_check*:::\n\nIf True, the Cloud SDK will not automatically check for updates.\n\n\n_compute_::\n\n\n*region*:::\n\nThe default region to use when working with regional Compute Engine resources. When a `--region` flag is required but not provided, the command will fall back to this value, if set. To see valid choices, run `gcloud compute regions list`.\n\n\n*zone*:::\n\nThe default zone to use when working with zonal Compute Engine resources. When a `--zone` flag is required but not provided, the command will fall back to this value, if set. To see valid choices, run `gcloud compute zones list`.\n\n\n_container_::\n\n\n*build_timeout*:::\n\nThe timeout, in seconds, to wait for container builds to complete.\n\n\n*cluster*:::\n\nThe name of the cluster to use by default when working with Container Engine.\n\n\n*use_application_default_credentials*:::\n\nUse application default credentials to authenticate to the cluster API server.\n\n\n*use_client_certificate*:::\n\nUse the cluster's client certificate to authenticate to the cluster API server.\n\n\n_dataproc_::\n\n\n*region*:::\n\nSpecifies the Cloud Dataproc region to use. Each Cloud Dataproc region constitutes an independent resource namespace constrained to deploying instances into Google Compute Engine zones inside the region. The default value of \"global\" is a special multi-region namespace which is capable of deploying instances into all Google Compute Engine zones globally, and is disjoint from other Cloud Dataproc regions.\n\n\n_functions_::\n\n\n*region*:::\n\nThe default region to use when working with Google Compute functions resources. When a `--region` flag is required but not provided, the command will fall back to this value, if set. To see valid choices, run `gcloud functions regions list`.\n\n\n_ml_engine_::\n\n\n*polling_interval*:::\n\nThe interval (in seconds) at which to poll logs from your Cloud ML Engine jobs. Note that making it much faster than the default (60) will quickly use all of your quota.\n\n\n_proxy_::\n\n\n*address*:::\n\nThe hostname or IP address of your proxy server.\n\n\n*password*:::\n\nIf your proxy requires authentication, the password to use when connecting.\n\n\n*port*:::\n\nThe port to use when connected to your proxy server.\n\n\n*type*:::\n\nThe type of proxy you are using.  Supported proxy types are: [http, http_no_tunnel, socks4, socks5].\n\n\n*username*:::\n\nIf your proxy requires authentication, the username to use when connecting.\n\n\n_spanner_::\n\n\n*instance*:::\n\nThe default instance to use when working with Cloud Spanner resources. When an `instance` is required but not provided by a flag, the command will fall back to this value, if set."
+            "DESCRIPTION":"gcloud properties can be stored in *named configurations*, which\nare collections of key-value pairs that influence the behavior of\ngcloud.\n\nNamed configurations are intended to be an advanced feature,\nand you can probably ignore them entirely if you only work with one\nproject.\n\nProperties that are commonly stored in configurations include\ndefault Google Compute Engine zone, verbosity level, project ID, and\nactive user or service account. Configurations allow you to define\nand enable these and other settings together as a group.\n\nConfigurations are especially useful if you:\n  - Work with multiple projects. You can create a separate\n    configuration for each project.\n  - Use multiple accounts, for example, a user account and a\n    service account, etc.\n  - Perform generally orthogonal tasks (work on an appengine app in\n    project foo, administer a Google Compute Engine cluster in zone\n    user-central-1a, manage the network configurations for region\n    asia-east-1, etc.)\n\nProperty information stored in named configurations are readable by\nall gcloud commands and may be modified by `gcloud config set`\nand `gcloud config unset`.\n\n# Creating configurations\n\nNamed configurations maybe be defined by users or built into gcloud.\n\nUser defined configurations have lowercase names, such as\n'johndoe', 'default', 'jeff-staging', or 'foo2'.  These are defined\nby the following regular expression: ```^[a-z][-a-z0-9]*$```\n\nAdditionally there is a builtin configuration named NONE that has\nno properties set.\n\nThe easiest way to create a brand new configuration is by\nrunning\n\n  $ gcloud init\n\nThis will guide you through setting up your first named configuration,\ncreating a new named configuration, or reinitializing an existing\nnamed configuration. (Note: reinitializing an existing configuration\nwill remove all its existing properties!)\n\nYou can create a new empty configuration with\n\n  $ gcloud config configurations create my-config\n\n# Using configurations\n\ngcloud may have at most one *active* configuration which provides\nproperty values.  Inactive configurations have no effect on\ngcloud executions.\n\nYou can activate a configuration with\n\n  $ gcloud config configurations activate my-config\n\nYou can view and change the properties of your active configuration\nusing the following commands:\n\n  $ gcloud config list\n  $ gcloud config set\n\nAdditionally, commands under `gcloud config configurations`\nallow you to to list, activate, describe, and delete configurations\nthat may or may not be active.\n\nYou can activate a configuration for a single gcloud invocation using\nflag, `--configuration my-config`, or environment variable\n`CLOUDSDK_ACTIVE_CONFIG_NAME=my-config`.\n\n## AVAILABLE PROPERTIES\n\n_core_::\n\n\n*account*:::\n\nThe account gcloud should use for authentication.  You can run `gcloud auth list` to see the accounts you currently have available.\n\n\n*custom_ca_certs_file*:::\n\nAbsolute path to a custom CA cert file.\n\n\n*default_regional_backend_service*:::\n\nIf True, backend services in `gcloud compute backend-services` will be regional by default. The `--global` flag will be required for global backend services.\n\n\n*disable_color*:::\n\nIf True, color will not be used when printing messages in the terminal.\n\n\n*disable_prompts*:::\n\nIf True, the default answer will be assumed for all user prompts.  For any prompts that require user input, an error will be raised. This is equivalent to either using the global `--quiet` flag or setting the environment variable `CLOUDSDK_CORE_DISABLE_PROMPTS` to 1.\n\n\n*disable_usage_reporting*:::\n\nIf True, anonymous statistics on SDK usage will not be collected.  This is value is set based on your choices during installation, but can be changed at any time.  For more information, see: https://cloud.google.com/sdk/usage-statistics\n\n\n*log_http*:::\n\nIf True, log HTTP requests and responses to the logs.  You may need to adjust your `verbosity` setting if you want to see in the terminal, otherwise it is available in the log files.\n\n\n*max_log_days*:::\n\nMaximum number of days to retain log files before deleting. If set to 0, turns off log garbage collection and does not delete log files. If unset, defaults to 30.\n\n\n*pass_credentials_to_gsutil*:::\n\nIf True, pass the configured Cloud SDK authentication to gsutil.\n\n\n*project*:::\n\nThe project id of the Cloud Platform project to operate on by default.  This can be overridden by using the global `--project` flag.\n\n\n*show_structured_logs*:::\n\nControls when JSON structured log messages for the current verbosity and above will be written to standard error. The default is text format when disabled. Valid values are: `never` - Log messages as text, `always` - Always log messages as JSON, `log` - Only log messages as JSON if stderr is a file, `terminal` - Only log messages as JSON if stderr is a terminal. If unset default is `never`.\n\n\n*trace_token*:::\n\nToken used to route traces of service requests for investigation of issues. This token will be provided by Google support.\n\n\n*user_output_enabled*:::\n\nIf False, messages to the user and command output on both standard output and standard error will be suppressed.\n\n\n*verbosity*:::\n\nThe default logging verbosity for gcloud commands.  This is the equivalent of using the global `--verbosity` flag.\n\n\n_app_::\n\n\n*cloud_build_timeout*:::\n\nThe timeout, in seconds, to wait for Docker builds to complete during deployments. All Docker builds now use the Container Builder API.\n\n\n*promote_by_default*:::\n\nIf True, when deploying a new version of a service, that version will be promoted to receive all traffic for the service. The flag can be overridden via the `--promote-by-default` or `--no-promote-by-default` flags.\n\n\n*stop_previous_version*:::\n\nIf True, when deploying a new version of a service, the previously deployed version is stopped. If False, older versions must be stopped manually.\n\n\n*use_runtime_builders*:::\n\nIf set, opt in/out to a new code path for building applications using pre-fabricated runtimes that can be updated independently of client tooling. (If not set, will use the default path for each runtime.)\n\n\n_auth_::\n\n\n*disable_credentials*:::\n\nIf true, gcloud will not attempt to load any credentials or authenticate any requests. This is useful if you are behind a proxy that adds authentication to your requests.\n\n\n_component_manager_::\n\n\n*additional_repositories*:::\n\nA comma separated list of additional repositories to check for components.  This property is automatically managed by the `gcloud components repositories` commands.\n\n\n*disable_update_check*:::\n\nIf True, the Cloud SDK will not automatically check for updates.\n\n\n_compute_::\n\n\n*region*:::\n\nThe default region to use when working with regional Compute Engine resources. When a `--region` flag is required but not provided, the command will fall back to this value, if set. To see valid choices, run `gcloud compute regions list`.\n\n\n*zone*:::\n\nThe default zone to use when working with zonal Compute Engine resources. When a `--zone` flag is required but not provided, the command will fall back to this value, if set. To see valid choices, run `gcloud compute zones list`.\n\n\n_container_::\n\n\n*build_timeout*:::\n\nThe timeout, in seconds, to wait for container builds to complete.\n\n\n*cluster*:::\n\nThe name of the cluster to use by default when working with Container Engine.\n\n\n*use_application_default_credentials*:::\n\nUse application default credentials to authenticate to the cluster API server.\n\n\n*use_client_certificate*:::\n\nUse the cluster's client certificate to authenticate to the cluster API server.\n\n\n_dataproc_::\n\n\n*region*:::\n\nSpecifies the Cloud Dataproc region to use. Each Cloud Dataproc region constitutes an independent resource namespace constrained to deploying instances into Google Compute Engine zones inside the region. The default value of \"global\" is a special multi-region namespace which is capable of deploying instances into all Google Compute Engine zones globally, and is disjoint from other Cloud Dataproc regions.\n\n\n_functions_::\n\n\n*region*:::\n\nThe default region to use when working with Google Compute functions resources. When a `--region` flag is required but not provided, the command will fall back to this value, if set. To see valid choices, run `gcloud functions regions list`.\n\n\n_ml_engine_::\n\n\n*polling_interval*:::\n\nThe interval (in seconds) at which to poll logs from your Cloud ML Engine jobs. Note that making it much faster than the default (60) will quickly use all of your quota.\n\n\n_proxy_::\n\n\n*address*:::\n\nThe hostname or IP address of your proxy server.\n\n\n*password*:::\n\nIf your proxy requires authentication, the password to use when connecting.\n\n\n*port*:::\n\nThe port to use when connected to your proxy server.\n\n\n*type*:::\n\nThe type of proxy you are using.  Supported proxy types are: [http, http_no_tunnel, socks4, socks5].\n\n\n*username*:::\n\nIf your proxy requires authentication, the username to use when connecting.\n\n\n_spanner_::\n\n\n*instance*:::\n\nThe default instance to use when working with Cloud Spanner resources. When an `instance` is required but not provided by a flag, the command will fall back to this value, if set."
           }
         },
         "datetimes":{

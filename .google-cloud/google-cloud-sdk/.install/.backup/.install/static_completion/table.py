@@ -1000,6 +1000,7 @@ table={'commands': {'app': {'commands': {'browse': {'flags': {'--launch-browser'
                                                                                   'positionals': {'instance-name': 'DYNAMIC'}},
                                                                   'create': {'flags': {'--accelerator': 'CANNOT_BE_COMPLETED',
                                                                                        '--address': 'CANNOT_BE_COMPLETED',
+                                                                                       '--async': None,
                                                                                        '--boot-disk-auto-delete': None,
                                                                                        '--boot-disk-device-name': 'CANNOT_BE_COMPLETED',
                                                                                        '--boot-disk-size': 'CANNOT_BE_COMPLETED',
