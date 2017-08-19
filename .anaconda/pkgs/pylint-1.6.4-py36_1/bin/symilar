@@ -1,3 +1,0 @@
-#!/opt/anaconda1anaconda2anaconda3/bin/python
-from pylint import run_symilar
-run_symilar()

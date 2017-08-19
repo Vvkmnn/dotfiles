@@ -1,6 +1,0 @@
-#!/Users/v/.anaconda/bin/python
-if __name__ == '__main__':
-    import sys
-    import pyflakes.api
-
-    sys.exit(pyflakes.api.main())

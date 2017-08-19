@@ -1,5 +1,0 @@
-{
-  "home": "http://numba.pydata.org/",
-  "license": "BSD",
-  "summary": "a just-in-time Python function compiler based on LLVM"
-}
