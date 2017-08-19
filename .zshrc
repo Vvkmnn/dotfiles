@@ -30,8 +30,9 @@
 export LANG=en_US.UTF-8
 export BROWSER=open
 export TERM=xterm-256color
+
+# Path
 export PATH="/usr/local/bin:$PATH"
-# export EDITOR='vim'
 
 # Dotfiles
 alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
@@ -56,13 +57,13 @@ if [ -f "${HOME}/.google-cloud/google-cloud-sdk/path.zsh.inc" ]; then source "${
 if [ -f "${HOME}/.google-cloud/google-cloud-sdk/completion.zsh.inc" ]; then source "${HOME}/.google-cloud/google-cloud-sdk/completion.zsh.inc"; fi
 
 # Anaconda
-export PATH="${HOME}/.anaconda/bin:$PATH"
+# export PATH="${HOME}/.anaconda/bin:$PATH"
 
 # Iterm2
 test -e "${HOME}/.iterm2/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2/.iterm2_shell_integration.zsh"
 
 # Autoenv - Load .envs automagically
-source /usr/local/opt/autoenv/activate.sh
+# source /usr/local/opt/autoenv/activate.sh
 
 ## Shell Defaults -------------------------------
 
@@ -96,12 +97,15 @@ zplug "plugins/git", from:oh-my-zsh
 zplug "denysdovhan/spaceship-zsh-theme", use:spaceship.zsh, from:github, as:theme
 
 # Athame (Vim in Shell)
-zplug "ardagnir/athame"
+# zplug "ardagnir/athame"
+
+# Autoenv for Zsh
+zplug "zpm-zsh/autoenv"
 
 # Z - jump around
 zplug "rupa/z", use:z.sh
 
-# Load theme file
+# Dracula theme for zsh
 # zplug 'dracula/zsh', as:theme
 
 # Install plugins if there are plugins that have not been installed
@@ -114,3 +118,4 @@ fi
 
 # Then, source plugins and add commands to $PATH
 zplug load # --verbose
+
