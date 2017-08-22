@@ -18,3 +18,4 @@ npm update
 
 npm install -g ngrok
 npm install -g firebase-tools
+npm install -g live-server

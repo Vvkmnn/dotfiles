@@ -1,7 +1,16 @@
 {
   "load_extensions": {
-    "vim_binding/vim_binding": false,
+    "vim_binding/vim_binding": true,
     "contrib_nbextensions_help_item/main": true,
     "nbextensions_configurator/config_menu/main": true
+  },
+  "Cell": {
+    "cm_config": {
+      "lineNumbers": true
+    }
+  },
+  "Notebook": {
+    "Toolbar": true,
+    "Header": true
   }
 }
