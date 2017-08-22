@@ -10,7 +10,7 @@
     // Defaults
     "editor.formatOnSave": true,
     "editor.minimap.enabled": true,
-    "editor.cursorStyle": "block",
+    "editor.cursorStyle": "line",
     "editor.wordWrap": "on",
     "editor.acceptSuggestionOnEnter": "off",
     "workbench.colorTheme": "Dracula",
@@ -20,7 +20,30 @@
     "editor.fontFamily": "'Inconsolata for Powerline', medium",
     "editor.fontSize": 14,
     "vim.disableAnnoyingNeovimMessage": true,
+    // Projects
+    "git.enableSmartCommit": true,
+    "projectManager.git.baseFolders": [
+        {
+            "name": "Projects",
+            "rootPath": "$home\\Documents\\projects",
+            "paths": [],
+            "group": ""
+        },
+        {
+            "name": "RedQueen",
+            "rootPath": "$home\\Documents\\redqueen",
+            "paths": [],
+            "group": ""
+        },
+        {
+            "name": "Udacity",
+            "rootPath": "$home\\Documents\\udacity",
+            "paths": [],
+            "group": ""
+        }
+    ],
     // Linting
+    /// Javascript
     "eslint.autoFixOnSave": true,
     "eslint.enable": true,
     "eslint.options": {
@@ -41,6 +64,10 @@
         }
     ],
     // Run the linter on save (onSave) or on type (onType)
-    "eslint.run": "onSave"
+    "eslint.run": "onSave",
     // Turns auto fix on save on or off.
+    /// Python
+    "python.formatting.provider": "yapf",
+    "python.linting.lintOnSave": true,
+    "python.formatting.formatOnSave": true
 }

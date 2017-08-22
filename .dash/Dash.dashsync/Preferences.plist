@@ -155,10 +155,17 @@
 	<dict>
 		<key>installed</key>
 		<dict>
+<<<<<<< HEAD
 			<key>http://kapeli.com/feeds/NodeJS.xml</key>
 			<dict>
 				<key>date</key>
 				<date>2017-08-21T15:24:59Z</date>
+=======
+			<key>http://kapeli.com/feeds/CSS.xml</key>
+			<dict>
+				<key>date</key>
+				<date>2017-08-07T00:24:14Z</date>
+>>>>>>> 1526c1a8e2c92a619d5a342c8b135c95ee6e5264
 			</dict>
 		</dict>
 		<key>uninstalled</key>
