@@ -111,7 +111,7 @@ fi
 zplug load # --verbose
 
 # The next line updates PATH for the Google Cloud SDK.
-if [ -f "${HOME}/.google-cloud/google-cloud-sdk/path.zsh.inc" ]; then source "${HOME}/.google-cloud/google-cloud-sdk/path.zsh.inc"; fi
+if [ -f '/Users/vivek.menon/Downloads/google-cloud-sdk/path.zsh.inc' ]; then source '/Users/vivek.menon/Downloads/google-cloud-sdk/path.zsh.inc'; fi
 
 # The next line enables shell command completion for gcloud.
-if [ -f "${HOME}/.google-cloud/google-cloud-sdk/completion.zsh.inc" ]; then source "${HOME}/.google-cloud/google-cloud-sdk/completion.zsh.inc"; fi
+if [ -f '/Users/vivek.menon/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then source '/Users/vivek.menon/Downloads/google-cloud-sdk/completion.zsh.inc'; fi

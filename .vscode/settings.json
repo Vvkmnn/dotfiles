@@ -14,7 +14,7 @@
     "editor.wordWrap": "on",
     "editor.acceptSuggestionOnEnter": "off",
     "workbench.colorTheme": "Dracula",
-    "window.zoomLevel": 0,
+    "window.zoomLevel": 1,
     "editor.autoIndent": true,
     // Fonts
     "editor.fontFamily": "'Inconsolata for Powerline', medium",
