@@ -99,7 +99,26 @@
 	<key>DHStackOverflowRepo</key>
 	<dict>
 		<key>installed</key>
-		<dict/>
+		<dict>
+			<key>NodeJS_Online</key>
+			<dict>
+				<key>date</key>
+				<date>2017-07-30T18:37:03Z</date>
+				<key>entry</key>
+				<dict>
+					<key>aliases</key>
+					<array>
+						<string>node.js</string>
+					</array>
+					<key>name</key>
+					<string>NodeJS (Online)</string>
+					<key>platform</key>
+					<string>soonline</string>
+					<key>uniqueIdentifier</key>
+					<string>NodeJS_Online</string>
+				</dict>
+			</dict>
+		</dict>
 		<key>uninstalled</key>
 		<dict/>
 	</dict>
@@ -110,6 +129,8 @@
 		<key>uninstalled</key>
 		<dict/>
 	</dict>
+	<key>DHWebViewIsDark</key>
+	<false/>
 	<key>docsets</key>
 	<dict>
 		<key>keywords</key>
@@ -118,7 +139,13 @@
 	<key>feeds</key>
 	<dict>
 		<key>installed</key>
-		<dict/>
+		<dict>
+			<key>http://kapeli.com/feeds/CSS.xml</key>
+			<dict>
+				<key>date</key>
+				<date>2017-08-07T00:24:14Z</date>
+			</dict>
+		</dict>
 		<key>uninstalled</key>
 		<dict/>
 	</dict>
@@ -150,16 +177,16 @@
 	<key>searchKey</key>
 	<dict>
 		<key>keyCode</key>
-		<integer>-1</integer>
+		<integer>4</integer>
 		<key>modifiers</key>
-		<integer>8395520</integer>
+		<integer>4096</integer>
 	</dict>
 	<key>searchUsingSelectedTextKey</key>
 	<dict>
 		<key>keyCode</key>
-		<integer>-1</integer>
+		<integer>4</integer>
 		<key>modifiers</key>
-		<integer>8395520</integer>
+		<integer>6144</integer>
 	</dict>
 	<key>shouldRestoreTabs</key>
 	<false/>
@@ -176,6 +203,8 @@
 	<key>shouldSyncView</key>
 	<true/>
 	<key>showInDock</key>
+	<true/>
+	<key>sortDocsetsAlphabetically</key>
 	<true/>
 	<key>versionedDHCheatRepo</key>
 	<dict>
