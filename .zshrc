@@ -118,4 +118,3 @@ fi
 
 # Then, source plugins and add commands to $PATH
 zplug load # --verbose
-

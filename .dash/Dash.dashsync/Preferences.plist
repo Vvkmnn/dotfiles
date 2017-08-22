@@ -43,7 +43,22 @@
 	<key>DHGitHubRepo</key>
 	<dict>
 		<key>installed</key>
-		<dict/>
+		<dict>
+			<key>tensorflow/tensorflow</key>
+			<dict>
+				<key>date</key>
+				<date>2017-08-22T13:38:29Z</date>
+				<key>entry</key>
+				<dict>
+					<key>name</key>
+					<string>tensorflow/tensorflow</string>
+					<key>platform</key>
+					<string>github</string>
+					<key>uniqueIdentifier</key>
+					<string>tensorflow/tensorflow</string>
+				</dict>
+			</dict>
+		</dict>
 		<key>uninstalled</key>
 		<dict/>
 	</dict>
@@ -140,10 +155,10 @@
 	<dict>
 		<key>installed</key>
 		<dict>
-			<key>http://kapeli.com/feeds/CSS.xml</key>
+			<key>http://kapeli.com/feeds/NodeJS.xml</key>
 			<dict>
 				<key>date</key>
-				<date>2017-08-07T00:24:14Z</date>
+				<date>2017-08-21T15:24:59Z</date>
 			</dict>
 		</dict>
 		<key>uninstalled</key>
@@ -300,7 +315,16 @@
 	<key>versionedFeeds</key>
 	<dict>
 		<key>installed</key>
-		<dict/>
+		<dict>
+			<key>http://kapeli.com/feeds/NodeJS.xml</key>
+			<dict>
+				<key>7.10.0</key>
+				<dict>
+					<key>date</key>
+					<date>2017-08-21T15:25:27Z</date>
+				</dict>
+			</dict>
+		</dict>
 		<key>uninstalled</key>
 		<dict/>
 	</dict>
