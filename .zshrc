@@ -30,6 +30,7 @@
 export LANG=en_US.UTF-8
 export BROWSER=open
 export TERM=xterm-256color
+export EDITOR=vim
 
 # Path
 export PATH="/usr/local/bin:$PATH"
@@ -79,6 +80,16 @@ SPACESHIP_TIME_SHOW=true
 SPACESHIP_TIME_COLOR=blue
 SPACESHIP_BATTERY_SHOW=false
 SPACESHIP_BATTERY_ALWAYS_SHOW=false
+SPACESHIP_VI_MODE_COLOR=cyan
+SPACESHIP_VI_MODE_INSERT=𝛁
+SPACESHIP_VI_MODE_NORMAL=𝚫
+
+# Vim Promprt
+export RPS1="%{$reset_color%}"
+
+# Vim in Zsh
+bindkey -v
+KEYTIMEOUT=1
 
 # Little Helper!
 RPROMPT='v@%M %(?,%F{green}[-_-]%f,%F{red}[ಠ_ಠ]%f)'
@@ -91,6 +102,9 @@ zplug "zsh-users/zsh-autosuggestions"
 
 # Syntax highlighting
 zplug "zsh-users/zsh-syntax-highlighting", defer:2
+
+# Vi(m) Mode
+zplug "plugins/vi-mode", from:oh-my-zsh
 
 # Git Plugin
 zplug "plugins/git", from:oh-my-zsh
