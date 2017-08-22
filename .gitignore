@@ -1,26 +1,25 @@
 ## From https://github.com/github/gitignore
 
-<<<<<<< HEAD
 ## dash	
 .dash-license 
 
 ## vscode
-.vscode/extensions/*/*
+vscode/extensions/*/*
 
 # Anaconda
-.anaconda/**
+anaconda/**
 
 # Google
-.google-cloud-sdk/**
+google-cloud-sdk/**
 
 # Docker
-.docker/**
+docker/**
 
 ## vscode
-.vscode/**
+vscode/**
 
 ## SSH
-./ssh
+ssh/
 
 ## macOS
 .swp

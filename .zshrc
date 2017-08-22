@@ -27,13 +27,12 @@
 # ##################################################
 
 ## Personal Defaults -------------------------------
+
+# Exports
 export LANG=en_US.UTF-8
 export BROWSER=open
 export TERM=xterm-256color
 export EDITOR=vim
-
-# Path
-export PATH="/usr/local/bin:$PATH"
 
 # Dotfiles
 alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
@@ -41,17 +40,16 @@ alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
 # Aliases
 # source $HOME/.aliases
 
-## Application Defaults
+## Environment Defaults ----------------------------
+
+# Path
+export PATH="/usr/local/bin:$PATH"
 
 # Homebrew Cask
 export HOMEBREW_CASK_OPTS="--appdir=/Applications"
  
 # RVM
 # export PATH="$PATH:$HOME/.rvm/bin"
-
-
-# Google Go
-# export GOPATH=~/Code/Go
 
 # Google Cloud
 if [ -f "${HOME}/.google-cloud/google-cloud-sdk/path.zsh.inc" ]; then source "${HOME}/.google-cloud/google-cloud-sdk/path.zsh.inc"; fi
@@ -63,14 +61,9 @@ if [ -f "${HOME}/.google-cloud/google-cloud-sdk/completion.zsh.inc" ]; then sour
 # Iterm2
 test -e "${HOME}/.iterm2/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2/.iterm2_shell_integration.zsh"
 
-# Autoenv - Load .envs automagically
-# source /usr/local/opt/autoenv/activate.sh
+## Shell Defaults ----------------------------------
 
-## Shell Defaults -------------------------------
-
-ZLE_LPROMPT_INDENT=0
-
-# Spaceship
+# Spaceship Theme 
 SPACESHIP_PROMPT_SYMBOL="ॐ "
 SPACESHIP_PROMPT_SEPARATE_LINE=true
 SPACESHIP_PROMPT_ADD_NEWLINE=false
@@ -84,17 +77,17 @@ SPACESHIP_VI_MODE_COLOR=cyan
 SPACESHIP_VI_MODE_INSERT=𝛁
 SPACESHIP_VI_MODE_NORMAL=𝚫
 
-# Vim Promprt
-export RPS1="%{$reset_color%}"
-
 # Vim in Zsh
 bindkey -v
 KEYTIMEOUT=1
 
 # Little Helper!
 RPROMPT='v@%M %(?,%F{green}[-_-]%f,%F{red}[ಠ_ಠ]%f)'
+ZLE_LPROMPT_INDENT=0
 
-# Zplug
+## Shell Plugins -----------------------------------
+
+# Zplug (Zsh Plugin Manager)
 source ~/.zplug/init.zsh
 
 # Autosuggestions
@@ -122,7 +115,7 @@ zplug "zpm-zsh/autoenv"
 zplug "rupa/z", use:z.sh
 
 # Dracula theme for zsh
-# zplug 'dracula/zsh', as:theme
+zplug 'dracula/zsh', as:theme
 
 # Install plugins if there are plugins that have not been installed
 if ! zplug check --verbose; then
