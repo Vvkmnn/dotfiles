@@ -115,7 +115,7 @@ zplug "zpm-zsh/autoenv"
 zplug "rupa/z", use:z.sh
 
 # Dracula theme for zsh
-zplug 'dracula/zsh', as:theme
+# zplug 'dracula/zsh', as:theme
 
 # Install plugins if there are plugins that have not been installed
 if ! zplug check --verbose; then
