@@ -1,0 +1,22 @@
+{
+    "data" : [
+        "\nR version 3.2.1 (2015-06-18) -- \"World-Famous Astronaut\"\nCopyright (C) 2015 The R Foundation for Statistical Computing\nPlatform: x86_64-apple-darwin13.4.0 (64-bit)\n\nR is free software and comes with ABSOLUTELY NO WARRANTY.\nYou are welcome to redistribute it under certain conditions.\nType 'license()' or 'licence()' for distribution details.\n\n  Natural language support but running in an English locale\n\nR is a collaborative project with many contributors.\nType 'contributors()' for more information and\n'citation()' on how to cite R or R packages in publications.\n\n",
+        "Type 'demo()' for some demos, 'help()' for on-line help, or\n'help.start()' for an HTML browser interface to help.\nType 'q()' to quit R.\n\n[Workspace loaded from ~/.RData]\n\n\nRestarting R session...\n\n",
+        "> ",
+        "install.packages(c(\"gtrendsR\", \"IRdisplay\", \"R6\", \"repr\", \"XML\"))",
+        "Error in install.packages : Updating loaded packages\n",
+        "> ",
+        "install.packages(c(\"BH\", \"boot\", \"class\", \"cluster\", \"codetools\", \"colorspace\", \"compare\", \"curl\", \"DBI\", \"devtools\", \"digest\", \"doParallel\", \"evaluate\", \"foreach\", \"forecast\", \"foreign\", \"ggplot2\", \"git2r\", \"gtable\", \"httr\", \"instaR\", \"irlba\", \"iterators\", \"jsonlite\", \"KernSmooth\", \"lattice\", \"MASS\", \"Matrix\", \"memoise\", \"mgcv\", \"mime\", \"munsell\", \"neuralnet\", \"nlme\", \"nnet\", \"plyr\", \"proto\", \"R6\", \"Rcpp\", \"RcppArmadillo\", \"RCurl\", \"reshape2\", \"Rfacebook\", \"rJava\", \"roxygen2\", \"rpart\", \"rstudioapi\", \"rversions\", \"scales\", \"spatial\", \"stringi\", \"stringr\", \"survival\", \"tseries\", \"XLConnect\", \"XLConnectJars\", \"xml2\", \"xtable\", \"zoo\"), lib=\"/Library/Frameworks/R.framework/Versions/3.2/Resources/library\")",
+        "Error in install.packages : Updating loaded packages\n\nRestarting R session...\n\n"
+    ],
+    "type" : [
+        2,
+        2,
+        0,
+        1,
+        2,
+        0,
+        1,
+        2
+    ]
+}
