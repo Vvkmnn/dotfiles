@@ -67,7 +67,7 @@ test -e "${HOME}/.iterm2/.iterm2_shell_integration.zsh" && source "${HOME}/.iter
 SPACESHIP_PROMPT_SYMBOL="ॐ "
 SPACESHIP_PROMPT_SEPARATE_LINE=true
 SPACESHIP_PROMPT_ADD_NEWLINE=false
-SPACESHIP_PROMPT_COLOR=blue
+SPACESHIP_PROMPT_COLOR=red
 SPACESHIP_DIR_TRUNC=3
 SPACESHIP_TIME_SHOW=true
 SPACESHIP_TIME_COLOR=blue
@@ -115,7 +115,7 @@ zplug "zpm-zsh/autoenv"
 zplug "rupa/z", use:z.sh
 
 # Dracula theme for zsh
-zplug 'dracula/zsh', as:theme
+# zplug 'dracula/zsh', as:theme
 
 # Install plugins if there are plugins that have not been installed
 if ! zplug check --verbose; then
