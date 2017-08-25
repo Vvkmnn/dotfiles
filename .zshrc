@@ -52,11 +52,11 @@ export HOMEBREW_CASK_OPTS="--appdir=/Applications"
 # export PATH="$PATH:$HOME/.rvm/bin"
 
 # Google Cloud
-if [ -f "${HOME}/.google-cloud/google-cloud-sdk/path.zsh.inc" ]; then source "${HOME}/.google-cloud/google-cloud-sdk/path.zsh.inc"; fi
-if [ -f "${HOME}/.google-cloud/google-cloud-sdk/completion.zsh.inc" ]; then source "${HOME}/.google-cloud/google-cloud-sdk/completion.zsh.inc"; fi
+if [ -f "${HOME}/.google/google-cloud-sdk/path.zsh.inc" ]; then source "${HOME}/.google/google-cloud-sdk/path.zsh.inc"; fi
+if [ -f "${HOME}/.google/google-cloud-sdk/completion.zsh.inc" ]; then source "${HOME}/.google/google-cloud-sdk/completion.zsh.inc"; fi
 
 # Anaconda
-# export PATH="${HOME}/.anaconda/bin:$PATH"
+export PATH="${HOME}/.anaconda/bin:$PATH"
 
 # Iterm2
 test -e "${HOME}/.iterm2/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2/.iterm2_shell_integration.zsh"
@@ -76,6 +76,8 @@ SPACESHIP_BATTERY_ALWAYS_SHOW=false
 SPACESHIP_VI_MODE_COLOR=cyan
 SPACESHIP_VI_MODE_INSERT=𝛁
 SPACESHIP_VI_MODE_NORMAL=𝚫
+SPACESHIP_PYENV_SHOW=false
+SPACESHIP_CONDA_SHOW=true
 
 # Vim in Zsh
 bindkey -v
