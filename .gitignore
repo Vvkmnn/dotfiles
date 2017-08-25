@@ -1,5 +1,8 @@
 ## From https://github.com/github/gitignore
 
+## 
+rstudio-desktop/*/*
+
 ## dash	
 .dash-license 
 
