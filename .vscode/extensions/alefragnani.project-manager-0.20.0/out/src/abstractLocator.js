@@ -125,7 +125,8 @@ var AbstractLocator = (function () {
         if (projectName === void 0) { projectName = null; }
         this.dirList.push({
             fullPath: projectPath,
-            name: projectName === null ? path.basename(projectPath) : projectName });
+            name: projectName === null ? path.basename(projectPath) : projectName
+        });
         return;
     };
     AbstractLocator.prototype.handleError = function (err) {
@@ -138,6 +139,25 @@ var AbstractLocator = (function () {
             fs.unlinkSync(cacheFile);
         }
         this.setAlreadyLocated(false);
+    };
+    AbstractLocator.prototype.existsWithRootPath = function (rootPath) {
+        // it only works if using `cache`
+        this.initializeCfg(this.getKind());
+        if (!this.isAlreadyLocated()) {
+            return null;
+        }
+        var rootPathUsingHome = PathUtils_1.PathUtils.compactHomePath(rootPath).toLocaleLowerCase();
+        for (var _i = 0, _a = this.dirList; _i < _a.length; _i++) {
+            var element = _a[_i];
+            if ((element.fullPath.toLocaleLowerCase() === rootPath.toLocaleLowerCase()) || (element.fullPath.toLocaleLowerCase() === rootPathUsingHome)) {
+                return {
+                    rootPath: element.fullPath,
+                    name: element.name,
+                    group: "",
+                    paths: []
+                };
+            }
+        }
     };
     AbstractLocator.prototype.getChannelPath = function () {
         if (vscode.env.appName.indexOf("Insiders") > 0) {

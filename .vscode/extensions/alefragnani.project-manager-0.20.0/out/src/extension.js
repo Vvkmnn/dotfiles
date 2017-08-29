@@ -69,6 +69,15 @@ function activate(context) {
         }
         // let foundProject: Project = projectStorage.existsWithRootPath(PathUtils.compactHomePath(currentProjectPath));
         var foundProject = projectStorage.existsWithRootPath(currentProjectPath);
+        if (!foundProject) {
+            foundProject = vscLocator.existsWithRootPath(currentProjectPath);
+        }
+        if (!foundProject) {
+            foundProject = gitLocator.existsWithRootPath(currentProjectPath);
+        }
+        if (!foundProject) {
+            foundProject = svnLocator.existsWithRootPath(currentProjectPath);
+        }
         if (foundProject) {
             statusItem.text += foundProject.name;
             statusItem.show();
@@ -302,10 +311,12 @@ function activate(context) {
         items = projectStorage.map();
         items = sortGroupedList(items);
         function onRejectListProjects(reason) {
+            vscode.commands.executeCommand("setContext", "inProjectManagerList", false);
             vscode.window.showInformationMessage("Error loading projects: ${reason}");
         }
         // promisses
         function onResolve(selected) {
+            vscode.commands.executeCommand("setContext", "inProjectManagerList", false);
             if (!selected) {
                 return;
             }
@@ -383,6 +394,7 @@ function activate(context) {
                 if (!vscode.workspace.getConfiguration("projectManager").get("groupList", false)) {
                     folders = sortProjectList(folders);
                 }
+                vscode.commands.executeCommand("setContext", "inProjectManagerList", true);
                 vscode.window.showQuickPick(folders, options)
                     .then(onResolve, onRejectListProjects);
             }

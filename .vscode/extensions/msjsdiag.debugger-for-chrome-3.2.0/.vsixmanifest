@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Language="en-US" Id="debugger-for-chrome" Version="3.1.8" Publisher="msjsdiag"/>
+    <Identity Language="en-US" Id="debugger-for-chrome" Version="3.2.0" Publisher="msjsdiag"/>
     <DisplayName>Debugger for Chrome</DisplayName>
     <Description xml:space="preserve">Debug your JavaScript code in the Chrome browser, or any other target that supports the Chrome Debugger protocol.</Description>
     <Tags>keybindings,debuggers,javascript</Tags>

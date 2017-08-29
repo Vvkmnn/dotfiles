@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Language="en-US" Id="project-manager" Version="0.19.0" Publisher="alefragnani"/>
+    <Identity Language="en-US" Id="project-manager" Version="0.20.0" Publisher="alefragnani"/>
     <DisplayName>Project Manager</DisplayName>
     <Description xml:space="preserve">Easily switch between projects</Description>
     <Tags>project,folder,switch,manage,git,keybindings</Tags>
