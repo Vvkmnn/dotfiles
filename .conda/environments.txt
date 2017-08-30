@@ -2,3 +2,4 @@
 /Users/v/anaconda3/envs/sigmacoin
 /Users/vivek.menon/anaconda3/envs/pokenv
 /Users/vivek.menon/.anaconda/envs/dlnd
+/Users/vivek.menon/.anaconda/envs/dlnd
