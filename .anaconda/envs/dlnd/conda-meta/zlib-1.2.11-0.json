@@ -1,0 +1,38 @@
+{
+  "arch": "x86_64",
+  "auth": null,
+  "build": "0",
+  "build_number": 0,
+  "channel": "https://conda.anaconda.org/conda-forge/osx-64",
+  "depends": [],
+  "files": [
+    "include/zconf.h",
+    "include/zlib.h",
+    "lib/libz.1.2.11.dylib",
+    "lib/libz.1.dylib",
+    "lib/libz.a",
+    "lib/libz.dylib",
+    "lib/pkgconfig/zlib.pc"
+  ],
+  "fn": "zlib-1.2.11-0.tar.bz2",
+  "has_prefix": true,
+  "license": "zlib",
+  "license_family": "Other",
+  "link": {
+    "source": "/Users/v/.anaconda/pkgs/zlib-1.2.11-0",
+    "type": 1
+  },
+  "md5": "0dbfe15508bd5509c0fca63c55ab07b0",
+  "name": "zlib",
+  "noarch": null,
+  "platform": "darwin",
+  "preferred_env": null,
+  "priority": 0,
+  "requires": [],
+  "schannel": "conda-forge",
+  "size": 97128,
+  "subdir": "osx-64",
+  "url": "https://conda.anaconda.org/conda-forge/osx-64/zlib-1.2.11-0.tar.bz2",
+  "version": "1.2.11",
+  "with_features_depends": {}
+}

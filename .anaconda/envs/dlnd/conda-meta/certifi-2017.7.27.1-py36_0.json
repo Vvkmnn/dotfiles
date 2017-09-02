@@ -1,0 +1,42 @@
+{
+  "arch": "x86_64",
+  "auth": null,
+  "build": "py36_0",
+  "build_number": 0,
+  "channel": "https://conda.anaconda.org/conda-forge/osx-64",
+  "depends": [
+    "python 3.6*"
+  ],
+  "files": [
+    "lib/python3.6/site-packages/certifi-2017.07.27.1-py3.6.egg-info",
+    "lib/python3.6/site-packages/certifi/__init__.py",
+    "lib/python3.6/site-packages/certifi/__main__.py",
+    "lib/python3.6/site-packages/certifi/__pycache__/__init__.cpython-36.pyc",
+    "lib/python3.6/site-packages/certifi/__pycache__/__main__.cpython-36.pyc",
+    "lib/python3.6/site-packages/certifi/__pycache__/core.cpython-36.pyc",
+    "lib/python3.6/site-packages/certifi/cacert.pem",
+    "lib/python3.6/site-packages/certifi/core.py",
+    "lib/python3.6/site-packages/certifi/old_root.pem",
+    "lib/python3.6/site-packages/certifi/weak.pem"
+  ],
+  "fn": "certifi-2017.7.27.1-py36_0.tar.bz2",
+  "has_prefix": false,
+  "license": "ISC",
+  "link": {
+    "source": "/Users/v/.anaconda/pkgs/certifi-2017.7.27.1-py36_0",
+    "type": 1
+  },
+  "md5": "2aa05d2c2c8a0547066f0ca89db0a418",
+  "name": "certifi",
+  "noarch": null,
+  "platform": "darwin",
+  "preferred_env": null,
+  "priority": 0,
+  "requires": [],
+  "schannel": "conda-forge",
+  "size": 208954,
+  "subdir": "osx-64",
+  "url": "https://conda.anaconda.org/conda-forge/osx-64/certifi-2017.7.27.1-py36_0.tar.bz2",
+  "version": "2017.7.27.1",
+  "with_features_depends": {}
+}

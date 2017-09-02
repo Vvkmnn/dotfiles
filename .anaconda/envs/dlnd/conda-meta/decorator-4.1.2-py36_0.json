@@ -1,0 +1,42 @@
+{
+  "arch": "x86_64",
+  "auth": null,
+  "build": "py36_0",
+  "build_number": 0,
+  "channel": "https://conda.anaconda.org/conda-forge/osx-64",
+  "depends": [
+    "python 3.6*"
+  ],
+  "files": [
+    "lib/python3.6/site-packages/__pycache__/decorator.cpython-36.pyc",
+    "lib/python3.6/site-packages/decorator-4.1.2.dist-info/DESCRIPTION.rst",
+    "lib/python3.6/site-packages/decorator-4.1.2.dist-info/INSTALLER",
+    "lib/python3.6/site-packages/decorator-4.1.2.dist-info/METADATA",
+    "lib/python3.6/site-packages/decorator-4.1.2.dist-info/RECORD",
+    "lib/python3.6/site-packages/decorator-4.1.2.dist-info/WHEEL",
+    "lib/python3.6/site-packages/decorator-4.1.2.dist-info/metadata.json",
+    "lib/python3.6/site-packages/decorator-4.1.2.dist-info/pbr.json",
+    "lib/python3.6/site-packages/decorator-4.1.2.dist-info/top_level.txt",
+    "lib/python3.6/site-packages/decorator.py"
+  ],
+  "fn": "decorator-4.1.2-py36_0.tar.bz2",
+  "has_prefix": false,
+  "license": "BSD 3-Clause",
+  "link": {
+    "source": "/Users/v/.anaconda/pkgs/decorator-4.1.2-py36_0",
+    "type": 1
+  },
+  "md5": "823043147bb716f8c47165594f2691c2",
+  "name": "decorator",
+  "noarch": null,
+  "platform": "darwin",
+  "preferred_env": null,
+  "priority": 0,
+  "requires": [],
+  "schannel": "conda-forge",
+  "size": 15635,
+  "subdir": "osx-64",
+  "url": "https://conda.anaconda.org/conda-forge/osx-64/decorator-4.1.2-py36_0.tar.bz2",
+  "version": "4.1.2",
+  "with_features_depends": {}
+}

@@ -1,0 +1,39 @@
+{
+  "arch": "x86_64",
+  "auth": null,
+  "build": "py36_1",
+  "build_number": 1,
+  "channel": "https://conda.anaconda.org/conda-forge/osx-64",
+  "depends": [
+    "python 3.6*"
+  ],
+  "files": [
+    "lib/python3.6/site-packages/__pycache__/six.cpython-36.pyc",
+    "lib/python3.6/site-packages/six-1.10.0-py3.6.egg-info/PKG-INFO",
+    "lib/python3.6/site-packages/six-1.10.0-py3.6.egg-info/SOURCES.txt",
+    "lib/python3.6/site-packages/six-1.10.0-py3.6.egg-info/dependency_links.txt",
+    "lib/python3.6/site-packages/six-1.10.0-py3.6.egg-info/top_level.txt",
+    "lib/python3.6/site-packages/six.py"
+  ],
+  "fn": "six-1.10.0-py36_1.tar.bz2",
+  "has_prefix": false,
+  "license": "MIT",
+  "license_family": "MIT",
+  "link": {
+    "source": "/Users/v/.anaconda/pkgs/six-1.10.0-py36_1",
+    "type": 1
+  },
+  "md5": "ff5ebab5e4d00f28490213ef0ba32cb5",
+  "name": "six",
+  "noarch": null,
+  "platform": "darwin",
+  "preferred_env": null,
+  "priority": 0,
+  "requires": [],
+  "schannel": "conda-forge",
+  "size": 18593,
+  "subdir": "osx-64",
+  "url": "https://conda.anaconda.org/conda-forge/osx-64/six-1.10.0-py36_1.tar.bz2",
+  "version": "1.10.0",
+  "with_features_depends": {}
+}
