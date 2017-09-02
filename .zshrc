@@ -52,8 +52,8 @@ export HOMEBREW_CASK_OPTS="--appdir=/Applications"
 # export PATH="$PATH:$HOME/.rvm/bin"
 
 # Google Cloud
-if [ -f "${HOME}/.google-cloud/google-cloud-sdk/path.zsh.inc" ]; then source "${HOME}/.google-cloud/google-cloud-sdk/path.zsh.inc"; fi
-if [ -f "${HOME}/.google-cloud/google-cloud-sdk/completion.zsh.inc" ]; then source "${HOME}/.google-cloud/google-cloud-sdk/completion.zsh.inc"; fi
+if [ -f "${HOME}/.google/google-cloud-sdk/path.zsh.inc" ]; then source "${HOME}/.google/google-cloud-sdk/path.zsh.inc"; fi
+if [ -f "${HOME}/.google/google-cloud-sdk/completion.zsh.inc" ]; then source "${HOME}/.google/google-cloud-sdk/completion.zsh.inc"; fi
 
 # Anaconda
 export PATH="${HOME}/.anaconda/bin:$PATH"
@@ -67,7 +67,7 @@ test -e "${HOME}/.iterm2/.iterm2_shell_integration.zsh" && source "${HOME}/.iter
 SPACESHIP_PROMPT_SYMBOL="ॐ "
 SPACESHIP_PROMPT_SEPARATE_LINE=true
 SPACESHIP_PROMPT_ADD_NEWLINE=false
-SPACESHIP_PROMPT_COLOR=blue
+SPACESHIP_PROMPT_COLOR=red
 SPACESHIP_DIR_TRUNC=3
 SPACESHIP_TIME_SHOW=true
 SPACESHIP_TIME_COLOR=blue
@@ -76,6 +76,8 @@ SPACESHIP_BATTERY_ALWAYS_SHOW=false
 SPACESHIP_VI_MODE_COLOR=cyan
 SPACESHIP_VI_MODE_INSERT=𝛁 # Nabla, normal mode
 SPACESHIP_VI_MODE_NORMAL=𝚫 # Delta, edit mode
+SPACESHIP_PYENV_SHOW=false
+SPACESHIP_CONDA_SHOW=true
 
 # Vim in Zsh
 bindkey -v
