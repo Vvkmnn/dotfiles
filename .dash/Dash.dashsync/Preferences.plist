@@ -134,7 +134,12 @@
 	<key>docsets</key>
 	<dict>
 		<key>keywords</key>
-		<dict/>
+		<dict>
+			<key>~/Library/Application Support/Dash/Cheat Sheets/Vim/Vim.docset</key>
+			<string>vim:</string>
+			<key>~/Library/Application Support/Dash/DocSets/NodeJS/NodeJS.docset</key>
+			<string>node:</string>
+		</dict>
 	</dict>
 	<key>feeds</key>
 	<dict>
@@ -144,6 +149,11 @@
 			<dict>
 				<key>date</key>
 				<date>2017-08-07T00:24:14Z</date>
+			</dict>
+			<key>http://kapeli.com/feeds/Python_3.xml</key>
+			<dict>
+				<key>date</key>
+				<date>2017-08-24T23:27:51Z</date>
 			</dict>
 		</dict>
 		<key>uninstalled</key>
