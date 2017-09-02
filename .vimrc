@@ -67,7 +67,10 @@ call plug#end()
 " -----------------------------
 "           Defaults
 " -----------------------------
-"
+ 
+" Increment <C-a> and Subtract <C-x> in Decimal
+set nrformats=
+
 " macOS clipboard 
 set clipboard=unnamed
 
