@@ -43,7 +43,10 @@ call plug#begin('~/.vim/plugged')
 " Sensible Defaults
 Plug 'tpope/vim-sensible'
 
-" tab magic?
+" Commenting Operator //{motion}
+Plug 'tpope/vim-commentary'
+
+" Tab magic?
 Plug 'tpope/vim-sleuth'
 
 " tab magic?
