@@ -161,6 +161,8 @@
 	</dict>
 	<key>isPinned</key>
 	<false/>
+	<key>menuIconBehavior</key>
+	<integer>0</integer>
 	<key>placeholderDelimiter</key>
 	<string>__</string>
 	<key>profiles</key>
@@ -196,7 +198,7 @@
 		<key>keyCode</key>
 		<integer>4</integer>
 		<key>modifiers</key>
-		<integer>6144</integer>
+		<integer>4608</integer>
 	</dict>
 	<key>shouldRestoreTabs</key>
 	<false/>
@@ -213,7 +215,7 @@
 	<key>shouldSyncView</key>
 	<true/>
 	<key>showInDock</key>
-	<true/>
+	<false/>
 	<key>sortDocsetsAlphabetically</key>
 	<true/>
 	<key>versionedDHCheatRepo</key>
