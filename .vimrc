@@ -49,7 +49,10 @@ Plug 'tpope/vim-commentary'
 " Tab magic?
 Plug 'tpope/vim-sleuth'
 
-" tab magic?
+" Codi - interactive code scratchpads!
+Plug 'metakirby5/codi.vim'
+
+" Git management!
 Plug 'tpope/vim-fugitive'
 
 " Autoformat for Vim
