@@ -17,5 +17,6 @@
   "Notebook": {
     "Toolbar": true,
     "Header": true
-  }
+  },
+  "help_panel_add_toolbar_button": true
 }

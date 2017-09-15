@@ -1,1 +1,2 @@
 /Users/v/.anaconda/envs/dlnd
+/Users/v/.anaconda/envs/predcoin

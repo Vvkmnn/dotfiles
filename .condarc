@@ -1,0 +1,5 @@
+auto_update_conda: true
+channels:
+  - conda-forge
+  - defaults
+changeps1: false

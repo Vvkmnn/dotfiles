@@ -83,6 +83,9 @@ set clipboard=unnamed
 " Set background
 set background=dark
 
+" Set default indent to 4 spaces
+set shiftwidth=4 softtabstop=4 expandtab
+
 " Set Dracula color scheme
 syntax on
 color dracula

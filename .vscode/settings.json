@@ -14,7 +14,7 @@
     "editor.wordWrap": "on",
     "editor.acceptSuggestionOnEnter": "off",
     "workbench.colorTheme": "Dracula",
-    "window.zoomLevel": 1,
+    "window.zoomLevel": 0,
     "editor.autoIndent": true,
     // Fonts
     "editor.fontFamily": "'Inconsolata for Powerline', medium",
@@ -54,7 +54,6 @@
             ".jsx"
         ]
     },
-    // An array of language ids which should be validated by ESLint
     "eslint.validate": [
         "javascript",
         "javascriptreact",
@@ -63,9 +62,10 @@
             "autoFix": true
         }
     ],
-    // Run the linter on save (onSave) or on type (onType)
     "eslint.run": "onSave",
-    // Turns auto fix on save on or off.
+    /// TypeScript
+    "tslint.jsEnable": true,
+    "tslint.autoFixOnSave": true,
     /// Python
     "python.formatting.provider": "yapf",
     "python.linting.lintOnSave": true,
