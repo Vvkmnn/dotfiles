@@ -43,7 +43,10 @@ call plug#begin('~/.vim/plugged')
 " Sensible Defaults
 Plug 'tpope/vim-sensible'
 
-" Commenting Operator //{motion}
+" Vim file navigation
+Plug 'scrooloose/nerdtree'
+
+" Commenting Operator gcc{motion}
 Plug 'tpope/vim-commentary'
 
 " Tab magic?
@@ -90,3 +93,9 @@ set shiftwidth=4 softtabstop=4 expandtab
 syntax on
 color dracula
 let g:airline_theme='dracula'
+
+" Keep Nerdtree by default
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | endif
+" map <C-Esc> :NERDTreeToggle<CR> " idk what toggle to use
+
