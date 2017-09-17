@@ -6,6 +6,7 @@
 	"installed_packages":
 	[
 		"Dracula Color Scheme",
-		"Theme - Spacegray"
+		"Materialize",
+		"Package Control"
 	]
 }

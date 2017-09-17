@@ -61,6 +61,10 @@ export PATH="${HOME}/.anaconda/bin:$PATH"
 # Iterm2
 test -e "${HOME}/.iterm2/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2/.iterm2_shell_integration.zsh"
 
+# Go lang
+export GOPATH="$HOME/.go"
+export PATH="$GOPATH/bin:$PATH"
+
 ## Shell Defaults ----------------------------------
 
 # Spaceship Theme 
@@ -97,6 +101,9 @@ zplug "zsh-users/zsh-autosuggestions"
 
 # Syntax highlighting
 zplug "zsh-users/zsh-syntax-highlighting", defer:2
+
+# Sublime Support
+zplug "plugins/sublime", from:oh-my-zsh
 
 # Vi(m) Mode
 zplug "plugins/vi-mode", from:oh-my-zsh

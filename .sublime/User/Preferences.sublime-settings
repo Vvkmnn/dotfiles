@@ -1,6 +1,28 @@
 {
-	"ignored_packages":
-	[
-		"Vintage"
-	]
+    // Editor Defaults
+	"always_show_minimap_viewport": true,
+	"bold_folder_labels": true,
+	"close_windows_when_empty": true,
+	"color_scheme": "Packages/Dracula Color Scheme/Dracula.tmTheme",
+	"theme": "Material Dracula.sublime-theme",
+    "default_line_ending": "unix",
+    "ensure_newline_at_eof_on_save": true,
+    "font": "Inconsolata for Powerline",
+    "font_options": ["gra_antialias"],
+    "font_size": 14,
+    "highlight_line": true,
+    "highlight_modified_tabs": true,
+    "hot_exit": false,
+    "ignored_packages": [], // Vi Mode
+    "indent_guide_options": ["draw_normal", "draw_active"],
+    "line_padding_bottom": 3,
+    "line_padding_top": 3,
+    "overlay_scroll_bars": "enabled",
+    "remember_full_screen": true,
+    // "rulers": [80, 120 ],
+    "show_encoding": true,
+    "show_line_endings": true,
+	"translate_tabs_to_spaces": true,
+	"trim_trailing_white_space_on_save": true,
+	"word_wrap": false
 }
