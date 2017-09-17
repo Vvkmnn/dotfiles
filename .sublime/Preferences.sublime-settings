@@ -1,0 +1,10 @@
+{
+	"color_scheme": "Packages/Dracula Color Scheme/Dracula.tmTheme",
+	"font_size": 13,
+	"ignored_packages":
+	[
+	],
+	"spell_check": true,
+	"theme": "Spacegray.sublime-theme",
+	"translate_tabs_to_spaces": true
+}

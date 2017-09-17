@@ -130,7 +130,7 @@
 		<dict/>
 	</dict>
 	<key>DHWebViewIsDark</key>
-	<false/>
+	<true/>
 	<key>docsets</key>
 	<dict>
 		<key>keywords</key>
