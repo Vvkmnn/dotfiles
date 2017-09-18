@@ -25,9 +25,9 @@
 " ##################                ################
 " ##################################################
 " ##################################################
-"
+
 " -----------------------------
-" Plugins ---------------------
+" Plugins 
 " -----------------------------
 
 " Vim-Plug Setup
@@ -79,6 +79,12 @@ Plug 'chiel92/vim-autoformat'
 " Dracula for Vim
 Plug 'dracula/vim'
 
+" Markdown Preview from Vi
+Plug 'kannokanno/previm'
+
+" Open Default Browser
+Plug 'tyru/open-browser.vim'
+
 " Vim Airline (Status Bar)
 Plug 'bling/vim-airline'
 
@@ -89,10 +95,10 @@ Plug 'vim-airline/vim-airline-themes'
 call plug#end()
 
 " -----------------------------
-"           Bindings
+" Bindings
 " -----------------------------
 
-" Window Navigation
+" Ctrl Window Navigation
 nnoremap <C-J> <C-W><C-J>
 nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
@@ -101,8 +107,11 @@ nnoremap <C-H> <C-W><C-H>
 " CtrlP!
 let g:ctrlp_map = '<c-p>'
 
+" NerdTree Toggle
+map <C-n> :NERDTreeToggle<CR>
+
 " -----------------------------
-"           Defaults
+" Defaults
 " -----------------------------
 
 " Modern Vim
@@ -111,6 +120,27 @@ set nocompatible
 " Follow Mouse Focus
 set mousefocus
 
+" Map Leader <Space>
+let mapleader=" "
+
+" Relative numbers
+set relativenumber
+
+" Sytnax Limiter
+set synmaxcol=200
+
+" Wild Menu! (Tab stuff)
+set wildmenu
+set wildmode=full
+
+" Fonts & Powerline
+set guifont=Inconsolata\ for\ Powerline:h15
+let g:Powerline_symbols = 'fancy'
+set encoding=utf-8
+set t_Co=256
+set fillchars+=stl:\ ,stlnc:\
+set term=xterm-256color
+set termencoding=utf-8
 " Split Defaults
 " set wmh=0
 " set splitbelow
@@ -119,7 +149,7 @@ set mousefocus
 " Increment <C-a> and Subtract <C-x> in Decimal
 set nrformats=
 
-" Plugin Support
+" Filetype Support
 filetype plugin on
 
 " macOS clipboard 
@@ -136,11 +166,13 @@ syntax on
 color dracula
 let g:airline_theme='dracula'
 
-" Keep Nerdtree by default
+" Open Nerdtree for folder
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | endif
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
-map <C-Esc> :NERDTreeToggle<CR> " idk what toggle to use
+
+" Statusline Always on
+set laststatus=2
 
 " Snytastic glitter
 set statusline+=%#warningmsg#
@@ -159,3 +191,16 @@ let g:codi#log = '/tmp/codi.log'
 let g:ctrlp_cmd = 'CtrlP'
 let g:ctrlp_working_path_mode = 'ra'
 
+" Previm
+augroup PrevimSettings
+    autocmd!
+    autocmd BufNewFile,BufRead *.{md,mdwn,mkd,mkdn,mark*} set filetype=markdown
+augroup END
+
+"MacVim
+if has("gui_running")
+   let s:uname = system("uname")
+   if s:uname == "Darwin\n"
+      set guifont=Inconsolata\ for\ Powerline:h15
+   endif
+endif
