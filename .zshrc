@@ -34,6 +34,9 @@ export BROWSER=open
 export TERM=xterm-256color
 export EDITOR=vim
 
+# macVim
+alias vim='mvim -v'
+
 # Dotfiles
 alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
 

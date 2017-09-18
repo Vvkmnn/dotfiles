@@ -46,8 +46,17 @@ Plug 'tpope/vim-sensible'
 " Vim file navigation
 Plug 'scrooloose/nerdtree'
 
+"Tiling Window Manager
+" Plug 'spolu/dwm.vim'
+
 " Commenting Operator gcc{motion}
 Plug 'tpope/vim-commentary'
+
+" Dash integration
+Plug 'rizzatti/dash.vim'
+
+" Syntax Highlighter
+Plug 'scrooloose/syntastic'
 
 " Tab magic?
 Plug 'tpope/vim-sleuth'
@@ -74,11 +83,35 @@ Plug 'vim-airline/vim-airline-themes'
 call plug#end()
 
 " -----------------------------
+"           Bindings
+" -----------------------------
+
+" Window Navigation
+nnoremap <C-J> <C-W><C-J>
+nnoremap <C-K> <C-W><C-K>
+nnoremap <C-L> <C-W><C-L>
+nnoremap <C-H> <C-W><C-H>
+
+" -----------------------------
 "           Defaults
 " -----------------------------
- 
+
+" Modern Vim
+set nocompatible
+
+" Follow Mouse Focus
+set mousefocus
+
+" Split Defaults
+" set wmh=0
+" set splitbelow
+" set splitright
+" 
 " Increment <C-a> and Subtract <C-x> in Decimal
 set nrformats=
+
+" Plugin Support
+filetype plugin on
 
 " macOS clipboard 
 set clipboard=unnamed
@@ -97,5 +130,19 @@ let g:airline_theme='dracula'
 " Keep Nerdtree by default
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | endif
-" map <C-Esc> :NERDTreeToggle<CR> " idk what toggle to use
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+map <C-Esc> :NERDTreeToggle<CR> " idk what toggle to use
+
+" Snytastic glitter
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+
+" Codi
+let g:codi#log = '/tmp/codi.log'
 

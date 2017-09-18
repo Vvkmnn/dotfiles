@@ -191,14 +191,14 @@
 		<key>keyCode</key>
 		<integer>4</integer>
 		<key>modifiers</key>
-		<integer>4096</integer>
+		<integer>2048</integer>
 	</dict>
 	<key>searchUsingSelectedTextKey</key>
 	<dict>
 		<key>keyCode</key>
 		<integer>4</integer>
 		<key>modifiers</key>
-		<integer>4608</integer>
+		<integer>6144</integer>
 	</dict>
 	<key>shouldRestoreTabs</key>
 	<false/>
