@@ -106,7 +106,7 @@ zplug "zsh-users/zsh-autosuggestions"
 zplug "zsh-users/zsh-syntax-highlighting", defer:2
 
 # Sublime Support
-zplug "plugins/sublime", from:oh-my-zsh
+# zplug "plugins/sublime", from:oh-my-zsh
 
 # Vi(m) Mode
 zplug "plugins/vi-mode", from:oh-my-zsh

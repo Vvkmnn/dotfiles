@@ -6,7 +6,9 @@
 	"installed_packages":
 	[
 		"Dracula Color Scheme",
+		"GitSavvy",
 		"Materialize",
-		"Package Control"
+		"Package Control",
+		"SideBarEnhancements"
 	]
 }
