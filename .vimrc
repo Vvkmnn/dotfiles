@@ -49,6 +49,12 @@ Plug 'scrooloose/nerdtree'
 "Tiling Window Manager
 " Plug 'spolu/dwm.vim'
 
+" Golden Ratio
+Plug 'roman/golden-ratio'
+
+" Vim Fuzzy Find
+Plug 'kien/ctrlp.vim'
+
 " Commenting Operator gcc{motion}
 Plug 'tpope/vim-commentary'
 
@@ -91,6 +97,9 @@ nnoremap <C-J> <C-W><C-J>
 nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 nnoremap <C-H> <C-W><C-H>
+
+" CtrlP!
+let g:ctrlp_map = '<c-p>'
 
 " -----------------------------
 "           Defaults
@@ -145,4 +154,8 @@ let g:syntastic_check_on_wq = 0
 
 " Codi
 let g:codi#log = '/tmp/codi.log'
+
+" CtrlP
+let g:ctrlp_cmd = 'CtrlP'
+let g:ctrlp_working_path_mode = 'ra'
 
