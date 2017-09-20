@@ -55,6 +55,9 @@ Plug 'roman/golden-ratio'
 " Vim Fuzzy Find
 Plug 'kien/ctrlp.vim'
 
+" Tmux Navigator
+Plug 'christoomey/vim-tmux-navigator'
+
 " Commenting Operator gcc{motion}
 Plug 'tpope/vim-commentary'
 
@@ -197,7 +200,7 @@ augroup PrevimSettings
     autocmd BufNewFile,BufRead *.{md,mdwn,mkd,mkdn,mark*} set filetype=markdown
 augroup END
 
-"MacVim
+" MacVim
 if has("gui_running")
    let s:uname = system("uname")
    if s:uname == "Darwin\n"
