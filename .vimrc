@@ -156,7 +156,9 @@ set nrformats=
 filetype plugin on
 
 " macOS clipboard 
-set clipboard=unnamed
+if $TMUX == ''
+    set clipboard+=unnamed
+end
 
 " Set background
 set background=dark
