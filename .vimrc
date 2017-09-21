@@ -53,7 +53,8 @@ Plug 'scrooloose/nerdtree'
 Plug 'roman/golden-ratio'
 
 " Vim Fuzzy Find
-Plug 'kien/ctrlp.vim'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
 
 " Tmux Navigator
 Plug 'christoomey/vim-tmux-navigator'
@@ -101,14 +102,17 @@ call plug#end()
 " Bindings
 " -----------------------------
 
+" Space as Leader
+let mapleader=" "
+
 " Ctrl Window Navigation
 nnoremap <C-J> <C-W><C-J>
 nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 nnoremap <C-H> <C-W><C-H>
 
-" CtrlP!
-let g:ctrlp_map = '<c-p>'
+" FZF Completion
+imap <c-x><c-l> <plug>(fzf-complete-line)
 
 " NerdTree Toggle
 map <C-n> :NERDTreeToggle<CR>
@@ -144,6 +148,29 @@ set t_Co=256
 set fillchars+=stl:\ ,stlnc:\
 set term=xterm-256color
 set termencoding=utf-8
+
+" Split Formatting
+hi vertsplit ctermfg=238 ctermbg=235
+hi LineNr ctermfg=237
+hi StatusLine ctermfg=235 ctermbg=245
+hi StatusLineNC ctermfg=235 ctermbg=237
+hi Search ctermbg=58 ctermfg=15
+hi Default ctermfg=1
+hi clear SignColumn
+hi SignColumn ctermbg=235
+
+" Git Gutter formatting
+hi GitGutterAdd ctermbg=235 ctermfg=245
+hi GitGutterChange ctermbg=235 ctermfg=245
+hi GitGutterDelete ctermbg=235 ctermfg=245
+hi GitGutterChangeDelete ctermbg=235 ctermfg=245
+hi EndOfBuffer ctermfg=237 ctermbg=235
+
+set statusline=%=&P\ %f\ %m
+set fillchars=vert:\ ,stl:\ ,stlnc:\ 
+set laststatus=2
+set noshowmode
+
 " Split Defaults
 " set wmh=0
 " set splitbelow
