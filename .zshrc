@@ -64,9 +64,12 @@ export PATH="${HOME}/.anaconda/bin:$PATH"
 # Iterm2
 test -e "${HOME}/.iterm2/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2/.iterm2_shell_integration.zsh"
 
-# Go lang
+# Go 
 export GOPATH="$HOME/.go"
 export PATH="$GOPATH/bin:$PATH"
+
+# Fuzzy File Finder
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 ## Shell Defaults ----------------------------------
 
@@ -139,3 +142,4 @@ fi
 
 # Then, source plugins and add commands to $PATH
 zplug load # --verbose
+
