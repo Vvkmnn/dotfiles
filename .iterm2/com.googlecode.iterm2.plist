@@ -1005,8 +1005,10 @@
 	<string>806 278 646 221 0 0 1680 1028 </string>
 	<key>NSWindow Frame SUUpdateAlert</key>
 	<string>530 477 620 392 0 0 1680 1028 </string>
+	<key>NSWindow Frame SessionsPreferences</key>
+	<string>269 126 606 469 0 0 1680 1028 </string>
 	<key>NSWindow Frame SharedPreferences</key>
-	<string>328 325 796 473 0 0 1680 1028 </string>
+	<string>328 295 918 512 0 0 1680 1028 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
 	<string>0 0 1680 1028 0 0 1680 1028 </string>
 	<key>New Bookmarks</key>
@@ -2558,7 +2560,7 @@
 			<key>Idle Code</key>
 			<integer>0</integer>
 			<key>Initial Text</key>
-			<string>reset &amp;&amp; archey </string>
+			<string>tmux</string>
 			<key>Jobs to Ignore</key>
 			<array>
 				<string>rlogin</string>
@@ -4317,7 +4319,7 @@
 	<key>SUHasLaunchedBefore</key>
 	<true/>
 	<key>SULastCheckTime</key>
-	<date>2017-09-21T00:13:31Z</date>
+	<date>2017-09-21T00:34:18Z</date>
 	<key>SUSendProfileInfo</key>
 	<false/>
 	<key>SavePasteHistory</key>
