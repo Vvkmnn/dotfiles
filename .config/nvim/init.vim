@@ -27,19 +27,19 @@
 " ##################################################
 
 " Defaults -----------------------------------------
-source $HOME/.config/nvim/defaults.vim
+source ~/.config/nvim/defaults.vim
 
 " Plugins ------------------------------------------
-source $HOME/.config/nvim/plugins.vim
+source ~/.config/nvim/plugins.vim
 
 " Theme --------------------------------------------
-source $HOME/.config/nvim/theme.vim
+source ~/.config/nvim/theme.vim
 
 " Bindings -----------------------------------------
-source $HOME/.config/nvim/bindings.vim
+source ~/.config/nvim/bindings.vim
 
 " GUI ----------------------------------------------
-if has("gui_vimr") || source ~/.config/nvim/gui.vim 
-endif
+source ~/.config/nvim/gui.vim 
+
 " Magic --------------------------------------------
-source $HOME/.config/nvim/magic.vim
+source ~/.config/nvim/magic.vim

@@ -13,4 +13,3 @@ syntax enable
 
 " Term Colors
 set termguicolors
-
