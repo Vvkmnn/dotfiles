@@ -43,8 +43,11 @@ call plug#begin('~/.vim/plugged')
 " Sensible Defaults
 Plug 'tpope/vim-sensible'
 
-" Vim file navigation
-Plug 'scrooloose/nerdtree'
+" Vim tree navigation
+" Plug 'scrooloose/nerdtree'
+
+" Vim split navigation
+Plug 'tpope/vim-vinegar'
 
 "Tiling Window Manager
 " Plug 'spolu/dwm.vim'
@@ -105,17 +108,23 @@ call plug#end()
 " Space as Leader
 let mapleader=" "
 
-" Ctrl Window Navigation
+" Ctrl Arrow Buffer Navigation
+nnoremap <silent> <C-Right> <c-w>l
+nnoremap <silent> <C-Left> <c-w>h
+nnoremap <silent> <C-Up> <c-w>k
+nnoremap <silent> <C-Down> <c-w>j
+
+" Ctrl HJKL Split Navigation
+nnoremap <C-H> <C-W><C-H>
 nnoremap <C-J> <C-W><C-J>
 nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
-nnoremap <C-H> <C-W><C-H>
 
 " FZF Completion
 imap <c-x><c-l> <plug>(fzf-complete-line)
 
-" NerdTree Toggle
-map <C-n> :NERDTreeToggle<CR>
+" Sort in Visual Mode
+vnoremap <Leader>s :sort<CR>
 
 " -----------------------------
 " Defaults
@@ -133,7 +142,21 @@ let mapleader=" "
 " Relative numbers
 set relativenumber
 
-" Sytnax Limiter
+" Manage Swaps and Backups
+set backupdir=~/.vim/backup//
+set directory=~/.vim/swp//
+
+" Smarter Regex
+set hlsearch
+set incsearch
+set ignorecase
+set smartcase
+
+" History 
+set history=700
+set undolevels=700
+
+" Sytnax Highlight Limiter
 set synmaxcol=200
 
 " Wild Menu! (Tab stuff)
@@ -148,6 +171,13 @@ set t_Co=256
 set fillchars+=stl:\ ,stlnc:\
 set term=xterm-256color
 set termencoding=utf-8
+
+" Document Length
+set tw=79
+set nowrap
+set fo-=t
+"set colorcolumn=80
+"highlight ColorColumn ctermfg=238 ctermbg=235
 
 " Split Formatting
 hi vertsplit ctermfg=238 ctermbg=235
@@ -166,21 +196,31 @@ hi GitGutterDelete ctermbg=235 ctermfg=245
 hi GitGutterChangeDelete ctermbg=235 ctermfg=245
 hi EndOfBuffer ctermfg=237 ctermbg=235
 
-set statusline=%=&P\ %f\ %m
+" Statusline 
+set statusline=%=%P\ %f\ %m
 set fillchars=vert:\ ,stl:\ ,stlnc:\ 
 set laststatus=2
 set noshowmode
 
+" Syntastic
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+let g:syntastic_javascript_checkers = ['eslint']
+let g:syntastic_javascript_eslint_exe = 'npm run lint --'
+
 " Split Defaults
-" set wmh=0
-" set splitbelow
-" set splitright
-" 
+set wmh=0
+set splitright
+ 
 " Increment <C-a> and Subtract <C-x> in Decimal
 set nrformats=
 
 " Filetype Support
-filetype plugin on
+filetype off
+filetype plugin indent on
+syntax on
 
 " macOS clipboard 
 if $TMUX == ''
@@ -194,23 +234,10 @@ set background=dark
 set shiftwidth=4 softtabstop=4 expandtab
 
 " Set Dracula color scheme
-syntax on
 color dracula
 let g:airline_theme='dracula'
 
-" Open Nerdtree for folder
-autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | endif
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
-
-" Statusline Always on
-set laststatus=2
-
 " Snytastic glitter
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
-
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 1
@@ -218,10 +245,6 @@ let g:syntastic_check_on_wq = 0
 
 " Codi
 let g:codi#log = '/tmp/codi.log'
-
-" CtrlP
-let g:ctrlp_cmd = 'CtrlP'
-let g:ctrlp_working_path_mode = 'ra'
 
 " Previm
 augroup PrevimSettings
@@ -236,3 +259,10 @@ if has("gui_running")
       set guifont=Inconsolata\ for\ Powerline:h15
    endif
 endif
+
+" Airline
+" Enable the list of buffers
+let g:airline#extensions#tabline#enabled = 1
+
+" Show just the filename
+let g:airline#extensions#tabline#fnamemod = ':t'
