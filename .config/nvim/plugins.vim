@@ -8,10 +8,13 @@ if dein#load_state('~/.dein')
   call dein#begin('~/.dein')
 
 
-  " Dein {{{ Package Manager }}}
+  " Dein -- A Dark  Package Manager 
   call dein#add('~/.dein/repos/github.com/Shougo/dein.vim')
 
-  " Dracula {{{ Colorscheme }}}
+  " Tmux Navigator --  Native Ctrl-HJKL Navigation in Tmux & Vim
+  call dein#add('christoomey/vim-tmux-navigator')
+
+  " Dracula - A Dark Colorscheme
   call dein#add('dracula/vim')
 
   " Save

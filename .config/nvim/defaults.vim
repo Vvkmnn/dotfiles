@@ -13,3 +13,35 @@ syntax enable
 
 " Term Colors
 set termguicolors
+
+" Follow Mouse Focus
+set mousefocus
+
+" Relative numbers
+set relativenumber
+
+" Smarter Regex
+set hlsearch
+set incsearch
+set ignorecase
+set smartcase
+
+" History 
+set history=700
+set undolevels=700
+
+" Wild Menu! (Tab stuff)
+set wildmenu
+set wildmode=full
+
+" Increment <C-a> and Subtract <C-x> in Decimal
+set nrformats=
+
+" macOS clipboard 
+if $TMUX == ''
+    set clipboard+=unnamed
+end
+
+" Set default indent to 4 spaces
+set shiftwidth=4 softtabstop=4 expandtab
+
