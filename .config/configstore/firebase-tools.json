@@ -1,0 +1,37 @@
+{
+	"analytics-uuid": "d0a7ffe2-7f13-4c47-906b-eefd8e1258f3",
+	"motd": {
+		"minVersion": "3.0.5"
+	},
+	"motd.fetched": 1504309277571,
+	"usage": true,
+	"user": {
+		"azp": "563584335869-fgrhgmd47bqnekij5i8b5pr03ho849e6.apps.googleusercontent.com",
+		"aud": "563584335869-fgrhgmd47bqnekij5i8b5pr03ho849e6.apps.googleusercontent.com",
+		"sub": "109828743232366811722",
+		"hd": "redqueen.xyz",
+		"email": "v@redqueen.xyz",
+		"email_verified": true,
+		"at_hash": "4NuMahRhIzg5dQX1G1E6SQ",
+		"iss": "accounts.google.com",
+		"iat": 1503508380,
+		"exp": 1503511980
+	},
+	"tokens": {
+		"expires_at": 1504312894270,
+		"refresh_token": "1/JFY05c1z0Kddu1sTdghaKoRTBxxbX8gcxlOc1JU3qCo",
+		"scopes": [
+			"email",
+			"https://www.googleapis.com/auth/cloudplatformprojects.readonly",
+			"https://www.googleapis.com/auth/firebase",
+			"openid"
+		],
+		"access_token": "ya29.GmS5BG2zF8ba0-5T9xWqj1rB_cT1UnJFZXQ6-5IbXp8TV8lDU7JDXJrqc5CgpRZe-cr7krva4tqCDu4V0bBKqVhnZbHOvBo6e1BeoV_xXUc0c0KfY_Hd6e6eFxqsi2lYq9IflBaw",
+		"token_type": "Bearer",
+		"expires_in": 3600,
+		"id_token": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImM5ZjdmNmUzYmE5YzA1ZGQ0YzlkMzI4MjBlOTE5YjMyNTZjZDdjOWQifQ.eyJhenAiOiI1NjM1ODQzMzU4NjktZmdyaGdtZDQ3YnFuZWtpajVpOGI1cHIwM2hvODQ5ZTYuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI1NjM1ODQzMzU4NjktZmdyaGdtZDQ3YnFuZWtpajVpOGI1cHIwM2hvODQ5ZTYuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMDk4Mjg3NDMyMzIzNjY4MTE3MjIiLCJoZCI6InJlZHF1ZWVuLnh5eiIsImVtYWlsIjoidkByZWRxdWVlbi54eXoiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiYXRfaGFzaCI6IlN5b1AwaXk1Sm1acnhTYWJ2dG41WnciLCJpc3MiOiJhY2NvdW50cy5nb29nbGUuY29tIiwiaWF0IjoxNTA0MzA5Mjk0LCJleHAiOjE1MDQzMTI4OTR9.o4VyU6PEOcS9dCquGVkeU-KKTMYL1WYr0ojTkx3Cxbi1SizDilm7lkJkTphUzuyv02H66sgwr7sYWeRxnYueNRsPtCguRYe0eA4cNcaChTdHSZ4KmjB-Lv3p3dvqYzyGN46WoTn8GaQcEyAcXJQGDVWsh4kv4F_I4-ExLo_ZVr8EJ47tBikCYkfEyhM3By2DtWAtvXpr9ICXuL-ux5lOX4F-XHwcpsG5TU5WsiCFqnfyIhKcIq7ibHwyIjPPDtGs8pQUlVHcaF_cW-6lqbi1Bh42SdofS9xkNkoZF_h-a2yRmTqwX0tg0Roc547hYSSrtsdk2RnTUOYJaKw6AuN0Xw"
+	},
+	"activeProjects": {
+		"/Users/v/Documents/redqueen/opiAI": "opiai-177321"
+	}
+}

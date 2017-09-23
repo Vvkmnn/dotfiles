@@ -1,15 +1,18 @@
 " Plugins ------------------------------------------
 
 " Setup
-set runtimepath+=/Users/v/.dein/repos/github.com/Shougo/dein.vim
+set runtimepath+=~/.dein/repos/github.com/Shougo/dein.vim
 
 " Start
-if dein#load_state('/Users/v/.dein')
-  call dein#begin('/Users/v/.dein')
+if dein#load_state('~/.dein')
+  call dein#begin('~/.dein')
 
 
-  " Dein {{{
-  call dein#add('/Users/v/.dein/repos/github.com/Shougo/dein.vim')
+  " Dein {{{ Package Manager }}}
+  call dein#add('~/.dein/repos/github.com/Shougo/dein.vim')
+
+  " Dracula {{{ Colorscheme }}}
+  call dein#add('dracula/vim')
 
   " Save
   call dein#end()

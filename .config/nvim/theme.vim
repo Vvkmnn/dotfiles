@@ -1,16 +1,11 @@
 " Defaults -----------------------------------------
-
-" Be iMproved
-if &compatible
-  set nocompatible 
-endif
-
-" Plugins & Filetypes
-filetype plugin indent on
-
+"
 " Enable Syntax
 syntax enable
 
 " Term Colors
 set termguicolors
+
+" Dracula!
+color dracula
 

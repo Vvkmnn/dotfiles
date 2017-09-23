@@ -32,6 +32,9 @@ source $HOME/.config/nvim/defaults.vim
 " Plugins ------------------------------------------
 source $HOME/.config/nvim/plugins.vim
 
+" Theme --------------------------------------------
+source $HOME/.config/nvim/theme.vim
+
 " Bindings -----------------------------------------
 source $HOME/.config/nvim/bindings.vim
 
