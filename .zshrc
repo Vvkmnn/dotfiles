@@ -48,6 +48,7 @@ alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
 
 # Path
 export PATH="/usr/local/bin:$PATH"
+export PATH="$HOME/.vimr:$PATH"
 
 # Homebrew Cask
 export HOMEBREW_CASK_OPTS="--appdir=/Applications"
