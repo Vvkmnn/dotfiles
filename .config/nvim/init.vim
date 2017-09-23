@@ -38,5 +38,8 @@ source $HOME/.config/nvim/theme.vim
 " Bindings -----------------------------------------
 source $HOME/.config/nvim/bindings.vim
 
+" GUI ----------------------------------------------
+if has("gui_vimr") || source ~/.config/nvim/gui.vim 
+endif
 " Magic --------------------------------------------
 source $HOME/.config/nvim/magic.vim
