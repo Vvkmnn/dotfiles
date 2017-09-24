@@ -43,3 +43,5 @@ set clipboard+=unnamedplus
 " Set default indent to 4 spaces
 set shiftwidth=4 softtabstop=4 expandtab
 
+" Fast Keys
+set ttimeoutlen=0

@@ -17,6 +17,12 @@ if dein#load_state('~/.dein')
   " Dracula - A Dark Colorscheme
   call dein#add('dracula/vim')
 
+  " Dash - A Plugin to search Dash <Dash:>
+  call dein#add('rizzatti/dash.vim')
+
+  " Vim-Move - Alt-kj for moving lines up and down
+  call dein#add('matze/vim-move')
+
   " Save
   call dein#end()
   call dein#save_state()
