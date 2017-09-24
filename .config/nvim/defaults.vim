@@ -38,9 +38,7 @@ set wildmode=full
 set nrformats=
 
 " macOS clipboard 
-if $TMUX == ''
-    set clipboard+=unnamed
-end
+set clipboard+=unnamedplus
 
 " Set default indent to 4 spaces
 set shiftwidth=4 softtabstop=4 expandtab

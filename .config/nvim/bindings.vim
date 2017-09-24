@@ -30,3 +30,7 @@ nnoremap <C-L> <C-W><C-L>
 " FZF Completion
 imap <c-x><c-l> <plug>(fzf-complete-line)
 
+
+" This rewires n and N to do the highlighing...
+nnoremap <silent> n   n:call HLNext(0.4)<cr>
+nnoremap <silent> N   N:call HLNext(0.4)<cr>

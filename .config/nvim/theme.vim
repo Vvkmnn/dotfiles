@@ -1,10 +1,7 @@
 " Theme --------------------------------------------
 
-" True color support?
-let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+" True Color support
 set termguicolors
-
-" Term 256
 set t_Co=256
 
 " Enable Syntax
@@ -54,3 +51,17 @@ hi GitGutterChange ctermbg=235 ctermfg=245
 hi GitGutterDelete ctermbg=235 ctermfg=245
 hi GitGutterChangeDelete ctermbg=235 ctermfg=245
 hi EndOfBuffer ctermfg=237 ctermbg=235
+
+" Highlight 81st Column of Wide Lines
+highlight ColorColumn ctermbg=magenta
+call matchadd('ColorColumn', '\%81v', 100)
+
+" Show tabs, trailing whitespace, and non-breaking spaces
+exec "set listchars=tab:\uBB\uBB,trail:\uB7,nbsp:~"
+set list
+
+
+" Swap : ; and for easy command access
+nnoremap  ;  :
+nnoremap  :  ;
+

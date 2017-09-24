@@ -32,6 +32,9 @@ source ~/.config/nvim/defaults.vim
 " Plugins ------------------------------------------
 source ~/.config/nvim/plugins.vim
 
+" Magic --------------------------------------------
+source ~/.config/nvim/functions.vim
+
 " Theme --------------------------------------------
 source ~/.config/nvim/theme.vim
 
@@ -41,5 +44,3 @@ source ~/.config/nvim/bindings.vim
 " GUI ----------------------------------------------
 source ~/.config/nvim/gui.vim 
 
-" Magic --------------------------------------------
-source ~/.config/nvim/magic.vim
