@@ -8,3 +8,8 @@ function! HLNext (blinktime)
     set invcursorline
     redraw
 endfunction
+
+" Plugins
+" Dirvish --
+"   Interact with Fugitive forGstatus
+autocmd FileType dirvish call fugitive#detect(@%)

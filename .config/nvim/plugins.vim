@@ -15,7 +15,7 @@ if dein#load_state('~/.dein')
   call dein#add('christoomey/vim-tmux-navigator')
 
   " FZF - Fuzzy File Finder!
-  call dein#add('junegunn/fzf', { 'build': './install --all', 'merged': 0 }) 
+  call dein#add('junegunn/fzf', { 'build': './install ~/.fzf', 'rtp': '' })
   call dein#add('junegunn/fzf.vim', { 'depends': 'fzf' })
 
   " Dracula - A Dark Colorscheme
@@ -27,8 +27,28 @@ if dein#load_state('~/.dein')
   " Fugitive -- Git management from Vim
   call dein#add('tpope/vim-fugitive')
 
+  " vim-gitgutter -- Git status next to line numbers
+  call dein#add('airblade/vim-gitgutter')
+
+  " denite.vim - A more generic FZF?
+  call dein#add('Shougo/denite.nvim')
+
+  " Vim Dirvish -- Inline Vim File Navigation
+  " call dein#add('justinmk/vim-dirvish')
+
+  " Vim Eunech -- Unix helpers via <:Delete>, <:Move>, ..
+  " NERDTree -- Tree File System Explorer
+  " call dein#add('scrooloose/nerdtree')
+
   " Vim-Move - Alt-kj for moving lines up and down
   call dein#add('matze/vim-move')
+
+  " WindowSwap.vim -- Swap any windows with <leader>ww
+  call dein#add('wesQ3/vim-windowswap')
+
+  " VimDevIcons -- Icons in Vim
+  call dein#add('ryanoasis/vim-devicons')
+
 
   " Save
   call dein#end()

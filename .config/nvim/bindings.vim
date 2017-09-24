@@ -4,6 +4,14 @@
 " Space as Leader
 let mapleader=" "
 
+" Disable arrow movement, resize splits instead.
+if get(g:, 'elite_mode')
+    nnoremap <Up>    :resize +2<CR>
+    nnoremap <Down>  :resize -2<CR>
+    nnoremap <Left>  :vertical resize +2<CR>
+    nnoremap <Right> :vertical resize -2<CR>
+endif
+
 " Operators -- 
 " Sort in Visual Mode
 vnoremap <Leader>s :sort<CR> 
@@ -30,6 +38,7 @@ nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 
 " Plugins --
+
 " FZF -- 
 "   Completion
 imap <c-x><c-l> <plug>(fzf-complete-line)
@@ -51,8 +60,6 @@ nmap <F21> <Plug>MoveLineUp
 
 " Fzf --
 "   In Neovim, you can set up fzf window using a Vim command
-let g:fzf_layout = { 'window': 'enew' }
-let g:fzf_layout = { 'window': '-tabnew' }
 
 "   Customize fzf colors to match your color scheme
 let g:fzf_colors =
@@ -68,3 +75,5 @@ let g:fzf_colors =
   \ 'marker':  ['fg', 'Keyword'],
   \ 'spinner': ['fg', 'Label'],
   \ 'header':  ['fg', 'Comment'] }
+
+
