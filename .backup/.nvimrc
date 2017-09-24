@@ -1,1 +1,0 @@
-/Users/vivek.menon/Dropbox/dotfiles/.nvimrc

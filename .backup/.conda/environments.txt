@@ -1,4 +1,0 @@
-/Users/vivek.menon/anaconda3/envs/traderAI
-/Users/vivek.menon/anaconda3/envs/TBWA
-/Users/vivek.menon/anaconda3/envs/feedbackAI
-/Users/vivek.menon/anaconda3/envs/dlnd
