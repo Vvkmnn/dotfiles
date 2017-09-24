@@ -1008,7 +1008,7 @@
 	<key>NSWindow Frame SessionsPreferences</key>
 	<string>269 126 606 469 0 0 1680 1028 </string>
 	<key>NSWindow Frame SharedPreferences</key>
-	<string>328 52 937 512 0 0 1680 1028 </string>
+	<string>309 77 796 473 0 0 1680 1028 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
 	<string>0 0 1680 1028 0 0 1680 1028 </string>
 	<key>New Bookmarks</key>
@@ -4325,7 +4325,7 @@
 	<key>SUHasLaunchedBefore</key>
 	<true/>
 	<key>SULastCheckTime</key>
-	<date>2017-09-23T18:44:14Z</date>
+	<date>2017-09-24T18:44:14Z</date>
 	<key>SUSendProfileInfo</key>
 	<false/>
 	<key>SavePasteHistory</key>
@@ -5065,7 +5065,7 @@
 											<string>/Users/v</string>
 										</dict>
 										<key>Bookmark Name</key>
-										<string>vTmux</string>
+										<string>Tmux</string>
 										<key>Columns</key>
 										<integer>234</integer>
 										<key>Commands</key>
@@ -5083,21 +5083,19 @@
 										<true/>
 										<key>Program</key>
 										<dict>
-											<key>Command</key>
-											<string>login -fp "v"</string>
 											<key>Type</key>
-											<string>Command</string>
+											<string>Shell Launcher</string>
 										</dict>
 										<key>Rows</key>
 										<integer>65</integer>
 										<key>Session Default Name</key>
-										<string>vTmux</string>
+										<string>Tmux</string>
 										<key>Session GUID</key>
-										<string>A8F27608-F86D-4E97-89D8-CEC2C83C57DC</string>
+										<string>6ECA69FC-2535-4207-A0DF-54ADF97085FE</string>
 										<key>Session Name</key>
-										<string>vTmux</string>
+										<string>Tmux</string>
 										<key>Session Window Title</key>
-										<string>vTmux</string>
+										<string>Tmux</string>
 										<key>Shell Integration Ever Used</key>
 										<false/>
 										<key>Substitutions</key>

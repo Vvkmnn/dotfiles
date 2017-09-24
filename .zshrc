@@ -36,7 +36,7 @@ export TERM=xterm-256color
 
 # neoVim
 alias vim='nvim'
-alias v='nvim'
+alias v='vim' 
 
 # Dotfiles
 alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
@@ -69,9 +69,6 @@ test -e "${HOME}/.iterm2/.iterm2_shell_integration.zsh" && source "${HOME}/.iter
 # Go 
 export GOPATH="$HOME/.go"
 export PATH="$GOPATH/bin:$PATH"
-
-# Fuzzy File Finder
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 ## Shell Defaults ----------------------------------
 
@@ -128,8 +125,14 @@ zplug "denysdovhan/spaceship-zsh-theme", use:spaceship.zsh, from:github, as:them
 # Autoenv for Zsh
 zplug "zpm-zsh/autoenv"
 
-# Z - jump around
+# z - jump around
 zplug "rupa/z", use:z.sh
+
+# v - jump into vim!
+# zplug "meain/v"
+
+# Fzf-z -- Z and fzf play nice
+zplug "andrewferrier/fzf-z"
 
 # Dracula theme for zsh
 # zplug 'dracula/zsh', as:theme
@@ -144,4 +147,19 @@ fi
 
 # Then, source plugins and add commands to $PATH
 zplug load # --verbose
+
+
+## Plugin Defaults ---------------------------------
+
+# Fuzzy File Finder
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+export FZF_DEFAULT_OPTS='--height 40% --reverse --border'
+
+
+# z - Jump to a match, else use FZF
+unalias z 2> /dev/null
+z() {
+  [ $# -gt 0 ] && _z "$*" && return
+  cd "$(_z -l 2>&1 | fzf --height 40% --reverse --inline-info +s --tac --query "$*" | sed 's/^[0-9,.]* *//')"
+}
 
