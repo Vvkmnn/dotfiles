@@ -41,6 +41,3 @@ source ~/.config/nvim/theme.vim
 " Bindings -----------------------------------------
 source ~/.config/nvim/bindings.vim
 
-" GUI ----------------------------------------------
-source ~/.config/nvim/gui.vim 
-

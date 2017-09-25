@@ -31,12 +31,14 @@ if dein#load_state('~/.dein')
   call dein#add('airblade/vim-gitgutter')
 
   " denite.vim - A more generic FZF?
-  call dein#add('Shougo/denite.nvim')
+  " call dein#add('Shougo/denite.nvim')
 
   " Vim Dirvish -- Inline Vim File Navigation
-  " call dein#add('justinmk/vim-dirvish')
+  call dein#add('justinmk/vim-dirvish')
 
   " Vim Eunech -- Unix helpers via <:Delete>, <:Move>, ..
+  call dein#add('tpope/vim-eunuch')
+
   " NERDTree -- Tree File System Explorer
   " call dein#add('scrooloose/nerdtree')
 
@@ -47,8 +49,7 @@ if dein#load_state('~/.dein')
   call dein#add('wesQ3/vim-windowswap')
 
   " VimDevIcons -- Icons in Vim
-  call dein#add('ryanoasis/vim-devicons')
-
+   call dein#add('ryanoasis/vim-devicons')
 
   " Save
   call dein#end()

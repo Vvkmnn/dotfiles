@@ -12,6 +12,8 @@ if get(g:, 'elite_mode')
     nnoremap <Right> :vertical resize -2<CR>
 endif
 
+" Swap : ; in Normal Mode and for easy command access
+" nnoremap  :  ;
 " Operators -- 
 " Sort in Visual Mode
 vnoremap <Leader>s :sort<CR> 
