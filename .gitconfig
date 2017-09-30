@@ -182,4 +182,6 @@
 [difftool "default-difftool"]
     cmd = code --wait --diff $LOCAL $REMOTE
 [credential]
-	helper = osxkeychain
+    helper = osxkeychain
+[commit]
+  template = ~/.gitmessage
