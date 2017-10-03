@@ -31,13 +31,14 @@
 # Exports
 export LANG=en_US.UTF-8
 export BROWSER=open
-export EDITOR=vim
+export EDITOR=nvim
 export TERM=xterm-256color
 
 # Editors
 # neoVim & Vscode
 alias v='nvim'
 alias vs='code'
+alias vim='nvim'
 
 # Dotfiles
 alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
