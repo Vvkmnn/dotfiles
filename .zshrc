@@ -84,8 +84,8 @@ SPACESHIP_TIME_COLOR=blue
 SPACESHIP_BATTERY_SHOW=false
 SPACESHIP_BATTERY_ALWAYS_SHOW=false
 SPACESHIP_VI_MODE_COLOR=cyan
-# SPACESHIP_VI_MODE_INSERT=𝛁 # Nabla, normal mode
-# SPACESHIP_VI_MODE_NORMAL=𝚫 # Delta, edit mode
+SPACESHIP_VI_MODE_INSERT=𝛁 # Nabla, normal mode
+SPACESHIP_VI_MODE_NORMAL=𝚫 # Delta, edit mode
 SPACESHIP_PYENV_SHOW=false
 SPACESHIP_CONDA_SHOW=true
 
@@ -105,7 +105,7 @@ if [[ ! -d ~/.zplug ]]; then
 fi
 
 # Initialize and Update
-source ~/.zplug/init.zsh && zplug update 
+source ~/.zplug/init.zsh 
 
 # Autosuggestions
 zplug "zsh-users/zsh-autosuggestions"
@@ -120,7 +120,7 @@ zplug "zsh-users/zsh-syntax-highlighting", defer:2
 # zplug "plugins/sublime", from:oh-my-zsh
 
 # Vi(m) Mode
-zplug "plugins/vi-mode", from:oh-my-zsh
+# zplug "plugins/vi-mode", from:oh-my-zsh
 
 # Git Plugin
 zplug "plugins/git", from:oh-my-zsh
