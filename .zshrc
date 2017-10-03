@@ -34,9 +34,10 @@ export BROWSER=open
 export EDITOR=nvim
 export TERM=xterm-256color
 
-# neoVim
+# neoVim & Vscode
 alias vim='nvim'
-alias v='vim' 
+alias v='nvim' 
+alias vs='code' 
 
 # Dotfiles
 alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
