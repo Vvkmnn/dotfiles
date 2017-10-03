@@ -10,6 +10,10 @@ brew install zsh
 # Install Zplug
 # brew install zplug
 
+# Add Zsh to list of approved shells
+ssudo sh -c "echo $(which zsh) >> /etc/shells"
+
 # Switch Default Shell to Zsh
 chsh -s $(which zsh)
+
 

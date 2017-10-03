@@ -31,12 +31,12 @@
 # Exports
 export LANG=en_US.UTF-8
 export BROWSER=open
-export EDITOR=nvim
+export EDITOR=vim
 export TERM=xterm-256color
 
 # neoVim & Vscode
-alias vim='nvim'
-alias v='nvim' 
+# alias vim='nvim'
+alias v='vim' 
 alias vs='code' 
 
 # Dotfiles
@@ -109,6 +109,9 @@ source ~/.zplug/init.zsh && zplug update
 
 # Autosuggestions
 zplug "zsh-users/zsh-autosuggestions"
+
+# Autocompletions
+zplug "zsh-users/zsh-completions", from:oh-my-zsh
 
 # Syntax highlighting
 zplug "zsh-users/zsh-syntax-highlighting", defer:2
