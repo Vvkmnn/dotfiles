@@ -58,8 +58,8 @@ export HOMEBREW_CASK_OPTS="--appdir=/Applications"
 # export PATH="$PATH:$HOME/.rvm/bin"
 
 # Google Cloud
-if [ -f "${HOME}/.google/google-cloud-sdk/path.zsh.inc" ]; then source "${HOME}/.google/google-cloud-sdk/path.zsh.inc"; fi
-if [ -f "${HOME}/.google/google-cloud-sdk/completion.zsh.inc" ]; then source "${HOME}/.google/google-cloud-sdk/completion.zsh.inc"; fi
+if [ -f "${HOME}/.google/path.zsh.inc" ]; then source "${HOME}/.google/path.zsh.inc"; fi
+if [ -f "${HOME}/.google/completion.zsh.inc" ]; then source "${HOME}/.google/completion.zsh.inc"; fi
 
 # Anaconda
 export PATH="${HOME}/.anaconda/bin:$PATH"
