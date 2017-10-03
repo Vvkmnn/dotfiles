@@ -1,12 +1,11 @@
 " Plugins ------------------------------------------
 
-" Setup
+" Required
 set runtimepath+=~/.dein/repos/github.com/Shougo/dein.vim
 
 " Start
 if dein#load_state('~/.dein')
   call dein#begin('~/.dein')
-
 
   " Dein -- A Dark  Package Manager 
   call dein#add('~/.dein/repos/github.com/Shougo/dein.vim')
