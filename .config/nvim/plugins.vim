@@ -9,14 +9,18 @@ if dein#load_state('~/.dein')
 
 
   " Dein -- A Dark  Package Manager 
-  call dein#add('~/.dein/repos/github.com/Shougo/dein.vim')
+  call dein#add('Shougo/dein.vim')
 
   " Tmux Navigator --  Native Ctrl-HJKL Navigation in Tmux & Vim
   call dein#add('christoomey/vim-tmux-navigator')
 
   " FZF - Fuzzy File Finder!
-  call dein#add('junegunn/fzf', { 'build': './install ~/.fzf', 'rtp': '' })
+  " call dein#add('junegunn/fzf', { 'build': './install ~/.fzf', 'rtp': '' })
   call dein#add('junegunn/fzf.vim', { 'depends': 'fzf' })
+
+  " Airline - Statusline for Vim
+  call dein#add('vim-airline/vim-airline')
+  call dein#add('vim-airline/vim-airline-themes')
 
   " Dracula - A Dark Colorscheme
   call dein#add('dracula/vim')
@@ -24,8 +28,45 @@ if dein#load_state('~/.dein')
   " Dash - A Plugin to search Dash <Dash:>
   call dein#add('rizzatti/dash.vim')
 
+  " split-term.vim - A terminal manager <Term:, Vterm:>
+  call dein#add('mklabs/split-term.vim')
+
   " Fugitive -- Git management from Vim
   call dein#add('tpope/vim-fugitive')
+
+  " Ale - Asynchrous Linting Engine
+  call dein#add('w0rp/ale')
+  
+  " Supertab - Use <Tab> for all your insert completion needs
+  call dein#add('ervandew/supertab')
+
+  " completer.vim - Asynchronous Completion Framework 
+  call dein#add('maralla/completor.vim')
+
+  " ultisnips - Vim Snippet Framework
+  call dein#add('SirVer/ultisnips')
+
+  " vim-snippets - snipMate & UltiSnip Snippets
+  call dein#add('honza/vim-snippets')
+
+  " }}}
+  " async.vim - Async dependency for Neovim and Vim8
+  " call dein#add('prabirshrestha/async.vim')
+
+  " asynccomplete.vim - Asynchronous Completion Engine
+  " call dein#add('prabirshrestha/asyncomplete.vim')
+
+  " Omni, Tag, and Buffer Completion
+  " call dein#add('yami-beta/asyncomplete-omni.vim')
+  " call dein#add('prabirshrestha/asyncomplete-tags.vim')
+  " call dein#add('prabirshrestha/asyncomplete-buffer.vim')
+
+  " LSP - the Language Server Protocol
+  " call dein#add('prabirshrestha/vim-lsp')
+  " call dein#add('prabirshrestha/asyncomplete-lsp.vim')
+
+  " Gutentags - Asychronously generates ctags 
+  call dein#add('ludovicchabant/vim-gutentags')
 
   " vim-gitgutter -- Git status next to line numbers
   call dein#add('airblade/vim-gitgutter')
@@ -49,7 +90,7 @@ if dein#load_state('~/.dein')
   call dein#add('wesQ3/vim-windowswap')
 
   " VimDevIcons -- Icons in Vim
-   call dein#add('ryanoasis/vim-devicons')
+   " call dein#add('ryanoasis/vim-devicons')
 
   " Save
   call dein#end()

@@ -61,6 +61,38 @@ exec "set listchars=tab:\uBB\uBB,trail:\uB7,nbsp:~"
 set list
 
 
-" Swap : ; in Normal Mode and for easy command access
-" nnoremap  :  ;
 
+" Plugins ------------------------------------------
+
+" Fzf --
+"   In Neovim, you can set up fzf window using a Vim command
+
+"   Customize fzf colors to match your color scheme
+let g:fzf_colors =
+\ { 'fg':      ['fg', 'Normal'],
+  \ 'bg':      ['bg', 'Normal'],
+  \ 'hl':      ['fg', 'Comment'],
+  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+  \ 'hl+':     ['fg', 'Statement'],
+  \ 'info':    ['fg', 'PreProc'],
+  \ 'prompt':  ['fg', 'Conditional'],
+  \ 'pointer': ['fg', 'Exception'],
+  \ 'marker':  ['fg', 'Keyword'],
+  \ 'spinner': ['fg', 'Label'],
+  \ 'header':  ['fg', 'Comment'] }
+
+" Dirvish {{
+"   Interact with Fugitive forGstatus
+autocmd FileType dirvish call fugitive#detect(@%)
+" }}
+
+" Ale {{
+
+" Lint Gutter Alwaus open
+let g:ale_sign_column_always = 1
+
+" Airline Integration
+let g:airline#extensions#ale#enabled = 1
+
+" }} 
