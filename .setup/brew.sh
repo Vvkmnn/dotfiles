@@ -244,3 +244,5 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 brew install rvm
 brew cask install transmission
 brew install htop
+brew install thefuck
+brew install s-search
