@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
 
-##########################
+#########################
 # Sets up a new macOS System
 # by Vivek Menon, based on work by Adam Eivy
 ###########################
 
-## Bot
+## Dependencies
 source bot.sh
 
+## Start
 tell "Starting macOS setup script..."
 
 ## Git
-
 ask "Set up Git? [y|N] " response
 if [[ $response =~ (yes|y|Y) ]];then
     tell "Let's check if your Github credentials are setup correctly..."
@@ -101,9 +101,13 @@ if [[ $response =~ (yes|y|Y) ]];then
     source ./zsh.sh
     fin "Zsh setup complete."
 fi
-## Zsh
-# tell "Setting up Zsh..."
-# source ./zsh.sh
+
+## Vim
+ask "Set up neoVim? [y|N] " response
+if [[ $response =~ (yes|y|Y) ]];then
+    source ./nvim.sh
+    fin "neoVim setup complete."
+fi
 
 fin "Setup complete!"
 
