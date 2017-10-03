@@ -4,3 +4,6 @@
 [submodule ".assets/theme/dracula"]
 	path = .assets/theme/dracula
 	url = git@github.com:dracula/dracula-theme.git
+[submodule ".assets/terminal"]
+	path = .assets/terminal
+	url = https://github.com/dracula/terminal.app.git

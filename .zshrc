@@ -31,10 +31,11 @@
 # Exports
 export LANG=en_US.UTF-8
 export BROWSER=open
-export EDITOR=nvim
+export EDITOR=vim
 export TERM=xterm-256color
 
-# Editor
+# Editors
+# neoVim & Vscode
 alias v='nvim'
 alias vs='code'
 
@@ -98,11 +99,19 @@ ZLE_LPROMPT_INDENT=0
 
 ## Shell Plugins -----------------------------------
 
-# Zplug (Zsh Plugin Manager)
-source ~/.zplug/init.zsh
+# Install Zplug (if missing)
+if [[ ! -d ~/.zplug ]]; then
+  git clone https://github.com/zplug/zplug ~/.zplug
+fi
+
+# Initialize and Update
+source ~/.zplug/init.zsh && zplug update 
 
 # Autosuggestions
 zplug "zsh-users/zsh-autosuggestions"
+
+# Autocompletions
+zplug "zsh-users/zsh-completions", from:oh-my-zsh
 
 # Syntax highlighting
 zplug "zsh-users/zsh-syntax-highlighting", defer:2

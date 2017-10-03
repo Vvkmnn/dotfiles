@@ -1,30 +1,32 @@
 #!/usr/bin/env bash
+# Bot based methods for installing and describing softwaree
+# Based on work by Adam Eivy
 
-###
-# Convenient methods for installing and describing software
-# Original author: Adam Eivy
-###
-
-
-## Fun Prompts
+## Color Sequences
 ESC_SEQ="\x1b["
 COL_RESET=$ESC_SEQ"39;49;00m"
 COL_GREEN=$ESC_SEQ"32;01m"
 COL_YELLOW=$ESC_SEQ"33;01m"
 COL_RED=$ESC_SEQ"31;01m"
-COL_BLUE=$ESC_SEQ"34;01m"
+COL_BLUE=$ESC_SEQ"37;01m"
+COL_PURPLE=$ESC_SEQ"34;01m"
 
 
+## Prompt Functions
 function tell() {
     echo "$COL_GREEN[-_-]$COL_RESET: "$1
 }
 
+function ask() {
+    read -p "$(echo "$COL_PURPLE[ಠ_ಠ]$COL_RESET: $1")" $2
+}
+
 function warn() {
-    echo "$COL_YELLOW  [._.]$COL_RESET: "$1
+    echo "$COL_YELLOW[._.]$COL_RESET: "$1
 }
 
 function error() {
-    echo "$COL_RED  [o_O]$COL_RESET: "$1
+    echo "$COL_RED[o_O]$COL_RESET: "$1
 }
 
 function fin () {
@@ -32,7 +34,7 @@ function fin () {
 }
 
 
-## Helper Functions
+## Dependency Functions
 function require_cask() {
     warn "Installing brew cask $1..."
     brew cask list $1 > /dev/null 2>&1 | true
