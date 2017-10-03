@@ -98,8 +98,13 @@ ZLE_LPROMPT_INDENT=0
 
 ## Shell Plugins -----------------------------------
 
-# Zplug (Zsh Plugin Manager)
-source ~/.zplug/init.zsh
+# Install Zplug (if missing)
+if [[ ! -d ~/.zplug ]]; then
+  git clone https://github.com/zplug/zplug ~/.zplug
+fi
+
+# Initialize and Update
+source ~/.zplug/init.zsh && zplug update 
 
 # Autosuggestions
 zplug "zsh-users/zsh-autosuggestions"
