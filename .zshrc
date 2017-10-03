@@ -34,9 +34,9 @@ export BROWSER=open
 export EDITOR=nvim
 export TERM=xterm-256color
 
-# neoVim
-alias vim='nvim'
-alias v='vim' 
+# Editor
+alias v='nvim'
+alias vs='code'
 
 # Dotfiles
 alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
@@ -83,8 +83,8 @@ SPACESHIP_TIME_COLOR=blue
 SPACESHIP_BATTERY_SHOW=false
 SPACESHIP_BATTERY_ALWAYS_SHOW=false
 SPACESHIP_VI_MODE_COLOR=cyan
-SPACESHIP_VI_MODE_INSERT=𝛁 # Nabla, normal mode
-SPACESHIP_VI_MODE_NORMAL=𝚫 # Delta, edit mode
+# SPACESHIP_VI_MODE_INSERT=𝛁 # Nabla, normal mode
+# SPACESHIP_VI_MODE_NORMAL=𝚫 # Delta, edit mode
 SPACESHIP_PYENV_SHOW=false
 SPACESHIP_CONDA_SHOW=true
 
@@ -152,9 +152,7 @@ zplug load # --verbose
 ## Plugin Defaults ---------------------------------
 
 # Fuzzy File Finder
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 export FZF_DEFAULT_OPTS='--height 40% --reverse --border'
-
 
 # z - Jump to a match, else use FZF
 unalias z 2> /dev/null
