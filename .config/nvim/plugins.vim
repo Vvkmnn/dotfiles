@@ -33,6 +33,9 @@ if dein#load_state('~/.dein')
   " Fugitive -- Git management from Vim
   call dein#add('tpope/vim-fugitive')
 
+  " vim-autoformat -- Script formatting
+  call dein#add('Chiel92/vim-autoformat')
+
   " Ale - Asynchrous Linting Engine
   call dein#add('w0rp/ale')
   
