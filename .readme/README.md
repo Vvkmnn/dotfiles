@@ -1,5 +1,33 @@
 # dotfiles
 
+```
+##################################################
+##################################################
+######################        ####################
+################                    ##############
+#############                #######   ###########
+###########                #########     #########
+#########                 ########         #######
+########                  ######            ######
+#######                   ######             #####
+######            ####### ######              ####
+#####           ######### ######               ###
+#####           #######   ######               ###
+#####            ######    #####               ###
+#####             ######    ####               ###
+#####              ######    ###               ###
+#####               ######    #                ###
+######               ######                   ####
+#######               #####                  #####
+########               #####                ######
+##########              #####             ########
+############             #####          ##########
+##############               ##       ############
+##################                ################
+##################################################
+##################################################
+```
+
 [A](https://medium.com/@webprolific/getting-started-with-dotfiles-43c3602fd789) [dotfile](https://dotfiles.github.io) [repo](https://news.ycombinator.com/item?id=11070797).
 
 ## Setup
@@ -23,15 +51,14 @@
     pbcopy < ~/.ssh/id_rsa.pub
     /usr/bin/ssh-add -K ~/.ssh/id_rsa
     alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
+    echo "alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'" >> $HOME/.bashrc
     git clone --bare git@github.com:Vvkmnn/dotfiles.git $HOME/.dotfiles
     dotfiles checkout
     dotfiles config status.showUntrackedFiles no
 
 ## Setup
 
-    ./.setup/brew.sh
-    ./.setup/zsh.sh
-    ./.setup/theme.sh
+    ./.setup/setup.sh
 
 ## Update
 
