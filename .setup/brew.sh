@@ -57,6 +57,7 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
 	# git LFS - Large file storage; just in case
 	brew install git-lfs
+        git lfs install --system
 
 	# git Flow - extensions for Vincent Driessen's branching model: https://jeffkreeftmeijer.com/2010/why-arent-you-using-git-flow/
 	brew install git-flow
