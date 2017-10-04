@@ -31,6 +31,7 @@
 # Exports
 export LANG=en_US.UTF-8
 export BROWSER=open
+export VISUAL=nvim
 export EDITOR=nvim
 export TERM=xterm-256color
 

@@ -7,7 +7,7 @@
     s = status -s
 
     # Show the diff between the latest commit and the current state
-    d = !"git diff-index --quiet HEAD -- || clear; git --no-pager diff --patch-with-stat"
+	d = difftool
 
     # `git di $number` shows the diff between the state `$number` revisions ago and the current state
     di = !"d() { git diff --patch-with-stat HEAD~$1; }; git diff-index --quiet HEAD -- || clear; d"
@@ -178,10 +178,14 @@
 	process = git-lfs filter-process
 
 [diff]
-    tool = default-difftool
+	tool = vimdiff
 [difftool "default-difftool"]
     cmd = code --wait --diff $LOCAL $REMOTE
 [credential]
     helper = osxkeychain
 [commit]
   template = ~/.gitmessage
+[difftool]
+	prompt = false
+[mergetool]
+	path = nvim
