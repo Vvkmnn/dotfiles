@@ -142,6 +142,9 @@ zplug "rupa/z", use:z.sh
 # v - jump into vim!
 # zplug "meain/v"
 
+# git-open - Jump straight to a git repo with <git open>
+zplug 'paulirish/git-open'
+
 # Fzf-z -- Z and fzf play nice
 zplug "andrewferrier/fzf-z"
 
