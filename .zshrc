@@ -76,6 +76,9 @@ test -e "${HOME}/.iterm2/.iterm2_shell_integration.zsh" && source "${HOME}/.iter
 export GOPATH="$HOME/.go"
 export PATH="$GOPATH/bin:$PATH"
 
+# The Fuck
+eval "$(thefuck --alias)"
+
 ## Shell Defaults ----------------------------------
 
 # Spaceship Theme 
