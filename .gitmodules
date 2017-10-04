@@ -4,6 +4,3 @@
 [submodule ".fzf"]
 	path = .fzf
 	url = git@github.com:junegunn/fzf.git
-[submodule "/Users/v/.zplug"]
-	path = /Users/v/.zplug
-	url = git@github.com:zplug/zplug.git
