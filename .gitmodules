@@ -7,3 +7,6 @@
 [submodule ".assets/terminal"]
 	path = .assets/terminal
 	url = https://github.com/dracula/terminal.app.git
+[submodule ".fzf"]
+	path = .fzf
+	url = git@github.com:junegunn/fzf.git
