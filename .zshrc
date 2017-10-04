@@ -69,6 +69,9 @@ export PATH="${HOME}/.anaconda/bin:$PATH"
 # Iterm2
 test -e "${HOME}/.iterm2/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2/.iterm2_shell_integration.zsh"
 
+# FZF
+[ -f ~/.config/.fzf.zsh ] && source ~/.config/.fzf.zsh
+
 # Go 
 export GOPATH="$HOME/.go"
 export PATH="$GOPATH/bin:$PATH"

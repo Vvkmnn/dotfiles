@@ -136,6 +136,13 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
         # htop
         brew install htop
+
+        # fzf
+        # brew install fzf
+        # $(brew --prefix)/opt/fzf/install
+
+        # htop
+        brew install htop
         # }}}
 
 	# Postinstall and Cleanup
