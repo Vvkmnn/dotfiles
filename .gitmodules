@@ -1,12 +1,6 @@
-[submodule ".assets/zsh/spaceship"]
-	path = .assets/zsh/spaceship
-	url = git@github.com:denysdovhan/spaceship-zsh-theme.git
 [submodule ".assets/theme/dracula"]
-	path = .assets/theme/dracula
+	path = .assets/terminal/dracula
 	url = git@github.com:dracula/dracula-theme.git
-[submodule ".assets/terminal"]
-	path = .assets/terminal
-	url = https://github.com/dracula/terminal.app.git
 [submodule ".fzf"]
 	path = .fzf
 	url = git@github.com:junegunn/fzf.git
