@@ -7,7 +7,7 @@
     s = status -s
 
     # Show the diff between the latest commit and the current state
-	d = difftool
+    d = difftool
 
     # `git di $number` shows the diff between the state `$number` revisions ago and the current state
     di = !"d() { git diff --patch-with-stat HEAD~$1; }; git diff-index --quiet HEAD -- || clear; d"
@@ -95,7 +95,6 @@
     # Prevent showing files whose names contain non-ASCII symbols as unversioned.
     # http://michael-kuehnel.de/git/2014/11/21/git-mac-osx-and-german-umlaute.html
     precomposeunicode = false
-	editor = code --wait
 
 [color]
 
@@ -179,8 +178,6 @@
 
 [diff]
 	tool = vimdiff
-[difftool "default-difftool"]
-    cmd = code --wait --diff $LOCAL $REMOTE
 [credential]
     helper = osxkeychain
 [commit]
