@@ -10,3 +10,6 @@
 [submodule ".fzf"]
 	path = .fzf
 	url = git@github.com:junegunn/fzf.git
+[submodule ".zplug"]
+	path = .zplug
+	url = git@github.com:zplug/zplug.git
