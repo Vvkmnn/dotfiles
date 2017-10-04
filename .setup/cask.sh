@@ -53,5 +53,9 @@ brew cask install --appdir="/Applications" lastpass
 # Docker - The Container Engine
 brew cask install docker
 
+# Setapp - Paid App subscription
+brew cask install setapp 
+# FIX: Not a true install; just installs and installer.
+
 # Install developer friendly quick look plugins; see https://github.com/sindresorhus/quick-look-plugins
 brew cask install qlcolorcode qlstephen qlmarkdown quicklook-json qlprettypatch quicklook-csv betterzipql qlimagesize webpquicklook 
