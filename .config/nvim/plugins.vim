@@ -14,7 +14,7 @@ if dein#load_state('~/.dein')
   call dein#add('christoomey/vim-tmux-navigator')
 
   " FZF - Fuzzy File Finder!
-  call dein#add('junegunn/fzf', { 'build': './install ~/.fzf', 'rtp': '' })
+  call dein#add('junegunn/fzf', { 'build': './install --bin ~/.fzf', 'rtp': '' })
   call dein#add('junegunn/fzf.vim', { 'depends': 'fzf' })
 
   " Airline - Statusline for Vim
