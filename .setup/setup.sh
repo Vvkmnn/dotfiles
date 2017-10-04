@@ -103,11 +103,19 @@ if [[ $response =~ (yes|y|Y) ]];then
 fi
 
 ## Vim
-ask "Set up neoVim? [y|N] " response
+ask "Editor: Set up neoVim ? [y|N] " response
+if [[ $response =~ (yes|y|Y) ]];then
+    source ./vscode.sh
+    fin "neoVim setup complete."
+fi
+
+## Vim
+ask "Set up Visual Studio Code ()? [y|N] " response
 if [[ $response =~ (yes|y|Y) ]];then
     source ./nvim.sh
     fin "neoVim setup complete."
 fi
+
 
 fin "Setup complete!"
 
