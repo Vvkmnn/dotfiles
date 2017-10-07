@@ -60,10 +60,6 @@ export HOMEBREW_CASK_OPTS="--appdir=/Applications"
 # RVM
 # export PATH="$PATH:$HOME/.rvm/bin"
 
-# NVM
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-
 # Google Cloud
 if [ -f "${HOME}/.google/path.zsh.inc" ]; then source "${HOME}/.google/path.zsh.inc"; fi
 if [ -f "${HOME}/.google/completion.zsh.inc" ]; then source "${HOME}/.google/completion.zsh.inc"; fi
@@ -76,6 +72,10 @@ test -e "${HOME}/.iterm2/.iterm2_shell_integration.zsh" && source "${HOME}/.iter
 
 # FZF
 [ -f ~/.config/.fzf.zsh ] && source ~/.config/.fzf.zsh
+
+# NVM
+export NVM_DIR=~/.nvm
+source $(brew --prefix nvm)/nvm.sh
 
 # Go 
 export GOPATH="$HOME/.go"
@@ -101,6 +101,7 @@ SPACESHIP_VI_MODE_INSERT=𝛁 # Nabla, normal mode
 SPACESHIP_VI_MODE_NORMAL=𝚫 # Delta, edit mode
 SPACESHIP_PYENV_SHOW=false
 SPACESHIP_CONDA_SHOW=true
+SPACESHIP_KUBECONTEXT_SHOW=false
 
 # Vim in Zsh
 bindkey -v
@@ -149,6 +150,9 @@ zplug "zpm-zsh/autoenv"
 
 # z - jump around
 zplug "rupa/z", use:z.sh
+
+# nvm - Autoloading and upgrading
+zplug "lukechilds/zsh-nvm"
 
 # v - jump into vim!
 # zplug "meain/v"
