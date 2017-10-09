@@ -57,29 +57,36 @@ export PATH="$HOME/.vimr:$PATH"
 # Homebrew Cask
 export HOMEBREW_CASK_OPTS="--appdir=/Applications"
  
-# RVM
+## Language Defaults -------------------------------
+
+# Ruby
 # export PATH="$PATH:$HOME/.rvm/bin"
 
-# Google Cloud
-if [ -f "${HOME}/.google/path.zsh.inc" ]; then source "${HOME}/.google/path.zsh.inc"; fi
-if [ -f "${HOME}/.google/completion.zsh.inc" ]; then source "${HOME}/.google/completion.zsh.inc"; fi
+# Haskell (Stack Distribution)
+export haskell="stack ghci"
 
-# Anaconda
+# Python 3 (Anaconda Distribution)
 export PATH="${HOME}/.anaconda/bin:$PATH"
 
-# Iterm2
-test -e "${HOME}/.iterm2/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2/.iterm2_shell_integration.zsh"
-
-# FZF
-[ -f ~/.config/.fzf.zsh ] && source ~/.config/.fzf.zsh
-
-# NVM
+# Node
 export NVM_DIR=~/.nvm
 source $(brew --prefix nvm)/nvm.sh
 
 # Go 
 export GOPATH="$HOME/.go"
 export PATH="$GOPATH/bin:$PATH"
+
+## Shell Tools -------------------------------------
+
+# Google Cloud
+if [ -f "${HOME}/.google/path.zsh.inc" ]; then source "${HOME}/.google/path.zsh.inc"; fi
+if [ -f "${HOME}/.google/completion.zsh.inc" ]; then source "${HOME}/.google/completion.zsh.inc"; fi
+
+# Iterm2
+test -e "${HOME}/.iterm2/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2/.iterm2_shell_integration.zsh"
+
+# FZF
+[ -f ~/.config/.fzf.zsh ] && source ~/.config/.fzf.zsh
 
 # The Fuck
 eval "$(thefuck --alias)"
