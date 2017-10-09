@@ -1,21 +1,19 @@
 #!/usr/bin/env bash
 
-# Check for NPM
-if test ! $(which npm); then
-	  echo "Installing node..."
-	  brew install node
-	  npm install -g npm 
-    fi
+# Install NVM if not installed
+brew intall nvm
 
-# Install command-line tools using Homebrew.
-npm update
+# Install the latest stable Node
+nvm install node
 
-# XO Linter
+# Install the yarn package manager
+ brew install yarn --without-node
+
 # npm install -g xo
 
 # Semantic Release CLI (Semver)
 # npm install -g semantic-release-cli
 
-npm install -g ngrok
+// npm install -g ngrok
 npm install -g firebase-tools
 npm install -g live-server
