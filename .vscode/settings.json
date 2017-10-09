@@ -1,14 +1,15 @@
 // Place your settings in this file to overwrite default and user settings.
 {
     // Vim
-    "vim.easymotion": true,
     "vim.incsearch": true,
     "vim.useSystemClipboard": true,
     "vim.useCtrlKeys": true,
     "vim.hlsearch": true,
     "vim.leader": "<space>",
     "vim.enableNeovim": true,
+    "vim.disableAnnoyingNeovimMessage": true,
     // Defaults
+    "git.enableSmartCommit": true,
     "editor.formatOnSave": true,
     "editor.minimap.enabled": true,
     "editor.cursorStyle": "line",
