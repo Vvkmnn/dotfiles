@@ -131,6 +131,19 @@
 	</dict>
 	<key>DHWebViewIsDark</key>
 	<true/>
+	<key>bookmarks</key>
+	<array>
+		<dict>
+			<key>path</key>
+			<string>file:///Applications/Dash.app/Contents/Resources/home.html</string>
+			<key>platformImagePath</key>
+			<string>Dash</string>
+			<key>title</key>
+			<string>Welcome!</string>
+			<key>typeImagePath</key>
+			<string>Bookmark</string>
+		</dict>
+	</array>
 	<key>docsets</key>
 	<dict>
 		<key>keywords</key>
@@ -189,16 +202,16 @@
 	<key>searchKey</key>
 	<dict>
 		<key>keyCode</key>
-		<integer>4</integer>
+		<integer>2</integer>
 		<key>modifiers</key>
-		<integer>2048</integer>
+		<integer>2304</integer>
 	</dict>
 	<key>searchUsingSelectedTextKey</key>
 	<dict>
 		<key>keyCode</key>
-		<integer>4</integer>
+		<integer>2</integer>
 		<key>modifiers</key>
-		<integer>6144</integer>
+		<integer>2816</integer>
 	</dict>
 	<key>shouldRestoreTabs</key>
 	<false/>

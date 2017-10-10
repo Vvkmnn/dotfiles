@@ -57,25 +57,36 @@ export PATH="$HOME/.vimr:$PATH"
 # Homebrew Cask
 export HOMEBREW_CASK_OPTS="--appdir=/Applications"
  
-# RVM
+## Language Defaults -------------------------------
+
+# Ruby
 # export PATH="$PATH:$HOME/.rvm/bin"
+
+# Haskell (Stack Distribution)
+export haskell="stack ghci"
+
+# Python 3 (Anaconda Distribution)
+export PATH="${HOME}/.anaconda/bin:$PATH"
+
+# Node
+export NVM_DIR=~/.nvm
+source $(brew --prefix nvm)/nvm.sh
+
+# Go 
+export GOPATH="$HOME/.go"
+export PATH="$GOPATH/bin:$PATH"
+
+## Shell Tools -------------------------------------
 
 # Google Cloud
 if [ -f "${HOME}/.google/path.zsh.inc" ]; then source "${HOME}/.google/path.zsh.inc"; fi
 if [ -f "${HOME}/.google/completion.zsh.inc" ]; then source "${HOME}/.google/completion.zsh.inc"; fi
-
-# Anaconda
-export PATH="${HOME}/.anaconda/bin:$PATH"
 
 # Iterm2
 test -e "${HOME}/.iterm2/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2/.iterm2_shell_integration.zsh"
 
 # FZF
 [ -f ~/.config/.fzf.zsh ] && source ~/.config/.fzf.zsh
-
-# Go 
-export GOPATH="$HOME/.go"
-export PATH="$GOPATH/bin:$PATH"
 
 # The Fuck
 eval "$(thefuck --alias)"
@@ -97,6 +108,7 @@ SPACESHIP_VI_MODE_INSERT=𝛁 # Nabla, normal mode
 SPACESHIP_VI_MODE_NORMAL=𝚫 # Delta, edit mode
 SPACESHIP_PYENV_SHOW=false
 SPACESHIP_CONDA_SHOW=true
+SPACESHIP_KUBECONTEXT_SHOW=false
 
 # Vim in Zsh
 bindkey -v
@@ -146,6 +158,9 @@ zplug "zpm-zsh/autoenv"
 # z - jump around
 zplug "rupa/z", use:z.sh
 
+# nvm - Autoloading and upgrading
+zplug "lukechilds/zsh-nvm"
+
 # v - jump into vim!
 # zplug "meain/v"
 
@@ -181,4 +196,5 @@ z() {
   [ $# -gt 0 ] && _z "$*" && return
   cd "$(_z -l 2>&1 | fzf --height 40% --reverse --inline-info +s --tac --query "$*" | sed 's/^[0-9,.]* *//')"
 }
+
 
