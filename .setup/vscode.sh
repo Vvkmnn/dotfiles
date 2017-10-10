@@ -4,9 +4,13 @@
 # Install Visual Studo Code
 brew cask install visual-studio-code
 
-# Move settings and symlink
+# Remove settings and symlink
 rm ~/Library/Application\ Support/Code/User/settings.json
+rm ~/Library/Application\ Support/Code/User/bindings.json
+
+# Symlink Backups
 ln -s ~/.vscode/settings.json ~/Library/Application\ Support/Code/User/settings.json
+ln -s ~/.vscode/settings.json ~/Library/Application\ Support/Code/User/bindings.json
 
 # Use `core` to install packages
 code --list-extensions
