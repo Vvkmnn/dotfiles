@@ -1,2 +1,3 @@
 /Users/v/.anaconda/envs/dlnd
 /Users/v/.anaconda/envs/predcoin
+/Users/vivek.menon/.anaconda/envs/socialToolkit
