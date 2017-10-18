@@ -7,7 +7,10 @@
     "help_panel/help_panel": true,
     "toggle_all_line_numbers/main": true,
     "code_prettify/autopep8": false,
-    "code_prettify/code_prettify": true
+    "code_prettify/code_prettify": true,
+    "jupyter-vim-binding": false,
+    "jupyter-vim-binding/vim_binding": false,
+    "vim-binding/vim_binding": true
   },
   "Cell": {
     "cm_config": {
