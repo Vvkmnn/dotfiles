@@ -65,8 +65,8 @@ export HOMEBREW_CASK_OPTS="--appdir=/Applications"
 # Haskell (Stack Distribution)
 export haskell="stack ghci"
 
-# Python 3 (Anaconda Distribution)
-export PATH="${HOME}/.anaconda/bin:$PATH"
+# Python 3 
+export PATH="${HOME}/.anaconda/bin:$PATH" # Anaconda Distribution
 
 # Node
 export NVM_DIR=~/.nvm
@@ -145,6 +145,9 @@ zplug "zsh-users/zsh-syntax-highlighting", defer:2
 
 # Git Plugin
 zplug "plugins/git", from:oh-my-zsh
+
+# Virtual Env Wrapper
+zplug "plugins/virtualenvwrapper", from:oh-my-zsh
 
 # Spaceship Theme
 zplug "denysdovhan/spaceship-zsh-theme", use:spaceship.zsh, from:github, as:theme
