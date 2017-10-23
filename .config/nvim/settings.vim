@@ -33,3 +33,8 @@ let g:autoformat_retab = 0
 let g:autoformat_remove_trailing_spaces = 0
 
 "}}
+"
+" rainbow {{{
+let g:rainbow_active = 1
+
+" }}}

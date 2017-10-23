@@ -11,15 +11,15 @@ if dein#load_state('~/.dein')
   call dein#add('Shougo/dein.vim')
 
   " Tmux Navigator --  Native Ctrl-HJKL Navigation in Tmux & Vim
-  call dein#add('christoomey/vim-tmux-navigator')
+  " call dein#add('christoomey/vim-tmux-navigator')
 
   " FZF - Fuzzy File Finder!
-  call dein#add('junegunn/fzf', { 'build': './install --bin ~/.fzf', 'rtp': '' })
-  call dein#add('junegunn/fzf.vim', { 'depends': 'fzf' })
+  " call dein#add('junegunn/fzf', { 'build': './install --bin ~/.fzf', 'rtp': '' })
+  " call dein#add('junegunn/fzf.vim', { 'depends': 'fzf' })
 
   " Airline - Statusline for Vim
-  call dein#add('vim-airline/vim-airline')
-  call dein#add('vim-airline/vim-airline-themes')
+  " call dein#add('vim-airline/vim-airline')
+  " call dein#add('vim-airline/vim-airline-themes')
 
   " Dracula - A Dark Colorscheme
   call dein#add('dracula/vim')
@@ -27,7 +27,14 @@ if dein#load_state('~/.dein')
   " Dash - A Plugin to search Dash <Dash:>
   call dein#add('rizzatti/dash.vim')
 
-  " split-term.vim - A terminal manager <Term:, Vterm:>
+  " Rainbow - Parentheses Improved (Level coloring!)
+  call dein#add('luochen1990/rainbow')
+
+  " iron.vim -- Interactive Repls Over Neovim
+
+  call dein#add('mklabs/split-term.vim')
+  
+  " nvimux - Tmux features in Neovim
   call dein#add('mklabs/split-term.vim')
 
   " Fugitive -- Git management from Vim
@@ -36,6 +43,9 @@ if dein#load_state('~/.dein')
   " vim-autoformat -- Script formatting
   call dein#add('Chiel92/vim-autoformat')
 
+  " vim-polyglot -- Multilang Suppor
+  call dein#add('sheerun/vim-polyglot')
+  
   " Ale - Asynchrous Linting Engine
   call dein#add('w0rp/ale')
   
@@ -43,7 +53,7 @@ if dein#load_state('~/.dein')
   call dein#add('ervandew/supertab')
 
   " completer.vim - Asynchronous Completion Framework 
-  call dein#add('maralla/completor.vim')
+  " call dein#add('maralla/completor.vim')
 
   " ultisnips - Vim Snippet Framework
   call dein#add('SirVer/ultisnips')

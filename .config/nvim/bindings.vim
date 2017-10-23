@@ -10,7 +10,7 @@ nnoremap <Down>  :resize -2<CR>
 nnoremap <Left>  :vertical resize +2<CR>
 nnoremap <Right> :vertical resize -2<CR>
 
-" Swap : ; in Normal Mode and for easy command access
+"; as buffer list
 " nnoremap  :  ;
 
 " Operators -- 
@@ -36,3 +36,10 @@ nnoremap <C-H> <C-W><C-H>
 nnoremap <C-J> <C-W><C-J>
 nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
+
+" Sort (in Visual Mode)
+vnoremap <Leader>s :sort<CR> 
+
+" Highlight Next
+nnoremap <silent> n   n:call HLNext(0.4)<cr>
+nnoremap <silent> N   N:call HLNext(0.4)<cr>
