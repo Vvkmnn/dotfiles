@@ -1,10 +1,10 @@
 " Theme --------------------------------------------
 
 " True Color support
-set termguicolors
+" set termguicolors
 set t_Co=256
 
-" Enable Syntax
+" Enable Syntax Highlighting
 syntax enable
 
 " Dracula!
@@ -13,19 +13,36 @@ colorscheme dracula
 " Background
 set background=dark
 
-" Split Formatting
+" Window Dressing
 hi vertsplit ctermfg=238 ctermbg=235
 hi LineNr ctermfg=237
-hi StatusLine ctermfg=235 ctermbg=245
-hi StatusLineNC ctermfg=235 ctermbg=237
 hi Search ctermbg=58 ctermfg=15
 hi Default ctermfg=1
+
+" Sign Column
 hi clear SignColumn
 hi SignColumn ctermbg=235
+hi EndOfBuffer ctermfg=237 ctermbg=235
 
-" Split Defaults
-set wmh=0
-set splitright
+" gVim
+" Split Formatting
+" hi LineNr guibg=bg
+" set foldcolumn=2
+" hi foldcolumn guibg=bg
+" hi VertSplit guibg=bg guifg=bg
+" 
+" " Status Line
+" hi StatusLine guifg=235 guibg=bg
+" hi StatusLineNC guifg=235 guibg=bg
+" 
+" " Search
+" hi Search guifg=15 guibg=bg
+" hi clear SignColumn
+" hi SignColumn guibg=bg
+" 
+" " Split Defaults
+" set wmh=0
+" set splitright
 
 " Sytnax Highlight Limiter
 set synmaxcol=200
@@ -40,6 +57,8 @@ set fo-=t
 "highlight ColorColumn ctermfg=238 ctermbg=235
 
 " Statusline 
+hi StatusLine ctermfg=235 ctermbg=245
+hi StatusLineNC ctermfg=235 ctermbg=237
 set statusline=%=%P\ %f\ %m
 set fillchars=vert:\ ,stl:\ ,stlnc:\ 
 set laststatus=2
@@ -90,9 +109,9 @@ autocmd FileType dirvish call fugitive#detect(@%)
 " Ale {{
 
 " Lint Gutter Alwaus open
-let g:ale_sign_column_always = 1
+" let g:ale_sign_column_always = 1
 
 " Airline Integration
-let g:airline#extensions#ale#enabled = 1
+" let g:airline#extensions#ale#enabled = 1
 
 " }} 

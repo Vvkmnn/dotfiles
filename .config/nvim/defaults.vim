@@ -5,14 +5,17 @@ if &compatible
   set nocompatible 
 endif
 
+" UTF Encoding
+set encoding=utf-8
+
 " Plugins & Filetypes
 filetype plugin indent on
 
 " Enable Syntax
 syntax enable
 
-" Term Colors
-set termguicolors
+" Term Colors (remove `no` if nested)
+set notermguicolors
 
 " Follow Mouse Focus
 set mousefocus
@@ -46,3 +49,14 @@ set shiftwidth=4 softtabstop=4 expandtab
 " Fast Keys
 set ttimeoutlen=0
 
+<<<<<<< HEAD
+=======
+" Multiple Buffer Operations
+set hidden
+
+" Set Fold Level
+set foldlevel=99
+
+" Hide Seperators
+set fillchars+=vert:\ 
+>>>>>>> 4372ebb48ef9193987bc5ed7e43baf2e081a5c2f
