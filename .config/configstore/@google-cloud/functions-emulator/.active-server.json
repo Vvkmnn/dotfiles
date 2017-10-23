@@ -1,0 +1,25 @@
+{
+	"grpcPort": 5002,
+	"host": "localhost",
+	"logFile": "/usr/local/lib/node_modules/firebase-tools/node_modules/@google-cloud/functions-emulator/logs/cloud-functions-emulator.log",
+	"projectId": "opiai-5276b",
+	"region": "us-central1",
+	"restPort": 5001,
+	"started": 1508730351033,
+	"storage": "configstore",
+	"supervisorPort": 5000,
+	"tail": true,
+	"useMocks": false,
+	"verbose": false,
+	"version": "1.0.0-alpha.25",
+	"lastKnownPid": 26377,
+	"pid": 30449,
+	"workers": {
+		"23821": "STARTED",
+		"30267": "STARTED",
+		"30268": "STARTED",
+		"30462": "STARTED",
+		"30463": "STARTED",
+		"35479": "STARTED"
+	}
+}

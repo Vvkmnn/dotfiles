@@ -17,9 +17,14 @@
     "workbench.colorTheme": "Dracula",
     "window.zoomLevel": 0,
     "editor.autoIndent": true,
+    // Git
+    "git.confirmSync": false,
+    "git.enableSmartCommit": true,
     // Fonts
-    "editor.fontFamily": "'Inconsolata for Powerline', medium",
     "editor.fontSize": 14,
+    "terminal.integrated.fontSize": 14,
+    "editor.fontFamily": "Source Code Pro for Powerline",
+    "terminal.integrated.fontFamily": "Source Code Pro for Powerline",
     // Linting
     /// Javascript
     "eslint.autoFixOnSave": true,

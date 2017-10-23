@@ -11,39 +11,46 @@ if dein#load_state('~/.dein')
   call dein#add('Shougo/dein.vim')
 
   " Tmux Navigator --  Native Ctrl-HJKL Navigation in Tmux & Vim
-  call dein#add('christoomey/vim-tmux-navigator')
+  " call dein#add('christoomey/vim-tmux-navigator')
+
+  " vim-autoswap -- No swap messages; just switch or recover
+  call dein#add('gioele/vim-autoswap')
 
   " FZF - Fuzzy File Finder!
-  call dein#add('junegunn/fzf', { 'build': './install --bin ~/.fzf', 'rtp': '' })
   call dein#add('junegunn/fzf.vim', { 'depends': 'fzf' })
-
-  " Airline - Statusline for Vim
-  call dein#add('vim-airline/vim-airline')
-  call dein#add('vim-airline/vim-airline-themes')
 
   " Dracula - A Dark Colorscheme
   call dein#add('dracula/vim')
 
-  " Dash - A Plugin to search Dash <Dash:>
-  call dein#add('rizzatti/dash.vim')
-
-  " split-term.vim - A terminal manager <Term:, Vterm:>
-  call dein#add('mklabs/split-term.vim')
-
-  " Fugitive -- Git management from Vim
-  call dein#add('tpope/vim-fugitive')
+  " vim-polyglot - language packs for Vim
+  call dein#add('sheerun/vim-polyglot')
 
   " vim-autoformat -- Script formatting
   call dein#add('Chiel92/vim-autoformat')
 
-  " Ale - Asynchrous Linting Engine
-  call dein#add('w0rp/ale')
-  
-  " Supertab - Use <Tab> for all your insert completion needs
-  call dein#add('ervandew/supertab')
+  " Gutentags - The Vim .tags manager
+  call dein#add('ludovicchabant/vim-gutentags')
 
-  " completer.vim - Asynchronous Completion Framework 
-  call dein#add('maralla/completor.vim')
+  " Dash - A Plugin to search Dash <Dash:>
+  call dein#add('rizzatti/dash.vim')
+
+  " Ale - Asynchrous Linting Engine
+  " call dein#add('w0rp/ale')
+
+  " Neomake - Asynchronously run Programs <:Neomake>
+  call dein#add('neomake/neomake')
+
+  " Supertab - Use <Tab> for all your insert completion needs
+  " call dein#add('ervandew/supertab')
+
+  " Deoplete - dark powered neo-completion
+  call dein#add('Shougo/deoplete.nvim')
+
+  " LanguageClient-neovim - Language Server Protocol support for neovim.
+  call dein#add('autozimu/LanguageClient-neovim')
+
+  " echodoc.vim - Displays docs in the function area
+  call dein#add('Shougo/echodoc.vim')
 
   " ultisnips - Vim Snippet Framework
   call dein#add('SirVer/ultisnips')
@@ -51,33 +58,14 @@ if dein#load_state('~/.dein')
   " vim-snippets - snipMate & UltiSnip Snippets
   call dein#add('honza/vim-snippets')
 
-  " }}}
-  " async.vim - Async dependency for Neovim and Vim8
-  " call dein#add('prabirshrestha/async.vim')
-
-  " asynccomplete.vim - Asynchronous Completion Engine
-  " call dein#add('prabirshrestha/asyncomplete.vim')
-
-  " Omni, Tag, and Buffer Completion
-  " call dein#add('yami-beta/asyncomplete-omni.vim')
-  " call dein#add('prabirshrestha/asyncomplete-tags.vim')
-  " call dein#add('prabirshrestha/asyncomplete-buffer.vim')
-
-  " LSP - the Language Server Protocol
-  " call dein#add('prabirshrestha/vim-lsp')
-  " call dein#add('prabirshrestha/asyncomplete-lsp.vim')
-
-  " Gutentags - Asychronously generates ctags 
-  call dein#add('ludovicchabant/vim-gutentags')
-
   " vim-gitgutter -- Git status next to line numbers
   call dein#add('airblade/vim-gitgutter')
 
-  " denite.vim - A more generic FZF?
-  " call dein#add('Shougo/denite.nvim')
+  " Tagbar - a class outline viewer for Vim
+  call dein#add('majutsushi/tagbar')
 
   " Vim Dirvish -- Inline Vim File Navigation
-  call dein#add('justinmk/vim-dirvish')
+  " call dein#add('justinmk/vim-dirvish')
 
   " Vim Eunech -- Unix helpers via <:Delete>, <:Move>, ..
   call dein#add('tpope/vim-eunuch')
@@ -85,8 +73,23 @@ if dein#load_state('~/.dein')
   " NERDTree -- Tree File System Explorer
   " call dein#add('scrooloose/nerdtree')
 
-  " Vim-Move - Alt-kj for moving lines up and down
+  " Fugitive - Git management for Vim
+  call dein#add('tpope/vim-fugitive')
+
+  " vim-move - Alt-kj for moving lines up and down
   call dein#add('matze/vim-move')
+
+  " vim-schlepp - Allow the movement of lines (or blocks) of text around easily
+  call dein#add('zirrostig/vim-schlepp')
+
+  " neoterm -- one terminal for everything!
+  call dein#add('kassio/neoterm')
+
+  " iron.vim -- Interactive Repls Over Neovim
+  call dein#add('hkupty/iron.nvim')
+
+  " NVIMUX -- mimic tmux on neovim
+  call dein#add('hkupty/nvimux')
 
   " WindowSwap.vim -- Swap any windows with <leader>ww
   call dein#add('wesQ3/vim-windowswap')

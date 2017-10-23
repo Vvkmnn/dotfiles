@@ -1,0 +1,34 @@
+{
+	"projects/opiai-5276b/locations/us-central1/functions/opiAI": {
+		"name": "projects/opiai-5276b/locations/us-central1/functions/opiAI",
+		"sourceArchiveUrl": "file:///var/folders/8s/gygy76px35zd6b_6d4cccqb00000gn/T/undefined-opiAI-30441P5f3b6nzY0il.zip",
+		"sourceRepository": null,
+		"httpsTrigger": {
+			"url": "http://localhost:5000/opiai-5276b/us-central1/opiAI"
+		},
+		"eventTrigger": null,
+		"status": "READY",
+		"latestOperation": "operations/ac2a6cdb-4a39-4b5a-b20d-2736c01979a2",
+		"entryPoint": "",
+		"timeout": null,
+		"availableMemoryMb": 17179,
+		"serviceAccount": "/Users/v/Documents/redqueen/opiAI/bot/build",
+		"updateTime": null
+	},
+	"projects/opiai-5276b/locations/us-central1/functions/reachEstimate": {
+		"name": "projects/opiai-5276b/locations/us-central1/functions/reachEstimate",
+		"sourceArchiveUrl": "file:///var/folders/8s/gygy76px35zd6b_6d4cccqb00000gn/T/undefined-reachEstimate-30441VjaNmS2PBUH8.zip",
+		"sourceRepository": null,
+		"httpsTrigger": {
+			"url": "http://localhost:5000/opiai-5276b/us-central1/reachEstimate"
+		},
+		"eventTrigger": null,
+		"status": "READY",
+		"latestOperation": "operations/2f7988d6-0433-4e90-bc5f-013fe114ba3f",
+		"entryPoint": "",
+		"timeout": null,
+		"availableMemoryMb": 17179,
+		"serviceAccount": "/Users/v/Documents/redqueen/opiAI/bot/build",
+		"updateTime": null
+	}
+}

@@ -1,6 +1,5 @@
 " Bindings -----------------------------------------
 
-" Keys --
 " Space as Leader
 let mapleader=" "
 
@@ -10,8 +9,10 @@ nnoremap <Down>  :resize -2<CR>
 nnoremap <Left>  :vertical resize +2<CR>
 nnoremap <Right> :vertical resize -2<CR>
 
-" Swap : ; in Normal Mode and for easy command access
-" nnoremap  :  ;
+" <;> as Buffer
+nmap ; :Buffers<CR>
+nmap <Leader>t :Files<CR>
+nmap <Leader>r :Tags<CR>
 
 " Operators -- 
 " Sort in Visual Mode

@@ -1,0 +1,38 @@
+{
+	"analytics-uuid": "d0a7ffe2-7f13-4c47-906b-eefd8e1258f3",
+	"motd": {
+		"minVersion": "3.0.5"
+	},
+	"motd.fetched": 1508722753504,
+	"usage": true,
+	"user": {
+		"azp": "563584335869-fgrhgmd47bqnekij5i8b5pr03ho849e6.apps.googleusercontent.com",
+		"aud": "563584335869-fgrhgmd47bqnekij5i8b5pr03ho849e6.apps.googleusercontent.com",
+		"sub": "109828743232366811722",
+		"hd": "redqueen.xyz",
+		"email": "v@redqueen.xyz",
+		"email_verified": true,
+		"at_hash": "4NuMahRhIzg5dQX1G1E6SQ",
+		"iss": "accounts.google.com",
+		"iat": 1503508380,
+		"exp": 1503511980
+	},
+	"tokens": {
+		"expires_at": 1508732310132,
+		"refresh_token": "1/JFY05c1z0Kddu1sTdghaKoRTBxxbX8gcxlOc1JU3qCo",
+		"scopes": [
+			"email",
+			"https://www.googleapis.com/auth/cloud-platform",
+			"https://www.googleapis.com/auth/cloudplatformprojects.readonly",
+			"https://www.googleapis.com/auth/firebase",
+			"openid"
+		],
+		"access_token": "ya29.Gl3tBAby7ZiGOj8jthGvx8MskLTBw7qEs3UoMRMGrGjc_Y1Eg81kIw7T420npKyGBT_BYarDgRixS6QiJSihk-xpzVRD58hVaQPtk_XwgO0IVF1A9DGInRyrSsFXEUw",
+		"token_type": "Bearer",
+		"expires_in": 3600,
+		"id_token": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjNmN2RjZjY2YjUwZDZiZGExMTgwYjcwNjdlYzhhZTlhNDhjYzU2YTQifQ.eyJhenAiOiI1NjM1ODQzMzU4NjktZmdyaGdtZDQ3YnFuZWtpajVpOGI1cHIwM2hvODQ5ZTYuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI1NjM1ODQzMzU4NjktZmdyaGdtZDQ3YnFuZWtpajVpOGI1cHIwM2hvODQ5ZTYuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMDk4Mjg3NDMyMzIzNjY4MTE3MjIiLCJoZCI6InJlZHF1ZWVuLnh5eiIsImVtYWlsIjoidml2ZWtAcmVkcXVlZW4ueHl6IiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImF0X2hhc2giOiJSbk5ORDFzcl94MHBYMzJDUlFXNnpRIiwiaXNzIjoiYWNjb3VudHMuZ29vZ2xlLmNvbSIsImlhdCI6MTUwODcyODcxMCwiZXhwIjoxNTA4NzMyMzEwfQ.S9xnyIKACSgEhhRKC9NS3PWlGh2cR3gH89GVwyoV2pJAH0npJKgZhNmlirLMB-cZHJbEA-cP1XyJGA8PeW3B5z6_gUG2f5qNyitAowRu4IyjxqfqBad9PT1u6fHlJ0RBLcYkh4Wxpx1MSjMgZ2VADOZOLIyR9pG3IGdYtzz4yoHkzSUgC0FTkSgndRZ6dHe7Zs-TXvNFyD39eIe9O6tCnyB36G6kZ8OVgoWzbpX7wXSqbQEP3Ew6LIf9VqANMJ8Vw_lyhuTkQvqf8jVU8otxek2ZZ2xiEO-bnZFXJn_eH-cl5M4f2Q5uFeJtiPqG-mTfT5v97-fw0Et-on62bRZQOw"
+	},
+	"activeProjects": {
+		"/Users/v/Documents/redqueen/opiAI": "opiai-5276b"
+	}
+}

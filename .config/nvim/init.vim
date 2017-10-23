@@ -29,6 +29,9 @@
 " Defaults -----------------------------------------
 source ~/.config/nvim/defaults.vim
 
+" Functions ----------------------------------------
+source ~/.config/nvim/functions.vim
+
 " Plugins ------------------------------------------
 source ~/.config/nvim/plugins.vim
 

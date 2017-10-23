@@ -5,14 +5,17 @@ if &compatible
   set nocompatible 
 endif
 
+" UTF Encoding
+set encoding=utf-8
+
 " Plugins & Filetypes
 filetype plugin indent on
 
 " Enable Syntax
 syntax enable
 
-" Term Colors
-set termguicolors
+" Term Colors (remove `no` if nested)
+set notermguicolors
 
 " Follow Mouse Focus
 set mousefocus
@@ -46,51 +49,11 @@ set shiftwidth=4 softtabstop=4 expandtab
 " Fast Keys
 set ttimeoutlen=0
 
-" Bindings -----------------------------------------
+" Multiple Buffer Operations
+set hidden
 
-" Keys --
-" Space as Leader
-let mapleader=" "
+" Set Fold Level
+set foldlevel=99
 
-" Disable arrow movement, resize splits instead.
-nnoremap <Up>    :resize +2<CR>
-nnoremap <Down>  :resize -2<CR>
-nnoremap <Left>  :vertical resize +2<CR>
-nnoremap <Right> :vertical resize -2<CR>
-
-" Swap : ; in Normal Mode and for easy command access
-" nnoremap  :  ;
-" Operators -- 
-" Sort in Visual Mode
-vnoremap <Leader>s :sort<CR> 
-
-" Escape Neovim Terminal
-:tnoremap <Esc> <C-\><C-n>
-
-" This rewires n and N to do the highlighing
-nnoremap <silent> n   n:call HLNext(0.4)<cr>
-nnoremap <silent> N   N:call HLNext(0.4)<cr>
-
-" Swap : ; in Normal Mode and for easy command access
-"nnoremap  :  ;
-
-" Windows --
-
-" Ctrl HJKL Split Navigation
-nnoremap <C-h> <C-W><C-H>
-nnoremap <C-j> <C-W><C-J>
-nnoremap <C-k> <C-W><C-K>
-nnoremap <C-l> <C-W><C-L>
-
-
-" Functions ----------------------------------------
-
-" Blink link with match
-function! HLNext (blinktime)
-       set invcursorline
-       redraw
-       exec 'sleep ' . float2nr(a:blinktime * 1000) . 'm'
-       set invcursorline
-       redraw
-   endfunction
-
+" Hide Seperators
+set fillchars+=vert:\ 

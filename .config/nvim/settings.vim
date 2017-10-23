@@ -1,8 +1,7 @@
-" Bindings -----------------------------------------
+" Settings -----------------------------------------
 
 " FZF {{
-"   Completion
-" imap <c-x><c-l> <plug>(fzf-complete-line)
+set rtp+=/usr/local/opt/fzf
 " }}
 
 " Dash {{ 
@@ -22,6 +21,29 @@ nmap <F20> <Plug>MoveLineDown
 nmap <F21> <Plug>MoveLineUp
 " }}
 
+" deoplete {{{
+let g:deoplete#enable_at_startup = 1
+
+" Trigger on Omnifuncs
+if !exists('g:deoplete#omni#input_patterns')
+  let g:deoplete#omni#input_patterns = {}
+endif
+
+" All Patterns
+let g:deoplete#keyword_patterns = {}
+" }}}
+
+" SuperTab {{{
+let g:SuperTabClosePreviewOnPopupClose = 1
+" }}}
+
+" LanguageClient - neovim {{{
+let g:LanguageClient_autoStart = 1
+
+let g:LanguageClient_serverCommands = {
+      \ 'typescript': ['typescript-language-server', '--stdio']
+      \ }
+" }}}
 
 " vim-autoformat {{{
 " Autoformat on Save
@@ -31,5 +53,52 @@ au BufWrite * :Autoformat
 let g:autoformat_autoindent = 0
 let g:autoformat_retab = 0
 let g:autoformat_remove_trailing_spaces = 0
+"}}}
 
-"}}
+" neomake {{{
+let g:neomake_logfile = '/tmp/neomake.log'
+let g:neomake_open_list = 2
+call neomake#configure#automake('w')
+" }}}
+
+" vim-autoswap {{{
+set title titlestring=
+" }}}
+
+" tagbar {{{
+" Auto Open (for Right Files)
+autocmd VimEnter * nested :call tagbar#autoopen(1)
+
+let g:tagbar_type_typescript = {                                                  
+  \ 'ctagsbin' : 'tstags',                                                        
+  \ 'ctagsargs' : '-f-',                                                           
+  \ 'kinds': [                                                                     
+    \ 'e:enums:0:1',                                                               
+    \ 'f:function:0:1',                                                            
+    \ 't:typealias:0:1',                                                           
+    \ 'M:Module:0:1',                                                              
+    \ 'I:import:0:1',                                                              
+    \ 'i:interface:0:1',                                                           
+    \ 'C:class:0:1',                                                               
+    \ 'm:method:0:1',                                                              
+    \ 'p:property:0:1',                                                            
+    \ 'v:variable:0:1',                                                            
+    \ 'c:const:0:1',                                                              
+  \ ],                                                                            
+  \ 'sort' : 0                                                                    
+\ }                                                                               
+" }}}
+
+" vim-schlepp {{{
+" Visual Arrow Keys
+vmap <unique> <up>    <Plug>SchleppUp
+vmap <unique> <down>  <Plug>SchleppDown
+vmap <unique> <left>  <Plug>SchleppLeft
+vmap <unique> <right> <Plug>SchleppRight
+" }}}
+
+
+" NVIMUX {{{
+let g:nvimux_prefix='<C-Space>'
+let nvimux_open_term_by_default=1
+" }}}
