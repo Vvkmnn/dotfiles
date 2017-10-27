@@ -28,44 +28,16 @@ if dein#load_state('~/.dein')
   " vim-autoformat -- Script formatting
   call dein#add('Chiel92/vim-autoformat')
 
-  " Gutentags - The Vim .tags manager
-  call dein#add('ludovicchabant/vim-gutentags')
-
   " Dash - A Plugin to search Dash <Dash:>
   call dein#add('rizzatti/dash.vim')
-
-  " Ale - Asynchrous Linting Engine
-  " call dein#add('w0rp/ale')
-
-  " Neomake - Asynchronously run Programs <:Neomake>
-  call dein#add('neomake/neomake')
-
-  " Supertab - Use <Tab> for all your insert completion needs
-  " call dein#add('ervandew/supertab')
-
-  " Deoplete - dark powered neo-completion
-  call dein#add('Shougo/deoplete.nvim')
-
-  " LanguageClient-neovim - Language Server Protocol support for neovim.
-  call dein#add('autozimu/LanguageClient-neovim')
-
   " echodoc.vim - Displays docs in the function area
   call dein#add('Shougo/echodoc.vim')
-
-  " ultisnips - Vim Snippet Framework
-  call dein#add('SirVer/ultisnips')
-
-  " vim-snippets - snipMate & UltiSnip Snippets
-  call dein#add('honza/vim-snippets')
 
   " vim-gitgutter -- Git status next to line numbers
   call dein#add('airblade/vim-gitgutter')
 
-  " Tagbar - a class outline viewer for Vim
-  call dein#add('majutsushi/tagbar')
-
   " Vim Dirvish -- Inline Vim File Navigation
-  " call dein#add('justinmk/vim-dirvish')
+  call dein#add('justinmk/vim-dirvish')
 
   " Vim Eunech -- Unix helpers via <:Delete>, <:Move>, ..
   call dein#add('tpope/vim-eunuch')
@@ -94,9 +66,41 @@ if dein#load_state('~/.dein')
   " WindowSwap.vim -- Swap any windows with <leader>ww
   call dein#add('wesQ3/vim-windowswap')
 
+if has('gui_running')
+
+  " Supertab - Use <Tab> for all your insert completion needs
+  " call dein#add('ervandew/supertab')
+
+  " Gutentags - The Vim .tags manager
+  call dein#add('ludovicchabant/vim-gutentags')
+
+  " Deoplete - dark powered neo-completion
+  call dein#add('Shougo/deoplete.nvim')
+
+  " Neomake - Asynchronously run Programs <:Neomake>
+  " call dein#add('neomake/neomake')
+
+  " LanguageClient-neovim - Language Server Protocol support for neovim.
+  call dein#add('autozimu/LanguageClient-neovim')
+
+  " Tagbar - a class outline viewer for Vim
+  call dein#add('majutsushi/tagbar')
+  
+  " ultisnips - Vim Snippet Framework
+  call dein#add('SirVer/ultisnips')
+
+  " vim-snippets - snipMate & UltiSnip Snippets
+  call dein#add('honza/vim-snippets')
+
   " VimDevIcons -- Icons in Vim
    " call dein#add('ryanoasis/vim-devicons')
+endif
 
+  " Ale - Asynchrous Linting Engine
+  call dein#add('w0rp/ale')
+
+  " Rainbow Parentheses Improved - Color code by depth
+  call dein#add('luochen1990/rainbow')
   " Save
   call dein#end()
   call dein#save_state()
