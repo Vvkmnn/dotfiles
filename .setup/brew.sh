@@ -102,18 +102,15 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 	# grep -q "$LINE" ~/.extra || echo "$LINE" >> ~/.extra
 
 	# Vim {{{
-	brew install vim --override-system-vi
+        #brew install vim --override-system-vi
+        brew install neovim
+        brew install ctags-exuberant
         # }}}
 
         # Tmux {{{
 	brew install tmux
         # }}}
 
-	# Fonts {{{
-	brew tap caskroom/fonts   
-	brew cask install font-inconsolata-for-powerline
-	brew cask install font-inconsolata
-        # }}}
 
         # CLI {{{
 	# Z
