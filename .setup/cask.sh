@@ -11,6 +11,9 @@ brew tap caskroom/versions
 # spectacle - hotkey window management
 brew cask install spectacle
 
+# karabiner-elements - custom macOS key modifications (Capslock -> Esc/Ctrl)
+brew cask install karabiner-elements
+
 # Heroku - PaaS tools
 # brew install heroku-toolbelt
 # heroku update
