@@ -53,5 +53,7 @@
     /// Python
     "python.formatting.provider": "yapf",
     "python.linting.lintOnSave": true,
-    "python.formatting.formatOnSave": true
+    "python.formatting.formatOnSave": true,
+    /// Clojure
+    "clojureVSCode.formatOnSave": true
 }
