@@ -12,7 +12,6 @@ rm ~/Library/Application\ Support/Code\ -\ Insiders/User/keybindings.json
 ln -s ~/.vscode/settings.json ~/Library/Application\ Support/Code\ -\ Insiders/User/settings.json
 ln -s ~/.vscode/keybindings.json ~/Library/Application\ Support/Code\ -\ Insiders/User/keybindings.json
 
-
 # Use `core` to install packages
 # code --list-extensions
 
