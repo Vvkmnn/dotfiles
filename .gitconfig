@@ -166,23 +166,26 @@
 [url "git://gist.github.com/"]
 
     insteadOf = "gist:"
-[user]
-	name = Vivek Menon
-	email = mail@vvkmnn.xyz
-    
-[filter "lfs"]
-	required = true
-	clean = git-lfs clean -- %f
-	smudge = git-lfs smudge -- %f
-	process = git-lfs filter-process
 
-[diff]
-	tool = vimdiff
+[user]
+    name = Vivek Menon
+    email = mail@vvkmnn.xyz
 [credential]
     helper = osxkeychain
+
 [commit]
-  template = ~/.gitmessage
-[difftool]
-	prompt = false
-[mergetool]
-	path = nvim
+    template = ~/.gitmessage
+
+[diff]
+  tool = vscode-diff
+
+[difftool "vscode-diff"]
+  cmd = code --wait --diff $LOCAL $REMOTE
+
+[merge]
+    tool = vscode
+
+[mergetool "vscode"]
+    cmd = code --wait $MERGED
+
+
