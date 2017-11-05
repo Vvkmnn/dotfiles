@@ -202,16 +202,16 @@
 	<key>searchKey</key>
 	<dict>
 		<key>keyCode</key>
-		<integer>2</integer>
+		<integer>4</integer>
 		<key>modifiers</key>
-		<integer>2304</integer>
+		<integer>4352</integer>
 	</dict>
 	<key>searchUsingSelectedTextKey</key>
 	<dict>
 		<key>keyCode</key>
-		<integer>2</integer>
+		<integer>4</integer>
 		<key>modifiers</key>
-		<integer>2816</integer>
+		<integer>6144</integer>
 	</dict>
 	<key>shouldRestoreTabs</key>
 	<false/>
