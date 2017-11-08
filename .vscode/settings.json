@@ -8,6 +8,7 @@
     "vim.leader": "<space>",
     "vim.enableNeovim": true,
     "vim.disableAnnoyingNeovimMessage": true,
+    "vim.visualstar": true,
     // Defaults
     "editor.formatOnSave": true,
     "editor.minimap.enabled": true,
