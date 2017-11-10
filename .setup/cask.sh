@@ -62,3 +62,12 @@ brew cask install setapp
 
 # Install developer friendly quick look plugins; see https://github.com/sindresorhus/quick-look-plugins
 brew cask install qlcolorcode qlstephen qlmarkdown quicklook-json qlprettypatch quicklook-csv betterzipql qlimagesize webpquicklook 
+
+# Amethyst - Tiling Window Manager
+# brew cask install amethyst # too unstable 
+
+# Contexts - Window Switcher
+brew cask  install contexts
+
+# Afred - Better Spotlight
+brew cask install alfred
