@@ -67,28 +67,28 @@ set title titlestring=
 
 " tagbar {{{
 " Auto Open (for Right Files)
-autocmd VimEnter * nested :call tagbar#autoopen(1)
+" autocmd VimEnter * nested :call tagbar#autoopen(1)
 " let g:tagbar_autofocus = 0
-let g:tagbar_foldlevel = 2
-
-let g:tagbar_type_typescript = {                                                  
-  \ 'ctagsbin' : 'tstags',                                                        
-  \ 'ctagsargs' : '-f-',                                                           
-  \ 'kinds': [                                                                     
-    \ 'e:enums:0:1',                                                               
-    \ 'f:function:0:1',                                                            
-    \ 't:typealias:0:1',                                                           
-    \ 'M:Module:0:1',                                                              
-    \ 'I:import:0:1',                                                              
-    \ 'i:interface:0:1',                                                           
-    \ 'C:class:0:1',                                                               
-    \ 'm:method:0:1',                                                              
-    \ 'p:property:0:1',                                                            
-    \ 'v:variable:0:1',                                                            
-    \ 'c:const:0:1',                                                              
-  \ ],                                                                            
-  \ 'sort' : 0                                                                    
-\ }                                                                               
+" let g:tagbar_foldlevel = 2
+" 
+" let g:tagbar_type_typescript = {                                                  
+"   \ 'ctagsbin' : 'tstags',                                                        
+"   \ 'ctagsargs' : '-f-',                                                           
+"   \ 'kinds': [                                                                     
+"     \ 'e:enums:0:1',                                                               
+"     \ 'f:function:0:1',                                                            
+"     \ 't:typealias:0:1',                                                           
+"     \ 'M:Module:0:1',                                                              
+"     \ 'I:import:0:1',                                                              
+"     \ 'i:interface:0:1',                                                           
+"     \ 'C:class:0:1',                                                               
+"     \ 'm:method:0:1',                                                              
+"     \ 'p:property:0:1',                                                            
+"     \ 'v:variable:0:1',                                                            
+"     \ 'c:const:0:1',                                                              
+"   \ ],                                                                            
+"   \ 'sort' : 0                                                                    
+" \ }                                                                               
 " }}}
 
 " vim-schlepp {{{
