@@ -3,6 +3,9 @@
 ## web
 images/
 assets/
+.png
+.data
+.php
 
 ## rstudio
 rstudio-desktop/*/*
