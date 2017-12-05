@@ -49,8 +49,6 @@ set shiftwidth=4 softtabstop=4 expandtab
 " Fast Keys
 set ttimeoutlen=0
 
-<<<<<<< HEAD
-=======
 " Multiple Buffer Operations
 set hidden
 
@@ -59,4 +57,3 @@ set foldlevel=99
 
 " Hide Seperators
 set fillchars+=vert:\ 
->>>>>>> 4372ebb48ef9193987bc5ed7e43baf2e081a5c2f

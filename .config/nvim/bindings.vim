@@ -9,15 +9,10 @@ nnoremap <Down>  :resize -2<CR>
 nnoremap <Left>  :vertical resize +2<CR>
 nnoremap <Right> :vertical resize -2<CR>
 
-<<<<<<< HEAD
-"; as buffer list
-" nnoremap  :  ;
-=======
 " <;> as Buffer
 nmap ; :Buffers<CR>
 nmap <Leader>t :Files<CR>
 nmap <Leader>r :Tags<CR>
->>>>>>> 4372ebb48ef9193987bc5ed7e43baf2e081a5c2f
 
 " Operators -- 
 " Sort in Visual Mode

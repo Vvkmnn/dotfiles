@@ -98,15 +98,13 @@ vmap <unique> <right> <Plug>SchleppRight
 " }}}
 
 
-<<<<<<< HEAD
 "}}
 "
 " rainbow {{{
 let g:rainbow_active = 1
+" }}}
 
-=======
 " NVIMUX {{{
 let g:nvimux_prefix='<C-Space>'
 let nvimux_open_term_by_default=1
->>>>>>> 4372ebb48ef9193987bc5ed7e43baf2e081a5c2f
 " }}}
