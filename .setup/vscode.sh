@@ -23,4 +23,4 @@ code --install-extension dracula-theme.theme-dracula
 
 # Linters
 # ESlint
-code --install-extension dbaeumer.vscode-eslint
+# code --install-extension dbaeumer.vscode-eslint

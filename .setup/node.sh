@@ -11,9 +11,12 @@ nvm install node
 
 # npm install -g xo
 
+# yarn
+yarn global add @google-cloud/functions-emulator  
+
 # Semantic Release CLI (Semver)
 # npm install -g semantic-release-cli
 
-// npm install -g ngrok
+npm install -g ngrok
 npm install -g firebase-tools
 npm install -g live-server
