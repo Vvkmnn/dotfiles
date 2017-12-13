@@ -5,6 +5,10 @@ images/
 assets/
 .png
 .data
+
+## alfred
+workflows/
+libraries/
 .php
 
 ## rstudio
