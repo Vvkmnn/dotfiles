@@ -13,11 +13,18 @@ colorscheme dracula
 " Background
 set background=dark
 
+" No Background
+highlight Normal ctermbg=none
+highlight NonText ctermbg=none
+
+highlight Normal guibg=none
+highlight NonText guibg=none
+
 " Window Dressing
-hi vertsplit ctermfg=238 ctermbg=235
-hi LineNr ctermfg=237
-hi Search ctermbg=58 ctermfg=15
-hi Default ctermfg=1
+" hi vertsplit ctermfg=238 ctermbg=235
+" hi LineNr ctermfg=237
+" hi Search ctermbg=58 ctermfg=15
+" hi Default ctermfg=1
 
 " Sign Column
 hi clear SignColumn

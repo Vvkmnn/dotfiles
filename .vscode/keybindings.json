@@ -1,0 +1,27 @@
+// Place your key bindings in this file to overwrite the defaults
+[
+  //   {
+  // "command": "fuckingtest",
+  // "key": "fuckingtest",
+  // "when": "fuckingtest"
+  //   },
+  //   {
+  // "command": "extension.vim_navigateRight",
+  // "key": "ctrl+l",
+  // "when": "vim.active && vim.use<C-w> && !editorTextFocus"
+  //   },
+  //   {
+  // "command": "extension.vim_navigateLeft",
+  // "key": "ctrl+h",
+  // "when": "vim.active && vim.use<C-w> && !editorTextFocus"
+  //   },
+  //   {
+  // "command": "extension.vim_navigateDown",
+  // "key": "ctrl+j",
+  // "when": "vim.active && vim.use<C-w> && !editorTextFocus"
+  //   },
+  // "command": "extension.vim_navigateUp",
+  // "key": "ctrl+k",
+  // "when": "vim.active && vim.use<C-w> && !editorTextFocus"
+  //   }
+]

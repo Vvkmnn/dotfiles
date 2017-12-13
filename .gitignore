@@ -1,6 +1,13 @@
 ## From https://github.com/github/gitignore
 
-## 
+## web
+images/
+assets/
+.png
+.data
+.php
+
+## rstudio
 rstudio-desktop/*/*
 
 ## dash	

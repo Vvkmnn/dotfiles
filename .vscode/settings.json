@@ -8,20 +8,10 @@
     "vim.hlsearch": true,
     "vim.incsearch": true,
     "vim.leader": "<space>",
-    "vim.otherModesKeyBindingsNonRecursive": [
-        {
-            "before": [
-                "\\",
-                "\\"
-            ],
-            "after": [
-                "g",
-                "h"
-            ]
-        }
-    ],
     "vim.useCtrlKeys": true,
     "vim.useSystemClipboard": true,
+    "vim.enableNeovim": true,
+    "vim.disableAnnoyingNeovimMessage": true,
     "vim.visualstar": true,
     // Defaults
     "window.nativeTabs": true,
@@ -34,71 +24,44 @@
     "window.zoomLevel": 0,
     "editor.autoIndent": true,
     // Git
+    "diffEditor.renderSideBySide": false,
     "git.confirmSync": false,
     "git.enableSmartCommit": true,
     // Fonts
     "editor.fontSize": 14,
     "terminal.integrated.fontSize": 14,
-    "vim.easymotionMarkerFontFamily": "Source Code Pro for Powerline",
-    "editor.fontFamily": "Source Code Pro for Powerline",
-    "terminal.integrated.fontFamily": "Source Code Pro for Powerline",
-    // Language
-    "[javascript]": {
-        "eslint.run": "onSave",
-        "eslint.autoFixOnSave": true,
-        "eslint.enable": true,
-        "eslint.options": {
-            "extensions": [
-                ".html",
-                ".js",
-                ".vue",
-                ".jsx"
-            ]
-        },
-        "eslint.validate": [
-            "javascript",
-            "javascriptreact",
-            {
-                "language": "html",
-                "autoFix": true
-            }
+    "editor.fontFamily": "Inconsolata for Powerline",
+    "terminal.integrated.fontFamily": "Inconsolata for Powerline",
+    // Linting
+    /// Javascript
+    "eslint.autoFixOnSave": true,
+    "eslint.enable": true,
+    "eslint.options": {
+        "extensions": [
+            ".html",
+            ".js",
+            ".vue",
+            ".jsx"
         ]
     },
-    "[typescript]": {
-        "tslint.jsEnable": true,
-        "tslint.autoFixOnSave": true
-    },
-    "[python]": {
-        "python.formatting.provider": "yapf",
-        "python.linting.lintOnSave": true,
-        "python.formatting.formatOnSave": true,
-    },
-    "[clojure]": {
-        "clojureVSCode.formatOnSave": true
-    }
+    "eslint.validate": [
+        "javascript",
+        "javascriptreact",
+        {
+            "language": "html",
+            "autoFix": true
+        }
+    ],
+    "eslint.run": "onSave",
+    /// TypeScript
+    "tslint.jsEnable": true,
+    "tslint.autoFixOnSave": true,
+    /// Python
+    "python.formatting.provider": "yapf",
+    "python.linting.lintOnSave": true,
+    "python.formatting.formatOnSave": true,
+    /// Clojure
+    "clojureVSCode.formatOnSave": true,
+    "git.autofetch": true,
+    "workbench.startupEditor": "newUntitledFile"
 }
-// ##################################################
-// ##################################################
-// ######################        ####################
-// ################                    ##############
-// #############                #######   ###########
-// ###########                #########     #########
-// #########                 ########         #######
-// ########                  ######            ######
-// #######                   ######             #####
-// ######            ####### ######              ####
-// #####           ######### ######               ###
-// #####           #######   ######               ###
-// #####            ######    #####               ###
-// #####             ######    ####               ###
-// #####              ######    ###               ###
-// #####               ######    #                ###
-// ######               ######                   ####
-// #######               #####                  #####
-// ########               #####                ######
-// ##########              #####             ########
-// ############             #####          ##########
-// ##############            #####       ############
-// ##################                ################
-// ##################################################
-// ##################################################
