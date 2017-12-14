@@ -64,9 +64,9 @@ let g:autoformat_remove_trailing_spaces = 0
 "}}}
 
 " neomake {{{
-let g:neomake_logfile = '/tmp/neomake.log'
-let g:neomake_open_list = 2
-call neomake#configure#automake('w')
+" let g:neomake_logfile = '/tmp/neomake.log'
+" let g:neomake_open_list = 2
+" call neomake#configure#automake('w')
 " }}}
 
 " vim-autoswap {{{
@@ -113,6 +113,6 @@ let g:rainbow_active = 1
 "}}}
 
 " NVIMUX {{{
-let g:nvimux_prefix='<C-Space>'
-let nvimux_open_term_by_default=1
+" let g:nvimux_prefix='<C-Space>'
+" let nvimux_open_term_by_default=1
 " }}}
