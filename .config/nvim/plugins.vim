@@ -25,11 +25,12 @@ if dein#load_state('~/.dein')
   " vim-polyglot - language packs for Vim
   call dein#add('sheerun/vim-polyglot')
 
-  " vim-autoformat -- Script formatting
-  call dein#add('Chiel92/vim-autoformat')
+  " vim-neoformat -- Script formatting
+  call dein#add('sbdchd/neoformat')
 
   " Dash - A Plugin to search Dash <Dash:>
   call dein#add('rizzatti/dash.vim')
+  
   " echodoc.vim - Displays docs in the function area
   call dein#add('Shougo/echodoc.vim')
 
@@ -58,13 +59,25 @@ if dein#load_state('~/.dein')
   call dein#add('kassio/neoterm')
 
   " iron.vim -- Interactive Repls Over Neovim
-  call dein#add('hkupty/iron.nvim')
+  " call dein#add('hkupty/iron.nvim')
 
   " NVIMUX -- mimic tmux on neovim
   call dein#add('hkupty/nvimux')
 
   " WindowSwap.vim -- Swap any windows with <leader>ww
   call dein#add('wesQ3/vim-windowswap')
+
+  " ultisnips - Vim Snippet Framework
+  call dein#add('SirVer/ultisnips')
+
+  " vim-snippets - snipMate & UltiSnip Snippets
+  call dein#add('honza/vim-snippets')
+
+  " Ale - Asynchrous Linting Engine
+  call dein#add('w0rp/ale')
+
+  " Rainbow Parentheses Improved - Color code by depth
+  call dein#add('luochen1990/rainbow')
 
 if has('gui_running')
 
@@ -85,22 +98,10 @@ if has('gui_running')
 
   " Tagbar - a class outline viewer for Vim
   call dein#add('majutsushi/tagbar')
-  
-  " ultisnips - Vim Snippet Framework
-  call dein#add('SirVer/ultisnips')
-
-  " vim-snippets - snipMate & UltiSnip Snippets
-  call dein#add('honza/vim-snippets')
-
   " VimDevIcons -- Icons in Vim
    " call dein#add('ryanoasis/vim-devicons')
 endif
 
-  " Ale - Asynchrous Linting Engine
-  call dein#add('w0rp/ale')
-
-  " Rainbow Parentheses Improved - Color code by depth
-  call dein#add('luochen1990/rainbow')
   " Save
   call dein#end()
   call dein#save_state()

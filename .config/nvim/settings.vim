@@ -1,5 +1,13 @@
 " Settings -----------------------------------------
 
+" Neoformat {{
+"   format file on save
+augroup fmt
+  autocmd!
+  autocmd BufWritePre * undojoin | Neoformat
+augroup END
+" }}
+
 " FZF {{
 set rtp+=/usr/local/opt/fzf
 " }}
