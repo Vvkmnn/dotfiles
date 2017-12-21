@@ -1,11 +1,25 @@
 " Settings -----------------------------------------
 
 " Neoformat {{
-"   format file on save
+" Format file on save
 augroup fmt
   autocmd!
   autocmd BufWritePre * undojoin | Neoformat
 augroup END
+
+" Try using &formatprg
+let g:neoformat_try_formatprg = 1
+
+" Enable alignment
+let g:neoformat_basic_format_align = 1
+
+" Enable tab to spaces conversion
+let g:neoformat_basic_format_retab = 1
+
+" Enable trimmming of trailing whitespace
+let g:neoformat_basic_format_trim = 1
+
+
 " }}
 
 " FZF {{
@@ -55,18 +69,18 @@ let g:LanguageClient_serverCommands = {
 
 " vim-autoformat {{{
 " Autoformat on Save
-au BufWrite * :Autoformat
+" au BufWrite * :Autoformat
 
 " But don't replace mismatches with tabs
-let g:autoformat_autoindent = 0
-let g:autoformat_retab = 0
-let g:autoformat_remove_trailing_spaces = 0
+" let g:autoformat_autoindent = 0
+" let g:autoformat_retab = 0
+" let g:autoformat_remove_trailing_spaces = 0
 "}}}
 
 " neomake {{{
-let g:neomake_logfile = '/tmp/neomake.log'
-let g:neomake_open_list = 2
-call neomake#configure#automake('w')
+" let g:neomake_logfile = '/tmp/neomake.log'
+" let g:neomake_open_list = 2
+" call neomake#configure#automake('w')
 " }}}
 
 " vim-autoswap {{{
@@ -113,6 +127,6 @@ let g:rainbow_active = 1
 "}}}
 
 " NVIMUX {{{
-let g:nvimux_prefix='<C-Space>'
-let nvimux_open_term_by_default=1
+" let g:nvimux_prefix='<C-Space>'
+" let nvimux_open_term_by_default=1
 " }}}
