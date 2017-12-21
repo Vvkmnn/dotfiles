@@ -1,7 +1,7 @@
 " Theme --------------------------------------------
 
 " True Color support
-" set termguicolors
+set termguicolors
 set t_Co=256
 
 " Enable Syntax Highlighting
@@ -11,7 +11,7 @@ syntax enable
 colorscheme dracula
 
 " Background
-set background=dark
+" set background=None
 
 " No Background
 highlight Normal ctermbg=none
@@ -37,16 +37,16 @@ hi EndOfBuffer ctermfg=237 ctermbg=235
 " set foldcolumn=2
 " hi foldcolumn guibg=bg
 " hi VertSplit guibg=bg guifg=bg
-" 
+"
 " " Status Line
 " hi StatusLine guifg=235 guibg=bg
 " hi StatusLineNC guifg=235 guibg=bg
-" 
+"
 " " Search
 " hi Search guifg=15 guibg=bg
 " hi clear SignColumn
 " hi SignColumn guibg=bg
-" 
+"
 " " Split Defaults
 " set wmh=0
 " set splitright
@@ -63,11 +63,11 @@ set fo-=t
 "set colorcolumn=80
 "highlight ColorColumn ctermfg=238 ctermbg=235
 
-" Statusline 
+" Statusline
 hi StatusLine ctermfg=235 ctermbg=245
 hi StatusLineNC ctermfg=235 ctermbg=237
 set statusline=%=%P\ %f\ %m
-set fillchars=vert:\ ,stl:\ ,stlnc:\ 
+set fillchars=vert:\ ,stl:\ ,stlnc:\
 set laststatus=2
 set noshowmode
 
@@ -95,18 +95,18 @@ set list
 
 "   Customize fzf colors to match your color scheme
 let g:fzf_colors =
-\ { 'fg':      ['fg', 'Normal'],
-  \ 'bg':      ['bg', 'Normal'],
-  \ 'hl':      ['fg', 'Comment'],
-  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
-  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
-  \ 'hl+':     ['fg', 'Statement'],
-  \ 'info':    ['fg', 'PreProc'],
-  \ 'prompt':  ['fg', 'Conditional'],
-  \ 'pointer': ['fg', 'Exception'],
-  \ 'marker':  ['fg', 'Keyword'],
-  \ 'spinner': ['fg', 'Label'],
-  \ 'header':  ['fg', 'Comment'] }
+            \ { 'fg':      ['fg', 'Normal'],
+            \ 'bg':      ['bg', 'Normal'],
+            \ 'hl':      ['fg', 'Comment'],
+            \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+            \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+            \ 'hl+':     ['fg', 'Statement'],
+            \ 'info':    ['fg', 'PreProc'],
+            \ 'prompt':  ['fg', 'Conditional'],
+            \ 'pointer': ['fg', 'Exception'],
+            \ 'marker':  ['fg', 'Keyword'],
+            \ 'spinner': ['fg', 'Label'],
+            \ 'header':  ['fg', 'Comment'] }
 
 " Dirvish {{
 "   Interact with Fugitive forGstatus
@@ -121,4 +121,4 @@ autocmd FileType dirvish call fugitive#detect(@%)
 " Airline Integration
 " let g:airline#extensions#ale#enabled = 1
 
-" }} 
+" }}

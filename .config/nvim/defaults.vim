@@ -2,7 +2,7 @@
 
 " Be iMproved
 if &compatible
-  set nocompatible 
+    set nocompatible
 endif
 
 " UTF Encoding
@@ -13,9 +13,6 @@ filetype plugin indent on
 
 " Enable Syntax
 syntax enable
-
-" Term Colors (remove `no` if nested)
-set notermguicolors
 
 " Follow Mouse Focus
 set mousefocus
@@ -29,7 +26,7 @@ set incsearch
 set ignorecase
 set smartcase
 
-" History 
+" History
 set history=700
 set undolevels=700
 
@@ -40,7 +37,7 @@ set wildmode=full
 " Increment <C-a> and Subtract <C-x> in Decimal
 set nrformats=
 
-" macOS clipboard 
+" macOS clipboard
 set clipboard+=unnamedplus
 
 " Set default indent to 4 spaces
@@ -56,4 +53,4 @@ set hidden
 set foldlevel=99
 
 " Hide Seperators
-set fillchars+=vert:\ 
+set fillchars+=vert:\

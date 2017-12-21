@@ -15,19 +15,19 @@ env:
 
 # Window dimensions in character columns and lines
 # (changes require restart)
-dimensions:
-  columns: 80
-  lines: 24
+# dimensions:
+#   columns: 80
+#   lines: 24
 
 # Adds this many blank pixels of padding around the window
 # Units are physical pixels; this is not DPI aware.
 # (change requires restart)
 padding:
-  x: 2
-  y: 2
+  x: 50
+  y: 50
 
 # Display tabs using this many cells (changes require restart)
-tabspaces: 8
+tabspaces: 4
 
 # When true, bold text is drawn using the bright variant of colors.
 draw_bold_text_with_bright_colors: true
@@ -76,12 +76,16 @@ font:
 # Should display the render timer
 render_timer: false
 
+## Cursor Colors
 # Use custom cursor colors. If true, display the cursor in the cursor.foreground
 # and cursor.background colors, otherwise invert the colors of the cursor.
 custom_cursor_colors: false
 
+## Terminal Colors
+#
 # Colors (Dracula)
 colors:
+
   # Default colors
   primary:
     background: '0x282a36'
