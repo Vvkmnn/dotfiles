@@ -1,0 +1,998 @@
+{
+	"operations/e5ff7810-f743-4d17-8ce1-5aafd10be0ea": {
+		"name": "operations/e5ff7810-f743-4d17-8ce1-5aafd10be0ea",
+		"metadata": {
+			"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.OperationMetadataV1Beta2",
+			"value": {
+				"target": "projects/opiai-5276b/locations/us-central1/functions/opiAI",
+				"type": 1,
+				"request": {
+					"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.CreateFunctionRequest",
+					"value": {
+						"location": "projects/opiai-5276b/locations/us-central1",
+						"function": {
+							"name": "projects/opiai-5276b/locations/us-central1/functions/opiAI",
+							"sourceArchiveUrl": "file:///var/folders/8s/gygy76px35zd6b_6d4cccqb00000gn/T/undefined-opiAI-9973zUGfw4ext9RC.zip",
+							"httpsTrigger": {},
+							"serviceAccount": "/Users/v/Documents/redqueen/opiAI/bot/build"
+						}
+					}
+				}
+			}
+		},
+		"done": true,
+		"error": null,
+		"response": {
+			"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.CloudFunction",
+			"value": {
+				"name": "projects/opiai-5276b/locations/us-central1/functions/opiAI",
+				"sourceArchiveUrl": "file:///var/folders/8s/gygy76px35zd6b_6d4cccqb00000gn/T/undefined-opiAI-9973zUGfw4ext9RC.zip",
+				"sourceRepository": null,
+				"httpsTrigger": {
+					"url": "http://localhost:5000/opiai-5276b/us-central1/opiAI"
+				},
+				"eventTrigger": null,
+				"status": "READY",
+				"latestOperation": "operations/e5ff7810-f743-4d17-8ce1-5aafd10be0ea",
+				"entryPoint": "",
+				"timeout": null,
+				"availableMemoryMb": 17179,
+				"serviceAccount": "/Users/v/Documents/redqueen/opiAI/bot/build",
+				"updateTime": null
+			}
+		}
+	},
+	"operations/c37f21f8-ecc5-4088-abe5-c7de4ded7e19": {
+		"name": "operations/c37f21f8-ecc5-4088-abe5-c7de4ded7e19",
+		"metadata": {
+			"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.OperationMetadataV1Beta2",
+			"value": {
+				"target": "projects/opiai-5276b/locations/us-central1/functions/reachEstimate",
+				"type": 1,
+				"request": {
+					"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.CreateFunctionRequest",
+					"value": {
+						"location": "projects/opiai-5276b/locations/us-central1",
+						"function": {
+							"name": "projects/opiai-5276b/locations/us-central1/functions/reachEstimate",
+							"sourceArchiveUrl": "file:///var/folders/8s/gygy76px35zd6b_6d4cccqb00000gn/T/undefined-reachEstimate-9973s7ZT1h97eLQG.zip",
+							"httpsTrigger": {},
+							"serviceAccount": "/Users/v/Documents/redqueen/opiAI/bot/build"
+						}
+					}
+				}
+			}
+		},
+		"done": true,
+		"error": null,
+		"response": {
+			"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.CloudFunction",
+			"value": {
+				"name": "projects/opiai-5276b/locations/us-central1/functions/reachEstimate",
+				"sourceArchiveUrl": "file:///var/folders/8s/gygy76px35zd6b_6d4cccqb00000gn/T/undefined-reachEstimate-9973s7ZT1h97eLQG.zip",
+				"sourceRepository": null,
+				"httpsTrigger": {
+					"url": "http://localhost:5000/opiai-5276b/us-central1/reachEstimate"
+				},
+				"eventTrigger": null,
+				"status": "READY",
+				"latestOperation": "operations/c37f21f8-ecc5-4088-abe5-c7de4ded7e19",
+				"entryPoint": "",
+				"timeout": null,
+				"availableMemoryMb": 17179,
+				"serviceAccount": "/Users/v/Documents/redqueen/opiAI/bot/build",
+				"updateTime": null
+			}
+		}
+	},
+	"operations/dac00103-dd72-499b-8e8b-eb9dc712722d": {
+		"name": "operations/dac00103-dd72-499b-8e8b-eb9dc712722d",
+		"metadata": {
+			"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.OperationMetadataV1Beta2",
+			"value": {
+				"target": "projects/opiai-5276b/locations/us-central1/functions/opiAI",
+				"type": 3,
+				"request": {
+					"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.DeleteFunctionRequest",
+					"value": {
+						"name": "projects/opiai-5276b/locations/us-central1/functions/opiAI"
+					}
+				}
+			}
+		},
+		"done": true,
+		"error": null,
+		"response": {
+			"typeUrl": "types.googleapis.com/google.protobuf.Empty",
+			"value": {}
+		}
+	},
+	"operations/2c071c4d-8d71-458f-bf74-d2b4f5dce5ca": {
+		"name": "operations/2c071c4d-8d71-458f-bf74-d2b4f5dce5ca",
+		"metadata": {
+			"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.OperationMetadataV1Beta2",
+			"value": {
+				"target": "projects/opiai-5276b/locations/us-central1/functions/reachEstimate",
+				"type": 3,
+				"request": {
+					"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.DeleteFunctionRequest",
+					"value": {
+						"name": "projects/opiai-5276b/locations/us-central1/functions/reachEstimate"
+					}
+				}
+			}
+		},
+		"done": true,
+		"error": null,
+		"response": {
+			"typeUrl": "types.googleapis.com/google.protobuf.Empty",
+			"value": {}
+		}
+	},
+	"operations/46ffffd2-4edd-44d7-ace9-92beaa51de0b": {
+		"name": "operations/46ffffd2-4edd-44d7-ace9-92beaa51de0b",
+		"metadata": {
+			"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.OperationMetadataV1Beta2",
+			"value": {
+				"target": "projects/opiai-5276b/locations/us-central1/functions/opiAI",
+				"type": 1,
+				"request": {
+					"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.CreateFunctionRequest",
+					"value": {
+						"location": "projects/opiai-5276b/locations/us-central1",
+						"function": {
+							"name": "projects/opiai-5276b/locations/us-central1/functions/opiAI",
+							"sourceArchiveUrl": "file:///var/folders/8s/gygy76px35zd6b_6d4cccqb00000gn/T/undefined-opiAI-10137XpHGFoMR0JRw.zip",
+							"httpsTrigger": {},
+							"serviceAccount": "/Users/v/Documents/redqueen/opiAI/bot/build"
+						}
+					}
+				}
+			}
+		},
+		"done": true,
+		"error": null,
+		"response": {
+			"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.CloudFunction",
+			"value": {
+				"name": "projects/opiai-5276b/locations/us-central1/functions/opiAI",
+				"sourceArchiveUrl": "file:///var/folders/8s/gygy76px35zd6b_6d4cccqb00000gn/T/undefined-opiAI-10137XpHGFoMR0JRw.zip",
+				"sourceRepository": null,
+				"httpsTrigger": {
+					"url": "http://localhost:5000/opiai-5276b/us-central1/opiAI"
+				},
+				"eventTrigger": null,
+				"status": "READY",
+				"latestOperation": "operations/46ffffd2-4edd-44d7-ace9-92beaa51de0b",
+				"entryPoint": "",
+				"timeout": null,
+				"availableMemoryMb": 17179,
+				"serviceAccount": "/Users/v/Documents/redqueen/opiAI/bot/build",
+				"updateTime": null
+			}
+		}
+	},
+	"operations/ea108e89-f6c0-4155-b35f-a785d9f6cdf2": {
+		"name": "operations/ea108e89-f6c0-4155-b35f-a785d9f6cdf2",
+		"metadata": {
+			"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.OperationMetadataV1Beta2",
+			"value": {
+				"target": "projects/opiai-5276b/locations/us-central1/functions/reachEstimate",
+				"type": 1,
+				"request": {
+					"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.CreateFunctionRequest",
+					"value": {
+						"location": "projects/opiai-5276b/locations/us-central1",
+						"function": {
+							"name": "projects/opiai-5276b/locations/us-central1/functions/reachEstimate",
+							"sourceArchiveUrl": "file:///var/folders/8s/gygy76px35zd6b_6d4cccqb00000gn/T/undefined-reachEstimate-10137y2cXeWk004Tt.zip",
+							"httpsTrigger": {},
+							"serviceAccount": "/Users/v/Documents/redqueen/opiAI/bot/build"
+						}
+					}
+				}
+			}
+		},
+		"done": true,
+		"error": null,
+		"response": {
+			"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.CloudFunction",
+			"value": {
+				"name": "projects/opiai-5276b/locations/us-central1/functions/reachEstimate",
+				"sourceArchiveUrl": "file:///var/folders/8s/gygy76px35zd6b_6d4cccqb00000gn/T/undefined-reachEstimate-10137y2cXeWk004Tt.zip",
+				"sourceRepository": null,
+				"httpsTrigger": {
+					"url": "http://localhost:5000/opiai-5276b/us-central1/reachEstimate"
+				},
+				"eventTrigger": null,
+				"status": "READY",
+				"latestOperation": "operations/ea108e89-f6c0-4155-b35f-a785d9f6cdf2",
+				"entryPoint": "",
+				"timeout": null,
+				"availableMemoryMb": 17179,
+				"serviceAccount": "/Users/v/Documents/redqueen/opiAI/bot/build",
+				"updateTime": null
+			}
+		}
+	},
+	"operations/6c99a7cf-3ad6-4b90-9b53-3eebebdadc94": {
+		"name": "operations/6c99a7cf-3ad6-4b90-9b53-3eebebdadc94",
+		"metadata": {
+			"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.OperationMetadataV1Beta2",
+			"value": {
+				"target": "projects/opiai-5276b/locations/us-central1/functions/opiAI",
+				"type": 3,
+				"request": {
+					"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.DeleteFunctionRequest",
+					"value": {
+						"name": "projects/opiai-5276b/locations/us-central1/functions/opiAI"
+					}
+				}
+			}
+		},
+		"done": true,
+		"error": null,
+		"response": {
+			"typeUrl": "types.googleapis.com/google.protobuf.Empty",
+			"value": {}
+		}
+	},
+	"operations/b482812d-f89c-4b63-a44e-8d67fa9b96d9": {
+		"name": "operations/b482812d-f89c-4b63-a44e-8d67fa9b96d9",
+		"metadata": {
+			"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.OperationMetadataV1Beta2",
+			"value": {
+				"target": "projects/opiai-5276b/locations/us-central1/functions/reachEstimate",
+				"type": 3,
+				"request": {
+					"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.DeleteFunctionRequest",
+					"value": {
+						"name": "projects/opiai-5276b/locations/us-central1/functions/reachEstimate"
+					}
+				}
+			}
+		},
+		"done": true,
+		"error": null,
+		"response": {
+			"typeUrl": "types.googleapis.com/google.protobuf.Empty",
+			"value": {}
+		}
+	},
+	"operations/8334311e-4546-4b9d-9db4-2a0fe9df9907": {
+		"name": "operations/8334311e-4546-4b9d-9db4-2a0fe9df9907",
+		"metadata": {
+			"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.OperationMetadataV1Beta2",
+			"value": {
+				"target": "projects/opiai-5276b/locations/us-central1/functions/opiAI",
+				"type": 1,
+				"request": {
+					"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.CreateFunctionRequest",
+					"value": {
+						"location": "projects/opiai-5276b/locations/us-central1",
+						"function": {
+							"name": "projects/opiai-5276b/locations/us-central1/functions/opiAI",
+							"sourceArchiveUrl": "file:///var/folders/8s/gygy76px35zd6b_6d4cccqb00000gn/T/undefined-opiAI-10306Yggx5VUzTDHG.zip",
+							"httpsTrigger": {},
+							"serviceAccount": "/Users/v/Documents/redqueen/opiAI/bot/build"
+						}
+					}
+				}
+			}
+		},
+		"done": true,
+		"error": null,
+		"response": {
+			"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.CloudFunction",
+			"value": {
+				"name": "projects/opiai-5276b/locations/us-central1/functions/opiAI",
+				"sourceArchiveUrl": "file:///var/folders/8s/gygy76px35zd6b_6d4cccqb00000gn/T/undefined-opiAI-10306Yggx5VUzTDHG.zip",
+				"sourceRepository": null,
+				"httpsTrigger": {
+					"url": "http://localhost:5000/opiai-5276b/us-central1/opiAI"
+				},
+				"eventTrigger": null,
+				"status": "READY",
+				"latestOperation": "operations/8334311e-4546-4b9d-9db4-2a0fe9df9907",
+				"entryPoint": "",
+				"timeout": null,
+				"availableMemoryMb": 17179,
+				"serviceAccount": "/Users/v/Documents/redqueen/opiAI/bot/build",
+				"updateTime": null
+			}
+		}
+	},
+	"operations/5c217330-1d2b-4396-b8d1-216b13e15e9a": {
+		"name": "operations/5c217330-1d2b-4396-b8d1-216b13e15e9a",
+		"metadata": {
+			"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.OperationMetadataV1Beta2",
+			"value": {
+				"target": "projects/opiai-5276b/locations/us-central1/functions/reachEstimate",
+				"type": 1,
+				"request": {
+					"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.CreateFunctionRequest",
+					"value": {
+						"location": "projects/opiai-5276b/locations/us-central1",
+						"function": {
+							"name": "projects/opiai-5276b/locations/us-central1/functions/reachEstimate",
+							"sourceArchiveUrl": "file:///var/folders/8s/gygy76px35zd6b_6d4cccqb00000gn/T/undefined-reachEstimate-103063W49x9GkQxF4.zip",
+							"httpsTrigger": {},
+							"serviceAccount": "/Users/v/Documents/redqueen/opiAI/bot/build"
+						}
+					}
+				}
+			}
+		},
+		"done": true,
+		"error": null,
+		"response": {
+			"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.CloudFunction",
+			"value": {
+				"name": "projects/opiai-5276b/locations/us-central1/functions/reachEstimate",
+				"sourceArchiveUrl": "file:///var/folders/8s/gygy76px35zd6b_6d4cccqb00000gn/T/undefined-reachEstimate-103063W49x9GkQxF4.zip",
+				"sourceRepository": null,
+				"httpsTrigger": {
+					"url": "http://localhost:5000/opiai-5276b/us-central1/reachEstimate"
+				},
+				"eventTrigger": null,
+				"status": "READY",
+				"latestOperation": "operations/5c217330-1d2b-4396-b8d1-216b13e15e9a",
+				"entryPoint": "",
+				"timeout": null,
+				"availableMemoryMb": 17179,
+				"serviceAccount": "/Users/v/Documents/redqueen/opiAI/bot/build",
+				"updateTime": null
+			}
+		}
+	},
+	"operations/33cf6bff-4514-4021-b0a3-487c76d4c912": {
+		"name": "operations/33cf6bff-4514-4021-b0a3-487c76d4c912",
+		"metadata": {
+			"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.OperationMetadataV1Beta2",
+			"value": {
+				"target": "projects/opiai-5276b/locations/us-central1/functions/reachEstimate",
+				"type": 3,
+				"request": {
+					"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.DeleteFunctionRequest",
+					"value": {
+						"name": "projects/opiai-5276b/locations/us-central1/functions/reachEstimate"
+					}
+				}
+			}
+		},
+		"done": true,
+		"error": null,
+		"response": {
+			"typeUrl": "types.googleapis.com/google.protobuf.Empty",
+			"value": {}
+		}
+	},
+	"operations/f6c9a380-05a5-469f-a637-a658b80dd8be": {
+		"name": "operations/f6c9a380-05a5-469f-a637-a658b80dd8be",
+		"metadata": {
+			"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.OperationMetadataV1Beta2",
+			"value": {
+				"target": "projects/opiai-5276b/locations/us-central1/functions/opiAI",
+				"type": 3,
+				"request": {
+					"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.DeleteFunctionRequest",
+					"value": {
+						"name": "projects/opiai-5276b/locations/us-central1/functions/opiAI"
+					}
+				}
+			}
+		},
+		"done": true,
+		"error": null,
+		"response": {
+			"typeUrl": "types.googleapis.com/google.protobuf.Empty",
+			"value": {}
+		}
+	},
+	"operations/c82bab35-5571-4dbc-9eb0-c436ba982e37": {
+		"name": "operations/c82bab35-5571-4dbc-9eb0-c436ba982e37",
+		"metadata": {
+			"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.OperationMetadataV1Beta2",
+			"value": {
+				"target": "projects/opiai-5276b/locations/us-central1/functions/reachEstimate",
+				"type": 1,
+				"request": {
+					"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.CreateFunctionRequest",
+					"value": {
+						"location": "projects/opiai-5276b/locations/us-central1",
+						"function": {
+							"name": "projects/opiai-5276b/locations/us-central1/functions/reachEstimate",
+							"sourceArchiveUrl": "file:///var/folders/8s/gygy76px35zd6b_6d4cccqb00000gn/T/undefined-reachEstimate-10932pFbxTrzXk48u.zip",
+							"httpsTrigger": {},
+							"serviceAccount": "/Users/v/Documents/redqueen/opiAI/bot/build"
+						}
+					}
+				}
+			}
+		},
+		"done": true,
+		"error": null,
+		"response": {
+			"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.CloudFunction",
+			"value": {
+				"name": "projects/opiai-5276b/locations/us-central1/functions/reachEstimate",
+				"sourceArchiveUrl": "file:///var/folders/8s/gygy76px35zd6b_6d4cccqb00000gn/T/undefined-reachEstimate-10932pFbxTrzXk48u.zip",
+				"sourceRepository": null,
+				"httpsTrigger": {
+					"url": "http://localhost:5000/opiai-5276b/us-central1/reachEstimate"
+				},
+				"eventTrigger": null,
+				"status": "READY",
+				"latestOperation": "operations/c82bab35-5571-4dbc-9eb0-c436ba982e37",
+				"entryPoint": "",
+				"timeout": null,
+				"availableMemoryMb": 17179,
+				"serviceAccount": "/Users/v/Documents/redqueen/opiAI/bot/build",
+				"updateTime": null
+			}
+		}
+	},
+	"operations/286e0c45-319a-4644-8b25-287d2185a18f": {
+		"name": "operations/286e0c45-319a-4644-8b25-287d2185a18f",
+		"metadata": {
+			"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.OperationMetadataV1Beta2",
+			"value": {
+				"target": "projects/opiai-5276b/locations/us-central1/functions/opiAI",
+				"type": 1,
+				"request": {
+					"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.CreateFunctionRequest",
+					"value": {
+						"location": "projects/opiai-5276b/locations/us-central1",
+						"function": {
+							"name": "projects/opiai-5276b/locations/us-central1/functions/opiAI",
+							"sourceArchiveUrl": "file:///var/folders/8s/gygy76px35zd6b_6d4cccqb00000gn/T/undefined-opiAI-10932IPuju2dgorRv.zip",
+							"httpsTrigger": {},
+							"serviceAccount": "/Users/v/Documents/redqueen/opiAI/bot/build"
+						}
+					}
+				}
+			}
+		},
+		"done": true,
+		"error": null,
+		"response": {
+			"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.CloudFunction",
+			"value": {
+				"name": "projects/opiai-5276b/locations/us-central1/functions/opiAI",
+				"sourceArchiveUrl": "file:///var/folders/8s/gygy76px35zd6b_6d4cccqb00000gn/T/undefined-opiAI-10932IPuju2dgorRv.zip",
+				"sourceRepository": null,
+				"httpsTrigger": {
+					"url": "http://localhost:5000/opiai-5276b/us-central1/opiAI"
+				},
+				"eventTrigger": null,
+				"status": "READY",
+				"latestOperation": "operations/286e0c45-319a-4644-8b25-287d2185a18f",
+				"entryPoint": "",
+				"timeout": null,
+				"availableMemoryMb": 17179,
+				"serviceAccount": "/Users/v/Documents/redqueen/opiAI/bot/build",
+				"updateTime": null
+			}
+		}
+	},
+	"operations/4572c94e-8312-4b62-850d-7a97562852bf": {
+		"name": "operations/4572c94e-8312-4b62-850d-7a97562852bf",
+		"metadata": {
+			"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.OperationMetadataV1Beta2",
+			"value": {
+				"target": "projects/opiai-5276b/locations/us-central1/functions/opiAI",
+				"type": 3,
+				"request": {
+					"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.DeleteFunctionRequest",
+					"value": {
+						"name": "projects/opiai-5276b/locations/us-central1/functions/opiAI"
+					}
+				}
+			}
+		},
+		"done": true,
+		"error": null,
+		"response": {
+			"typeUrl": "types.googleapis.com/google.protobuf.Empty",
+			"value": {}
+		}
+	},
+	"operations/d0412480-8199-4ad2-9f65-649d8050719d": {
+		"name": "operations/d0412480-8199-4ad2-9f65-649d8050719d",
+		"metadata": {
+			"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.OperationMetadataV1Beta2",
+			"value": {
+				"target": "projects/opiai-5276b/locations/us-central1/functions/reachEstimate",
+				"type": 3,
+				"request": {
+					"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.DeleteFunctionRequest",
+					"value": {
+						"name": "projects/opiai-5276b/locations/us-central1/functions/reachEstimate"
+					}
+				}
+			}
+		},
+		"done": true,
+		"error": null,
+		"response": {
+			"typeUrl": "types.googleapis.com/google.protobuf.Empty",
+			"value": {}
+		}
+	},
+	"operations/12fe9b24-a909-40f9-950a-358591549cad": {
+		"name": "operations/12fe9b24-a909-40f9-950a-358591549cad",
+		"metadata": {
+			"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.OperationMetadataV1Beta2",
+			"value": {
+				"target": "projects/opiai-5276b/locations/us-central1/functions/opiAI",
+				"type": 1,
+				"request": {
+					"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.CreateFunctionRequest",
+					"value": {
+						"location": "projects/opiai-5276b/locations/us-central1",
+						"function": {
+							"name": "projects/opiai-5276b/locations/us-central1/functions/opiAI",
+							"sourceArchiveUrl": "file:///var/folders/8s/gygy76px35zd6b_6d4cccqb00000gn/T/undefined-opiAI-11250C1ERXmdoQG1I.zip",
+							"httpsTrigger": {},
+							"serviceAccount": "/Users/v/Documents/redqueen/opiAI/bot/build"
+						}
+					}
+				}
+			}
+		},
+		"done": true,
+		"error": null,
+		"response": {
+			"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.CloudFunction",
+			"value": {
+				"name": "projects/opiai-5276b/locations/us-central1/functions/opiAI",
+				"sourceArchiveUrl": "file:///var/folders/8s/gygy76px35zd6b_6d4cccqb00000gn/T/undefined-opiAI-11250C1ERXmdoQG1I.zip",
+				"sourceRepository": null,
+				"httpsTrigger": {
+					"url": "http://localhost:5000/opiai-5276b/us-central1/opiAI"
+				},
+				"eventTrigger": null,
+				"status": "READY",
+				"latestOperation": "operations/12fe9b24-a909-40f9-950a-358591549cad",
+				"entryPoint": "",
+				"timeout": null,
+				"availableMemoryMb": 17179,
+				"serviceAccount": "/Users/v/Documents/redqueen/opiAI/bot/build",
+				"updateTime": null
+			}
+		}
+	},
+	"operations/07b10349-c522-4d61-8b6b-1348f8ea41bf": {
+		"name": "operations/07b10349-c522-4d61-8b6b-1348f8ea41bf",
+		"metadata": {
+			"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.OperationMetadataV1Beta2",
+			"value": {
+				"target": "projects/opiai-5276b/locations/us-central1/functions/reachEstimate",
+				"type": 1,
+				"request": {
+					"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.CreateFunctionRequest",
+					"value": {
+						"location": "projects/opiai-5276b/locations/us-central1",
+						"function": {
+							"name": "projects/opiai-5276b/locations/us-central1/functions/reachEstimate",
+							"sourceArchiveUrl": "file:///var/folders/8s/gygy76px35zd6b_6d4cccqb00000gn/T/undefined-reachEstimate-11250g10EOCU72JSU.zip",
+							"httpsTrigger": {},
+							"serviceAccount": "/Users/v/Documents/redqueen/opiAI/bot/build"
+						}
+					}
+				}
+			}
+		},
+		"done": true,
+		"error": null,
+		"response": {
+			"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.CloudFunction",
+			"value": {
+				"name": "projects/opiai-5276b/locations/us-central1/functions/reachEstimate",
+				"sourceArchiveUrl": "file:///var/folders/8s/gygy76px35zd6b_6d4cccqb00000gn/T/undefined-reachEstimate-11250g10EOCU72JSU.zip",
+				"sourceRepository": null,
+				"httpsTrigger": {
+					"url": "http://localhost:5000/opiai-5276b/us-central1/reachEstimate"
+				},
+				"eventTrigger": null,
+				"status": "READY",
+				"latestOperation": "operations/07b10349-c522-4d61-8b6b-1348f8ea41bf",
+				"entryPoint": "",
+				"timeout": null,
+				"availableMemoryMb": 17179,
+				"serviceAccount": "/Users/v/Documents/redqueen/opiAI/bot/build",
+				"updateTime": null
+			}
+		}
+	},
+	"operations/59586e2c-a125-4a91-ab5d-bd8283620e70": {
+		"name": "operations/59586e2c-a125-4a91-ab5d-bd8283620e70",
+		"metadata": {
+			"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.OperationMetadataV1Beta2",
+			"value": {
+				"target": "projects/opiai-5276b/locations/us-central1/functions/opiAI",
+				"type": 3,
+				"request": {
+					"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.DeleteFunctionRequest",
+					"value": {
+						"name": "projects/opiai-5276b/locations/us-central1/functions/opiAI"
+					}
+				}
+			}
+		},
+		"done": true,
+		"error": null,
+		"response": {
+			"typeUrl": "types.googleapis.com/google.protobuf.Empty",
+			"value": {}
+		}
+	},
+	"operations/5c831087-af85-4221-b512-696cc5e72df1": {
+		"name": "operations/5c831087-af85-4221-b512-696cc5e72df1",
+		"metadata": {
+			"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.OperationMetadataV1Beta2",
+			"value": {
+				"target": "projects/opiai-5276b/locations/us-central1/functions/opiAI",
+				"type": 1,
+				"request": {
+					"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.CreateFunctionRequest",
+					"value": {
+						"location": "projects/opiai-5276b/locations/us-central1",
+						"function": {
+							"name": "projects/opiai-5276b/locations/us-central1/functions/opiAI",
+							"sourceArchiveUrl": "file:///var/folders/8s/gygy76px35zd6b_6d4cccqb00000gn/T/undefined-opiAI-15265eFC5ADOFNZMA.zip",
+							"httpsTrigger": {},
+							"serviceAccount": "/Users/v/Documents/redqueen/opiAI/bot/build"
+						}
+					}
+				}
+			}
+		},
+		"done": true,
+		"error": null,
+		"response": {
+			"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.CloudFunction",
+			"value": {
+				"name": "projects/opiai-5276b/locations/us-central1/functions/opiAI",
+				"sourceArchiveUrl": "file:///var/folders/8s/gygy76px35zd6b_6d4cccqb00000gn/T/undefined-opiAI-15265eFC5ADOFNZMA.zip",
+				"sourceRepository": null,
+				"httpsTrigger": {
+					"url": "http://localhost:5000/opiai-5276b/us-central1/opiAI"
+				},
+				"eventTrigger": null,
+				"status": "READY",
+				"latestOperation": "operations/5c831087-af85-4221-b512-696cc5e72df1",
+				"entryPoint": "",
+				"timeout": null,
+				"availableMemoryMb": 17179,
+				"serviceAccount": "/Users/v/Documents/redqueen/opiAI/bot/build",
+				"updateTime": null
+			}
+		}
+	},
+	"operations/87978605-88dc-4fa0-b325-bcbd6f17f31d": {
+		"name": "operations/87978605-88dc-4fa0-b325-bcbd6f17f31d",
+		"metadata": {
+			"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.OperationMetadataV1Beta2",
+			"value": {
+				"target": "projects/opiai-5276b/locations/us-central1/functions/opiAI",
+				"type": 3,
+				"request": {
+					"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.DeleteFunctionRequest",
+					"value": {
+						"name": "projects/opiai-5276b/locations/us-central1/functions/opiAI"
+					}
+				}
+			}
+		},
+		"done": true,
+		"error": null,
+		"response": {
+			"typeUrl": "types.googleapis.com/google.protobuf.Empty",
+			"value": {}
+		}
+	},
+	"operations/e273b3d6-a85c-4512-82e0-0bc31d33ab6f": {
+		"name": "operations/e273b3d6-a85c-4512-82e0-0bc31d33ab6f",
+		"metadata": {
+			"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.OperationMetadataV1Beta2",
+			"value": {
+				"target": "projects/opiai-5276b/locations/us-central1/functions/opiAI",
+				"type": 1,
+				"request": {
+					"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.CreateFunctionRequest",
+					"value": {
+						"location": "projects/opiai-5276b/locations/us-central1",
+						"function": {
+							"name": "projects/opiai-5276b/locations/us-central1/functions/opiAI",
+							"sourceArchiveUrl": "file:///var/folders/8s/gygy76px35zd6b_6d4cccqb00000gn/T/undefined-opiAI-16372UAO9h6rBs420.zip",
+							"httpsTrigger": {},
+							"serviceAccount": "/Users/v/Documents/redqueen/opiAI/bot/build"
+						}
+					}
+				}
+			}
+		},
+		"done": true,
+		"error": null,
+		"response": {
+			"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.CloudFunction",
+			"value": {
+				"name": "projects/opiai-5276b/locations/us-central1/functions/opiAI",
+				"sourceArchiveUrl": "file:///var/folders/8s/gygy76px35zd6b_6d4cccqb00000gn/T/undefined-opiAI-16372UAO9h6rBs420.zip",
+				"sourceRepository": null,
+				"httpsTrigger": {
+					"url": "http://localhost:5000/opiai-5276b/us-central1/opiAI"
+				},
+				"eventTrigger": null,
+				"status": "READY",
+				"latestOperation": "operations/e273b3d6-a85c-4512-82e0-0bc31d33ab6f",
+				"entryPoint": "",
+				"timeout": null,
+				"availableMemoryMb": 17179,
+				"serviceAccount": "/Users/v/Documents/redqueen/opiAI/bot/build",
+				"updateTime": null
+			}
+		}
+	},
+	"operations/94e9f74a-de14-4025-aee2-41066a117da8": {
+		"name": "operations/94e9f74a-de14-4025-aee2-41066a117da8",
+		"metadata": {
+			"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.OperationMetadataV1Beta2",
+			"value": {
+				"target": "projects/opiai-5276b/locations/us-central1/functions/opiAI",
+				"type": 3,
+				"request": {
+					"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.DeleteFunctionRequest",
+					"value": {
+						"name": "projects/opiai-5276b/locations/us-central1/functions/opiAI"
+					}
+				}
+			}
+		},
+		"done": true,
+		"error": null,
+		"response": {
+			"typeUrl": "types.googleapis.com/google.protobuf.Empty",
+			"value": {}
+		}
+	},
+	"operations/38aa842a-4d21-4417-8d38-1100b3610226": {
+		"name": "operations/38aa842a-4d21-4417-8d38-1100b3610226",
+		"metadata": {
+			"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.OperationMetadataV1Beta2",
+			"value": {
+				"target": "projects/opiai-5276b/locations/us-central1/functions/opiAI",
+				"type": 1,
+				"request": {
+					"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.CreateFunctionRequest",
+					"value": {
+						"location": "projects/opiai-5276b/locations/us-central1",
+						"function": {
+							"name": "projects/opiai-5276b/locations/us-central1/functions/opiAI",
+							"sourceArchiveUrl": "file:///var/folders/8s/gygy76px35zd6b_6d4cccqb00000gn/T/undefined-opiAI-10007q8x2JGj8y6jR.zip",
+							"httpsTrigger": {},
+							"serviceAccount": "/Users/v/Documents/redqueen/opiAI/bot/build"
+						}
+					}
+				}
+			}
+		},
+		"done": true,
+		"error": null,
+		"response": {
+			"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.CloudFunction",
+			"value": {
+				"name": "projects/opiai-5276b/locations/us-central1/functions/opiAI",
+				"sourceArchiveUrl": "file:///var/folders/8s/gygy76px35zd6b_6d4cccqb00000gn/T/undefined-opiAI-10007q8x2JGj8y6jR.zip",
+				"sourceRepository": null,
+				"httpsTrigger": {
+					"url": "http://localhost:5000/opiai-5276b/us-central1/opiAI"
+				},
+				"eventTrigger": null,
+				"status": "READY",
+				"latestOperation": "operations/38aa842a-4d21-4417-8d38-1100b3610226",
+				"entryPoint": "",
+				"timeout": null,
+				"availableMemoryMb": 17179,
+				"serviceAccount": "/Users/v/Documents/redqueen/opiAI/bot/build",
+				"updateTime": null
+			}
+		}
+	},
+	"operations/af84b50e-1c35-4ffb-ab07-72c935f2af66": {
+		"name": "operations/af84b50e-1c35-4ffb-ab07-72c935f2af66",
+		"metadata": {
+			"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.OperationMetadataV1Beta2",
+			"value": {
+				"target": "projects/opiai-5276b/locations/us-central1/functions/opiAI",
+				"type": 3,
+				"request": {
+					"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.DeleteFunctionRequest",
+					"value": {
+						"name": "projects/opiai-5276b/locations/us-central1/functions/opiAI"
+					}
+				}
+			}
+		},
+		"done": true,
+		"error": null,
+		"response": {
+			"typeUrl": "types.googleapis.com/google.protobuf.Empty",
+			"value": {}
+		}
+	},
+	"operations/04aeeb89-6d64-4b89-966d-764a80042316": {
+		"name": "operations/04aeeb89-6d64-4b89-966d-764a80042316",
+		"metadata": {
+			"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.OperationMetadataV1Beta2",
+			"value": {
+				"target": "projects/opiai-5276b/locations/us-central1/functions/opiAI",
+				"type": 1,
+				"request": {
+					"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.CreateFunctionRequest",
+					"value": {
+						"location": "projects/opiai-5276b/locations/us-central1",
+						"function": {
+							"name": "projects/opiai-5276b/locations/us-central1/functions/opiAI",
+							"sourceArchiveUrl": "file:///var/folders/8s/gygy76px35zd6b_6d4cccqb00000gn/T/undefined-opiAI-24530OkrB5w5u2veZ.zip",
+							"httpsTrigger": {},
+							"serviceAccount": "/Users/v/Documents/redqueen/opiAI/bot/build"
+						}
+					}
+				}
+			}
+		},
+		"done": true,
+		"error": null,
+		"response": {
+			"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.CloudFunction",
+			"value": {
+				"name": "projects/opiai-5276b/locations/us-central1/functions/opiAI",
+				"sourceArchiveUrl": "file:///var/folders/8s/gygy76px35zd6b_6d4cccqb00000gn/T/undefined-opiAI-24530OkrB5w5u2veZ.zip",
+				"sourceRepository": null,
+				"httpsTrigger": {
+					"url": "http://localhost:5000/opiai-5276b/us-central1/opiAI"
+				},
+				"eventTrigger": null,
+				"status": "READY",
+				"latestOperation": "operations/04aeeb89-6d64-4b89-966d-764a80042316",
+				"entryPoint": "",
+				"timeout": null,
+				"availableMemoryMb": 17179,
+				"serviceAccount": "/Users/v/Documents/redqueen/opiAI/bot/build",
+				"updateTime": null
+			}
+		}
+	},
+	"operations/a31a9a8e-6d95-44ae-9d0c-cc4b2f01f0d8": {
+		"name": "operations/a31a9a8e-6d95-44ae-9d0c-cc4b2f01f0d8",
+		"metadata": {
+			"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.OperationMetadataV1Beta2",
+			"value": {
+				"target": "projects/opiai-5276b/locations/us-central1/functions/opiAI",
+				"type": 3,
+				"request": {
+					"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.DeleteFunctionRequest",
+					"value": {
+						"name": "projects/opiai-5276b/locations/us-central1/functions/opiAI"
+					}
+				}
+			}
+		},
+		"done": true,
+		"error": null,
+		"response": {
+			"typeUrl": "types.googleapis.com/google.protobuf.Empty",
+			"value": {}
+		}
+	},
+	"operations/87a01710-aa8c-4499-a11b-31ea570827b2": {
+		"name": "operations/87a01710-aa8c-4499-a11b-31ea570827b2",
+		"metadata": {
+			"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.OperationMetadataV1Beta2",
+			"value": {
+				"target": "projects/opiai-5276b/locations/us-central1/functions/opiAI",
+				"type": 1,
+				"request": {
+					"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.CreateFunctionRequest",
+					"value": {
+						"location": "projects/opiai-5276b/locations/us-central1",
+						"function": {
+							"name": "projects/opiai-5276b/locations/us-central1/functions/opiAI",
+							"sourceArchiveUrl": "file:///var/folders/8s/gygy76px35zd6b_6d4cccqb00000gn/T/undefined-opiAI-24682Qob7gD1ELSRy.zip",
+							"httpsTrigger": {},
+							"serviceAccount": "/Users/v/Documents/redqueen/opiAI/bot/build"
+						}
+					}
+				}
+			}
+		},
+		"done": true,
+		"error": null,
+		"response": {
+			"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.CloudFunction",
+			"value": {
+				"name": "projects/opiai-5276b/locations/us-central1/functions/opiAI",
+				"sourceArchiveUrl": "file:///var/folders/8s/gygy76px35zd6b_6d4cccqb00000gn/T/undefined-opiAI-24682Qob7gD1ELSRy.zip",
+				"sourceRepository": null,
+				"httpsTrigger": {
+					"url": "http://localhost:5000/opiai-5276b/us-central1/opiAI"
+				},
+				"eventTrigger": null,
+				"status": "READY",
+				"latestOperation": "operations/87a01710-aa8c-4499-a11b-31ea570827b2",
+				"entryPoint": "",
+				"timeout": null,
+				"availableMemoryMb": 17179,
+				"serviceAccount": "/Users/v/Documents/redqueen/opiAI/bot/build",
+				"updateTime": null
+			}
+		}
+	},
+	"operations/148f98f2-04a4-4e49-8ef7-024cf96aef48": {
+		"name": "operations/148f98f2-04a4-4e49-8ef7-024cf96aef48",
+		"metadata": {
+			"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.OperationMetadataV1Beta2",
+			"value": {
+				"target": "projects/opiai-5276b/locations/us-central1/functions/opiAI",
+				"type": 3,
+				"request": {
+					"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.DeleteFunctionRequest",
+					"value": {
+						"name": "projects/opiai-5276b/locations/us-central1/functions/opiAI"
+					}
+				}
+			}
+		},
+		"done": true,
+		"error": null,
+		"response": {
+			"typeUrl": "types.googleapis.com/google.protobuf.Empty",
+			"value": {}
+		}
+	},
+	"operations/d8f94819-b8c4-476c-8dda-9c5571b498e2": {
+		"name": "operations/d8f94819-b8c4-476c-8dda-9c5571b498e2",
+		"metadata": {
+			"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.OperationMetadataV1Beta2",
+			"value": {
+				"target": "projects/opiai-5276b/locations/us-central1/functions/opiAI",
+				"type": 1,
+				"request": {
+					"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.CreateFunctionRequest",
+					"value": {
+						"location": "projects/opiai-5276b/locations/us-central1",
+						"function": {
+							"name": "projects/opiai-5276b/locations/us-central1/functions/opiAI",
+							"sourceArchiveUrl": "file:///var/folders/8s/gygy76px35zd6b_6d4cccqb00000gn/T/undefined-opiAI-16615Jp67ChD7OfS3.zip",
+							"httpsTrigger": {},
+							"serviceAccount": "/Users/v/Documents/redqueen/opiAI/bot/build"
+						}
+					}
+				}
+			}
+		},
+		"done": true,
+		"error": null,
+		"response": {
+			"typeUrl": "types.googleapis.com/google.cloud.functions.v1beta2.CloudFunction",
+			"value": {
+				"name": "projects/opiai-5276b/locations/us-central1/functions/opiAI",
+				"sourceArchiveUrl": "file:///var/folders/8s/gygy76px35zd6b_6d4cccqb00000gn/T/undefined-opiAI-16615Jp67ChD7OfS3.zip",
+				"sourceRepository": null,
+				"httpsTrigger": {
+					"url": "http://localhost:5000/opiai-5276b/us-central1/opiAI"
+				},
+				"eventTrigger": null,
+				"status": "READY",
+				"latestOperation": "operations/d8f94819-b8c4-476c-8dda-9c5571b498e2",
+				"entryPoint": "",
+				"timeout": null,
+				"availableMemoryMb": 17179,
+				"serviceAccount": "/Users/v/Documents/redqueen/opiAI/bot/build",
+				"updateTime": null
+			}
+		}
+	}
+}

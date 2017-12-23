@@ -1,0 +1,35 @@
+{
+	"analytics-uuid": "a2071230-6257-42af-b85b-5214adea2ea1",
+	"motd": {
+		"minVersion": "3.0.5"
+	},
+	"motd.fetched": 1510533735081,
+	"usage": true,
+	"user": {
+		"azp": "563584335869-fgrhgmd47bqnekij5i8b5pr03ho849e6.apps.googleusercontent.com",
+		"aud": "563584335869-fgrhgmd47bqnekij5i8b5pr03ho849e6.apps.googleusercontent.com",
+		"sub": "109828743232366811722",
+		"hd": "redqueen.xyz",
+		"email": "vivek@redqueen.xyz",
+		"email_verified": true,
+		"at_hash": "V0b1oRRtQAejekCkr_X1Ww",
+		"iss": "accounts.google.com",
+		"iat": 1508890060,
+		"exp": 1508893660
+	},
+	"tokens": {
+		"expires_at": 1510537334968,
+		"refresh_token": "1/xaIp_vlLWAx6C3m1swBN8496fMHigpuyAl5OaqyouWI",
+		"scopes": [
+			"email",
+			"https://www.googleapis.com/auth/cloud-platform",
+			"https://www.googleapis.com/auth/cloudplatformprojects.readonly",
+			"https://www.googleapis.com/auth/firebase",
+			"openid"
+		],
+		"access_token": "ya29.GlwCBV0wwuks25FNgCMDJNizIUvGcRqMZLsbPu5Zdphcex0WH9WZjRwbyBUR7KfysS2CQmSXo0NEuPFzynaOcRsyuZYi4_cw4tx0zkWAE5mcKZYrSDQBiH2LJB2WNg",
+		"token_type": "Bearer",
+		"expires_in": 3600,
+		"id_token": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImNjN2QyOWM5Y2IzNzgwNzQxY2MwODc2NjMzYzkxMDdhMGYzM2MyODkifQ.eyJhenAiOiI1NjM1ODQzMzU4NjktZmdyaGdtZDQ3YnFuZWtpajVpOGI1cHIwM2hvODQ5ZTYuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI1NjM1ODQzMzU4NjktZmdyaGdtZDQ3YnFuZWtpajVpOGI1cHIwM2hvODQ5ZTYuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMDk4Mjg3NDMyMzIzNjY4MTE3MjIiLCJoZCI6InJlZHF1ZWVuLnh5eiIsImVtYWlsIjoidml2ZWtAcmVkcXVlZW4ueHl6IiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImF0X2hhc2giOiJzcXhuWHNvRnREYkpyaVEwdXEteEhnIiwiaXNzIjoiYWNjb3VudHMuZ29vZ2xlLmNvbSIsImlhdCI6MTUxMDUzMzczNCwiZXhwIjoxNTEwNTM3MzM0fQ.1X5hFq9rkkY_7hAuEos7rXRzeSboomfXNpHD4_v0PzsLeu6vKLPfhuNGkjyPlH-DhHHObu9_Tddu3Oc7mgp7FkHJWsHyytfupEPj_NlKdc8ZuX6GCukfT4G9kVBhhKPVr09urXRzvNsXB55KWXnlU0nb2O9pmnRp84Hzbn21-Nf3be3QA3lSDFrWKnC0WxkTnMxDFS2qFRDONXrKzb8SzIfnXwkW0ZXljdd9a6Okt4ydyWhz-QIt84rNIYrw39hxrTzeUi8AqxGpfTKehiJpl0ww05paKAjhiBmPFG_m4Lyb-pqH8EY-TiMS_c2KdDyM0lN7A2OOisM-Eb9SjenO2g"
+	}
+}

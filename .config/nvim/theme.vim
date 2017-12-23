@@ -1,8 +1,8 @@
 " Theme --------------------------------------------
 
 " True Color support
-set termguicolors
-set t_Co=256
+" set termguicolors
+" set t_Co=256
 
 " Enable Syntax Highlighting
 syntax enable
@@ -11,14 +11,14 @@ syntax enable
 colorscheme dracula
 
 " Background
-" set background=None
+set background=dark
 
 " No Background
 highlight Normal ctermbg=none
 highlight NonText ctermbg=none
 
-highlight Normal guibg=none
-highlight NonText guibg=none
+" highlight Normal guibg=none
+" highlight NonText guibg=none
 
 " Window Dressing
 " hi vertsplit ctermfg=238 ctermbg=235
