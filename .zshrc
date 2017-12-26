@@ -26,38 +26,30 @@
 # ##################################################
 # ##################################################
 
-## Personal Defaults -------------------------------
+## Environment Defaults ----------------------------
 
-# Exports
+# Settings
 export LANG=en_US.UTF-8
 export BROWSER=open
-export VISUAL=code
+export VISUAL=vimr
 export EDITOR=nvim
 export TERM=xterm-256color
 export ARCHEY_LOGO_FILE=$HOME/.logo
-
-# Editors
-# neoVim & vsCode
-alias v='nvim'
-alias vs='code'
-alias vim='nvim'
-
-# Dotfiles
-alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
-
-# Aliases
-# source $HOME/.aliases
-
-## Environment Defaults ----------------------------
 
 # Path
 # export PATH="/usr/local/bin:$PATH"
 # export PATH="/usr/local/sbin:$PATH"
 # export PATH="$HOME/.vimr:$PATH"
 
-# Homebrew Cask
-export HOMEBREW_CASK_OPTS="--appdir=/Applications"
- 
+## Environment Defaults ----------------------------
+
+# Dotfiles
+alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
+
+# Vim-mode
+bindkey -v
+KEYTIMEOUT=1
+
 ## Language Defaults -------------------------------
 
 # Ruby
@@ -66,38 +58,57 @@ export HOMEBREW_CASK_OPTS="--appdir=/Applications"
 # Haskell (Stack Distribution)
 export haskell="stack ghci"
 
-# Python 3 
+# Python 3
 export PATH="${HOME}/.anaconda/bin:$PATH" # Anaconda Distribution
 
 # Node
 # export NVM_DIR=~/.nvm
 # source $(brew --prefix nvm)/nvm.sh
 
-# Go 
+# Go
 export GOPATH="$HOME/.go"
 export PATH="$GOPATH/bin:$PATH"
 
 ## Shell Tools -------------------------------------
 
-# Google Cloud
+# nvim
+alias v=nvim
+alias vim=nvim
+
+# vimR
+alias vr=vimr
+
+# brew
+export HOMEBREW_CASK_OPTS="--appdir=/Applications"
+
+# nnn
+alias n=nnn
+export NNN_USE_EDITOR=1
+export NNN_DE_FILE_MANAGER=open
+
+# gcloud
 if [ -f "${HOME}/.google/path.zsh.inc" ]; then source "${HOME}/.google/path.zsh.inc"; fi
 if [ -f "${HOME}/.google/completion.zsh.inc" ]; then source "${HOME}/.google/completion.zsh.inc"; fi
 
-# Iterm2
-# test -e "${HOME}/.iterm2/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2/.iterm2_shell_integration.zsh"
+# iterm2
+test -e "${HOME}/.iterm2/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2/.iterm2_shell_integration.zsh"
 
 # FZF
 if [ -e /usr/local/opt/fzf/shell/completion.zsh ]; then
-  source /usr/local/opt/fzf/shell/key-bindings.zsh
-  source /usr/local/opt/fzf/shell/completion.zsh
+    source /usr/local/opt/fzf/shell/key-bindings.zsh
+    source /usr/local/opt/fzf/shell/completion.zsh
 fi
 
-# The Fuck
+# thefuck
 eval "$(thefuck --alias)"
 
-## Shell Defaults ----------------------------------
+## Shell Theme -------------------------------------
 
-# Spaceship Theme 
+# Little Helper!
+RPROMPT='v@%M %(?,%F{green}[-_-]%f,%F{red}[ಠ_ಠ]%f)'
+ZLE_LPROMPT_INDENT=0
+
+# Spaceship Theme
 SPACESHIP_PROMPT_SYMBOL="ॐ "
 SPACESHIP_PROMPT_SEPARATE_LINE=true
 SPACESHIP_PROMPT_ADD_NEWLINE=false
@@ -114,23 +125,16 @@ SPACESHIP_PYENV_SHOW=false
 SPACESHIP_CONDA_SHOW=true
 SPACESHIP_KUBECONTEXT_SHOW=false
 
-# Vim in Zsh
-bindkey -v
-KEYTIMEOUT=1
-
-# Little Helper!
-RPROMPT='v@%M %(?,%F{green}[-_-]%f,%F{red}[ಠ_ಠ]%f)'
-ZLE_LPROMPT_INDENT=0
 
 ## Shell Plugins -----------------------------------
 
 # Install Zplug (if missing)
 if [[ ! -d ~/.zplug ]]; then
-  git clone https://github.com/zplug/zplug ~/.zplug
+    git clone https://github.com/zplug/zplug ~/.zplug
 fi
 
 # Initialize and Update
-source ~/.zplug/init.zsh 
+source ~/.zplug/init.zsh
 
 # Autosuggestions
 zplug "zsh-users/zsh-autosuggestions"
@@ -182,29 +186,31 @@ zplug 'dracula/zsh', as:theme
 
 # Install plugins if there are plugins that have not been installed
 if ! zplug check --verbose; then
-	printf "Install? [y/N]: "
-	if read -q; then
-		echo; zplug install
-	fi
+    printf "Install? [y/N]: "
+    if read -q; then
+        echo; zplug install
+    fi
 fi
 
 # Then, source plugins and add commands to $PATH
 zplug load # --verbose
 
 
-## Plugin Defaults ---------------------------------
+## Plugin Settings ---------------------------------
 
-# Fuzzy File Finder {{{
+# fzf {{{
 export FZF_DEFAULT_OPTS='--height 40% --reverse --border'
 
 # z - Jump to a match, else use FZF
 unalias z 2> /dev/null
 z() {
-  [ $# -gt 0 ] && _z "$*" && return
-  cd "$(_z -l 2>&1 | fzf --height 40% --reverse --inline-info +s --tac --query "$*" | sed 's/^[0-9,.]* *//')"
+    [ $# -gt 0 ] && _z "$*" && return
+    cd "$(_z -l 2>&1 | fzf --height 40% --reverse --inline-info +s --tac --query "$*" | sed 's/^[0-9,.]* *//')"
 }
 
 # Use RG for faster search
 export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.git/*"'
 
-# }}}
+#}}}
+
+
