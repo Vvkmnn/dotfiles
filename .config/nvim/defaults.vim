@@ -30,6 +30,10 @@ set smartcase
 set history=700
 set undolevels=700
 
+" Spellcheck
+set spelllang=en
+set spell
+
 " Wild Menu! (Tab stuff)
 set wildmenu
 set wildmode=full
@@ -52,5 +56,5 @@ set hidden
 " Set Fold Level
 set foldlevel=99
 
-" Hide Seperators
+" Hide Separators
 set fillchars+=vert:\
