@@ -32,7 +32,7 @@ set undolevels=700
 
 " Spellcheck
 set spelllang=en
-set spell
+" set spell
 
 " Wild Menu! (Tab stuff)
 set wildmenu
