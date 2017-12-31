@@ -7,21 +7,19 @@ set runtimepath+=~/.dein/repos/github.com/Shougo/dein.vim
 if dein#load_state('~/.dein')
     call dein#begin('~/.dein')
 
-    " Package Management {{{
-
+    " Package Plugins {{{
     " Dein -- A Dark  Package Manager
     call dein#add('Shougo/dein.vim')
     "}}}
 
-    " Language Support {{{
-
+    " Editing Plugins {{{
     " vim-polyglot - language packs for Vim
     call dein#add('sheerun/vim-polyglot')
 
-    " vim-neoformat -- Script formatting
+    " vim-neoformat - Script formatting
     call dein#add('sbdchd/neoformat')
 
-    " Dash - A Plugin to search Dash <Dash:>
+    " Dash - Dash Support <Dash:>
     call dein#add('rizzatti/dash.vim')
 
     " ultisnips - Vim Snippet Framework
@@ -50,27 +48,23 @@ if dein#load_state('~/.dein')
 
     " LanguageClient-neovim - Language Server Protocol support for neovim.
     " call dein#add('autozimu/LanguageClient-neovim')
+
+    " vim-lexical - Vim Spellcheck++
+    call dein#add('reedes/vim-lexical')
     " }}}
 
-    " Navigation Support {{{
-
-    " vim-autoswap -- No swap messages; just switch or recover
-    call dein#add('gioele/vim-autoswap')
-
-    " vim-move - Alt-kj for moving lines up and down
-    " call dein#add('matze/vim-move')
-    " }}}
-
-    " Visual support {{{
+    " Visual Plugins {{{
     " Dracula - A Dark Colorscheme
     call dein#add('dracula/vim')
 
     " VimDevIcons -- Icons in Vim
     " call dein#add('ryanoasis/vim-devicons')
-
     " }}}
 
-    " File Navigation {{{
+    " Navigation Plugins {{{
+    " vim-startify - Vim start page!
+    call dein#add('mhinz/vim-startify')
+
     " FZF - Fuzzy File Finder!
     call dein#add('junegunn/fzf.vim', { 'depends': 'fzf' })
 
@@ -80,38 +74,35 @@ if dein#load_state('~/.dein')
     " Vim Eunech -- Unix helpers via <:Delete>, <:Move>, ..
     call dein#add('tpope/vim-eunuch')
 
+    " vim-autoswap -- No swap messages; just switch or recover
+    call dein#add('gioele/vim-autoswap')
+
+    " vim-move - Alt-kj for moving lines up and down
+    " call dein#add('matze/vim-move')
+
     " NERDTree -- Tree File System Explorer
     " call dein#add('scrooloose/nerdtree')
     " }}}
 
-    " File Sourcing {{{
-
-    " Neomake - Asynchronously run Programs <:Neomake>
-    " call dein#add('neomake/neomake')
-    " }}}
-    "
-
-    " Version Management {{{
+    " Development Plugins {{{
     " Fugitive - Git management for Vim
     call dein#add('tpope/vim-fugitive')
 
     " vim-gitgutter -- Git status next to line numbers
     call dein#add('airblade/vim-gitgutter')
-    " }}}
 
-    " Sanity Support {{{
-    "
+    " Neomake - Asynchronously run Programs <:Neomake>
+    " call dein#add('neomake/neomake')
+
     " vim-schlepp - Allow the movement of lines (or blocks) of text around easily
     call dein#add('zirrostig/vim-schlepp')
-    "
+
     " Rainbow Parentheses Improved - Color code by depth
     call dein#add('luochen1990/rainbow')
-    "
+
     " Tmux Navigator --  Native Ctrl-HJKL Navigation in Tmux & Vim
     " call dein#add('christoomey/vim-tmux-navigator')
-    " }}}
 
-    " Terminal Integration {{{
     " NVIMUX -- mimic tmux on neovim
     " call dein#add('hkupty/nvimux')
 
@@ -125,9 +116,11 @@ if dein#load_state('~/.dein')
     " call dein#add('hkupty/iron.nvim')
     " }}}
 
+    " GUI Plugins {{{
     "if has('gui_running')
-
     "endif
+
+    " }}}
 
     " Save
     call dein#end()

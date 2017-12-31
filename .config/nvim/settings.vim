@@ -1,10 +1,19 @@
 " Settings -----------------------------------------
 
-" Neoformat {{
+" vim-lexical {{{
+augroup lexical
+    autocmd!
+    autocmd FileType markdown,mkd call lexical#init()
+    autocmd FileType textile call lexical#init()
+    autocmd FileType text call lexical#init({ 'spell': 0 })
+augroup END
+" }}}
+
+" Neoformat {{{
 " Format file on save
 augroup fmt
-  autocmd!
-  autocmd BufWritePre * undojoin | Neoformat
+    autocmd!
+    autocmd BufWritePre * undojoin | Neoformat
 augroup END
 
 " Try using &formatprg
@@ -26,14 +35,14 @@ let g:neoformat_basic_format_trim = 1
 set rtp+=/usr/local/opt/fzf
 " }}
 
-" Dash {{ 
+" Dash {{
 "   with Leader + d for word under cursor
 :nmap <silent> <leader>d <Plug>DashSearch
 " }}
 
-" Vim Move {{ 
+" Vim Move {{
 "   Use escape key instead of Alt (which doesn't work on macOS
-"   http://vim.wikia.com/wiki/Mapping_fast_keycodes_in_terminal_Vim " for he <F20> hack. 
+"   http://vim.wikia.com/wiki/Mapping_fast_keycodes_in_terminal_Vim " for he <F20> hack.
 "    Needs iTerm2 set to Esc+ in Profile > Keys
 set <F20>=j
 set <F21>=k
@@ -48,7 +57,7 @@ let g:deoplete#enable_at_startup = 1
 
 " Trigger on Omnifuncs
 if !exists('g:deoplete#omni#input_patterns')
-  let g:deoplete#omni#input_patterns = {}
+    let g:deoplete#omni#input_patterns = {}
 endif
 
 " All Patterns
@@ -63,8 +72,8 @@ let g:SuperTabClosePreviewOnPopupClose = 1
 let g:LanguageClient_autoStart = 1
 
 let g:LanguageClient_serverCommands = {
-      \ 'typescript': ['typescript-language-server', '--stdio']
-      \ }
+            \ 'typescript': ['typescript-language-server', '--stdio']
+            \ }
 " }}}
 
 " vim-autoformat {{{
@@ -92,25 +101,25 @@ set title titlestring=
 " autocmd VimEnter * nested :call tagbar#autoopen(1)
 " let g:tagbar_autofocus = 0
 " let g:tagbar_foldlevel = 2
-" 
-" let g:tagbar_type_typescript = {                                                  
-"   \ 'ctagsbin' : 'tstags',                                                        
-"   \ 'ctagsargs' : '-f-',                                                           
-"   \ 'kinds': [                                                                     
-"     \ 'e:enums:0:1',                                                               
-"     \ 'f:function:0:1',                                                            
-"     \ 't:typealias:0:1',                                                           
-"     \ 'M:Module:0:1',                                                              
-"     \ 'I:import:0:1',                                                              
-"     \ 'i:interface:0:1',                                                           
-"     \ 'C:class:0:1',                                                               
-"     \ 'm:method:0:1',                                                              
-"     \ 'p:property:0:1',                                                            
-"     \ 'v:variable:0:1',                                                            
-"     \ 'c:const:0:1',                                                              
-"   \ ],                                                                            
-"   \ 'sort' : 0                                                                    
-" \ }                                                                               
+"
+" let g:tagbar_type_typescript = {
+"   \ 'ctagsbin' : 'tstags',
+"   \ 'ctagsargs' : '-f-',
+"   \ 'kinds': [
+"     \ 'e:enums:0:1',
+"     \ 'f:function:0:1',
+"     \ 't:typealias:0:1',
+"     \ 'M:Module:0:1',
+"     \ 'I:import:0:1',
+"     \ 'i:interface:0:1',
+"     \ 'C:class:0:1',
+"     \ 'm:method:0:1',
+"     \ 'p:property:0:1',
+"     \ 'v:variable:0:1',
+"     \ 'c:const:0:1',
+"   \ ],
+"   \ 'sort' : 0
+" \ }
 " }}}
 
 " vim-schlepp {{{

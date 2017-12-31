@@ -9,7 +9,7 @@ endif
 set encoding=utf-8
 
 " Plugins & Filetypes
-filetype plugin indent on
+filetype plugin on
 
 " Enable Syntax
 syntax enable
