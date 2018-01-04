@@ -38,7 +38,7 @@ if dein#load_state('~/.dein')
     " call dein#add('ervandew/supertab')
 
     " Gutentags -- The Vim .tags manager
-    " call dein#add('ludovicchabant/vim-gutentags')
+    call dein#add('ludovicchabant/vim-gutentags')
 
     " Tagbar -- a class outline viewer for Vim
     " call dein#add('majutsushi/tagbar')
@@ -114,7 +114,7 @@ if dein#load_state('~/.dein')
     call dein#add('tpope/vim-surround')
 
     " vim-easyclip -- Better thought out yanking, cutting, and pasting.
-    call dein#add('svermeulen/vim-easyclip')
+    " call dein#add('svermeulen/vim-easyclip')
 
     " Fugitive -- Git management for Vim
     call dein#add('tpope/vim-fugitive')
