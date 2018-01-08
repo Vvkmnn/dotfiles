@@ -1,20 +1,6 @@
 " Settings -----------------------------------------
 
-" vim-lexical {{{
-augroup lexical
-    autocmd!
-    autocmd FileType markdown,mkd call lexical#init()
-    autocmd FileType textile call lexical#init()
-    autocmd FileType text call lexical#init({ 'spell': 0 })
-augroup END
-" }}}
-
 " Neoformat {{{
-" Format file on save
-augroup fmt
-    autocmd!
-    autocmd BufWritePre * undojoin | Neoformat
-augroup END
 
 " Try using &formatprg
 let g:neoformat_try_formatprg = 1
@@ -27,8 +13,6 @@ let g:neoformat_basic_format_retab = 1
 
 " Enable trimmming of trailing whitespace
 let g:neoformat_basic_format_trim = 1
-
-
 " }}
 
 " FZF {{
@@ -36,7 +20,7 @@ set rtp+=/usr/local/opt/fzf
 " }}
 
 " Dash {{
-"   with Leader + d for word under cursor
+" Search with <Leader + d> for word under cursor
 :nmap <silent> <leader>d <Plug>DashSearch
 " }}
 
