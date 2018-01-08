@@ -76,7 +76,7 @@ alias v=nvim
 alias vim=nvim
 
 # vimR
-alias vr=vimr
+alias V=vimr
 
 # brew
 export HOMEBREW_CASK_OPTS="--appdir=/Applications"
