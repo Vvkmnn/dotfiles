@@ -29,11 +29,14 @@
 " Defaults -----------------------------------------
 source ~/.config/nvim/defaults.vim
 
-" Functions ----------------------------------------
-source ~/.config/nvim/functions.vim
-
 " Plugins ------------------------------------------
 source ~/.config/nvim/plugins.vim
+
+" Theme --------------------------------------------
+source ~/.config/nvim/theme.vim
+
+" Settings -----------------------------------------
+source ~/.config/nvim/settings.vim
 
 " Functions ----------------------------------------
 source ~/.config/nvim/functions.vim
@@ -41,8 +44,4 @@ source ~/.config/nvim/functions.vim
 " Bindings -----------------------------------------
 source ~/.config/nvim/bindings.vim
 
-" Settings -----------------------------------------
-source ~/.config/nvim/settings.vim
 
-" Theme --------------------------------------------
-source ~/.config/nvim/theme.vim
