@@ -1137,7 +1137,7 @@
 	<key>NSWindow Frame SUUpdateAlert</key>
 	<string>530 477 620 392 0 0 1680 1028 </string>
 	<key>NSWindow Frame SharedPreferences</key>
-	<string>272 414 796 473 0 0 1680 1028 </string>
+	<string>272 393 918 512 0 0 1680 1028 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
 	<string>0 0 1680 1028 0 0 1680 1028 </string>
 	<key>New Bookmarks</key>
@@ -1146,7 +1146,7 @@
 			<key>ASCII Anti Aliased</key>
 			<true/>
 			<key>ASCII Ligatures</key>
-			<false/>
+			<true/>
 			<key>Ambiguous Double Width</key>
 			<false/>
 			<key>Ansi 0 Color</key>
@@ -1294,7 +1294,7 @@
 				<real>1</real>
 			</dict>
 			<key>BM Growl</key>
-			<true/>
+			<false/>
 			<key>Background Color</key>
 			<dict>
 				<key>Blue Component</key>
@@ -1313,9 +1313,9 @@
 				<key>Blue Component</key>
 				<real>0.0</real>
 				<key>Color Space</key>
-				<string>Calibrated</string>
+				<string>sRGB</string>
 				<key>Green Component</key>
-				<real>0.0</real>
+				<real>0.1491314172744751</real>
 				<key>Red Component</key>
 				<real>1</real>
 			</dict>
@@ -1362,11 +1362,11 @@
 				<key>Blue Component</key>
 				<real>1</real>
 				<key>Color Space</key>
-				<string>Calibrated</string>
+				<string>sRGB</string>
 				<key>Green Component</key>
-				<real>0.91000000000000003</real>
+				<real>0.9268307089805603</real>
 				<key>Red Component</key>
-				<real>0.65000000000000002</real>
+				<real>0.70213186740875244</real>
 			</dict>
 			<key>Cursor Text Color</key>
 			<dict>
@@ -1378,7 +1378,7 @@
 				<real>1</real>
 			</dict>
 			<key>Cursor Type</key>
-			<integer>0</integer>
+			<integer>2</integer>
 			<key>Custom Command</key>
 			<string>No</string>
 			<key>Custom Directory</key>
@@ -1390,7 +1390,7 @@
 			<key>Disable Window Resizing</key>
 			<true/>
 			<key>Flashing Bell</key>
-			<false/>
+			<true/>
 			<key>Foreground Color</key>
 			<dict>
 				<key>Blue Component</key>
@@ -1703,24 +1703,26 @@
 				<key>Alpha Component</key>
 				<real>1</real>
 				<key>Blue Component</key>
-				<real>0.67800000000000005</real>
+				<real>0.73423302173614502</real>
 				<key>Color Space</key>
-				<string>Calibrated</string>
+				<string>sRGB</string>
 				<key>Green Component</key>
-				<real>0.27000000000000002</real>
+				<real>0.35916060209274292</real>
 				<key>Red Component</key>
-				<real>0.023</real>
+				<real>0.0</real>
 			</dict>
 			<key>Mouse Reporting</key>
 			<true/>
 			<key>Name</key>
 			<string>Logo</string>
 			<key>Non Ascii Font</key>
-			<string>InconsolataForPowerline 13</string>
+			<string>InconsolataForPowerline 14</string>
 			<key>Non-ASCII Anti Aliased</key>
 			<true/>
+			<key>Non-ASCII Ligatures</key>
+			<true/>
 			<key>Normal Font</key>
-			<string>SauceCodePowerline-Medium 14</string>
+			<string>InconsolataForPowerline 14</string>
 			<key>Option Key Sends</key>
 			<integer>0</integer>
 			<key>Prompt Before Closing 2</key>
@@ -1758,7 +1760,7 @@
 			<key>Silence Bell</key>
 			<false/>
 			<key>Space</key>
-			<integer>0</integer>
+			<integer>-1</integer>
 			<key>Sync Title</key>
 			<false/>
 			<key>Tags</key>
@@ -1780,7 +1782,7 @@
 			<key>Vertical Spacing</key>
 			<real>1</real>
 			<key>Visual Bell</key>
-			<true/>
+			<false/>
 			<key>Window Type</key>
 			<integer>1</integer>
 			<key>Working Directory</key>
@@ -3740,7 +3742,7 @@
 	<key>NoSyncTipsDisabled</key>
 	<true/>
 	<key>OpenArrangementAtStartup</key>
-	<false/>
+	<true/>
 	<key>OpenNoWindowsAtStartup</key>
 	<false/>
 	<key>OpenTmuxWindowsIn</key>
@@ -3795,7 +3797,7 @@
 	<key>SUHasLaunchedBefore</key>
 	<true/>
 	<key>SULastCheckTime</key>
-	<date>2018-01-01T13:29:53Z</date>
+	<date>2018-01-08T21:28:31Z</date>
 	<key>SUSendProfileInfo</key>
 	<false/>
 	<key>SavePasteHistory</key>
@@ -4140,13 +4142,13 @@
 														<real>0.90032327175140381</real>
 													</dict>
 													<key>Guid</key>
-													<string>C0A3B067-8BA7-4450-964C-76508934F279</string>
+													<string>DBE28725-04CE-42E9-B849-D56B89A90A02</string>
 													<key>Horizontal Spacing</key>
 													<real>1</real>
 													<key>Idle Code</key>
 													<integer>0</integer>
 													<key>Initial Text</key>
-													<string></string>
+													<string>archey</string>
 													<key>Jobs to Ignore</key>
 													<array>
 														<string>rlogin</string>
@@ -4453,7 +4455,7 @@
 													<key>Mouse Reporting</key>
 													<true/>
 													<key>Name</key>
-													<string>Default</string>
+													<string>Logo</string>
 													<key>Non Ascii Font</key>
 													<string>InconsolataForPowerline 14</string>
 													<key>Non-ASCII Anti Aliased</key>
@@ -4528,43 +4530,13 @@
 													<string>/Users/v</string>
 												</dict>
 												<key>Bookmark Name</key>
-												<string>Default</string>
+												<string>Logo</string>
 												<key>Columns</key>
 												<integer>114</integer>
 												<key>Commands</key>
 												<array/>
 												<key>Directories</key>
-												<array>
-													<string>/Users/v/Documents/redqueen/opiAI/bot</string>
-													<string>/Users/v/Documents/redqueen/opiAI</string>
-													<string>/Users/v/Documents/redqueen/opiAI</string>
-													<string>/Users/v/Documents/redqueen/opiAI/bot</string>
-													<string>/Users/v/Documents/redqueen/opiAI/bot/src</string>
-													<string>/Users/v/Documents/redqueen/opiAI/bot/src</string>
-													<string>/Users/v/Documents/redqueen/opiAI/bot/src</string>
-													<string>/Users/v/Documents/redqueen/opiAI/bot/src</string>
-													<string>/Users/v/Documents/redqueen/opiAI/bot/src</string>
-													<string>/Users/v/Documents/redqueen/opiAI/bot/src</string>
-													<string>/Users/v/Documents/redqueen/opiAI/bot/src</string>
-													<string>/Users/v/Documents/redqueen/opiAI/bot/src</string>
-													<string>/Users/v/Documents/redqueen/opiAI/bot/src</string>
-													<string>/Users/v/Documents/redqueen/opiAI/bot/src</string>
-													<string>/Users/v/Documents/redqueen/opiAI/bot/src</string>
-													<string>/Users/v/Documents/redqueen/opiAI/bot/src</string>
-													<string>/Users/v/Documents/redqueen/opiAI/bot/src</string>
-													<string>/Users/v/Documents/redqueen/opiAI/bot/src</string>
-													<string>/Users/v/Documents/redqueen/opiAI/bot/src</string>
-													<string>/Users/v/Documents/redqueen/opiAI/bot/src</string>
-													<string>/Users/v/Documents/redqueen/opiAI/bot/src</string>
-													<string>/Users/v/Documents/redqueen/opiAI/bot/src</string>
-													<string>/Users/v/Documents/redqueen/opiAI/bot/src</string>
-													<string>/Users/v/Documents/redqueen/opiAI/bot/src</string>
-													<string>/Users/v/Documents/redqueen/opiAI/bot</string>
-													<string>/Users/v/Documents/redqueen/opiAI</string>
-													<string>/Users/v/Documents/redqueen/opiAI</string>
-													<string>/Users/v/Documents/redqueen/opiAI</string>
-													<string>/Users/v/Documents/redqueen/opiAI</string>
-												</array>
+												<array/>
 												<key>Environment</key>
 												<dict>
 													<key>PWD</key>
@@ -4584,26 +4556,26 @@
 												<key>Rows</key>
 												<integer>29</integer>
 												<key>Session Default Name</key>
-												<string>Default</string>
+												<string>Logo</string>
 												<key>Session GUID</key>
-												<string>62E825BA-7133-4887-99C4-BEF7F0DF6B19</string>
+												<string>0EAC353F-A283-44C3-BA83-820F85921E33</string>
 												<key>Session Name</key>
-												<string>main.py (~/Documents/redqueen/opiAI/ads) - NVIM</string>
+												<string>Logo</string>
 												<key>Session Window Title</key>
-												<string>main.py (~/Documents/redqueen/opiAI/ads) - NVIM</string>
+												<string>Logo</string>
 												<key>Shell Integration Ever Used</key>
 												<false/>
 												<key>Substitutions</key>
 												<dict/>
 												<key>Working Directory</key>
-												<string>/Users/v/Documents/redqueen/opiAI</string>
+												<string>/Users/v</string>
 											</dict>
 											<key>View Type</key>
 											<string>SessionView</string>
 											<key>frame</key>
 											<dict>
 												<key>height</key>
-												<real>513.5</real>
+												<real>513</real>
 												<key>width</key>
 												<real>839</real>
 												<key>x</key>
@@ -5285,17 +5257,15 @@
 												<true/>
 												<key>Program</key>
 												<dict>
-													<key>Command</key>
-													<string>login -fp "v"</string>
 													<key>Type</key>
-													<string>Command</string>
+													<string>Shell Launcher</string>
 												</dict>
 												<key>Rows</key>
 												<integer>29</integer>
 												<key>Session Default Name</key>
 												<string>Default</string>
 												<key>Session GUID</key>
-												<string>FADA51BA-EEA5-41CA-9143-2B74BCB6FF2A</string>
+												<string>EBE0C6CD-4E35-4A7B-AA1C-C7D5047DCF45</string>
 												<key>Session Name</key>
 												<string>firebase.json (~/Documents/redqueen/opiAI) - NVIM</string>
 												<key>Session Window Title</key>
@@ -5305,20 +5275,20 @@
 												<key>Substitutions</key>
 												<dict/>
 												<key>Working Directory</key>
-												<string>/Users/v/Documents/redqueen/opiAI</string>
+												<string>/Users/v</string>
 											</dict>
 											<key>View Type</key>
 											<string>SessionView</string>
 											<key>frame</key>
 											<dict>
 												<key>height</key>
-												<real>513.5</real>
+												<real>514</real>
 												<key>width</key>
 												<real>839</real>
 												<key>x</key>
 												<real>0.0</real>
 												<key>y</key>
-												<real>514.5</real>
+												<real>514</real>
 											</dict>
 										</dict>
 									</array>
@@ -6012,17 +5982,15 @@
 												<true/>
 												<key>Program</key>
 												<dict>
-													<key>Command</key>
-													<string>login -fp "v"</string>
 													<key>Type</key>
-													<string>Command</string>
+													<string>Shell Launcher</string>
 												</dict>
 												<key>Rows</key>
 												<integer>29</integer>
 												<key>Session Default Name</key>
 												<string>Default</string>
 												<key>Session GUID</key>
-												<string>650C8301-2D9D-41B6-973A-33EE3103881C</string>
+												<string>2D6FAC21-FAA9-46B2-9C97-C1900E9DAAD4</string>
 												<key>Session Name</key>
 												<string>Default</string>
 												<key>Session Window Title</key>
@@ -6032,7 +6000,7 @@
 												<key>Substitutions</key>
 												<dict/>
 												<key>Working Directory</key>
-												<string>/Users/v/Documents/redqueen/opiAI/bot</string>
+												<string>/Users/v</string>
 											</dict>
 											<key>View Type</key>
 											<string>SessionView</string>
@@ -6723,17 +6691,15 @@
 												<true/>
 												<key>Program</key>
 												<dict>
-													<key>Command</key>
-													<string>login -fp "v"</string>
 													<key>Type</key>
-													<string>Command</string>
+													<string>Shell Launcher</string>
 												</dict>
 												<key>Rows</key>
 												<integer>29</integer>
 												<key>Session Default Name</key>
 												<string>Default</string>
 												<key>Session GUID</key>
-												<string>125015B0-C9A6-466B-8CCF-D9C8A557EE5E</string>
+												<string>73CFCFDF-1B29-4E49-8461-9B699688EFB9</string>
 												<key>Session Name</key>
 												<string>plugins.vim (~/.config/nvim) - NVIM</string>
 												<key>Session Window Title</key>
@@ -6743,7 +6709,7 @@
 												<key>Substitutions</key>
 												<dict/>
 												<key>Working Directory</key>
-												<string>/Users/v/Documents/redqueen/opiAI/bot</string>
+												<string>/Users/v</string>
 											</dict>
 											<key>View Type</key>
 											<string>SessionView</string>
