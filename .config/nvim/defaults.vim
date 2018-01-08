@@ -17,6 +17,10 @@ syntax enable
 " Follow Mouse Focus
 set mousefocus
 
+" Split Defaults
+set wmh=0
+set splitright
+
 " Relative numbers
 set relativenumber
 
