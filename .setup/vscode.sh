@@ -21,9 +21,11 @@ code --install-extension vscodevim.vim
 # Dracula Theme
 code --install-extension dracula-theme.theme-dracula
 
+# Linters
+# ESlint
+# code --install-extension dbaeumer.vscode-eslint
+
 # Project Manager
 code --install-extension alefragnani.project-manager
 
 # gitignore
-code --install-extension codezombiech.gitignore
-

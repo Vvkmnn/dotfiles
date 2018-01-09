@@ -15,7 +15,7 @@ libraries/
 rstudio-desktop/*/*
 
 ## dash	
-.dash-license 
+.dash-license
 
 ## vscode
 vscode/extensions/*/*

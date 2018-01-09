@@ -1,15 +1,20 @@
-// Place your settings in this file to overwrite default and user settings.
+// Vivek Menon - mail@vvkmnn.xyz
 {
     // Vim
-    "vim.incsearch": true,
-    "vim.useSystemClipboard": true,
-    "vim.useCtrlKeys": true,
+    "vim.cmdLineInitialColon": true,
+    "vim.disableAnnoyingNeovimMessage": true,
+    "vim.easymotion": true,
+    "vim.enableNeovim": true,
     "vim.hlsearch": true,
+    "vim.incsearch": true,
     "vim.leader": "<space>",
+    "vim.useCtrlKeys": true,
+    "vim.useSystemClipboard": true,
     "vim.enableNeovim": true,
     "vim.disableAnnoyingNeovimMessage": true,
     "vim.visualstar": true,
     // Defaults
+    "window.nativeTabs": true,
     "editor.formatOnSave": true,
     "editor.minimap.enabled": true,
     "editor.cursorStyle": "line",

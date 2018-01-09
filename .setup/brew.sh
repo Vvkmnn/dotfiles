@@ -95,6 +95,9 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 	brew install python3
         # }}}
 
+        # Clojure {{{
+        brew install clojurescript
+        # }}}
 	# Ruby {{{
 	# brew install ruby-build
 	# brew install rbenv
@@ -137,6 +140,13 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
         # htop
         brew install htop
+
+        # ripgrep - recursive regex search (Silver Surfer / ack + GNU grep)
+        brew install rg
+
+        # nnn - great terminal file navigator
+        brew install nnn
+
         # }}}
 
 	# Postinstall and Cleanup
