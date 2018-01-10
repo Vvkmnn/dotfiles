@@ -8,7 +8,7 @@ if dein#load_state('~/.dein')
     call dein#begin('~/.dein')
 
     " Package Plugins {{{
-    call dein#add('Shougo/dein.vim')                  " Dein -- A Dark  Package Manager
+    call dein#add('Shougo/dein.vim')                        " Dein -- A Dark  Package Manager
     "}}}
 
     " Editing Plugins {{{
