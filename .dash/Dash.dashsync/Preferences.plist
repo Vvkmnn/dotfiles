@@ -9,7 +9,7 @@
 			<key>Vim</key>
 			<dict>
 				<key>date</key>
-				<date>2017-07-05T00:36:28Z</date>
+				<date>2018-01-14T20:53:16Z</date>
 				<key>entry</key>
 				<dict>
 					<key>aliases</key>
@@ -158,11 +158,6 @@
 	<dict>
 		<key>installed</key>
 		<dict>
-			<key>http://kapeli.com/feeds/CSS.xml</key>
-			<dict>
-				<key>date</key>
-				<date>2017-08-07T00:24:14Z</date>
-			</dict>
 			<key>http://kapeli.com/feeds/Python_3.xml</key>
 			<dict>
 				<key>date</key>
@@ -170,10 +165,16 @@
 			</dict>
 		</dict>
 		<key>uninstalled</key>
-		<dict/>
+		<dict>
+			<key>http://kapeli.com/feeds/CSS.xml</key>
+			<dict>
+				<key>date</key>
+				<date>2018-01-14T20:53:39Z</date>
+			</dict>
+		</dict>
 	</dict>
 	<key>isPinned</key>
-	<false/>
+	<true/>
 	<key>menuIconBehavior</key>
 	<integer>0</integer>
 	<key>placeholderDelimiter</key>
@@ -228,7 +229,7 @@
 	<key>shouldSyncView</key>
 	<true/>
 	<key>showInDock</key>
-	<false/>
+	<true/>
 	<key>sortDocsetsAlphabetically</key>
 	<true/>
 	<key>versionedDHCheatRepo</key>
