@@ -72,6 +72,8 @@ if dein#load_state('~/.dein')
     " WindowSwap.vim -- Swap any windows with <leader>ww
     " call dein#add('wesQ3/vim-windowswap')
 
+    " vim-airline -- A lean & mean vim statusline
+    call dein#add('vim-airline/vim-airline')
     " }}}
 
     " Navigation Plugins {{{
