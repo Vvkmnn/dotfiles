@@ -1,7 +1,8 @@
 " Bindings -----------------------------------------
 
-" Space as Leader
-let mapleader=" "
+" Unbind and Map Space as Leader (Else Leader is <\>.)
+" noremap <SPACE> <Nop>
+" let mapleader=" "
 
 " Disable arrow movement, resize splits instead.
 nnoremap <Up>    :resize +2<CR>
@@ -14,9 +15,9 @@ nmap ; :Buffers<CR>
 nmap <Leader>t :Files<CR>
 nmap <Leader>r :Tags<CR>
 
-" Operators -- 
+" Operators --
 " Sort in Visual Mode
-vnoremap <Leader>s :sort<CR> 
+vnoremap <Leader>s :sort<CR>
 
 " Escape Neovim Terminal
 :tnoremap <Esc> <C-\><C-n>
@@ -39,7 +40,7 @@ nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 
 " Sort (in Visual Mode)
-vnoremap <Leader>s :sort<CR> 
+vnoremap <Leader>s :sort<CR>
 
 " Highlight Next
 nnoremap <silent> n   n:call HLNext(0.4)<cr>

@@ -33,7 +33,11 @@ let g:neoformat_basic_format_trim = 1
 " }}
 
 " FZF {{
-set rtp+=/usr/local/bin/fzf
+" Brew based install
+"set rtp+=/usr/local/bin/fzf
+
+" Git based install
+set rtp+=~/.fzf
 
 " Customize fzf colors to match your color scheme
 let g:fzf_colors =
