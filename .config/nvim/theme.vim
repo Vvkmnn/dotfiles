@@ -28,7 +28,7 @@ hi LineNr ctermfg=237
 hi LineNr guifg=237
 
 " StatusLine
-set statusline=%=&P\ %f\ %m
+set statusline=%=%P\ %f\ %m
 set fillchars=vert:\ ,stl:\ ,stlnc:\
 set laststatus=2
 set noshowmode
