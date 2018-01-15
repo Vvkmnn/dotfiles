@@ -59,7 +59,7 @@ KEYTIMEOUT=1
 export haskell="stack ghci"
 
 # Python 3
-# export PATH="${HOME}/.anaconda/bin:$PATH" # Anaconda Distribution
+export PATH="${HOME}/.anaconda/bin:$PATH" # Anaconda Distribution
 
 # Node
 # export NVM_DIR=~/.nvm
@@ -74,6 +74,10 @@ export PATH="$GOPATH/bin:$PATH"
 # nvim
 alias v=nvim
 alias vim=nvim
+export VIMCONFIG=~/.config/nvim
+export VIMDATA=~/.local/share/nvim
+export NVIMCONFIG=~/.config/nvim
+export NVIMDATA=~/.local/share/nvim
 
 # vimR
 alias V=vimr --wait
