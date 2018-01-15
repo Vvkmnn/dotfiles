@@ -5,6 +5,9 @@ if &compatible
     set nocompatible
 endif
 
+" Autoread Files
+set autoread
+
 " UTF Encoding
 set encoding=utf-8
 
