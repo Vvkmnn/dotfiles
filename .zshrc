@@ -76,7 +76,7 @@ alias v=nvim
 alias vim=nvim
 
 # vimR
-alias V=vimr
+alias V=vimr --wait
 
 # brew
 export HOMEBREW_CASK_OPTS="--appdir=/Applications"
@@ -94,10 +94,7 @@ if [ -f "${HOME}/.google/completion.zsh.inc" ]; then source "${HOME}/.google/com
 test -e "${HOME}/.iterm2/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2/.iterm2_shell_integration.zsh"
 
 # FZF
-if [ -e /usr/local/opt/fzf/shell/completion.zsh ]; then
-source /usr/local/opt/fzf/shell/key-bindings.zsh
-source /usr/local/opt/fzf/shell/completion.zsh
-fi
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 # thefuck
 eval "$(thefuck --alias)"
@@ -130,7 +127,7 @@ SPACESHIP_KUBECONTEXT_SHOW=false
 
 # Install Zplug (if missing)
 if [[ ! -d ~/.zplug ]]; then
-git clone https://github.com/zplug/zplug ~/.zplug
+    git clone https://github.com/zplug/zplug ~/.zplug
 fi
 
 # Initialize and Update
@@ -186,10 +183,10 @@ zplug 'dracula/zsh', as:theme
 
 # Install plugins if there are plugins that have not been installed
 if ! zplug check --verbose; then
-printf "Install? [y/N]: "
-if read -q; then
-echo; zplug install
-fi
+    printf "Install? [y/N]: "
+    if read -q; then
+        echo; zplug install
+    fi
 fi
 
 # Then, source plugins and add commands to $PATH
@@ -199,18 +196,19 @@ zplug load # --verbose
 ## Plugin Settings ---------------------------------
 
 # fzf {{{
-    export FZF_DEFAULT_OPTS='--height 40% --reverse --border'
+export FZF_DEFAULT_OPTS='--height 40% --reverse --border'
 
 # z - Jump to a match, else use FZF
-        unalias z 2> /dev/null
-        z() {
-            [ $# -gt 0 ] && _z "$*" && return
-                cd "$(_z -l 2>&1 | fzf --height 40% --reverse --inline-info +s --tac --query "$*" | sed 's/^[0-9,.]* *//')"
-        }
+unalias z 2> /dev/null
+z() {
+    [ $# -gt 0 ] && _z "$*" && return
+    cd "$(_z -l 2>&1 | fzf --height 40% --reverse --inline-info +s --tac --query "$*" | sed 's/^[0-9,.]* *//')"
+}
 
 # Use RG for faster search
-    export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.git/*"'
+export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.git/*"'
 
 #}}}
+
 
 

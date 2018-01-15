@@ -1,9 +1,9 @@
 [submodule ".assets/theme/dracula"]
-	path = .assets/terminal/dracula
-	url = git@github.com:dracula/dracula-theme.git
+    path = .assets/terminal/dracula
+    url = git@github.com:dracula/dracula-theme.git
 [submodule ".fzf"]
-	path = .fzf
-	url = git@github.com:junegunn/fzf.git
+    path = .fzf
+    url = git@github.com:junegunn/fzf.git
 [submodule ".zplug"]
-	path = .zplug
-	url = git@github.com:zplug/zplug.git
+    path = .zplug
+    url = git@github.com:zplug/zplug.git
