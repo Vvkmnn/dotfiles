@@ -40,8 +40,3 @@ source ~/.config/nvim/settings.vim
 
 " Functions ----------------------------------------
 source ~/.config/nvim/functions.vim
-
-" Bindings -----------------------------------------
-source ~/.config/nvim/bindings.vim
-
-

@@ -14,14 +14,16 @@ if dein#load_state('~/.dein')
     " Editing Plugins {{{
     call dein#add('tpope/vim-sensible')                     " sensible.vim -- Sensible Defaults
     call dein#add('tpope/vim-repeat')                       " repeat.vim -- Dot commands on steroids
-    call dein#add('tpope/vim-repeat')                       " unimpaired.vim -- Handy [] maps <]q / :cnext, [q / :cprevious, ]a / :next. [b / :bprevious, etc.>
+    call dein#add('tpope/vim-unimpaired')                   " unimpaired.vim -- Handy [] maps <]q / :cnext, [q / :cprevious, ]a / :next. [b / :bprevious, etc.>
     call dein#add('sheerun/vim-polyglot')                   " vim-polyglot -- language packs for Vim
     call dein#add('rizzatti/dash.vim')                      " Dash -- Dash Support <Dash:>
     call dein#add('reedes/vim-lexical')                     " vim-lexical -- Vim Spellcheck++
+    call dein#add('junegunn/vim-easy-align')                " vim-easy-align -- Vim Alignment with <ga:>
     " call dein#add('autozimu/LanguageClient-neovim')       " LanguageClient-neovim -- Language Server Protocol support for neovim.
     " }}}
 
     " Visual Plugins {{{
+    call dein#add('vim-airline/vim-airline')                " vim-airline -- A lean & mean vim statusline
     call dein#add('dracula/vim')                            " Dracula -- A Dark Colorscheme
     " call dein#add('majutsushi/tagbar')                    " Tagbar -- a class outline viewer for Vim
     " call dein#add('ryanoasis/vim-devicons')               " VimDevIcons -- Icons in Vim
@@ -48,9 +50,8 @@ if dein#load_state('~/.dein')
     call dein#add('honza/vim-snippets')                     " vim-snippets -- snipMate & UltiSnip Snippets
     call dein#add('w0rp/ale')                               " Ale -- Asynchrous Linting Engine
     " call dein#add('Shougo/echodoc.vim')                   " echodoc.vim -- Displays docs in the function area
-    " call dein#add('ervandew/supertab')                    " Supertab -- Use <Tab> for all your insert completion needs
+    call dein#add('ervandew/supertab')                      " Supertab -- Use <Tab> for all your insert completion needs
     call dein#add('ludovicchabant/vim-gutentags')           " Gutentags -- The Vim .tags manager
-    call dein#add('neomake/neomake')                        " Neomake -- Asynchronously run programs
     call dein#add('tpope/vim-commentary')                   " commentary.vim -- Comment stuff out with <:gc[motion]>, uncomment with <:gcgc>
     call dein#add('tpope/vim-surround')                     " surround.vim -- Wrap objects with stuff using <cs[input][output], cst[input]> and remove with <ds[input]>
     " call dein#add('svermeulen/vim-easyclip')              " vim-easyclip -- Better thought out yanking, cutting, and pasting.
