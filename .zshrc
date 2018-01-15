@@ -36,7 +36,7 @@ export EDITOR=nvim
 export TERM=xterm-256color
 export ARCHEY_LOGO_FILE=$HOME/.logo
 
-# Path
+# Runtime Path
 # export PATH="/usr/local/bin:$PATH"
 # export PATH="/usr/local/sbin:$PATH"
 export PATH="$HOME/.vimr:$PATH"
@@ -73,6 +73,7 @@ export PATH="$GOPATH/bin:$PATH"
 
 # nvim
 alias v=nvim
+alias vi=nvim
 alias vim=nvim
 export VIMCONFIG=~/.config/nvim
 export VIMDATA=~/.local/share/nvim
