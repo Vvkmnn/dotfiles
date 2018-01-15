@@ -39,7 +39,7 @@ export ARCHEY_LOGO_FILE=$HOME/.logo
 # Runtime Path
 # export PATH="/usr/local/bin:$PATH"
 # export PATH="/usr/local/sbin:$PATH"
-# export PATH="$HOME/.vimr:$PATH"
+export PATH="$HOME/.vimr:$PATH"
 
 ## Environment Defaults ----------------------------
 
@@ -59,7 +59,7 @@ KEYTIMEOUT=1
 export haskell="stack ghci"
 
 # Python 3
-export PATH="${HOME}/.anaconda/bin:$PATH" # Anaconda Distribution
+# export PATH="${HOME}/.anaconda/bin:$PATH" # Anaconda Distribution
 
 # Node
 # export NVM_DIR=~/.nvm
@@ -77,7 +77,7 @@ alias vi=nvim
 alias vim=nvim
 
 # vimR
-alias V=vimr
+alias V=vimr --wait
 
 # brew
 export HOMEBREW_CASK_OPTS="--appdir=/Applications"

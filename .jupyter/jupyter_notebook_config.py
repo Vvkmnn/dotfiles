@@ -131,11 +131,9 @@ c.NotebookApp.browser = u'open -a /Applications/Google\ Chrome.app/Contents/MacO
 #c.NotebookApp.enable_mathjax = True
 
 ## extra paths to look for Javascript notebook extensions
-import os
-
-c.NotebookApp.extra_nbextensions_path = [
-    os.path.expanduser('~/.jupyter/nbextensions/')
-]
+# c.NotebookApp.extra_nbextensions_path = [
+#     os.path.expanduser('~/.jupyter/nbextensions/')
+# ]
 
 ## Extra paths to search for serving static files.
 #

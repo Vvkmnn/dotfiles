@@ -44,7 +44,8 @@ if dein#load_state('~/.dein')
     " }}}
 
     " Development Plugins {{{
-    " call dein#add('Shougo/deoplete.nvim')                 " Deoplete -- dark powered neo-completion
+    call dein#add('Shougo/deoplete.nvim')                   " Deoplete -- dark powered neo-completion
+    call dein#add('aperezdc/vim-template')                  " vim-template -- Prebuilt templates for certain filetypes via <:Template>, or <$ vim foo.x>
     call dein#add('sbdchd/neoformat')                       " vim-neoformat -- Script formatting
     call dein#add('SirVer/ultisnips')                       " ultisnips -- Vim Snippet Framework
     call dein#add('honza/vim-snippets')                     " vim-snippets -- snipMate & UltiSnip Snippets
@@ -52,6 +53,7 @@ if dein#load_state('~/.dein')
     " call dein#add('Shougo/echodoc.vim')                   " echodoc.vim -- Displays docs in the function area
     call dein#add('ervandew/supertab')                      " Supertab -- Use <Tab> for all your insert completion needs
     call dein#add('ludovicchabant/vim-gutentags')           " Gutentags -- The Vim .tags manager
+    " call dein#add('neomake/neomake')                      " Neomake -- Asynchronously run programs
     call dein#add('tpope/vim-commentary')                   " commentary.vim -- Comment stuff out with <:gc[motion]>, uncomment with <:gcgc>
     call dein#add('tpope/vim-surround')                     " surround.vim -- Wrap objects with stuff using <cs[input][output], cst[input]> and remove with <ds[input]>
     " call dein#add('svermeulen/vim-easyclip')              " vim-easyclip -- Better thought out yanking, cutting, and pasting.
