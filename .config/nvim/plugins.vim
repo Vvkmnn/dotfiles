@@ -19,7 +19,9 @@ if dein#load_state('~/.dein')
     call dein#add('rizzatti/dash.vim')                      " Dash -- Dash Support <Dash:>
     call dein#add('reedes/vim-lexical')                     " vim-lexical -- Vim Spellcheck++
     call dein#add('junegunn/vim-easy-align')                " vim-easy-align -- Vim Alignment with <ga:>
-    " call dein#add('autozimu/LanguageClient-neovim')       " LanguageClient-neovim -- Language Server Protocol support for neovim.
+    call dein#add('autozimu/LanguageClient-neovim',{
+                \ 'rev'   : 'next',
+                \ 'build' : 'bash install.sh'})             " LanguageClient-neovim -- Language Server Protocol support for neovim.
     " }}}
 
     " Visual Plugins {{{
