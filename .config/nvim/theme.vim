@@ -11,7 +11,7 @@ syntax enable
 colorscheme dracula
 
 " Background
-set background=dark
+" set background=dark
 
 " Window Characters
 set fillchars=""

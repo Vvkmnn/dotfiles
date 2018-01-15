@@ -14,7 +14,7 @@ if dein#load_state('~/.dein')
     " Editing Plugins {{{
     call dein#add('tpope/vim-sensible')                     " sensible.vim -- Sensible Defaults
     call dein#add('tpope/vim-repeat')                       " repeat.vim -- Dot commands on steroids
-    call dein#add('tpope/vim-repeat')                       " unimpaired.vim -- Handy [] maps <]q / :cnext, [q / :cprevious, ]a / :next. [b / :bprevious, etc.>
+    call dein#add('tpope/vim-unimpaired')                   " unimpaired.vim -- Handy [] maps <]q / :cnext, [q / :cprevious, ]a / :next. [b / :bprevious, etc.>
     call dein#add('sheerun/vim-polyglot')                   " vim-polyglot -- language packs for Vim
     call dein#add('rizzatti/dash.vim')                      " Dash -- Dash Support <Dash:>
     call dein#add('reedes/vim-lexical')                     " vim-lexical -- Vim Spellcheck++

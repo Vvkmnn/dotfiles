@@ -94,6 +94,10 @@ let g:neoformat_basic_format_trim = 1
 " }}
 
 " FZF {{
+nnoremap <C-p> :<C-u>FZF<CR>
+
+" Invoke FZF with <Ctrl-P>:
+
 " <Leader>t for FZF :Files
 nmap <Leader>t :Files<CR>
 
