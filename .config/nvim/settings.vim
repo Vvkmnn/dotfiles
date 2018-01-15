@@ -1,5 +1,57 @@
 " Settings -----------------------------------------
 
+" Neovim {{{
+" Leader --
+" Unbind and Map Space as Leader (Else Leader is <\>.)
+" noremap <SPACE> <Nop>
+" let mapleader=" "
+
+" Buffers
+" <;> for Buffers
+nmap ; :Buffers<CR>
+
+" Disable arrow movement, resize splits instead.
+" nnoremap <Up>    :resize +2<CR>
+" nnoremap <Down>  :resize -2<CR>
+" nnoremap <Left>  :vertical resize +2<CR>
+" nnoremap <Right> :vertical resize -2<CR>
+
+
+" Operators --
+" Sort in Visual Mode
+vnoremap <Leader>s :sort<CR>
+
+" Escape Neovim Terminal
+:tnoremap <Esc> <C-\><C-n>
+
+" This rewires n and N to do the highlighing
+nnoremap <silent> n   n:call HLNext(0.4)<cr>
+nnoremap <silent> N   N:call HLNext(0.4)<cr>
+
+" Buffers --
+" Ctrl Arrow Buffer Navigation?
+" nnoremap <silent> <C-Right> <c-w>l
+" nnoremap <silent> <C-Left> <c-w>h
+" nnoremap <silent> <C-Up> <c-w>k
+" nnoremap <silent> <C-Down> <c-w>j
+
+" Splits --
+" Ctrl HJKL Split Navigation
+nnoremap <C-H> <C-W><C-H>
+nnoremap <C-J> <C-W><C-J>
+nnoremap <C-K> <C-W><C-K>
+nnoremap <C-L> <C-W><C-L>
+
+" Visual Mode --
+" Sort (in Visual Mode)
+vnoremap <Leader>s :sort<CR>
+
+" Custom {{{
+" Highlight Next
+nnoremap <silent> n   n:call HLNext(0.4)<cr>
+nnoremap <silent> N   N:call HLNext(0.4)<cr>
+" }}}
+
 " vim-airline {{{
 " Automatically displays all buffers when there's only one tab open.
 let g:airline#extensions#tabline#enabled = 1
@@ -33,6 +85,11 @@ let g:neoformat_basic_format_trim = 1
 " }}
 
 " FZF {{
+" <Leader>t for FZF :Files
+nmap <Leader>t :Files<CR>
+
+" <Leader>t for FZF :Tags
+nmap <Leader>r :Tags<CR>
 " Brew based install
 "set rtp+=/usr/local/bin/fzf
 
@@ -40,19 +97,19 @@ let g:neoformat_basic_format_trim = 1
 set rtp+=~/.fzf
 
 " Customize fzf colors to match your color scheme
-let g:fzf_colors =
-            \ { 'fg':      ['fg', 'Normal'],
-            \ 'bg':      ['bg', 'Normal'],
-            \ 'hl':      ['fg', 'Comment'],
-            \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
-            \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
-            \ 'hl+':     ['fg', 'Statement'],
-            \ 'info':    ['fg', 'PreProc'],
-            \ 'prompt':  ['fg', 'Conditional'],
-            \ 'pointer': ['fg', 'Exception'],
-            \ 'marker':  ['fg', 'Keyword'],
-            \ 'spinner': ['fg', 'Label'],
-            \ 'header':  ['fg', 'Comment'] }
+" let g:fzf_colors =
+"             \ { 'fg':      ['fg', 'Normal'],
+"             \ 'bg':      ['bg', 'Normal'],
+"             \ 'hl':      ['fg', 'Comment'],
+"             \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+"             \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+"             \ 'hl+':     ['fg', 'Statement'],
+"             \ 'info':    ['fg', 'PreProc'],
+"             \ 'prompt':  ['fg', 'Conditional'],
+"             \ 'pointer': ['fg', 'Exception'],
+"             \ 'marker':  ['fg', 'Keyword'],
+"             \ 'spinner': ['fg', 'Label'],
+"             \ 'header':  ['fg', 'Comment'] }
 " }}}
 
 " Dash {{
@@ -60,7 +117,7 @@ let g:fzf_colors =
 :nmap <silent> <leader>d <Plug>DashSearch
 " }}
 
-" Vim Move {{
+" vim-move {{{
 "   Use escape key instead of Alt (which doesn't work on macOS
 "   http://vim.wikia.com/wiki/Mapping_fast_keycodes_in_terminal_Vim " for he <F20> hack.
 "    Needs iTerm2 set to Esc+ in Profile > Keys
