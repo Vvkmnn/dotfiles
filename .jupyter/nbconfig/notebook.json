@@ -3,7 +3,7 @@
     "vim_binding/vim_binding": true,
     "contrib_nbextensions_help_item/main": true,
     "nbextensions_configurator/config_menu/main": true,
-    "select_keymap/main": true,
+    "select_keymap/main": false,
     "help_panel/help_panel": true,
     "toggle_all_line_numbers/main": true,
     "code_prettify/autopep8": false,
