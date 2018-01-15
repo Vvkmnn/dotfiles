@@ -49,9 +49,9 @@ if dein#load_state('~/.dein')
     call dein#add('honza/vim-snippets')                     " vim-snippets -- snipMate & UltiSnip Snippets
     call dein#add('w0rp/ale')                               " Ale -- Asynchrous Linting Engine
     " call dein#add('Shougo/echodoc.vim')                   " echodoc.vim -- Displays docs in the function area
-    " call dein#add('ervandew/supertab')                    " Supertab -- Use <Tab> for all your insert completion needs
+    call dein#add('ervandew/supertab')                      " Supertab -- Use <Tab> for all your insert completion needs
     call dein#add('ludovicchabant/vim-gutentags')           " Gutentags -- The Vim .tags manager
-    call dein#add('neomake/neomake')                        " Neomake -- Asynchronously run programs
+    " call dein#add('neomake/neomake')                        " Neomake -- Asynchronously run programs
     call dein#add('tpope/vim-commentary')                   " commentary.vim -- Comment stuff out with <:gc[motion]>, uncomment with <:gcgc>
     call dein#add('tpope/vim-surround')                     " surround.vim -- Wrap objects with stuff using <cs[input][output], cst[input]> and remove with <ds[input]>
     " call dein#add('svermeulen/vim-easyclip')              " vim-easyclip -- Better thought out yanking, cutting, and pasting.
