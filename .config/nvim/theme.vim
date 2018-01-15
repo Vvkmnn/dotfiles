@@ -13,6 +13,9 @@ colorscheme dracula
 " Background
 set background=dark
 
+" Window Characters
+set fillchars=""
+
 " No Hihglight Background?
 " highlight Normal ctermbg=none
 " highlight NonText ctermbg=none
