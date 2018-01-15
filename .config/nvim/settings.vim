@@ -52,6 +52,15 @@ nnoremap <silent> n   n:call HLNext(0.4)<cr>
 nnoremap <silent> N   N:call HLNext(0.4)<cr>
 " }}}
 
+" vim-easy-align {{{
+" Start interactive EasyAlign in visual mode (e.g. vipga)
+xmap ga <Plug>(EasyAlign)
+
+" Start interactive EasyAlign for a motion/text object (e.g. gaip)
+nmap ga <Plug>(EasyAlign)
+" }}}
+
+
 " vim-airline {{{
 " Automatically displays all buffers when there's only one tab open.
 let g:airline#extensions#tabline#enabled = 1
@@ -121,12 +130,12 @@ set rtp+=~/.fzf
 "   Use escape key instead of Alt (which doesn't work on macOS
 "   http://vim.wikia.com/wiki/Mapping_fast_keycodes_in_terminal_Vim " for he <F20> hack.
 "    Needs iTerm2 set to Esc+ in Profile > Keys
-set <F20>=j
-set <F21>=k
-vmap <F20> <Plug>MoveBlockDown
-vmap <F21> <Plug>MoveBlockUp
-nmap <F20> <Plug>MoveLineDown
-nmap <F21> <Plug>MoveLineUp
+" set <F20>=j
+" set <F21>=k
+" vmap <F20> <Plug>MoveBlockDown
+" vmap <F21> <Plug>MoveBlockUp
+" nmap <F20> <Plug>MoveLineDown
+" nmap <F21> <Plug>MoveLineUp
 " }}
 
 " deoplete {{{
@@ -143,14 +152,14 @@ let g:deoplete#keyword_patterns = {}
 
 " SuperTab {{{
 let g:SuperTabClosePreviewOnPopupClose = 1
+let g:SuperTabContextDefaultCompletionType = "<c-n>"
 " }}}
 
 " LanguageClient - neovim {{{
-let g:LanguageClient_autoStart = 1
-
-let g:LanguageClient_serverCommands = {
-            \ 'typescript': ['typescript-language-server', '--stdio']
-            \ }
+" let g:LanguageClient_autoStart = 1
+" let g:LanguageClient_serverCommands = {
+"             \ 'typescript': ['typescript-language-server', '--stdio']
+"             \ }
 " }}}
 
 " vim-autoformat {{{
