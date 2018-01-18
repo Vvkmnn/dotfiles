@@ -7,3 +7,6 @@
 [submodule ".zplug"]
     path = .zplug
     url = git@github.com:zplug/zplug.git
+[submodule "/Users/vivek.menon/.config/nvim/pack/minpac/opt/minpac"]
+	path = /Users/vivek.menon/.config/nvim/pack/minpac/opt/minpac
+	url = https://github.com/k-takata/minpac.git
