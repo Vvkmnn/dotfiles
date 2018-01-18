@@ -1,12 +1,12 @@
 [submodule ".assets/theme/dracula"]
     path = .assets/terminal/dracula
     url = git@github.com:dracula/dracula-theme.git
-[submodule ".fzf"]
-    path = .fzf
-    url = git@github.com:junegunn/fzf.git
 [submodule ".zplug"]
     path = .zplug
     url = git@github.com:zplug/zplug.git
 [submodule "/Users/vivek.menon/.config/nvim/pack/minpac/opt/minpac"]
 	path = /Users/vivek.menon/.config/nvim/pack/minpac/opt/minpac
 	url = https://github.com/k-takata/minpac.git
+[submodule "/Users/vivek.menon/.fzf"]
+	path = /Users/vivek.menon/.fzf
+	url = https://github.com/junegunn/fzf.git
