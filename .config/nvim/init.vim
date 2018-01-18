@@ -26,17 +26,40 @@
 " ##################################################
 " ##################################################
 
-" Defaults -----------------------------------------
-source ~/.config/nvim/defaults.vim
+" Startup --------------------------------|VimEnter|
+augroup startup
+    autocmd!
 
-" Plugins ------------------------------------------
-source ~/.config/nvim/plugins.vim
+    " Packages {{{
+    autocmd VimEnter * call dein#load_state('~/.dein')
+    " }}}
 
-" Theme --------------------------------------------
-source ~/.config/nvim/theme.vim
+    " Aesthetic {{{
+    autocmd VimEnter * call aesthetic#Settings()
+    autocmd VimEnter * call aesthetic#Highlights()
+    " }}}
+augroup END
 
-" Settings -----------------------------------------
-source ~/.config/nvim/settings.vim
 
-" Functions ----------------------------------------
-source ~/.config/nvim/functions.vim
+" Read -------------------------------------|BufRead|
+
+" ugroup filetype_ruby
+"     autocmd!
+"     autocmd FileType ruby nnoremap <buffer> <localleader>t :!rake test
+" augroup END
+" 
+" augroup filetype_erlang
+"     autocmd!
+"     autocmd FileType erlang nnoremap <buffer> <localleader>t :!rebar eunit
+" augroup END
+"
+" Write -----------------------------------|BufWrite|
+
+" Exit -------------------------------------|VimLeave|
+
+augroup leave
+	autocmd!
+	autocmd VimLeave * call if dein#check_install()
+				\ call dein#install()
+				\ endif
+augroup END
