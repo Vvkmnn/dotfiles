@@ -1,57 +1,34 @@
 " Defaults -----------------------------------------
 
-if &compatible
-    set nocompatible                   " Be iMproved
-endif
-set autoread                           " Autoread Files
-set encoding=utf-8                     " UTF Encoding
-filetype indent plugin on              " Plugins & Filetypes
-syntax enable                          " Enable Syntax
-colorscheme dracula                    " Dracula!
-set mousefocus " Follow Mouse Focus
-
-function! defaults#splits() abort
-    set wmh=0 " Split Vertically
-    set splitright " Split to the right
-
-    " Relative numbers
-    set relativenumber
-
-    " Smarter Regex
-    set hlsearch
-    set incsearch
-    set ignorecase
-    set smartcase
-
-    " History
-    set history=700
-    set undolevels=700
-
-    " Spellcheck
-    set spelllang=en
-    " set spell
-
-    " Wild Menu! (Tab stuff)
-    set wildmenu
-    set wildmode=full
-
-    " Increment <C-a> and Subtract <C-x> in Decimal
-    set nrformats=
-
-    " macOS clipboard
-    set clipboard+=unnamedplus
-
-    " Set default indent to 4 spaces
-    set shiftwidth=4 softtabstop=4 expandtab
-
-    " Fast Keys
-    set ttimeoutlen=0
-
-    " Multiple Buffer Operations
-    set hidden
-
-    " Set Fold Level
-    set foldlevel=99
-
-    " Hide Separators
-    set fillchars+=vert:\
+function! defaults#settings() abort
+	"if &compatible
+	"   set nocompatible                     " Be iMproved
+	"endif
+	set autoread                             " Autoread Files
+	set encoding=utf-8                       " UTF Encoding
+	set mousefocus			         " Follow Mouse Focus
+	set wmh=0			         " Split Vertically
+    set fillchars=""                             " Window Characters
+	set splitright			         " Split to the right
+	set relativenumber		         " Relative line numbers
+	set hlsearch			         " Highlight search matches
+	set incsearch			         " Keep searching as we type
+	" set ignorecase		         " Case insensitive matching
+	set smartcase			         " Automatically match Case
+	set history=700			         " History memory
+	set undolevels=700		         " Undo memory
+	set spelllang=en		         " Spellcheck Language
+	set wildmode=longest:full,full           " First is longest, best match
+	set wildmenu 			         " Second is full match & opens menu
+	set nrformats=                           " Increment in Decimal, not binary
+	set clipboard^=unnamedplus 	         " Prepend to clipboard
+	set tabstop=8				 " Always insert spaces
+	set softtabstop=4                        " instead of tabs
+	set shiftwidth=4                         " In blocks of 4
+	set expandtab                            " Safe spaces
+	set ttimeoutlen=0                        " Fast key repeat
+	set foldlevel=99                         " Set fold level
+        set termguicolors                        " Use Truecolor Vim
+	filetype indent plugin on                " Plugins & Filetypes
+	syntax enable                            " Enable Syntax
+endfunction

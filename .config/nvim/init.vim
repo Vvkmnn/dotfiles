@@ -26,40 +26,33 @@
 " ##################################################
 " ##################################################
 
-" Startup --------------------------------|VimEnter|
+
+"
+
+" Startup ------------------------------------------
 augroup startup
     autocmd!
 
+    " Settings {{{
+    autocmd VimEnter * call defaults#settings()
+    " }}}
+    
     " Packages {{{
-    autocmd VimEnter * call dein#load_state('~/.dein')
+    autocmd VimEnter call minpac#update()
+    autocmd VimLeave call packages#setup()
+    autocmd VimLeave call minpac#clean()
     " }}}
 
-    " Aesthetic {{{
-    autocmd VimEnter * call aesthetic#Settings()
-    autocmd VimEnter * call aesthetic#Highlights()
+    autocmd VimEnter * call aesthetic#settings()
+    " autocmd VimEnter call aesthetic#highlights()
     " }}}
+
 augroup END
 
 
 " Read -------------------------------------|BufRead|
 
-" ugroup filetype_ruby
-"     autocmd!
-"     autocmd FileType ruby nnoremap <buffer> <localleader>t :!rake test
-" augroup END
-" 
-" augroup filetype_erlang
-"     autocmd!
-"     autocmd FileType erlang nnoremap <buffer> <localleader>t :!rebar eunit
-" augroup END
-"
 " Write -----------------------------------|BufWrite|
 
 " Exit -------------------------------------|VimLeave|
-
-augroup leave
-	autocmd!
-	autocmd VimLeave * call if dein#check_install()
-				\ call dein#install()
-				\ endif
-augroup END
+"

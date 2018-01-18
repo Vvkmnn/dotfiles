@@ -1,18 +1,11 @@
 " Theme --------------------------------------------
 
-function! aesthetic#Settings() abort
-    " True Color support
-    " set termguicolors
-    " set t_Co=256
-
-    " Background
-    " set background=dark
-
-    " Window Characters
-    set fillchars=""
+function! aesthetic#settings() abort
+	colorscheme dracula 		         " Dracula!
+	echom "FUCK"
 endfunction
 
-function! aesthetic#Highlights() abort
+function! aesthetic#highlights() abort
     " Split Formatting
     highlight vertsplit ctermfg=238 ctermbg=235
     highlight vertsplit guifg=238 guibg=235
