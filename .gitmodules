@@ -10,3 +10,6 @@
 [submodule "/Users/vivek.menon/.fzf"]
 	path = /Users/vivek.menon/.fzf
 	url = https://github.com/junegunn/fzf.git
+[submodule ".config/nvim/pack/custom/start/dein.vim"]
+	path = .config/nvim/pack/custom/start/dein.vim
+	url = https://github.com/Shougo/dein.vim.git

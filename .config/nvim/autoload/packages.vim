@@ -4,118 +4,98 @@
 function! packages#setup() abort
     echom "[._.] Setting up packages..."
     
-    " Load the optional package; or just leave it available
-    packadd minpac
+    " import Dein if in pack/*/opt
+    " Moved to pack/*/start
+    " packadd dein
+    
+    " Start
+    if dein#load_state('~/.config/nvim/dein')
+        call dein#begin('~/.config/nvim/dein')
 
-    " Initialize
-    call minpac#init() 
+        " Package Plugins {{{
+        call dein#add('Shougo/dein.vim')                        " Dein -- A Dark  Package Manager
+        "}}}
 
-    " nvim {{{
-     call minpac#add('tpope/vim-sensible', {'type': 'start'})      " sensible.vim -- Sensible Defaults
-     call minpac#add('sheerun/vim-polyglot', {'type': 'start'})    " vim-polyglot -- language packs for Vim
-     call minpac#add('tpope/vim-repeat', {'type': 'start'})    " repeat.vim -- Dot commands on steroids
-     call minpac#add('tpope/vim-unimpaired', {'type': 'start'})    " unimpaired.vim -- Handy [] maps <]q / :cnext, [q / :cprevious, ]a / :next. [b / :bprevious, etc.>
-     call minpac#add('tpope/vim-commentary', {'type': 'start'})  " commentary.vim -- Comment stuff out with <:gc[motion]>, uncomment with <:gcgc>
-     call minpac#add('tpope/vim-surround', {'type': 'start' })  " surround.vim -- Wrap objects with stuff using <cs[input][output], cst[input]> and remove with <ds[input]>
-     call minpac#add('junegunn/fzf.vim', {'type': 'start' }) " FZF -- Fuzzy File Finder!
-     call minpac#add('justinmk/vim-dirvish', {'type': 'start' }) " vim-dirvish -- netrw upgrade!
-     call minpac#add('tpope/vim-eunuch', {'type': 'opt'})                       " Vim Eunech -- Unix helpers via <:Delete>, <:Move>, ..
-     call minpac#add('gioele/vim-autoswap', {'type': 'start' }) " vim-autoswap -- No swap messages; just switch or recover
-     call minpac#add('sbdchd/neoformat', {'type': 'start' })  " vim-neoformat -- Script formatting
-     call minpac#add('dracula/vim', {'type': 'start'})  " Dracula -- A dark colorscheme
- 
-     call minpac#add('k-takata/minpac', {'type': 'opt'}) " Minpac -- A minimal package manager
-     call minpac#add('SirVer/ultisnips', {'type': 'opt'})                       " ultisnips -- Vim Snippet Framework
-     call minpac#add('honza/vim-snippets', {'type': 'opt'})                     " vim-snippets -- snipMate & UltiSnip Snippets
-     call minpac#add('w0rp/ale', {'type': 'opt'})                               " Ale -- Asynchrous Linting Engine
-     call minpac#add('Shougo/deoplete.nvim', {'type' : 'opt'})                 " Deoplete -- dark powered neo-completion
-     call minpac#add('sbdchd/neoformat', {'type' : 'opt'})                       " vim-neoformat -- Script formatting
-     call minpac#add('SirVer/ultisnips', {'type' : 'opt'})                       " ultisnips -- Vim Snippet Framework
-     call minpac#add('honza/vim-snippets', {'type' : 'opt'})                     " vim-snippets -- snipMate & UltiSnip Snippets
-     call minpac#add('w0rp/ale', {'type' : 'opt'})                               " Ale -- Asynchrous Linting Engine
-     call minpac#add('ludovicchabant/vim-gutentags', {'type' : 'opt'})           " Gutentags -- The Vim .tags manager
-     call minpac#add('luochen1990/rainbow', {'type' : 'start'})                    " Rainbow Parentheses Improved -- Color code by depth
-     call minpac#add('kassio/neoterm', {'type' : 'opt'})                         " neoterm -- one terminal for everything!
-     " }}}
- 
-     " }}}
-     
-     " git {{{
-     call minpac#add('airblade/vim-gitgutter', {'type': 'start' }) " vim-gitgutter -- Git status next to line numbers
-     call minpac#add('tpope/vim-fugitive', {'type' : 'opt'})                     " Fugitive -- Git management for Vim
-     " }}}
- 
- 
-     " Development {{{
-     " call dein#add('Shougo/echodoc.vim')                   " echodoc.vim -- Displays docs in the function area
-     " call dein#add('ervandew/supertab')                    " Supertab -- Use <Tab> for all your insert completion needs
-     " call dein#add('neomake/neomake')                        " Neomake -- Asynchronously run programs
-     " call dein#add('svermeulen/vim-easyclip')              " vim-easyclip -- Better thought out yanking, cutting, and pasting.
-     " call dein#add('neomake/neomake')                      " Neomake -- Asynchronously run Programs <:Neomake>
-     " call minpac#add('zirrostig/vim-schlepp', {'type' : 'opt'})                  " vim-schlepp -- Allow the movement of lines (or blocks) of text around easily
-     " call dein#add('hkupty/iron.nvim')                     " iron.vim -- Interactive Repls Over Neovim
-     " call dein#add('majutsushi/tagbar')                    " Tagbar -- a class outline viewer for Vim
-     " call dein#add('ryanoasis/vim-devicons')               " VimDevIcons -- Icons in Vim
-     " call dein#add('christoomey/vim-tmux-navigator')       " Tmux Navigator --  Native Ctrl-HJKL Navigation in Tmux & Vim
-     " call dein#add('hkupty/nvimux')                        " NVIMUX -- mimic tmux on neovim
-     " call dein#add('wesQ3/vim-windowswap')                 " WindowSwap.vim -- Swap any windows with <leader>ww
-     "
-     " call minpac#add('rizzatti/dash.vim', {'type': 'opt'})   " Dash -- Dash Support <Dash:>
-     " }}}
- 
-     " Markdown {{{
-     call minpac#add('reedes/vim-lexical', {'type': 'opt'})      " vim-lexical -- Vim Spellcheck++
-     "
-     " call dein#add('autozimu/LanguageClient-neovim')       " LanguageClient-neovim -- Language Server Protocol support for neovim.
-     " }}}
-          " }}}
-  
-          " Visual Plugins {{{
- "         " }}}
- " 
- "         " Navigation Plugins {{{
-          " call dein#add('mhinz/vim-startify')                   " vim-startify -- Vim start page!
-          " call dein#add('matze/vim-move')                       " vim-move -- Alt-kj for moving lines up and down
-          " call dein#add('scrooloose/nerdtree')                  " NERDTree -- Tree File System Explorer
- "         " }}}
- " 
- "         " Development Plugins {{{
- "         " }}}
- 
-     " Update
-    call minpac#update()
+        " Editing Plugins {{{
+        call dein#add('tpope/vim-sensible')                     " sensible.vim -- Sensible Defaults
+        call dein#add('tpope/vim-repeat')                       " repeat.vim -- Dot commands on steroids
+        call dein#add('tpope/vim-unimpaired')                   " unimpaired.vim -- Handy [] maps <]q / :cnext, [q / :cprevious, ]a / :next. [b / :bprevious, etc.>
+        call dein#add('sheerun/vim-polyglot')                   " vim-polyglot -- language packs for Vim
+        call dein#add('rizzatti/dash.vim')                      " Dash -- Dash Support <Dash:>
+        call dein#add('reedes/vim-lexical')                     " vim-lexical -- Vim Spellcheck++
+        " call dein#add('junegunn/vim-easy-align')                " vim-easy-align -- Vim Alignment with <ga:>
+        " call dein#add('autozimu/LanguageClient-neovim')       " LanguageClient-neovim -- Language Server Protocol support for neovim.
+        " }}}
 
-    " Clean
-    " call minpac#clean()
-    "
-    "
-let g:rainbow_active = 1
+        " Visual Plugins {{{
+        call dein#add('vim-airline/vim-airline')                " vim-airline -- A lean & mean vim statusline
+        call dein#add('dracula/vim')                            " Dracula -- A Dark Colorscheme
+        " call dein#add('majutsushi/tagbar')                    " Tagbar -- a class outline viewer for Vim
+        " call dein#add('ryanoasis/vim-devicons')               " VimDevIcons -- Icons in Vim
+        call dein#add('airblade/vim-gitgutter')                 " vim-gitgutter -- Git status next to line numbers
+        " call dein#add('christoomey/vim-tmux-navigator')       " Tmux Navigator --  Native Ctrl-HJKL Navigation in Tmux & Vim
+        " call dein#add('hkupty/nvimux')                        " NVIMUX -- mimic tmux on neovim
+        " call dein#add('wesQ3/vim-windowswap')                 " WindowSwap.vim -- Swap any windows with <leader>ww
+        " }}}
+
+        " Navigation Plugins {{{
+        " call dein#add('mhinz/vim-startify')                   " vim-startify -- Vim start page!
+        " call dein#add('junegunn/fzf.vim', { 'depends': 'fzf' }) " FZF -- Fuzzy File Finder!
+        call dein#add('justinmk/vim-dirvish')                   " Vim Dirvish -- Inline Vim File Navigation
+        call dein#add('tpope/vim-eunuch')                       " Vim Eunech -- Unix helpers via <:Delete>, <:Move>, ..
+        call dein#add('gioele/vim-autoswap')                    " vim-autoswap -- No swap messages; just switch or recover
+        " call dein#add('matze/vim-move')                       " vim-move -- Alt-kj for moving lines up and down
+        " call dein#add('scrooloose/nerdtree')                  " NERDTree -- Tree File System Explorer
+        " }}}
+
+        " Development Plugins {{{
+        call dein#add('Shougo/deoplete.nvim')                   " Deoplete -- dark powered neo-completion
+        call dein#add('aperezdc/vim-template')                  " vim-template -- Prebuilt templates for certain filetypes via <:Template>, or <$ vim foo.x>
+        call dein#add('sbdchd/neoformat')                       " vim-neoformat -- Script formatting
+        call dein#add('SirVer/ultisnips')                       " ultisnips -- Vim Snippet Framework
+        call dein#add('honza/vim-snippets')                     " vim-snippets -- snipMate & UltiSnip Snippets
+        call dein#add('w0rp/ale')                               " Ale -- Asynchrous Linting Engine
+        " call dein#add('Shougo/echodoc.vim')                   " echodoc.vim -- Displays docs in the function area
+        " call dein#add('ervandew/supertab')                      " Supertab -- Use <Tab> for all your insert completion needs
+        call dein#add('ludovicchabant/vim-gutentags')           " Gutentags -- The Vim .tags manager
+        " call dein#add('neomake/neomake')                      " Neomake -- Asynchronously run programs
+        call dein#add('tpope/vim-commentary')                   " commentary.vim -- Comment stuff out with <:gc[motion]>, uncomment with <:gcgc>
+        call dein#add('tpope/vim-surround')                     " surround.vim -- Wrap objects with stuff using <cs[input][output], cst[input]> and remove with <ds[input]>
+        " call dein#add('svermeulen/vim-easyclip')              " vim-easyclip -- Better thought out yanking, cutting, and pasting.
+        call dein#add('tpope/vim-fugitive')                     " Fugitive -- Git management for Vim
+        " call dein#add('neomake/neomake')                      " Neomake -- Asynchronously run Programs <:Neomake>
+        call dein#add('zirrostig/vim-schlepp')                  " vim-schlepp -- Allow the movement of lines (or blocks) of text around easily
+        call dein#add('luochen1990/rainbow')                    " Rainbow Parentheses Improved -- Color code by depth
+        call dein#add('kassio/neoterm')                         " neoterm -- one terminal for everything!
+        " call dein#add('hkupty/iron.nvim')                     " iron.vim -- Interactive Repls Over Neovim
+        " }}}
+
+        " GUI Plugins {{{
+        "if has('gui_running')
+        "endif
+        " }}}
+
+        " Save
+        call dein#end()
+        call dein#save_state()
+        call packages#check()
+    endif
 endfunction
+
 
 function! packages#check() abort
     echom "[._.] Checking packages..."
+
+    call dein#load_state('~/.config/nvim/dein')
+
+    if dein#check_install()
+        call dein#install()
+    endif
     
-    " Load the optional package; or just leave it available
-    packadd minpac
-
-    " Update
-    call minpac#update()
-
-    " Clean
-    " call minpac#clean()
 endfunction
 
-" 
-"         " GUI Plugins {{{
-"         "if has('gui_running')
-"         "endif
-"         " }}}
-" 
-"         " Save
-"         call dein#end()
-"         call dein#save_state()
-"     endif
-" endfunction
+" Setings ----------------------------------------------------------------------
+let g:rainbow_active = 1 "0 if you want to enable it later via :RainbowToggle
 
 " Bindings ---------------------------------------------------------------------
 
@@ -123,5 +103,5 @@ endfunction
 " Define user commands for updating/cleaning the plugins.
 " Each of them loads minpac, reloads .vimrc to register the
 " information of plugins, then performs the task.
-command! PackUpdate packadd minpac | source $MYVIMRC | call minpac#update()
-command! PackClean  packadd minpac | source $MYVIMRC | call minpac#clean()
+" command! PackUpdate packadd minpac | source $MYVIMRC | call minpac#update()
+" command! PackClean  packadd minpac | source $MYVIMRC | call minpac#clean()

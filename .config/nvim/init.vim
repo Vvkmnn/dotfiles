@@ -27,8 +27,8 @@
 " ##################################################
 
 " Runtime Path -------------------------------------
-set runtimepath^=~/.config/nvim
-set runtimepath^=~/.fzf 
+" set runtimepath^=~/.config/nvim
+" set packpath^=~/.config/nvim/pack/*/start
 
 " Startup ------------------------------------------
 augroup Startup
@@ -43,9 +43,7 @@ augroup END
 " Read -------------------------------------|BufRead|
 augroup Read
     autocmd!
-
     autocmd BufNewFile,BufRead call editor#preferences()
-
     " autocmd FileType markdown,mkd call lexical#init()
     " autocmd FileType markdown,mkd call lexical#init()
     " autocmd FileType textile call lexical#init()
@@ -65,5 +63,5 @@ augroup END
 
 " Exit -------------------------------------|VimLeave|
 augroup Exit
-    autocmd VimLeave call packages#setup()    
+    autocmd VimLeave * call packages#setup()    
 augroup END
