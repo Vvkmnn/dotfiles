@@ -26,23 +26,27 @@
 " ##################################################
 " ##################################################
 
-
-
+" Runtime Path -------------------------------------
+set runtimepath^=~/.config/nvim
+set runtimepath^=~/.fzf 
 
 " Startup ------------------------------------------
 augroup Startup
     autocmd!
-    autocmd VimEnter * call packages#setup()    " Packages
-    autocmd VimEnter * call defaults#settings() " Settings
-    autocmd VimEnter * call defaults#bindings() " Bindings
-    autocmd VimEnter * call aesthetic#settings()   " Theme
-    autocmd VimEnter * call aesthetic#highlights() " Highlights
+    autocmd VimEnter * call packages#setup()
+    autocmd VimEnter * call defaults#settings() 
+    autocmd VimEnter * call defaults#bindings()
+    autocmd VimEnter * call aesthetic#settings()   
+    autocmd VimEnter * call aesthetic#highlights()
 augroup END
 
 " Read -------------------------------------|BufRead|
 augroup Read
     autocmd!
-    " autocmd FileType * nested call editor#preferences()
+
+    autocmd BufNewFile,BufRead call editor#preferences()
+
+    " autocmd FileType markdown,mkd call lexical#init()
     " autocmd FileType markdown,mkd call lexical#init()
     " autocmd FileType textile call lexical#init()
     " autocmd FileType text call lexical#init({ 'spell': 0 })
@@ -61,5 +65,5 @@ augroup END
 
 " Exit -------------------------------------|VimLeave|
 augroup Exit
-    " autocmd VimLeave * nested call packages#maintan()
+    autocmd VimLeave call packages#setup()    
 augroup END

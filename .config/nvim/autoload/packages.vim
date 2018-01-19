@@ -1,4 +1,4 @@
-" Packages -----------------------------------------
+" Packages 
 
 " Functions --------------------------------------------------------------------
 function! packages#setup() abort
@@ -7,16 +7,10 @@ function! packages#setup() abort
     " Load the optional package; or just leave it available
     packadd minpac
 
-
-    " Append the Runtime Path
-    set runtimepath+=~/.fzf " FZF! 
-
     " Initialize
     call minpac#init() 
 
-
     " nvim {{{
-   
      call minpac#add('tpope/vim-sensible', {'type': 'start'})      " sensible.vim -- Sensible Defaults
      call minpac#add('sheerun/vim-polyglot', {'type': 'start'})    " vim-polyglot -- language packs for Vim
      call minpac#add('tpope/vim-repeat', {'type': 'start'})    " repeat.vim -- Dot commands on steroids
@@ -40,7 +34,7 @@ function! packages#setup() abort
      call minpac#add('honza/vim-snippets', {'type' : 'opt'})                     " vim-snippets -- snipMate & UltiSnip Snippets
      call minpac#add('w0rp/ale', {'type' : 'opt'})                               " Ale -- Asynchrous Linting Engine
      call minpac#add('ludovicchabant/vim-gutentags', {'type' : 'opt'})           " Gutentags -- The Vim .tags manager
-     call minpac#add('luochen1990/rainbow', {'type' : 'opt'})                    " Rainbow Parentheses Improved -- Color code by depth
+     call minpac#add('luochen1990/rainbow', {'type' : 'start'})                    " Rainbow Parentheses Improved -- Color code by depth
      call minpac#add('kassio/neoterm', {'type' : 'opt'})                         " neoterm -- one terminal for everything!
      " }}}
  
@@ -89,14 +83,17 @@ function! packages#setup() abort
  "         " }}}
  
      " Update
-     call minpac#update()
+    call minpac#update()
 
     " Clean
     " call minpac#clean()
+    "
+    "
+let g:rainbow_active = 1
 endfunction
 
-function! packages#maintain() abort
-    echom "[._.] Maintaing packages..."
+function! packages#check() abort
+    echom "[._.] Checking packages..."
     
     " Load the optional package; or just leave it available
     packadd minpac
