@@ -185,6 +185,9 @@ zplug "andrewferrier/fzf-z"
 # nvm - Autoloading and upgrading
 zplug "lukechilds/zsh-nvm"
 
+# nvm-auto - Autoload .nvmrc 
+zplug "dijitalmunky/nvm-auto" 
+
 # v - jump into vim!
 # zplug "meain/v"
 

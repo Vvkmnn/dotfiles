@@ -1,15 +1,19 @@
 [submodule ".assets/theme/dracula"]
-    path = .assets/terminal/dracula
+    path = ~/.assets/terminal/dracula
     url = git@github.com:dracula/dracula-theme.git
+
 [submodule ".zplug"]
-    path = .zplug
+    path = ~/.zplug
     url = git@github.com:zplug/zplug.git
-[submodule "/Users/vivek.menon/.config/nvim/pack/minpac/opt/minpac"]
-	path = /Users/vivek.menon/.config/nvim/pack/minpac/opt/minpac
-	url = https://github.com/k-takata/minpac.git
+
 [submodule "/Users/vivek.menon/.fzf"]
-	path = /Users/vivek.menon/.fzf
+	path = ~/vivek.menon/.fzf
 	url = https://github.com/junegunn/fzf.git
+
 [submodule ".config/nvim/pack/custom/start/dein.vim"]
-	path = .config/nvim/pack/custom/start/dein.vim
+	path = ~/.config/nvim/pack/custom/start/dein.vim
 	url = https://github.com/Shougo/dein.vim.git
+
+[submodule "/Users/vivek.menon/.nvm"]
+	path = ~/.nvm
+	url = https://github.com/creationix/nvm.git
