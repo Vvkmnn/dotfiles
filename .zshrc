@@ -47,7 +47,7 @@ export PATH="$HOME/.vimr:$PATH"
 alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
 
 # Vim-mode
-bindkey -v
+# bindkey -v
 KEYTIMEOUT=1
 
 ## Language Defaults -------------------------------
@@ -106,27 +106,35 @@ eval "$(thefuck --alias)"
 
 ## Shell Theme -------------------------------------
 
-# Little Helper!
-RPROMPT='v@%M %(?,%F{green}[-_-]%f,%F{red}[ಠ_ಠ]%f)'
+# checkBot
 ZLE_LPROMPT_INDENT=0
+RPROMPT='v@%M %(?,%F{green}[-_-]%f,%F{red}[ಠ_ಠ]%f)'
 
 # Spaceship Theme
-SPACESHIP_PROMPT_SYMBOL="ॐ "
+# Prompt {{{
+SPACESHIP_CHAR_SYMBOL='ॐ  '
 SPACESHIP_PROMPT_SEPARATE_LINE=true
-SPACESHIP_PROMPT_ADD_NEWLINE=false
-SPACESHIP_PROMPT_COLOR=red
-SPACESHIP_DIR_TRUNC=2
-SPACESHIP_TIME_SHOW=true
-SPACESHIP_TIME_COLOR=blue
-SPACESHIP_BATTERY_SHOW=false
-SPACESHIP_BATTERY_ALWAYS_SHOW=false
+SPACESHIP_PROMPT_ADD_NEWLINE=true
+# SPACESHIP_PROMPT_COLOR=red
+SPACESHIP_DIR_TRUNC=3
+# }}}
+
+# Vi Mode {{{
+SPACESHIP_VI_MODE_SHOW=false
 SPACESHIP_VI_MODE_COLOR=cyan
 # SPACESHIP_VI_MODE_INSERT=𝛁 # Nabla, normal mode
 # SPACESHIP_VI_MODE_NORMAL=𝚫 # Delta, edit mode
+# }}}
+
+# Context }}}
+SPACESHIP_USER_SHOW=false
 SPACESHIP_PYENV_SHOW=false
 SPACESHIP_CONDA_SHOW=true
 SPACESHIP_KUBECONTEXT_SHOW=false
-
+SPACESHIP_TIME_SHOW=always
+SPACESHIP_TIME_COLOR=blue
+SPACESHIP_BATTERY_SHOW=true
+# }}} 
 
 ## Shell Plugins -----------------------------------
 
