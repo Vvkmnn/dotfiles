@@ -16,19 +16,12 @@ function! packages#setup() abort
         call dein#add('Shougo/dein.vim')                        " Dein -- A Dark  Package Manager
         "}}}
 
-        " Editing Plugins {{{
+        " nvim {{{
         call dein#add('tpope/vim-sensible')                     " sensible.vim -- Sensible Defaults
         call dein#add('tpope/vim-repeat')                       " repeat.vim -- Dot commands on steroids
-        call dein#add('tpope/vim-unimpaired')                   " unimpaired.vim -- Handy [] maps <]q / :cnext, [q / :cprevious, ]a / :next. [b / :bprevious, etc.>
         call dein#add('sheerun/vim-polyglot')                   " vim-polyglot -- language packs for Vim
-        call dein#add('rizzatti/dash.vim')                      " Dash -- Dash Support <Dash:>
-        call dein#add('reedes/vim-lexical')                     " vim-lexical -- Vim Spellcheck++
-        " call dein#add('junegunn/vim-easy-align')                " vim-easy-align -- Vim Alignment with <ga:>
-        " call dein#add('autozimu/LanguageClient-neovim')       " LanguageClient-neovim -- Language Server Protocol support for neovim.
-        " }}}
-
-        " Visual Plugins {{{
-        call dein#add('vim-airline/vim-airline')                " vim-airline -- A lean & mean vim statusline
+        call dein#add('tpope/vim-unimpaired')                   " unimpaired.vim -- Handy [] maps <]q / :cnext, [q / :cprevious, ]a / :next. [b / :bprevious, etc.>
+        " call dein#add('vim-airline/vim-airline')                " vim-airline -- A lean & mean vim statusline
         call dein#add('dracula/vim')                            " Dracula -- A Dark Colorscheme
         " call dein#add('majutsushi/tagbar')                    " Tagbar -- a class outline viewer for Vim
         " call dein#add('ryanoasis/vim-devicons')               " VimDevIcons -- Icons in Vim
@@ -36,6 +29,32 @@ function! packages#setup() abort
         " call dein#add('christoomey/vim-tmux-navigator')       " Tmux Navigator --  Native Ctrl-HJKL Navigation in Tmux & Vim
         " call dein#add('hkupty/nvimux')                        " NVIMUX -- mimic tmux on neovim
         " call dein#add('wesQ3/vim-windowswap')                 " WindowSwap.vim -- Swap any windows with <leader>ww
+        " call dein#add('junegunn/vim-easy-align')                " vim-easy-align -- Vim Alignment with <ga:>
+        " call dein#add('autozimu/LanguageClient-neovim')       " LanguageClient-neovim 
+
+        " autozimu/LanguageClient-neovim {{{
+        " Language Server Protocol support for neovim.
+        call dein#add('autozimu/LanguageClient-neovim', {
+            \ 'rev': 'next',
+            \ 'build': 'bash install.sh',
+            \ })
+
+        let g:LanguageClient_serverCommands = {
+            \ 'rust': ['rustup', 'run', 'nightly', 'rls'],
+            \ 'javascript': ['javascript-typescript-stdio'],
+            \ 'typescript': ['javascript-typescript-stdio'],
+            \ }
+        " }}}
+
+        " dash {{{
+        " Dash -- Dash Support <Dash:>
+        call dein#add('rizzatti/dash.vim')                      
+        " }}}
+        
+        " markdown {{{
+        call dein#add('reedes/vim-lexical')                     " vim-lexical -- Vim Spellcheck++
+        " }}}
+        " Visual Plugins {{{
         " }}}
 
         " Navigation Plugins {{{
@@ -49,12 +68,30 @@ function! packages#setup() abort
         " }}}
 
         " Development Plugins {{{
+
+        " Shougo/deoplete {{{
         call dein#add('Shougo/deoplete.nvim')                   " Deoplete -- dark powered neo-completion
+
+        " Enable deoplete at startup
+        let g:deoplete#enable_at_startup = 1
+        " }}}
+        
+
         call dein#add('aperezdc/vim-template')                  " vim-template -- Prebuilt templates for certain filetypes via <:Template>, or <$ vim foo.x>
         call dein#add('sbdchd/neoformat')                       " vim-neoformat -- Script formatting
         call dein#add('SirVer/ultisnips')                       " ultisnips -- Vim Snippet Framework
         call dein#add('honza/vim-snippets')                     " vim-snippets -- snipMate & UltiSnip Snippets
+
+        " w0rp/ale {{{
         call dein#add('w0rp/ale')                               " Ale -- Asynchrous Linting Engine
+        
+        " Set this setting in vimrc if you want to fix files automatically on save.
+        let g:ale_fix_on_save = 1
+
+        " Enable completion where available.
+        let g:ale_completion_enabled = 1
+        " }}}
+
         " call dein#add('Shougo/echodoc.vim')                   " echodoc.vim -- Displays docs in the function area
         " call dein#add('ervandew/supertab')                      " Supertab -- Use <Tab> for all your insert completion needs
         call dein#add('ludovicchabant/vim-gutentags')           " Gutentags -- The Vim .tags manager

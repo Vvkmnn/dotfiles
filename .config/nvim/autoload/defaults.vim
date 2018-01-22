@@ -16,7 +16,7 @@ function! defaults#settings() abort
     set relativenumber		         " Relative line numbers
     set hlsearch			         " Highlight search matches
     set incsearch			         " Keep searching as we type
-    " set ignorecase		         " Case insensitive matching
+    set ignorecase		         " Case insensitive matching
     set smartcase			         " Automatically match Case
     set history=700			         " History memory
     set undolevels=700		         " Undo memory
@@ -31,7 +31,9 @@ function! defaults#settings() abort
     set expandtab                            " Safe spaces
     set ttimeoutlen=0                        " Fast key repeat
     set foldlevel=99                         " Set fold level
+    set hidden                               " Required for multiple buffer ops
     set termguicolors                        " Use Truecolor Vim
+    set title titlestring='                  " Enable Buffer Titles?
     filetype indent plugin on                " Plugins & Filetypes
     syntax enable                            " Enable Syntax
 

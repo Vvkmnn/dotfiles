@@ -6,6 +6,9 @@ assets/
 .png
 .data
 
+## nvim
+dein/**
+
 ## alfred
 workflows/
 libraries/

@@ -33,8 +33,8 @@
 " Startup ------------------------------------------
 augroup Startup
     autocmd!
-    autocmd VimEnter * call packages#setup()
     autocmd VimEnter * call defaults#settings() 
+    autocmd VimEnter * call packages#setup()
     autocmd VimEnter * call defaults#bindings()
     autocmd VimEnter * call aesthetic#settings()   
     autocmd VimEnter * call aesthetic#highlights()
@@ -44,6 +44,7 @@ augroup END
 augroup Read
     autocmd!
     autocmd BufNewFile,BufRead call editor#preferences()
+    autocmd BufNewFile,BufRead *.ts setlocal filetype=typescript
     " autocmd FileType markdown,mkd call lexical#init()
     " autocmd FileType markdown,mkd call lexical#init()
     " autocmd FileType textile call lexical#init()
