@@ -1,6 +1,5 @@
 " Defaults -----------------------------------------
 
-" Functions --------------------------------------------------------------------
 function! defaults#settings() abort
     echom "[._.] Loading default settings..."
 
@@ -37,49 +36,4 @@ function! defaults#settings() abort
     filetype indent plugin on                " Plugins & Filetypes
     syntax enable                            " Enable Syntax
 
-endfunction
-
-
-" Bindings ---------------------------------------------------------------------
-function! defaults#bindings()
-    echom "[._.] Loading default bindings..."
-    " Space as Leader
-    " let mapleader=" "
-
-    " Disable arrow movement, resize splits instead.
-    nnoremap <Up>    :resize +2<CR>
-    nnoremap <Down>  :resize -2<CR>
-    nnoremap <Left>  :vertical resize +2<CR>
-    nnoremap <Right> :vertical resize -2<CR>
-
-    " <;> as Buffer
-    " nnoremap ; :Buffers<CR>
-    " nnoremap <Leader>t :Files<CR>
-    " nnoremap <Leader>r :Tags<CR>
-
-    " Operators -- 
-    " Sort in Visual Mode
-    vnoremap <Leader>s :sort<CR> 
-
-    " Escape Neovim Terminal
-    "tnoremap <Esc> <C-\><C-n>
-
-    " Ctrl Arrow Buffer Navigation
-    " nnoremap <silent> <C-Right> <c-w>l
-    " nnoremap <silent> <C-Left> <c-w>h
-    " nnoremap <silent> <C-Up> <c-w>k
-    " nnoremap <silent> <C-Down> <c-w>j
-
-    " <Ctrl-hjkl> Split Navigation
-    nnoremap <C-J> <C-W><C-J>
-    nnoremap <C-K> <C-W><C-K>
-    nnoremap <C-L> <C-W><C-L>
-    nnoremap <C-H> <C-W><C-H>
-
-    " Sort (in Visual Mode)
-    " vnoremap <Leader>s :sort<CR> 
-
-    " Highlight Next rewires n and N to do the highlighing
-    nnoremap <silent> n   n:call functions#HLNext(0.4)<cr>
-    nnoremap <silent> N   N:call functions#HLNext(0.4)<cr>
 endfunction
