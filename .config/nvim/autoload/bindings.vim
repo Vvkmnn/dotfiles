@@ -1,9 +1,9 @@
 " Bindings -----------------------------------------
 
-function! bindings#leader()
+function! bindings#leader() abort
     echom "[._.] Loading Leader bindings..."
     " Space as Leader
-    " let mapleader=" "
+    let mapleader=" "
 
     " <;> as Buffer
     " nnoremap ; :Buffers<CR>
@@ -11,7 +11,7 @@ function! bindings#leader()
     " nnoremap <Leader>r :Tags<CR>
 endfunction
 
-function! bindings#normal()
+function! bindings#normal() abort
     echom "[._.] Loading Normal mode bindings..."
 
     " Disable arrow movement, resize splits instead.
@@ -45,14 +45,14 @@ function! bindings#normal()
 endfunction
 
 
-function! bindings#visual()
+function! bindings#visual() abort
     echom "[._.] Loading Visual mode bindings..."
 
     " Sort in Visual Mode
     vnoremap <Leader>s :sort<CR> 
 endfunction
 
-function! bindings#terminal()
+function! bindings#terminal() abort
     echom "[._.] Loading Terminal mode bindings..."
 
     " Esc to leave Terminal Mode
@@ -67,3 +67,17 @@ function! bindings#terminal()
 
 endfunction
 
+" Search Dash via < <leader>d{motion} >
+nnoremap <silent> <leader>d <Plug>DashSearch
+
+function! bindings#plugin() abort
+    echom "[._.] Loading Plugin bindings..."
+
+    " vim-easy-align {{{
+    " Start interactive EasyAlign in visual mode (e.g. vipga) with <ga>
+    xnoremap ga <Plug>(EasyAlign)
+
+    " Start interactive EasyAlign for a motion/text object (e.g. <ga{motion}>)
+    nnoremap ga <Plug>(EasyAlign)
+    " }}}
+endfunction
