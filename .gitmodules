@@ -17,3 +17,6 @@
 [submodule "/Users/vivek.menon/.nvm"]
 	path = ~/.nvm
 	url = https://github.com/creationix/nvm.git
+[submodule ".config/nvim/pack/custom/dein.vim"]
+	path = .config/nvim/pack/custom/dein.vim
+	url = https://github.com/Shougo/dein.vim
