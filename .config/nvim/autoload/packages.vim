@@ -38,6 +38,11 @@ function! packages#setup() abort
 
         " vim-airline/vim-airline -- A lean & mean vim statusline {{{
         call dein#add('vim-airline/vim-airline')
+        call dein#add('vim-airline/vim-airline-themes')
+        let g:airline#extensions#tabline#enabled = 1 " Automatically displays all buffers when there's only one tab open.
+        let g:airline#extensions#tabline#left_sep = ' ' " Straight Tabs
+        let g:airline#extensions#tabline#left_alt_sep = '|' " Straight Tabs
+        let g:airline#extensions#tabline#formatter = 'unique_tail_improved' " More informative titles
         " }}}
 
         " airblade/vim-gitgutter -- Git status next to line numbers {{{
@@ -61,7 +66,7 @@ function! packages#setup() abort
         let g:LanguageClient_serverCommands = {
                     \ 'rust': ['rustup', 'run', 'nightly', 'rls'],
                     \ 'javascript': ['javascript-typescript-stdio'],
-                    \ 'typescript': ['javascript-typescript-stdio'],
+                    \ 'typescript': ['tsserver'],
                     \ } " Language Server Protocol paths
         " }}}
 
@@ -74,7 +79,7 @@ function! packages#setup() abort
         " }}}
 
         " Vim Dirvish -- Inline Vim File Navigation
-        call dein#add('justinmk/vim-dirvish')
+        " call dein#add('justinmk/vim-dirvish')
         " }}}
 
         " surround.vim -- Wrap objects with stuff using <cs[input][output], cst[input]> and remove with <ds[input]>
@@ -85,8 +90,8 @@ function! packages#setup() abort
         call dein#add('tpope/vim-eunuch')
         " }}}
 
-        " Fugitive -- Git management for Vim
-        call dein#add('tpope/vim-fugitive')
+        " Vimagit -- Emacs style Git management via <:Magit>, <C-n>, S[tage], and CC[omit] {{{
+        call dein#add('jreybert/vimagit')
         " }}}
 
         " Rainbow Parentheses Improved -- Color code by depth

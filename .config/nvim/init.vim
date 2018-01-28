@@ -58,10 +58,10 @@ augroup END
 " Write -----------------------------------|BufWrite|
 augroup Write
     autocmd!
-    autocmd BufWritePre * undojoin | Neoformat " Format on Save
+    " autocmd BufWritePre * try | undojoin | Neoformat " Format on Save
 augroup END
 
 " Exit -------------------------------------|VimLeave|
 augroup Exit
-    autocmd VimLeave * call packages#setup()
+    autocmd VimLeave * call packages#check()
 augroup END

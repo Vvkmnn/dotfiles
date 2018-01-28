@@ -31,8 +31,8 @@
 # Settings
 export LANG=en_US.UTF-8
 export BROWSER=open
-export VISUAL=vimr
-export EDITOR=nvim
+export VISUAL="nvim -S"
+export EDITOR="vimr"
 export TERM=xterm-256color
 export ARCHEY_LOGO_FILE=$HOME/.logo
 
@@ -81,7 +81,7 @@ export NVIMCONFIG=~/.config/nvim
 export NVIMDATA=~/.local/share/nvim
 
 # vimR
-alias V=vimr --wait
+alias V=$EDITOR
 
 # brew
 export HOMEBREW_CASK_OPTS="--appdir=/Applications"
@@ -107,7 +107,7 @@ eval "$(thefuck --alias)"
 ## Shell Theme -------------------------------------
 
 # checkBot
-ZLE_LPROMPT_INDENT=0
+# ZLE_LPROMPT_INDENT=0
 RPROMPT='v@%M %(?,%F{green}[-_-]%f,%F{red}[ಠ_ಠ]%f)'
 
 # Spaceship Theme
@@ -134,7 +134,7 @@ SPACESHIP_KUBECONTEXT_SHOW=false
 SPACESHIP_TIME_SHOW=always
 SPACESHIP_TIME_COLOR=blue
 SPACESHIP_BATTERY_SHOW=true
-# }}} 
+# }}}
 
 ## Shell Plugins -----------------------------------
 
@@ -158,8 +158,10 @@ zplug "zsh-users/zsh-syntax-highlighting", defer:2
 # Sublime Support
 # zplug "plugins/sublime", from:oh-my-zsh
 
-# Vi(m) Mode
-# zplug "plugins/vi-mode", from:oh-my-zsh
+# Vi(m) Mode {{{
+export RPS1="%{$reset_color%}"
+zplug "plugins/vi-mode", from:oh-my-zsh
+# }}}
 
 # Git Plugin
 zplug "plugins/git", from:oh-my-zsh
@@ -185,8 +187,8 @@ zplug "andrewferrier/fzf-z"
 # nvm - Autoloading and upgrading
 zplug "lukechilds/zsh-nvm"
 
-# nvm-auto - Autoload .nvmrc 
-zplug "dijitalmunky/nvm-auto" 
+# nvm-auto - Autoload .nvmrc
+zplug "dijitalmunky/nvm-auto"
 
 # v - jump into vim!
 # zplug "meain/v"
