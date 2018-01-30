@@ -2,14 +2,14 @@
     path = ~/.zplug
     url = git@github.com:zplug/zplug.git
 
-[submodule ".fzf"]
+[submodule "~/.fzf"]
 	path = ~/.fzf
 	url = https://github.com/junegunn/fzf.git
 
-[submodule ".config/nvim/pack/custom/start/dein.vim"]
+[submodule "~/.config/nvim/pack/custom/start/dein.vim"]
 	path = ~/.config/nvim/pack/custom/start/dein.vim
 	url = https://github.com/Shougo/dein.vim.git
 
-[submodule ".nvm"]
+[submodule "~/.nvm"]
 	path = ~/.nvm
 	url = https://github.com/creationix/nvm.git
