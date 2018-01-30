@@ -40,8 +40,6 @@ function! packages#setup() abort
         call dein#add('vim-airline/vim-airline')
         call dein#add('vim-airline/vim-airline-themes')
         let g:airline#extensions#tabline#enabled = 1 " Automatically displays all buffers when there's only one tab open.
-        let g:airline#extensions#tabline#left_sep = ' ' " Straight Tabs
-        let g:airline#extensions#tabline#left_alt_sep = '|' " Straight Tabs
         let g:airline#extensions#tabline#formatter = 'unique_tail_improved' " More informative titles
         " }}}
 
@@ -123,7 +121,7 @@ function! packages#setup() abort
         " }}}
 
         " vim-easyclip -- Better thought out yanking, cutting, and pasting.
-        call dein#add('svermeulen/vim-easyclip')
+        " call dein#add('svermeulen/vim-easyclip')
         " }}}
 
         " sbdchd/vim-neoformat -- Script formatting
@@ -187,8 +185,6 @@ function! packages#setup() abort
         " call dein#add('mklabs/split-term.vim')
         " call dein#add('Shougo/deol.nvim')
         " }}}
-
-        call bindings#plugin()
     endif
 endfunction
 
