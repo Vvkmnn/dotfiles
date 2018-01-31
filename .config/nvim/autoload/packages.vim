@@ -38,8 +38,9 @@ function! packages#setup() abort
 
         " vim-airline/vim-airline -- A lean & mean vim statusline {{{
         call dein#add('vim-airline/vim-airline')
-        call dein#add('vim-airline/vim-airline-themes')
+        " call dein#add('vim-airline/vim-airline-themes')
         let g:airline#extensions#tabline#enabled = 1 " Automatically displays all buffers when there's only one tab open.
+        " let g:airline#extensions#tabline#enabled = 1 " Automatically displays all buffers when there's only one tab open.
         let g:airline#extensions#tabline#formatter = 'unique_tail_improved' " More informative titles
         " }}}
 
@@ -48,7 +49,11 @@ function! packages#setup() abort
         " }}}
 
         " junegunn/vim-easy-align -- Vim Alignment with <ga:> {{{
-        call dein#add('junegunn/vim-easy-align')
+        " call dein#add('junegunn/vim-easy-align')
+        " }}}
+
+        " thaerkh/vim-workspace -- Automated Session Management with <:ToggleWorkplace> {{{
+        call dein#add('thaerkh/vim-workspace')
         " }}}
 
         " giole/vim-autoswap -- No swap messages; just switch or recover {{{
@@ -76,8 +81,8 @@ function! packages#setup() abort
         call dein#add('reedes/vim-lexical')
         " }}}
 
-        " Vim Dirvish -- Inline Vim File Navigation
-        " call dein#add('justinmk/vim-dirvish')
+        " tpope/vim-vinegar -- netrw upgrade {{{
+        call dein#add('tpope/vim-vinegar')
         " }}}
 
         " surround.vim -- Wrap objects with stuff using <cs[input][output], cst[input]> and remove with <ds[input]>
@@ -108,6 +113,45 @@ function! packages#setup() abort
 
         " Shougo/denite.vim -- Emacs Helm for Vim {{{
         call dein#add('Shougo/denite.nvim')
+
+        call denite#custom#option('_', {
+                \ 'prompt': 'π:',
+                \ 'empty': 0,
+                \ 'winheight': 16,
+                \ 'source_names': 'short',
+                \ 'vertical_preview': 1,
+                \ 'auto-accel': 1,
+                \ 'auto-resume': 1,
+                \ }) " Denite Options
+
+
+" The Silver Searcher
+if executable('ag')
+	call denite#custom#var('file_rec', 'command',
+		\ ['ag', '-U', '--hidden', '--follow', '--nocolor', '--nogroup', '-g', '']) 
+
+	" Setup ignore patterns in your .agignore file!
+	" https://github.com/ggreer/the_silver_searcher/wiki/Advanced-Usage
+
+	call denite#custom#var('grep', 'command', ['ag'])
+	call denite#custom#var('grep', 'recursive_opts', [])
+	call denite#custom#var('grep', 'pattern_opt', [])
+	call denite#custom#var('grep', 'separator', ['--'])
+	call denite#custom#var('grep', 'final_opts', [])
+	call denite#custom#var('grep', 'default_opts',
+		\ [ '--skip-vcs-ignores', '--vimgrep', '--smart-case', '--hidden' ])
+
+" elseif executable('ack')
+" 	" Ack command
+" 	call denite#custom#var('grep', 'command', ['ack'])
+" 	call denite#custom#var('grep', 'recursive_opts', [])
+" 	call denite#custom#var('grep', 'pattern_opt', ['--match'])
+" 	call denite#custom#var('grep', 'separator', ['--'])
+" 	call denite#custom#var('grep', 'final_opts', [])
+" 	call denite#custom#var('grep', 'default_opts',
+" 			\ ['--ackrc', $HOME.'/.config/ackrc', '-H',
+" 			\ '--nopager', '--nocolor', '--nogroup', '--column'])
+endif
         " }}}
 
         " w0rp/ale -- Asynchrous Linting Engine {{{
@@ -172,7 +216,7 @@ function! packages#setup() abort
         " }}}
 
         " Shougo/dein -- A Dark  Package Manager {{{
-        call dein#add('~/.config/nvim/autoload/dein.vim')
+        call dein#add('~/.config/nvim/pack/custom/dein.vim')
         call dein#end() " End Package Adds
         call dein#save_state() " Save Dein State
         "}}}
@@ -190,8 +234,6 @@ function! packages#setup() abort
         " call dein#add('mklabs/split-term.vim')
         " call dein#add('Shougo/deol.nvim')
         " }}}
-
-        call bindings#plugin()
     endif
 endfunction
 

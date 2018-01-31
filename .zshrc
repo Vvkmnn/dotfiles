@@ -31,8 +31,8 @@
 # Settings
 export LANG=en_US.UTF-8
 export BROWSER=open
-export VISUAL="nvim -S"
-export EDITOR="vimr"
+export VISUAL="nvim"
+export EDITOR="vimr --wait --nvim"
 export TERM=xterm-256color
 export ARCHEY_LOGO_FILE=$HOME/.logo
 
@@ -139,9 +139,9 @@ SPACESHIP_BATTERY_SHOW=true
 ## Shell Plugins -----------------------------------
 
 # Install Zplug (if missing)
-if [[ ! -d ~/.zplug ]]; then
-    git clone https://github.com/zplug/zplug ~/.zplug
-fi
+# if [ ! -d ~/.zplug ]; then
+#     git clone https://github.com/zplug/zplug ~/.zplug
+# fi
 
 # Initialize and Update
 source ~/.zplug/init.zsh
@@ -170,7 +170,7 @@ zplug "plugins/git", from:oh-my-zsh
 # zplug "plugins/virtualenvwrapper", from:oh-my-zsh
 
 # Spaceship Theme
-zplug "denysdovhan/spaceship-zsh-theme", use:spaceship.zsh, from:github, as:theme
+zplug "denysdovhan/spaceship-prompt", use:spaceship.zsh, from:github, as:theme
 
 # Athame (Vim in Shell)
 # zplug "ardagnir/athame"
