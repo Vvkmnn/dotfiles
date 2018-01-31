@@ -37,7 +37,6 @@ augroup Startup
     autocmd VimEnter * call packages#setup()
     autocmd VimEnter * call aesthetic#settings()
     autocmd VimEnter * call aesthetic#highlights()
-    autocmd VimEnter * call bindings#plugin()
     autocmd VimEnter * call bindings#leader()
     autocmd VimEnter * call bindings#normal()
     autocmd VimEnter * call bindings#visual()
@@ -47,7 +46,6 @@ augroup END
 " Read -------------------------------------|BufRead|
 augroup Read
     autocmd!
-    autocmd BufNewFile,BufRead call packages#check()
     autocmd BufNewFile,BufRead call editor#preferences()
     autocmd BufNewFile,BufRead *.ts setlocal filetype=typescript " TypeScript
     " autocmd FileType markdown,mkd call lexical#init()

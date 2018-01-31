@@ -2,23 +2,26 @@
 
 function! bindings#leader() abort
     echom "[._.] Loading Leader bindings..."
-    " Space as Leader
-    let mapleader=" "
+    let mapleader="\Space" " Space as Leader
 
     " <;> as Buffer
     " nnoremap ; :Buffers<CR>
     " nnoremap <Leader>t :Files<CR>
     " nnoremap <Leader>r :Tags<CR>
+    
+    " thaerkh/vim-workspace {{{
+    nnoremap <leader>s :ToggleWorkspace<CR>
+    " }}}
 endfunction
 
 function! bindings#normal() abort
     echom "[._.] Loading Normal mode bindings..."
 
     " Disable arrow movement, resize splits instead.
-    nnoremap <Up>    :resize +2<CR>
-    nnoremap <Down>  :resize -2<CR>
-    nnoremap <Left>  :vertical resize +2<CR>
-    nnoremap <Right> :vertical resize -2<CR>
+    " nnoremap <Up>    :resize +2<CR>
+    " nnoremap <Down>  :resize -2<CR>
+    " nnoremap <Left>  :vertical resize +2<CR>
+    " nnoremap <Right> :vertical resize -2<CR>
     
     " Split Navigation using Control
     nnoremap <C-h> <c-w>h
@@ -40,8 +43,9 @@ function! bindings#normal() abort
     " nnoremap <C-H> <C-W><C-H>
 
     " Highlight Next rewires n and N to do the highlighing
-    nnoremap <silent> n   n:call functions#HLNext(0.4)<cr>
-    nnoremap <silent> N   N:call functions#HLNext(0.4)<cr>
+    " nnoremap <silent> n   n:call functions#HLNext(0.4)<cr>
+    " nnoremap <silent> N   N:call functions#HLNext(0.4)<cr>
+
 endfunction
 
 
@@ -64,7 +68,6 @@ function! bindings#terminal() abort
     tnoremap <C-j> <c-\><c-n><c-w>j
     tnoremap <C-k> <c-\><c-n><c-w>k
     tnoremap <C-l> <c-\><c-n><c-w>l
-
 endfunction
 
 " Search Dash via < <leader>d{motion} >
@@ -73,11 +76,5 @@ nnoremap <silent> <leader>d <Plug>DashSearch
 function! bindings#plugin() abort
     echom "[._.] Loading Plugin bindings..."
 
-    " vim-easy-align {{{
-    " Start interactive EasyAlign in visual mode (e.g. vipga) with <ga>
-    xnoremap ga <Plug>(EasyAlign)
 
-    " Start interactive EasyAlign for a motion/text object (e.g. <ga{motion}>)
-    nnoremap ga <Plug>(EasyAlign)
-    " }}}
 endfunction
