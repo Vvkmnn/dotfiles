@@ -45,9 +45,15 @@ export PATH="$HOME/.vimr:$PATH"
 
 # Dotfiles
 alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
+alias d="dotfiles"
+alias ds="dotfiles status"
+alias dd="dotfiles diff"
+alias da="dotfiles add"
+alias da="dotfiles commit"
+alias dr="dotfiles remove"
 
 # Vim-mode
-# bindkey -v
+bindkey -v
 KEYTIMEOUT=1
 
 ## Language Defaults -------------------------------
@@ -108,7 +114,7 @@ eval "$(thefuck --alias)"
 
 # checkBot
 # ZLE_LPROMPT_INDENT=0
-RPROMPT='v@%M %(?,%F{green}[-_-]%f,%F{red}[ಠ_ಠ]%f)'
+# RPROMPT='v@%M %(?,%F{green}[-_-]%f,%F{red}[ಠ_ಠ]%f)'
 
 # Spaceship Theme
 # Prompt {{{
@@ -120,10 +126,10 @@ SPACESHIP_DIR_TRUNC=3
 # }}}
 
 # Vi Mode {{{
-SPACESHIP_VI_MODE_SHOW=false
+SPACESHIP_VI_MODE_SHOW=true
 SPACESHIP_VI_MODE_COLOR=cyan
-# SPACESHIP_VI_MODE_INSERT=𝛁 # Nabla, normal mode
-# SPACESHIP_VI_MODE_NORMAL=𝚫 # Delta, edit mode
+SPACESHIP_VI_MODE_INSERT=𝛁 # Nabla, normal mode
+SPACESHIP_VI_MODE_NORMAL=𝚫 # Delta, edit mode
 # }}}
 
 # Context }}}
@@ -214,18 +220,17 @@ zplug load # --verbose
 ## Plugin Settings ---------------------------------
 
 # fzf {{{
-export FZF_DEFAULT_OPTS='--height 40% --reverse --border'
+# export FZF_DEFAULT_OPTS='--height 40% --reverse --border'
 
 # z - Jump to a match, else use FZF
-unalias z 2> /dev/null
-z() {
-    [ $# -gt 0 ] && _z "$*" && return
-    cd "$(_z -l 2>&1 | fzf --height 40% --reverse --inline-info +s --tac --query "$*" | sed 's/^[0-9,.]* *//')"
-}
+# unalias z 2> /dev/null
+# z() {
+#     [ $# -gt 0 ] && _z "$*" && return
+#     cd "$(_z -l 2>&1 | fzf --height 40% --reverse --inline-info +s --tac --query "$*" | sed 's/^[0-9,.]* *//')"
+# }
 
 # Use RG for faster search
-export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.git/*"'
-
+# export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.git/*"'
 #}}}
 
 
