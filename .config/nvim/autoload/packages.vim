@@ -40,8 +40,6 @@ function! packages#setup() abort
         call dein#add('vim-airline/vim-airline')
         call dein#add('vim-airline/vim-airline-themes')
         let g:airline#extensions#tabline#enabled = 1 " Automatically displays all buffers when there's only one tab open.
-        let g:airline#extensions#tabline#left_sep = ' ' " Straight Tabs
-        let g:airline#extensions#tabline#left_alt_sep = '|' " Straight Tabs
         let g:airline#extensions#tabline#formatter = 'unique_tail_improved' " More informative titles
         " }}}
 
@@ -90,8 +88,12 @@ function! packages#setup() abort
         call dein#add('tpope/vim-eunuch')
         " }}}
 
+        " tpope/vim-fugitive -- A Vim Git Wrapper {{{
+        call dein#add('tpope/vim-fugitive')
+        " }}}
+
         " Vimagit -- Emacs style Git management via <:Magit>, <C-n>, S[tage], and CC[omit] {{{
-        call dein#add('jreybert/vimagit')
+        " call dein#add('jreybert/vimagit')
         " }}}
 
         " Rainbow Parentheses Improved -- Color code by depth
@@ -123,7 +125,7 @@ function! packages#setup() abort
         " }}}
 
         " vim-easyclip -- Better thought out yanking, cutting, and pasting.
-        call dein#add('svermeulen/vim-easyclip')
+        " call dein#add('svermeulen/vim-easyclip')
         " }}}
 
         " sbdchd/vim-neoformat -- Script formatting
@@ -165,7 +167,8 @@ function! packages#setup() abort
         " }}}
 
         " iron.vim -- Interactive Repls Over Neovim {{{
-        " call dein#add('hkupty/iron.nvim')
+        call dein#add('hkupty/iron.nvim')
+        let g:iron_repl_open_cmd = "vsplit"
         " }}}
 
         " Shougo/dein -- A Dark  Package Manager {{{

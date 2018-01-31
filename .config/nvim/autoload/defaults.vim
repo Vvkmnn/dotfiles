@@ -35,5 +35,6 @@ function! defaults#settings() abort
     set title titlestring=                  " Enable Buffer Titles?
     filetype indent plugin on                " Plugins & Filetypes
     syntax enable                            " Enable Syntax
+    set shell=/bin/bash                       " Use Bash Shell
 
 endfunction
