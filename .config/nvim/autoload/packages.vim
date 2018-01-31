@@ -17,7 +17,7 @@ function! packages#setup() abort
         " }}}
 
         " tpope/sensible.vim -- Sensible Defaults {{{
-        call dein#add('tpope/vim-sensible')
+        " call dein#add('tpope/vim-sensible')
         " }}}
 
         " tpope/repeat.vim -- Dot commands on steroids {{{
@@ -25,7 +25,7 @@ function! packages#setup() abort
         " }}}
 
         " sheerun/vim-polyglot -- language packs for Vim {{{
-        call dein#add('sheerun/vim-polyglot')
+        " call dein#add('sheerun/vim-polyglot')
         " }}}
 
         " tpope/commentary.vim -- Comment stuff out with <:gc[motion]>, uncomment with <:gcgc> {{{
@@ -36,16 +36,22 @@ function! packages#setup() abort
         call dein#add('tpope/vim-unimpaired')
         " }}}
 
+        " ap/vim-buftabline -- Vim Buffer Tabs {{{
+        " call dein#add('ap/vim-buftabline')
+        " }}}
+
         " vim-airline/vim-airline -- A lean & mean vim statusline {{{
         call dein#add('vim-airline/vim-airline')
-        " call dein#add('vim-airline/vim-airline-themes')
-        let g:airline#extensions#tabline#enabled = 1 " Automatically displays all buffers when there's only one tab open.
-        " let g:airline#extensions#tabline#enabled = 1 " Automatically displays all buffers when there's only one tab open.
-        let g:airline#extensions#tabline#formatter = 'unique_tail_improved' " More informative titles
+
+        if dein#tap('vim-airline') && has('nvim')
+            let g:airline#extensions#tabline#enabled = 1 " Automatically displays all buffers when there's only one tab open.
+            let g:airline#extensions#tabline#formatter = 'unique_tail_improved' " More informative titles
+        endif
         " }}}
 
         " airblade/vim-gitgutter -- Git status next to line numbers {{{
         call dein#add('airblade/vim-gitgutter')
+
         " }}}
 
         " junegunn/vim-easy-align -- Vim Alignment with <ga:> {{{
@@ -66,11 +72,13 @@ function! packages#setup() abort
                     \ 'build': 'bash install.sh',
                     \ }) " Language Server Protocol support
 
-        let g:LanguageClient_serverCommands = {
-                    \ 'rust': ['rustup', 'run', 'nightly', 'rls'],
-                    \ 'javascript': ['javascript-typescript-stdio'],
-                    \ 'typescript': ['tsserver'],
-                    \ } " Language Server Protocol paths
+        if dein#tap('LanguageClient-neovim') && has('nvim')
+            let g:LanguageClient_serverCommands = {
+                        \ 'rust': ['rustup', 'run', 'nightly', 'rls'],
+                        \ 'javascript': ['javascript-typescript-stdio'],
+                        \ 'typescript': ['tsserver'],
+                        \ } " Language Server Protocol paths
+            endif
         " }}}
 
         " Dash -- Dash Support <Dash:> {{{
@@ -108,56 +116,62 @@ function! packages#setup() abort
 
         " Shougo/deoplete -- dark powered neo-completion {{{
         call dein#add('Shougo/deoplete.nvim')
-        let g:deoplete#enable_at_startup = 1 " Enable deoplete at startup
+
+        if dein#tap('deoplete.nvim') && has('nvim')
+            let g:deoplete#enable_at_startup = 1 " Enable deoplete at startup
+        endif
         " }}}
 
         " Shougo/denite.vim -- Emacs Helm for Vim {{{
         call dein#add('Shougo/denite.nvim')
+        if dein#tap('denite.nvim') && has('nvim')
+                call denite#custom#option('_', {
+                        \ 'prompt': 'π:',
+                        \ 'empty': 0,
+                        \ 'winheight': 16,
+                        \ 'source_names': 'short',
+                        \ 'vertical_preview': 1,
+                        \ 'auto-accel': 1,
+                        \ 'auto-resume': 1,
+                        \ }) " Denite Options
 
-        call denite#custom#option('_', {
-                \ 'prompt': 'π:',
-                \ 'empty': 0,
-                \ 'winheight': 16,
-                \ 'source_names': 'short',
-                \ 'vertical_preview': 1,
-                \ 'auto-accel': 1,
-                \ 'auto-resume': 1,
-                \ }) " Denite Options
+                " The Silver Searcher
+                if executable('ag')
+                        call denite#custom#var('file_rec', 'command',
+                                \ ['ag', '-U', '--hidden', '--follow', '--nocolor', '--nogroup', '-g', '']) 
 
+                        " Setup ignore patterns in your .agignore file!
+                        " https://github.com/ggreer/the_silver_searcher/wiki/Advanced-Usage
 
-" The Silver Searcher
-if executable('ag')
-	call denite#custom#var('file_rec', 'command',
-		\ ['ag', '-U', '--hidden', '--follow', '--nocolor', '--nogroup', '-g', '']) 
+                        call denite#custom#var('grep', 'command', ['ag'])
+                        call denite#custom#var('grep', 'recursive_opts', [])
+                        call denite#custom#var('grep', 'pattern_opt', [])
+                        call denite#custom#var('grep', 'separator', ['--'])
+                        call denite#custom#var('grep', 'final_opts', [])
+                        call denite#custom#var('grep', 'default_opts',
+                                \ [ '--skip-vcs-ignores', '--vimgrep', '--smart-case', '--hidden' ])
 
-	" Setup ignore patterns in your .agignore file!
-	" https://github.com/ggreer/the_silver_searcher/wiki/Advanced-Usage
-
-	call denite#custom#var('grep', 'command', ['ag'])
-	call denite#custom#var('grep', 'recursive_opts', [])
-	call denite#custom#var('grep', 'pattern_opt', [])
-	call denite#custom#var('grep', 'separator', ['--'])
-	call denite#custom#var('grep', 'final_opts', [])
-	call denite#custom#var('grep', 'default_opts',
-		\ [ '--skip-vcs-ignores', '--vimgrep', '--smart-case', '--hidden' ])
-
-" elseif executable('ack')
-" 	" Ack command
-" 	call denite#custom#var('grep', 'command', ['ack'])
-" 	call denite#custom#var('grep', 'recursive_opts', [])
-" 	call denite#custom#var('grep', 'pattern_opt', ['--match'])
-" 	call denite#custom#var('grep', 'separator', ['--'])
-" 	call denite#custom#var('grep', 'final_opts', [])
-" 	call denite#custom#var('grep', 'default_opts',
-" 			\ ['--ackrc', $HOME.'/.config/ackrc', '-H',
-" 			\ '--nopager', '--nocolor', '--nogroup', '--column'])
-endif
+                " elseif executable('ack')
+                " 	" Ack command
+                " 	call denite#custom#var('grep', 'command', ['ack'])
+                " 	call denite#custom#var('grep', 'recursive_opts', [])
+                " 	call denite#custom#var('grep', 'pattern_opt', ['--match'])
+                " 	call denite#custom#var('grep', 'separator', ['--'])
+                " 	call denite#custom#var('grep', 'final_opts', [])
+                " 	call denite#custom#var('grep', 'default_opts',
+                " 			\ ['--ackrc', $HOME.'/.config/ackrc', '-H',
+                " 			\ '--nopager', '--nocolor', '--nogroup', '--column'])
+                endif
+            endif
         " }}}
 
         " w0rp/ale -- Asynchrous Linting Engine {{{
         call dein#add('w0rp/ale')
-        let g:ale_fix_on_save = 1 " Set this setting in vimrc if you want to fix files automatically on save.
-        let g:ale_completion_enabled = 1 " Enable completion where available.
+
+        if dein#tap('w0rp/ale') && has('nvim')
+            let g:ale_fix_on_save = 1 " Set this setting in vimrc if you want to fix files automatically on save.
+            let g:ale_completion_enabled = 1 " Enable completion where available.
+        endif
         " }}}
 
         " Neomake -- Asynchronously run programs {{{
@@ -166,6 +180,9 @@ endif
 
         " aperezdc/vim-template -- Prebuilt templates for certain filetypes via <:Template>, or <$ vim foo.x>
         call dein#add('aperezdc/vim-template')
+        if dein#tap('vim-template') && has('nvim')
+            let g:templates_debug = 1
+        endif
         " }}}
 
         " vim-easyclip -- Better thought out yanking, cutting, and pasting.
@@ -174,10 +191,12 @@ endif
 
         " sbdchd/vim-neoformat -- Script formatting
         call dein#add('sbdchd/neoformat')
-        let g:neoformat_only_msg_on_error = 1
-        let g:neoformat_basic_format_align = 1 " Enable alignment without FileType
-        let g:neoformat_basic_format_retab = 1 " Enable tab to spaces conversion FileType
-        let g:neoformat_basic_format_trim = 1 " Enable trimmming of trailing whitespace FileType
+        if dein#tap('neoformat') && has('nvim')
+            let g:neoformat_only_msg_on_error = 1
+            let g:neoformat_basic_format_align = 1 " Enable alignment without FileType
+            let g:neoformat_basic_format_retab = 1 " Enable tab to spaces conversion FileType
+            let g:neoformat_basic_format_trim = 1 " Enable trimmming of trailing whitespace FileType
+        endif
         " }}}
 
         " SirVer/ultisnips -- Vim Snippet Framework {{{
@@ -212,11 +231,13 @@ endif
 
         " iron.vim -- Interactive Repls Over Neovim {{{
         call dein#add('hkupty/iron.nvim')
-        let g:iron_repl_open_cmd = "vsplit"
+        if dein#tap('iron.vim') && has('nvim')
+            let g:iron_repl_open_cmd = "vsplit"
+        endif
         " }}}
 
         " Shougo/dein -- A Dark  Package Manager {{{
-        call dein#add('~/.config/nvim/pack/custom/dein.vim')
+        call dein#add('~/.config/nvim/pack/custom/start/dein.vim')
         call dein#end() " End Package Adds
         call dein#save_state() " Save Dein State
         "}}}
@@ -246,6 +267,7 @@ endfunction
 
 function! packages#check() abort
     echom "[._.] Checking packages..."
+
     call dein#load_state('~/.config/nvim/dein')
     if dein#check_install()
         call dein#install()

@@ -35,6 +35,7 @@ augroup Startup
     autocmd!
     autocmd VimEnter * call defaults#settings()
     autocmd VimEnter * call packages#setup()
+    autocmd VimEnter * call packages#check()
     autocmd VimEnter * call aesthetic#settings()
     autocmd VimEnter * call aesthetic#highlights()
     autocmd VimEnter * call bindings#leader()
@@ -44,6 +45,13 @@ augroup Startup
 augroup END
 
 " Read -------------------------------------|BufRead|
+augroup New 
+    autocmd!
+    autocmd BufNewFile *.py Template *.py
+    " autocmd BufNewFile *.py 
+    " autocmd VimEnter * call packages#setup()
+augroup END
+
 augroup Read
     autocmd!
     autocmd BufNewFile,BufRead *.ts setlocal filetype=typescript " TypeScript
@@ -61,5 +69,5 @@ augroup END
 
 " Exit -------------------------------------|VimLeave|
 augroup Exit
-    autocmd VimLeave * call packages#check()
+    " autocmd VimLeave * call packages#check()
 augroup END
