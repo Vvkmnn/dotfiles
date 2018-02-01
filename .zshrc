@@ -108,33 +108,9 @@ eval "$(thefuck --alias)"
 
 # checkBot
 # ZLE_LPROMPT_INDENT=0
-RPROMPT='v@%M %(?,%F{green}[-_-]%f,%F{red}[ಠ_ಠ]%f)'
+# RPROMPT='v@%M %(?,%F{green}[-_-]%f,%F{red}[ಠ_ಠ]%f)'
 
 # Spaceship Theme
-# Prompt {{{
-SPACESHIP_CHAR_SYMBOL='ॐ  '
-SPACESHIP_PROMPT_SEPARATE_LINE=true
-SPACESHIP_PROMPT_ADD_NEWLINE=true
-# SPACESHIP_PROMPT_COLOR=red
-SPACESHIP_DIR_TRUNC=3
-# }}}
-
-# Vi Mode {{{
-SPACESHIP_VI_MODE_SHOW=false
-SPACESHIP_VI_MODE_COLOR=cyan
-# SPACESHIP_VI_MODE_INSERT=𝛁 # Nabla, normal mode
-# SPACESHIP_VI_MODE_NORMAL=𝚫 # Delta, edit mode
-# }}}
-
-# Context }}}
-SPACESHIP_USER_SHOW=false
-SPACESHIP_PYENV_SHOW=false
-SPACESHIP_CONDA_SHOW=true
-SPACESHIP_KUBECONTEXT_SHOW=false
-SPACESHIP_TIME_SHOW=always
-SPACESHIP_TIME_COLOR=blue
-SPACESHIP_BATTERY_SHOW=true
-# }}}
 
 ## Shell Plugins -----------------------------------
 
@@ -159,7 +135,7 @@ zplug "zsh-users/zsh-syntax-highlighting", defer:2
 # zplug "plugins/sublime", from:oh-my-zsh
 
 # Vi(m) Mode {{{
-export RPS1="%{$reset_color%}"
+# export RPS1="%{$reset_color%}"
 zplug "plugins/vi-mode", from:oh-my-zsh
 # }}}
 
@@ -169,8 +145,26 @@ zplug "plugins/git", from:oh-my-zsh
 # Virtual Env Wrapper
 # zplug "plugins/virtualenvwrapper", from:oh-my-zsh
 
-# Spaceship Theme
+# denysdovhan/spaceship-prompt {{{
 zplug "denysdovhan/spaceship-prompt", use:spaceship.zsh, from:github, as:theme
+
+SPACESHIP_CHAR_SYMBOL='ॐ  '
+SPACESHIP_PROMPT_SEPARATE_LINE=true
+SPACESHIP_PROMPT_ADD_NEWLINE=true
+# SPACESHIP_PROMPT_COLOR=red
+SPACESHIP_DIR_TRUNC=3
+SPACESHIP_VI_MODE_SHOW=true
+SPACESHIP_VI_MODE_COLOR=cyan
+SPACESHIP_VI_MODE_INSERT=𝛁 # Nabla, normal mode
+SPACESHIP_VI_MODE_NORMAL=𝚫 # Delta, edit mode
+SPACESHIP_USER_SHOW=false
+SPACESHIP_PYENV_SHOW=false
+SPACESHIP_CONDA_SHOW=true
+SPACESHIP_KUBECONTEXT_SHOW=false
+SPACESHIP_TIME_SHOW=always
+SPACESHIP_TIME_COLOR=blue
+SPACESHIP_BATTERY_SHOW=true
+# }}}
 
 # Athame (Vim in Shell)
 # zplug "ardagnir/athame"
@@ -197,7 +191,7 @@ zplug "dijitalmunky/nvm-auto"
 zplug 'paulirish/git-open'
 
 # Dracula theme for zsh
-zplug 'dracula/zsh', as:theme
+# zplug 'dracula/zsh', as:theme
 
 # Install plugins if there are plugins that have not been installed
 if ! zplug check --verbose; then
