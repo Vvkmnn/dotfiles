@@ -46,12 +46,16 @@ function! packages#setup() abort
         call dein#add('airblade/vim-gitgutter')
         " }}}
 
-        " junegunn/vim-easy-align -- Vim Alignment with <ga:> {{{
-        " call dein#add('junegunn/vim-easy-align')
+        " roman/golden-ratio -- Golden Ratio windows {{{
+        " call dein#add('roman/golden-ratio')
         " }}}
 
         " thaerkh/vim-workspace -- Automated Session Management with <:ToggleWorkplace> {{{
-        call dein#add('thaerkh/vim-workspace')
+        " call dein#add('thaerkh/vim-workspace')
+        " }}}
+
+        " thaerkh/vim-workspace -- Automated Session Management with <:ToggleWorkplace> {{{
+        " call dein#add('thaerkh/vim-workspace')
         " }}}
 
         " giole/vim-autoswap -- No swap messages; just switch or recover {{{
@@ -91,8 +95,12 @@ function! packages#setup() abort
         call dein#add('tpope/vim-eunuch')
         " }}}
 
+        " tpope/vim-eunech -- Unix helpers via <:Delete>, <:Move>, ... {{{
+        call dein#add('tpope/vim-eunuch')
+        " }}}
+
         " Vimagit -- Emacs style Git management via <:Magit>, <C-n>, S[tage], and CC[omit] {{{
-        call dein#add('jreybert/vimagit')
+        " call dein#add('jreybert/vimagit')
         " }}}
 
         " Rainbow Parentheses Improved -- Color code by depth
@@ -212,6 +220,7 @@ endif
         call dein#add('~/.config/nvim/pack/custom/dein.vim')
         call dein#end() " End Package Adds
         call dein#save_state() " Save Dein State
+        call dein#install()
         "}}}
 
 

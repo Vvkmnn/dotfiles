@@ -148,15 +148,15 @@ zplug "plugins/git", from:oh-my-zsh
 # denysdovhan/spaceship-prompt {{{
 zplug "denysdovhan/spaceship-prompt", use:spaceship.zsh, from:github, as:theme
 
-SPACESHIP_CHAR_SYMBOL='ॐ  '
+SPACESHIP_CHAR_SYMBOL='ॐ   '
 SPACESHIP_PROMPT_SEPARATE_LINE=true
 SPACESHIP_PROMPT_ADD_NEWLINE=true
 # SPACESHIP_PROMPT_COLOR=red
 SPACESHIP_DIR_TRUNC=3
 SPACESHIP_VI_MODE_SHOW=true
-SPACESHIP_VI_MODE_COLOR=cyan
-SPACESHIP_VI_MODE_INSERT=𝛁 # Nabla, normal mode
-SPACESHIP_VI_MODE_NORMAL=𝚫 # Delta, edit mode
+# SPACESHIP_VI_MODE_COLOR=cyan
+SPACESHIP_VI_MODE_INSERT=∇ # Nabla, normal mode
+SPACESHIP_VI_MODE_NORMAL=Δ # Delta, edit mode
 SPACESHIP_USER_SHOW=false
 SPACESHIP_PYENV_SHOW=false
 SPACESHIP_CONDA_SHOW=true
@@ -208,19 +208,16 @@ zplug load # --verbose
 ## Plugin Settings ---------------------------------
 
 # fzf {{{
-export FZF_DEFAULT_OPTS='--height 40% --reverse --border'
+# export FZF_DEFAULT_OPTS='--height 40% --reverse --border'
 
 # z - Jump to a match, else use FZF
-unalias z 2> /dev/null
-z() {
-    [ $# -gt 0 ] && _z "$*" && return
-    cd "$(_z -l 2>&1 | fzf --height 40% --reverse --inline-info +s --tac --query "$*" | sed 's/^[0-9,.]* *//')"
-}
+# unalias z 2> /dev/null
+# z() {
+#     [ $# -gt 0 ] && _z "$*" && return
+#     cd "$(_z -l 2>&1 | fzf --height 40% --reverse --inline-info +s --tac --query "$*" | sed 's/^[0-9,.]* *//')"
+# }
 
 # Use RG for faster search
-export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.git/*"'
+# export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.git/*"'
 
 #}}}
-
-
-
