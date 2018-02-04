@@ -108,7 +108,7 @@ eval "$(thefuck --alias)"
 
 # checkBot
 # ZLE_LPROMPT_INDENT=0
-# RPROMPT='v@%M %(?,%F{green}[-_-]%f,%F{red}[ಠ_ಠ]%f)'
+RPROMPT='v@%M %(?,%F{green}[-_-]%f,%F{red}[ಠ_ಠ]%f)'
 
 # Spaceship Theme
 
@@ -155,8 +155,8 @@ SPACESHIP_PROMPT_ADD_NEWLINE=true
 SPACESHIP_DIR_TRUNC=3
 SPACESHIP_VI_MODE_SHOW=true
 # SPACESHIP_VI_MODE_COLOR=cyan
-SPACESHIP_VI_MODE_INSERT=∇ # Nabla, normal mode
-SPACESHIP_VI_MODE_NORMAL=Δ # Delta, edit mode
+# SPACESHIP_VI_MODE_INSERT=∇ # Nabla, normal mode
+# SPACESHIP_VI_MODE_NORMAL=Δ # Delta, edit mode
 SPACESHIP_USER_SHOW=false
 SPACESHIP_PYENV_SHOW=false
 SPACESHIP_CONDA_SHOW=true
