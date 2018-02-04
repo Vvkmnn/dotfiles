@@ -217,7 +217,7 @@ endif
         " }}}
 
         " Shougo/dein -- A Dark  Package Manager {{{
-        call dein#add('~/.config/nvim/pack/custom/dein.vim')
+        call dein#add('~/.config/nvim/pack/custom/start/dein.vim')
         call dein#end() " End Package Adds
         call dein#save_state() " Save Dein State
         call dein#install()
