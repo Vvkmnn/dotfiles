@@ -33,18 +33,21 @@
 " Startup ------------------------------------------
 augroup Startup
     autocmd!
-    autocmd VimEnter * call defaults#settings() 
+    autocmd VimEnter * call defaults#settings()
     autocmd VimEnter * call packages#setup()
-    autocmd VimEnter * call defaults#bindings()
-    autocmd VimEnter * call aesthetic#settings()   
+    autocmd VimEnter * call aesthetic#settings()
     autocmd VimEnter * call aesthetic#highlights()
+    autocmd VimEnter * call bindings#leader()
+    autocmd VimEnter * call bindings#normal()
+    autocmd VimEnter * call bindings#visual()
+    autocmd VimEnter * call bindings#terminal()
 augroup END
 
 " Read -------------------------------------|BufRead|
 augroup Read
     autocmd!
     autocmd BufNewFile,BufRead call editor#preferences()
-    autocmd BufNewFile,BufRead *.ts setlocal filetype=typescript
+    autocmd BufNewFile,BufRead *.ts setlocal filetype=typescript " TypeScript
     " autocmd FileType markdown,mkd call lexical#init()
     " autocmd FileType markdown,mkd call lexical#init()
     " autocmd FileType textile call lexical#init()
@@ -52,17 +55,12 @@ augroup Read
 augroup END
 
 " Write -----------------------------------|BufWrite|
-" augroup Write
-"     autocmd!
-"     autocmd BufWritePre * try                      " Format on Save
-"                 \ | packadd Neoformat 
-"                 \ | undojoin | Neoformat 
-"                 \ | catch /^Vim\%((\a\+)\)\=:E790/ 
-"                 \ | finally | silent Neoformat 
-"                 \ | endtry
-" augroup END
+augroup Write
+    autocmd!
+    " autocmd BufWritePre * try | undojoin | Neoformat " Format on Save
+augroup END
 
 " Exit -------------------------------------|VimLeave|
 augroup Exit
-    autocmd VimLeave * call packages#setup()    
+    autocmd VimLeave * call packages#check()
 augroup END

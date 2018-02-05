@@ -203,14 +203,14 @@
 	<key>searchKey</key>
 	<dict>
 		<key>keyCode</key>
-		<integer>4</integer>
+		<integer>2</integer>
 		<key>modifiers</key>
 		<integer>4352</integer>
 	</dict>
 	<key>searchUsingSelectedTextKey</key>
 	<dict>
 		<key>keyCode</key>
-		<integer>4</integer>
+		<integer>2</integer>
 		<key>modifiers</key>
 		<integer>6144</integer>
 	</dict>
@@ -219,7 +219,7 @@
 	<key>shouldShowStatusIcon</key>
 	<true/>
 	<key>shouldStartAtLogin</key>
-	<true/>
+	<false/>
 	<key>shouldSyncBookmarks</key>
 	<true/>
 	<key>shouldSyncDocsets</key>

@@ -78,7 +78,9 @@
     whitespace = fix
 
 [core]
-
+    # use nvim
+    editor = nvim
+    
     # Use custom `.gitignore` and `.gitattributes`
     excludesfile = ~/.gitignore
     attributesfile = ~/.gitattributes
@@ -175,20 +177,6 @@
 
 [commit]
     template = ~/.gitmessage
-
-[difftool "vimrdiff"]
-    cmd = vimr --wait --nvim -d $LOCAL $REMOTE
-
-[diff]
-    tool = vimrdiff
-
-[merge]
-    tool = vimmerge
-
-[mergetool "vimmerge"]
-    cmd = code --wait $MERGED
-    cmd = vimr --wait $MERGED
-
 
 [status]
 	submoduleSummary = true
