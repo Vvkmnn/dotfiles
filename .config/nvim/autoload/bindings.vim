@@ -18,17 +18,16 @@ function! bindings#normal() abort
     echom "[._.] Loading Normal mode bindings..."
 
     " Disable arrow movement, resize splits instead.
-    " nnoremap <Up>    :resize +2<CR>
-    " nnoremap <Down>  :resize -2<CR>
-    " nnoremap <Left>  :vertical resize +2<CR>
-    " nnoremap <Right> :vertical resize -2<CR>
+    nnoremap <Up>    :resize +2<CR>
+    nnoremap <Down>  :resize -2<CR>
+    nnoremap <Left>  :vertical resize +2<CR>
+    nnoremap <Right> :vertical resize -2<CR>
     
     " Split Navigation using Control
     nnoremap <C-h> <c-w>h
     nnoremap <C-j> <c-w>j
     nnoremap <C-k> <c-w>k
     nnoremap <C-l> <c-w>l
-
 
     " Ctrl Arrow Buffer Navigation
     " nnoremap <silent> <C-Right> <c-w>l
