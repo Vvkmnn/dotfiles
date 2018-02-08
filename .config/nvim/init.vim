@@ -47,11 +47,16 @@ augroup END
 augroup Read
     autocmd!
     autocmd BufNewFile,BufRead call editor#preferences()
-    autocmd BufNewFile,BufRead *.ts setlocal filetype=typescript " TypeScript
     " autocmd FileType markdown,mkd call lexical#init()
     " autocmd FileType markdown,mkd call lexical#init()
     " autocmd FileType textile call lexical#init()
     " autocmd FileType text call lexical#init({ 'spell': 0 })
+augroup END
+
+" Make -----------------------------|QuickFixCmdPost|
+augroup Quickfix
+    autocmd QuickFixCmdPost [^l]* nested cwindow
+    autocmd QuickFixCmdPost    l* nested lwindow
 augroup END
 
 " Write -----------------------------------|BufWrite|
