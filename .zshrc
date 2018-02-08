@@ -46,10 +46,10 @@ export PATH="$HOME/.vimr:$PATH"
 # Dotfiles
 alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
 alias d="dotfiles"
-alias ds="dotfiles status"
-alias d+="dotfiles add"
-alias d-="dotfiles remove"
-alias d?="dotfiles commit"
+# alias ds="dotfiles status"
+# alias d+="dotfiles add"
+# alias d-="dotfiles remove"
+# alias d?="dotfiles commit"
 
 # Vim-mode
 bindkey -v
