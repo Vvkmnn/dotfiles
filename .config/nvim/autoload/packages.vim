@@ -207,11 +207,11 @@ function! packages#setup() abort
         " }}}
 
         " SirVer/ultisnips -- Vim Snippet Framework {{{
-        call dein#add('SirVer/ultisnips')
+        " call dein#add('SirVer/ultisnips')
         " }}}
 
         " honza/vim-snippets -- snipMate & UltiSnip Snippet Source {{{
-        call dein#add('honza/vim-snippets')
+        " call dein#add('honza/vim-snippets')
         " }}}
 
         " echodoc.vim -- Displays docs in the function area

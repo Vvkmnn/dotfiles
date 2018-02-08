@@ -44,21 +44,29 @@ augroup Startup
     autocmd VimEnter * call bindings#terminal()
 augroup END
 
-" Read -------------------------------------|BufRead|
+" New  -----------------------------------|BufNewFile|
 augroup New 
     autocmd!
     autocmd BufNewFile *.py Template *.py
+    autocmd BufNewFile call editor#preferences()
     " autocmd BufNewFile *.py 
     " autocmd VimEnter * call packages#setup()
 augroup END
 
+" Read -------------------------------------|BufRead|
 augroup Read
     autocmd!
-    autocmd BufNewFile,BufRead *.ts setlocal filetype=typescript " TypeScript
+    autocmd BufRead call editor#preferences()
     " autocmd FileType markdown,mkd call lexical#init()
     " autocmd FileType markdown,mkd call lexical#init()
     " autocmd FileType textile call lexical#init()
     " autocmd FileType text call lexical#init({ 'spell': 0 })
+augroup END
+
+" Build ----------------------------|QuickFixCmdPost|
+augroup Quickfix
+    autocmd QuickFixCmdPost [^l]* nested cwindow
+    autocmd QuickFixCmdPost    l* nested lwindow
 augroup END
 
 " Write -----------------------------------|BufWrite|

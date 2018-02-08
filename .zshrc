@@ -31,8 +31,8 @@
 # Settings
 export LANG=en_US.UTF-8
 export BROWSER=open
-export VISUAL="nvim -S"
-export EDITOR="vimr -n --nvim -S"
+export VISUAL="nvim" # -S
+export EDITOR="vimr" # --nvim -S
 export TERM=xterm-256color
 export ARCHEY_LOGO_FILE=$HOME/.logo
 
