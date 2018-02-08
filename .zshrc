@@ -31,8 +31,8 @@
 # Settings
 export LANG=en_US.UTF-8
 export BROWSER=open
-export VISUAL="nvim"
-export EDITOR="vimr --wait --nvim"
+export VISUAL="nvim -S"
+export EDITOR="vimr -n --nvim -S"
 export TERM=xterm-256color
 export ARCHEY_LOGO_FILE=$HOME/.logo
 
@@ -47,9 +47,9 @@ export PATH="$HOME/.vimr:$PATH"
 alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
 alias d="dotfiles"
 alias ds="dotfiles status"
-alias da="dotfiles add"
-alias da="dotfiles commit"
-alias dr="dotfiles remove"
+alias d+="dotfiles add"
+alias d-="dotfiles remove"
+alias d?="dotfiles commit"
 
 # Vim-mode
 bindkey -v
@@ -113,33 +113,7 @@ eval "$(thefuck --alias)"
 
 # checkBot
 # ZLE_LPROMPT_INDENT=0
-# RPROMPT='v@%M %(?,%F{green}[-_-]%f,%F{red}[ಠ_ಠ]%f)'
-
-# Spaceship Theme
-# Prompt {{{
-SPACESHIP_CHAR_SYMBOL='ॐ  '
-SPACESHIP_PROMPT_SEPARATE_LINE=true
-SPACESHIP_PROMPT_ADD_NEWLINE=true
-# SPACESHIP_PROMPT_COLOR=red
-SPACESHIP_DIR_TRUNC=3
-# }}}
-
-# Vi Mode {{{
-SPACESHIP_VI_MODE_SHOW=true
-SPACESHIP_VI_MODE_COLOR=cyan
-SPACESHIP_VI_MODE_INSERT=𝛁 # Nabla, normal mode
-SPACESHIP_VI_MODE_NORMAL=𝚫 # Delta, edit mode
-# }}}
-
-# Context }}}
-SPACESHIP_USER_SHOW=false
-SPACESHIP_PYENV_SHOW=false
-SPACESHIP_CONDA_SHOW=true
-SPACESHIP_KUBECONTEXT_SHOW=false
-SPACESHIP_TIME_SHOW=always
-SPACESHIP_TIME_COLOR=blue
-SPACESHIP_BATTERY_SHOW=true
-# }}}
+RPROMPT='v@%M %(?,%F{green}[-_-]%f,%F{red}[ಠ_ಠ]%f)'
 
 ## Shell Plugins -----------------------------------
 
@@ -248,4 +222,5 @@ zplug load # --verbose
 
 # Use RG for faster search
 # export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.git/*"'
+
 #}}}
