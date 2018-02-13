@@ -31,6 +31,42 @@ function packages#setup() abort
         call dein#add('andreasvc/vim-256noir') " andreasvc/vim-256noir -- Red numbers, white strings
         " }}}
 
+        " Shougo/neosnippet -- Plug-in support in Deoplete {{{
+        call dein#add('Shougo/neosnippet')
+        call dein#add('Shougo/neosnippet-snippets')
+
+        if dein#tap('neosnippet') && has('nvim')
+            " Plugin key-mappings.
+            " Note: It must be "imap" and "smap".  It uses <Plug> mappings.
+            " imap <C-k>     <Plug>(neosnippet_expand_or_jump)
+            " smap <C-k>     <Plug>(neosnippet_expand_or_jump)
+            " xmap <C-k>     <Plug>(neosnippet_expand_target)
+
+            " Insert Mode previews via Ctrl - N, Tab to complete
+            imap <expr><TAB>
+                        \ neosnippet#expandable_or_jumpable() ?
+                        \    "\<Plug>(neosnippet_expand_or_jump)" :
+                        \     pumvisible() ? "\<C-n>" : "\<TAB>"
+
+            " imap <expr><TAB> pumvisible() ? "\<C-n>" : neosnippet#expandable_or_jumpable() ? "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+            " imap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<S-TAB>"
+            " inoremap <expr><CR> pumvisible() ? deoplete#mappings#close_popup() : "\<CR>"
+
+            " SuperTab like snippets behavior.
+            "" Note: It must be "imap" and "smap".  It uses <Plug> mappings.
+            ""imap <expr><TAB>
+            "" \ pumvisible() ? "\<C-n>" :
+            "" \ neosnippet#expandable_or_jumpable() ?
+            "" \    "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+            "smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
+            "            \ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+
+            " For conceal markers.
+            " if has('conceal')
+            "     set conceallevel=2 concealcursor=niv
+            " endif
+        endif
+        " }}}
 
         " thiagoalessio/rainbow -- Color by depth! {{{
         call dein#add('thiagoalessio/rainbow_levels.vim', {
@@ -64,6 +100,10 @@ function packages#setup() abort
             " \{'ctermbg': 240, 'guibg': '#585858'}]
             " endif
         endif
+        " }}}
+
+        " Shougo/echodoc.vim -- Prints documentation in the echo area {{{
+        call dein#add('Shougo/echodoc.vim')
         " }}}
 
         " kien/rainbow_parentheses.vim -- Better Rainbow Parenthesis
@@ -248,6 +288,7 @@ function packages#setup() abort
 
         " if dein#tap('Shougo/deoplete.nvim') && has('nvim')
         "     let g:deoplete#enable_at_startup = 1 " Enable deoplete at startup
+        "     let g:deoplete#enable_smart_case = 1 " Enable Case Sensitivity
         " endif
         " }}}
 
