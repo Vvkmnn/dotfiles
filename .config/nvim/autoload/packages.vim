@@ -16,6 +16,15 @@ function packages#setup() abort
     if dein#load_state(s:dein_dir)
         call dein#begin(s:dein_dir)
 
+
+        " Shougo/dein -- A Dark  Package Manager {{{
+        call dein#add(s:dein_repo_dir)
+
+        if dein#tap('dein.vim') && has('nvim')
+            let g:dein#install_progress_type = 'title'
+            " let g:dein#enable_notification = 1
+        endif
+
         " Themes {{{
         call dein#add('dracula/vim') " dracula/vim -- A Dark Colorscheme
 
@@ -374,14 +383,6 @@ function packages#setup() abort
         " haya14busa/dein-command.vim -- Dein commands (<:Dein> vs <call dein#x()> {{{
         call dein#add('haya14busa/dein-command.vim')
         " }}}
-
-        " Shougo/dein -- A Dark  Package Manager {{{
-        call dein#add('~/.config/nvim/pack/custom/start/dein.vim')
-
-        if dein#tap('dein.vim') && has('nvim')
-            let g:dein#install_progress_type = 'title'
-            " let g:dein#enable_notification = 1
-        endif
 
         call dein#end() " End Package Adds
         call dein#save_state() " Save Dein State
