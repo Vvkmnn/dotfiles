@@ -31,8 +31,8 @@
 # Settings
 export LANG=en_US.UTF-8
 export BROWSER=open
-export VISUAL="nvim"
-export EDITOR="vimr --wait --nvim"
+export VISUAL='nvim' # -S
+export EDITOR='vimr' # --nvim -S
 export TERM=xterm-256color
 export ARCHEY_LOGO_FILE=$HOME/.logo
 
@@ -45,9 +45,14 @@ export PATH="$HOME/.vimr:$PATH"
 
 # Dotfiles
 alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
+alias d="dotfiles"
+# alias ds="dotfiles status"
+# alias d+="dotfiles add"
+# alias d-="dotfiles remove"
+# alias d?="dotfiles commit"
 
 # Vim-mode
-# bindkey -v
+bindkey -v
 KEYTIMEOUT=1
 
 ## Language Defaults -------------------------------
@@ -109,8 +114,6 @@ eval "$(thefuck --alias)"
 # checkBot
 # ZLE_LPROMPT_INDENT=0
 RPROMPT='v@%M %(?,%F{green}[-_-]%f,%F{red}[ಠ_ಠ]%f)'
-
-# Spaceship Theme
 
 ## Shell Plugins -----------------------------------
 

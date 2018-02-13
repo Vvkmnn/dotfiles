@@ -1,22 +1,153 @@
-" Packages
+" Packages  --------------------------------------------------------------------
 
-" Functions --------------------------------------------------------------------
-function! packages#setup() abort
+" import Dein if in pack/*/opt (Automatically added via pack/*/start)
+" packadd dein
+
+
+" Set Path
+let s:dein_dir        = expand('$HOME/.config/nvim/dein')
+let s:dein_repo_dir   = expand('$HOME/.config/nvim/pack/custom/start/dein.vim')
+execute 'set runtimepath^=' . s:dein_repo_dir
+
+function packages#setup() abort
     echom "[._.] Setting up packages..."
 
-    " import Dein if in pack/*/opt
-    " Moved to pack/*/start
-    " packadd dein
+    " Start Adding Packages
+    if dein#load_state(s:dein_dir)
+        call dein#begin(s:dein_dir)
 
-    " Start
-    if dein#load_state('~/.config/nvim/dein')
-        call dein#begin('~/.config/nvim/dein')
+        " Themes {{{
+        call dein#add('dracula/vim') " dracula/vim -- A Dark Colorscheme
 
-        " dracula/vim -- A Dark Colorscheme {{{
-        call dein#add('dracula/vim')
+        call dein#add('andreasvc/vim-256noir') " andreasvc/vim-256noir -- Red numbers, white strings
         " }}}
 
+
+        " thiagoalessio/rainbow -- Color by depth! {{{
+        call dein#add('thiagoalessio/rainbow_levels.vim', {
+                    \ 'merged': 0,
+                    \ 'on_cmd' : 'RainbowLevelsOn',
+                    \ })
+
+
+        if dein#tap('rainbow_levels.vim') && has('nvim')
+            " dracula
+            let g:rainbow_levels = [
+                        \{'ctermfg': 84,  'guifg': '#50fa7b'},
+                        \{'ctermfg': 117, 'guifg': '#8be9fd'},
+                        \{'ctermfg': 61,  'guifg': '#6272a4'},
+                        \{'ctermfg': 212, 'guifg': '#ff79c6'},
+                        \{'ctermfg': 203, 'guifg': '#ffb86c'},
+                        \{'ctermfg': 228, 'guifg': '#f1fa8c'},
+                        \{'ctermfg': 15,  'guifg': '#f8f8f2'},
+                        \{'ctermfg': 231, 'guifg': '#525563'}]
+
+            " 256_noir
+            " let g:rainbow_levels = [
+            " \{'ctermbg': 232, 'guibg': '#080808'},
+            " \{'ctermbg': 233, 'guibg': '#121212'},
+            " \{'ctermbg': 234, 'guibg': '#1c1c1c'},
+            " \{'ctermbg': 235, 'guibg': '#262626'},
+            " \{'ctermbg': 236, 'guibg': '#303030'},
+            " \{'ctermbg': 237, 'guibg': '#3a3a3a'},
+            " \{'ctermbg': 238, 'guibg': '#444444'},
+            " \{'ctermbg': 239, 'guibg': '#4e4e4e'},
+            " \{'ctermbg': 240, 'guibg': '#585858'}]
+            " endif
+        endif
+        " }}}
+
+        " kien/rainbow_parentheses.vim -- Better Rainbow Parenthesis
+        " call dein#add('kien/rainbow_parentheses.vim')
+
+        " if dein#tap('rainbow_parentheses.vim') && has('nvim')
+        "     " let g:rbpt_loadcmd_toggle = 0
+        " endif
+        " }}}
+
+        " luochen1990/rainbow -- Rainbow Parentheses Improved -- Color code by depth {{{
+        " call dein#add('luochen1990/rainbow')
+
+        " if dein#tap('rainbow.vim') && has('nvim')
+        "     " let g:rainbow_active = 1 "0 if you want to enable it later via :RainbowToggle
+        " endif
+        " }}}
+
+        "itchyny/lightline.vim -- A leaner vim statusline {{{
+        call dein#add('itchyny/lightline.vim')
+
+        if dein#tap('lightline.vim') && has('nvim')
+            let g:lightline = {
+                        \ 'colorscheme': 'Dracula'}
+        endif
+        " }}}
+
+
+        " maximbaz/lightline-ale -- Ale Component for lightline {{{
+        call dein#add('maximbaz/lightline-ale')
+
+        if dein#tap('lightline.vim') && dein#tap('lightline-ale') && dein#tap('ale') && has('nvim')
+            let g:lightline.component_expand = {
+                        \  'linter_warnings': 'lightline#ale#warnings',
+                        \  'linter_errors': 'lightline#ale#errors',
+                        \  'linter_ok': 'lightline#ale#ok',
+                        \ }
+            let g:lightline.component_type = {
+                        \     'linter_warnings': 'warning',
+                        \     'linter_errors': 'error',
+                        \     'linter_ok': 'left',
+                        \ }
+            let g:lightline.active = { 'right': [[ 'linter_errors', 'linter_warnings', 'linter_ok' ]] }
+            let g:lightline#ale#indicator_warnings = "\uf071"
+            let g:lightline#ale#indicator_errors = "\uf05e"
+            let g:lightline#ale#indicator_ok = "\uf00c"
+        endif
+        " }}}
+
+        " taohex/lightline-buffer -- Buffer component for lightline {{{
+        call dein#add('taohex/lightline-buffer')
+
+        if dein#tap('lightline.vim') && dein#tap('lightline-buffer') && has('nvim')
+            let g:lightline.component_expand = {
+                        \ 'tabline': {
+                        \   'left': [ [ 'bufferinfo' ],
+                        \             [ 'separator' ],
+                        \             [ 'bufferbefore', 'buffercurrent', 'bufferafter' ], ],
+                        \   'right': [ [ 'close' ], ],
+                        \ },
+                        \ 'component_expand': {
+                        \   'buffercurrent': 'lightline#buffer#buffercurrent',
+                        \   'bufferbefore': 'lightline#buffer#bufferbefore',
+                        \   'bufferafter': 'lightline#buffer#bufferafter',
+                        \ },
+                        \ 'component_type': {
+                        \   'buffercurrent': 'tabsel',
+                        \   'bufferbefore': 'raw',
+                        \   'bufferafter': 'raw',
+                        \ },
+                        \ 'component_function': {
+                        \   'bufferinfo': 'lightline#buffer#bufferinfo',
+                        \ },
+                        \ 'component': {
+                        \   'separator': '',
+                        \ },
+                        \ }
+        endif
+        " }}}
+
+        " vim-airline/vim-airline -- A lean & mean vim statusline {{{
+        " call dein#add('vim-airline/vim-airline')
+
+        " if dein#tap('vim-airline/vim-airline') && has('nvim')
+        "     let g:airline#extensions#tabline#enabled = 1 " Automatically displays all buffers when there's only one tab open.
+        "     let g:airline#extensions#tabline#formatter = 'unique_tail_improved' " More informative titles
+        " endif
+        " }}}
+
+
+
         " tpope/sensible.vim -- Sensible Defaults {{{
+        " TODO: Check if this conflicts with defaults#settings()
         call dein#add('tpope/vim-sensible')
         " }}}
 
@@ -28,6 +159,14 @@ function! packages#setup() abort
         call dein#add('sheerun/vim-polyglot')
         " }}}
 
+        " tpope/vim-vinegar -- netrw upgrade {{{
+        call dein#add('tpope/vim-vinegar')
+        " }}}
+
+        " tpope/surround.vim -- Wrap objects with stuff using <cs[input][output], cst[input]> and remove with <ds[input]>
+        call dein#add('tpope/vim-surround')
+        " }}}
+
         " tpope/commentary.vim -- Comment stuff out with <:gc[motion]>, uncomment with <:gcgc> {{{
         call dein#add('tpope/vim-commentary')
         " }}}
@@ -36,14 +175,24 @@ function! packages#setup() abort
         call dein#add('tpope/vim-unimpaired')
         " }}}
 
-        " vim-airline/vim-airline -- A lean & mean vim statusline {{{
-        call dein#add('vim-airline/vim-airline')
-        " let g:airline#extensions#tabline#enabled = 1 " Automatically displays all buffers when there's only one tab open.
-        let g:airline#extensions#tabline#formatter = 'unique_tail_improved' " More informative titles
+        " tpope/vim-eunech -- Unix helpers via <:Delete>, <:Move>, ... {{{
+        call dein#add('tpope/vim-eunuch')
+        " }}}
+
+        " tpope/vim-fugitive -- A Vim Git Wrapper {{{
+        call dein#add('tpope/vim-fugitive')
+        " }}}
+
+        " reedes/vim-lexical -- Vim Spellcheck++ {{{
+        " call dein#add('reedes/vim-lexical')
+        " }}}
+
+        " ap/vim-buftabline -- Vim Buffer Tabs {{{
+        " call dein#add('ap/vim-buftabline')
         " }}}
 
         " airblade/vim-gitgutter -- Git status next to line numbers {{{
-        call dein#add('airblade/vim-gitgutter')
+        " call dein#add('airblade/vim-gitgutter')
         " }}}
 
         " roman/golden-ratio -- Golden Ratio windows {{{
@@ -59,107 +208,97 @@ function! packages#setup() abort
         " }}}
 
         " giole/vim-autoswap -- No swap messages; just switch or recover {{{
-        call dein#add('gioele/vim-autoswap')
+        " call dein#add('gioele/vim-autoswap')
         " }}}
 
         " autozimu/LanguageClient-neovim - LSP Integration for Vim {{{
-        call dein#add('autozimu/LanguageClient-neovim', {
-                    \ 'rev': 'next',
-                    \ 'build': 'bash install.sh',
-                    \ }) " Language Server Protocol support
+        " call dein#add('autozimu/LanguageClient-neovim', {
+        "            \ 'rev': 'next',
+        "            \ 'build': 'bash install.sh',
+        "            \ }) " Language Server Protocol support
 
-        let g:LanguageClient_serverCommands = {
-                    \ 'rust': ['rustup', 'run', 'nightly', 'rls'],
-                    \ 'javascript': ['javascript-typescript-stdio'],
-                    \ 'typescript': ['tsserver'],
-                    \ } " Language Server Protocol paths
-        " }}}
+        " if dein#tap('LanguageClient-neovim') && has('nvim')
+        "     let g:LanguageClient_serverCommands = {
+        "                 \ 'rust': ['rustup', 'run', 'nightly', 'rls'],
+        "                 \ 'javascript': ['javascript-typescript-stdio'],
+        "                 \ 'typescript': ['tsserver'],
+        "                 \ } " Language Server Protocol paths
+        "     endif
+        " " }}}
 
         " Dash -- Dash Support <Dash:> {{{
-        call dein#add('rizzatti/dash.vim')
-        " }}}
-
-        " vim-lexical -- Vim Spellcheck++ {{{
-        call dein#add('reedes/vim-lexical')
-        " }}}
-
-        " tpope/vim-vinegar -- netrw upgrade {{{
-        call dein#add('tpope/vim-vinegar')
-        " }}}
-
-        " surround.vim -- Wrap objects with stuff using <cs[input][output], cst[input]> and remove with <ds[input]>
-        call dein#add('tpope/vim-surround')
-        " }}}
-
-        " tpope/vim-eunech -- Unix helpers via <:Delete>, <:Move>, ... {{{
-        call dein#add('tpope/vim-eunuch')
-        " }}}
-
-        " tpope/vim-eunech -- Unix helpers via <:Delete>, <:Move>, ... {{{
-        call dein#add('tpope/vim-eunuch')
+        " call dein#add('rizzatti/dash.vim')
         " }}}
 
         " Vimagit -- Emacs style Git management via <:Magit>, <C-n>, S[tage], and CC[omit] {{{
         " call dein#add('jreybert/vimagit')
         " }}}
 
-        " Rainbow Parentheses Improved -- Color code by depth
-        call dein#add('luochen1990/rainbow')
-        let g:rainbow_active = 1 "0 if you want to enable it later via :RainbowToggle
-        " }}}
-
         " Shougo/deoplete -- dark powered neo-completion {{{
-        call dein#add('Shougo/deoplete.nvim')
-        let g:deoplete#enable_at_startup = 1 " Enable deoplete at startup
+        " call dein#add('Shougo/deoplete.nvim')
+
+        " if dein#tap('Shougo/deoplete.nvim') && has('nvim')
+        "     let g:deoplete#enable_at_startup = 1 " Enable deoplete at startup
+        " endif
         " }}}
 
         " Shougo/denite.vim -- Emacs Helm for Vim {{{
-        call dein#add('Shougo/denite.nvim')
+        " call dein#add('Shougo/denite.nvim')
 
-        call denite#custom#option('_', {
-                \ 'prompt': 'π:',
-                \ 'empty': 0,
-                \ 'winheight': 16,
-                \ 'source_names': 'short',
-                \ 'vertical_preview': 1,
-                \ 'auto-accel': 1,
-                \ 'auto-resume': 1,
-                \ }) " Denite Options
+        " if dein#tap('Shougo/denite.nvim') && has('nvim')
+        "         call denite#custom#option('_', {
+        "                 \ 'prompt': 'π:',
+        "                 \ 'empty': 0,
+        "                 \ 'winheight': 16,
+        "                 \ 'source_names': 'short',
+        "                 \ 'vertical_preview': 1,
+        "                 \ 'auto-accel': 1,
+        "                 \ 'auto-resume': 1,
+        "                 \ }) " Denite Options
 
+        "         " The Silver Searcher
+        "         if executable('ag')
+        "                 call denite#custom#var('file_rec', 'command',
+        "                         \ ['ag', '-U', '--hidden', '--follow', '--nocolor', '--nogroup', '-g', ''])
 
-" The Silver Searcher
-if executable('ag')
-	call denite#custom#var('file_rec', 'command',
-		\ ['ag', '-U', '--hidden', '--follow', '--nocolor', '--nogroup', '-g', '']) 
+        "                 " Setup ignore patterns in your .agignore file!
+        "                 " https://github.com/ggreer/the_silver_searcher/wiki/Advanced-Usage
 
-	" Setup ignore patterns in your .agignore file!
-	" https://github.com/ggreer/the_silver_searcher/wiki/Advanced-Usage
+        "                 call denite#custom#var('grep', 'command', ['ag'])
+        "                 call denite#custom#var('grep', 'recursive_opts', [])
+        "                 call denite#custom#var('grep', 'pattern_opt', [])
+        "                 call denite#custom#var('grep', 'separator', ['--'])
+        "                 call denite#custom#var('grep', 'final_opts', [])
+        "                 call denite#custom#var('grep', 'default_opts',
+        "                         \ [ '--skip-vcs-ignores', '--vimgrep', '--smart-case', '--hidden' ])
 
-	call denite#custom#var('grep', 'command', ['ag'])
-	call denite#custom#var('grep', 'recursive_opts', [])
-	call denite#custom#var('grep', 'pattern_opt', [])
-	call denite#custom#var('grep', 'separator', ['--'])
-	call denite#custom#var('grep', 'final_opts', [])
-	call denite#custom#var('grep', 'default_opts',
-		\ [ '--skip-vcs-ignores', '--vimgrep', '--smart-case', '--hidden' ])
-
-" elseif executable('ack')
-" 	" Ack command
-" 	call denite#custom#var('grep', 'command', ['ack'])
-" 	call denite#custom#var('grep', 'recursive_opts', [])
-" 	call denite#custom#var('grep', 'pattern_opt', ['--match'])
-" 	call denite#custom#var('grep', 'separator', ['--'])
-" 	call denite#custom#var('grep', 'final_opts', [])
-" 	call denite#custom#var('grep', 'default_opts',
-" 			\ ['--ackrc', $HOME.'/.config/ackrc', '-H',
-" 			\ '--nopager', '--nocolor', '--nogroup', '--column'])
-endif
+        "         " elseif executable('ack')
+        "         "     " Ack command
+        "         "     call denite#custom#var('grep', 'command', ['ack'])
+        "         "     call denite#custom#var('grep', 'recursive_opts', [])
+        "         "     call denite#custom#var('grep', 'pattern_opt', ['--match'])
+        "         "     call denite#custom#var('grep', 'separator', ['--'])
+        "         "     call denite#custom#var('grep', 'final_opts', [])
+        "         "     call denite#custom#var('grep', 'default_opts',
+        "         "                     \ ['--ackrc', $HOME.'/.config/ackrc', '-H',
+        "         "                     \ '--nopager', '--nocolor', '--nogroup', '--column'])
+        "         endif
+        "     endif
         " }}}
 
         " w0rp/ale -- Asynchrous Linting Engine {{{
         call dein#add('w0rp/ale')
-        let g:ale_fix_on_save = 1 " Set this setting in vimrc if you want to fix files automatically on save.
-        let g:ale_completion_enabled = 1 " Enable completion where available.
+
+        if dein#tap('ale') && has('nvim')
+            let g:ale_fix_on_save = 1 " Set this setting in vimrc if you want to fix files automatically on save
+            let g:ale_sign_error = '>>'
+            let g:ale_sign_warning = '__'
+            let g:ale_echo_msg_error_str = 'E'
+            let g:ale_echo_msg_warning_str = 'W'
+            let g:ale_echo_msg_format = '[%severity%] %s [%linter%]' " Standard format
+            let g:ale_set_quickfix = 1 " Use quickfix Window
+            let g:ale_open_list = 1 " Open Quickfix window with ale
+        endif
         " }}}
 
         " Neomake -- Asynchronously run programs {{{
@@ -168,26 +307,38 @@ endif
 
         " aperezdc/vim-template -- Prebuilt templates for certain filetypes via <:Template>, or <$ vim foo.x>
         call dein#add('aperezdc/vim-template')
+
+        " if dein#tap('aperezdc/vim-template') && has('nvim')
+        "     let g:templates_debug = 1
+        " endif
         " }}}
 
         " vim-easyclip -- Better thought out yanking, cutting, and pasting.
         " call dein#add('svermeulen/vim-easyclip')
         " }}}
 
-        " sbdchd/vim-neoformat -- Script formatting
+        " sbdchd/vim-neoformat -- Script formatting {{{
         call dein#add('sbdchd/neoformat')
-        let g:neoformat_only_msg_on_error = 1
-        let g:neoformat_basic_format_align = 1 " Enable alignment without FileType
-        let g:neoformat_basic_format_retab = 1 " Enable tab to spaces conversion FileType
-        let g:neoformat_basic_format_trim = 1 " Enable trimmming of trailing whitespace FileType
+
+        if dein#tap('neoformat') && has('nvim')
+            let g:neoformat_run_all_formatters = 1
+            let g:neoformat_only_msg_on_error = 1
+            let g:neoformat_basic_format_align = 1 " Enable alignment without FileType
+            let g:neoformat_basic_format_retab = 1 " Enable tab to spaces conversion FileType
+            let g:neoformat_basic_format_trim = 1 " Enable trimmming of trailing whitespace FileType
+            let g:neoformat_try_formatprg = 1 " Look for &formatprg
+            let g:neoformat_basic_format_align = 1 " Enable alignment
+            let g:neoformat_basic_format_retab = 1 " Enable tab to spaces conversion
+            let g:neoformat_basic_format_trim = 1 " Enable trimmming of trailing whitespace
+        endif
         " }}}
 
         " SirVer/ultisnips -- Vim Snippet Framework {{{
-        call dein#add('SirVer/ultisnips')
+        " call dein#add('SirVer/ultisnips')
         " }}}
 
         " honza/vim-snippets -- snipMate & UltiSnip Snippet Source {{{
-        call dein#add('honza/vim-snippets')
+        " call dein#add('honza/vim-snippets')
         " }}}
 
         " echodoc.vim -- Displays docs in the function area
@@ -213,15 +364,27 @@ endif
         " }}}
 
         " iron.vim -- Interactive Repls Over Neovim {{{
-        " call dein#add('hkupty/iron.nvim')
+        call dein#add('hkupty/iron.nvim')
+
+        if dein#tap('hkupty/iron') && has('nvim')
+            let g:iron_repl_open_cmd = "vsplit"
+        endif
+        " }}}
+
+        " haya14busa/dein-command.vim -- Dein commands (<:Dein> vs <call dein#x()> {{{
+        call dein#add('haya14busa/dein-command.vim')
         " }}}
 
         " Shougo/dein -- A Dark  Package Manager {{{
         call dein#add('~/.config/nvim/pack/custom/start/dein.vim')
+
+        if dein#tap('dein.vim') && has('nvim')
+            let g:dein#install_progress_type = 'title'
+            " let g:dein#enable_notification = 1
+        endif
+
         call dein#end() " End Package Adds
         call dein#save_state() " Save Dein State
-        call dein#install()
-        "}}}
 
 
         " TODO: Tbd. {{{
@@ -240,18 +403,44 @@ endif
 endfunction
 
 function! packages#update() abort
-    echom "[._.] Updating packages..."
-    call dein#load_state('~/.config/nvim/dein')
-    call dein#update()
-endif
+    echom "[._.] Check for package updates..."
+
+    " call dein#load_state('~/.config/nvim/dein')
+
+    " Update if Available
+    if dein#check_update()
+        silent dein#update()
+    endif
+
 endfunction
+
+
+function packages#source(plugin) abort
+    echom "[._.] Sourcing plugin..."
+    " Argument scope via <a:>
+    echom a:plugin
+
+    if dein#load_state(s:dein_dir) " Script Scope via <s:>
+        if dein#is_sourced(a:plugin)
+            call dein#source(a:plugin)
+        endif
+    endif
+
+endfunction
+
 
 function! packages#check() abort
     echom "[._.] Checking packages..."
-    call dein#load_state('~/.config/nvim/dein')
+
+    " call dein#load_state('~/.config/nvim/dein')
+
+    " Install if required
+    " TODO: Doesn't do much; update seems to work though.
     if dein#check_install()
+        call dein#check_clean()
         call dein#install()
     endif
+
 endfunction
 
 " Setings ----------------------------------------------------------------------

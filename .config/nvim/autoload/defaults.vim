@@ -31,9 +31,10 @@ function! defaults#settings() abort
     set ttimeoutlen=0                        " Fast key repeat
     set foldlevel=99                         " Set fold level
     set hidden                               " Required for multiple buffer ops
+    set showtabline=2                       " Always show Tabline
     set termguicolors                        " Use Truecolor Vim
     set title titlestring=                  " Enable Buffer Titles?
     filetype indent plugin on                " Plugins & Filetypes
     syntax enable                            " Enable Syntax
-
+    " set shell=/bin/sh                       " Use Bash Shell
 endfunction

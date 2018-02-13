@@ -2,7 +2,12 @@
 
 function! aesthetic#settings() abort
 	echom "[._.] Loading aesthetic settings..."
-	colorscheme dracula 		         " Dracula!
+
+        " if dein#tap('dracula')
+            call dein#source('dracula')
+            colorscheme dracula 		         " Dracula!
+        " endif
+
 endfunction
 
 function! aesthetic#highlights() abort
