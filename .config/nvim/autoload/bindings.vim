@@ -8,9 +8,13 @@ function! bindings#leader() abort
     " nnoremap ; :Buffers<CR>
     " nnoremap <Leader>t :Files<CR>
     " nnoremap <Leader>r :Tags<CR>
+
+    " Leader<z> to search for character under cursor
+    nnoremap <leader>z xhp/<C-R>-<CR>
     
     " thaerkh/vim-workspace {{{
     nnoremap <leader>s :ToggleWorkspace<CR>
+    " 
     " }}}
 endfunction
 
