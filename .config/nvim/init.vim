@@ -93,5 +93,5 @@ augroup END
 
 " Exit -------------------------------------|VimLeave|
 augroup Exit
-    autocmd VimLeave * nested call packages#update()
+    autocmd VimLeave * nested call packages#check()
 augroup END
