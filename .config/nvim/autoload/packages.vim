@@ -155,11 +155,16 @@ function packages#setup() abort
         " }}}
 
         " tpope/surround.vim -- Wrap objects with stuff using <cs[input][output], cst[input]> and remove with <ds[input]>
-        call dein#add('tpope/vim-surround', {'on_map': {'n' : ['cs', 'ds', 'ys'], 'x' : 'S'}, 'depends' : 'vim-repeat'})
+        call dein#add('tpope/vim-surround',
+                    \ {'on_map': {'n' : ['cs', 'ds', 'ys'], 'x' : 'S'},
+                    \ 'depends' : 'vim-repeat'
+                    \ })
         " }}}
 
         call dein#add('godlygeek/tabular',
-                    \ { 'on_cmd' : [ 'Tab', 'Tabularize' ]})
+                    \ { 'on_cmd' :
+                    \ [ 'Tab', 'Tabularize' ]
+                    \ })
 
         " tpope/unimpaired.vim -- Handy [] maps <]q> / <:cnext>, <[b> / <:bprevious>, etc.> {{{
         call dein#add('tpope/vim-unimpaired')
@@ -244,7 +249,6 @@ function packages#setup() abort
             " }}}
         endif
         " }}}
-
 
         " autozimu/LanguageClient-neovim - LSP Integration for Vim {{{
         call dein#add('autozimu/LanguageClient-neovim', {
