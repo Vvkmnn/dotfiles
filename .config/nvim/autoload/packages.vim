@@ -3,7 +3,6 @@
 " import Dein if in pack/*/opt (Automatically added via pack/*/start)
 " packadd dein
 
-
 " Set Path
 let s:dein_dir        = expand('$HOME/.config/nvim/dein')
 let s:dein_repo_dir   = expand('$HOME/.config/nvim/pack/custom/start/dein.vim')
@@ -16,12 +15,13 @@ function packages#setup() abort
     if dein#load_state(s:dein_dir)
         call dein#begin(s:dein_dir)
 
-        " Themes {{{
-        call dein#add('dracula/vim') " dracula/vim -- A Dark Colorscheme
-
-        call dein#add('andreasvc/vim-256noir') " andreasvc/vim-256noir -- Red numbers, white strings
+        " dracula/vim -- A Dark Colorscheme {{{
+        call dein#add('dracula/vim')
         " }}}
 
+        " andreasvc/vim-256noir -- Red numbers, white strings {{{
+        call dein#add('andreasvc/vim-256noir')
+        " }}}
 
         " thiagoalessio/rainbow -- Color by depth! {{{
         call dein#add('thiagoalessio/rainbow_levels.vim', {
@@ -57,8 +57,17 @@ function packages#setup() abort
         endif
         " }}}
 
-        " kien/rainbow_parentheses.vim -- Better Rainbow Parenthesis
+        " wellle/targets.vim -- Additional Text Objects {{{
+        call dein#add('wellle/targets.vim')
+        " }}}
+
+        " wellle/targets.vim -- Additional Text Objects {{{
+        call dein#add('wellle/targets.vim')
+        " }}}
+
+        " kien/rainbow_parentheses.vim -- Better Rainbow Parenthesis {{{
         " call dein#add('kien/rainbow_parentheses.vim')
+        " }}}
 
         " if dein#tap('rainbow_parentheses.vim') && has('nvim')
         "     " let g:rbpt_loadcmd_toggle = 0
@@ -85,7 +94,7 @@ function packages#setup() abort
 
         " maximbaz/lightline-ale -- Ale Component for lightline {{{
         call dein#add('maximbaz/lightline-ale')
-
+        "
         if dein#tap('lightline.vim') && dein#tap('lightline-ale') && dein#tap('ale') && has('nvim')
             let g:lightline.component_expand = {
                         \  'linter_warnings': 'lightline#ale#warnings',
@@ -135,52 +144,71 @@ function packages#setup() abort
         endif
         " }}}
 
-        " vim-airline/vim-airline -- A lean & mean vim statusline {{{
-        " call dein#add('vim-airline/vim-airline')
-
-        " if dein#tap('vim-airline/vim-airline') && has('nvim')
-        "     let g:airline#extensions#tabline#enabled = 1 " Automatically displays all buffers when there's only one tab open.
-        "     let g:airline#extensions#tabline#formatter = 'unique_tail_improved' " More informative titles
-        " endif
-        " }}}
-
-
-
         " tpope/sensible.vim -- Sensible Defaults {{{
-        " TODO: Check if this conflicts with defaults#settings()
         call dein#add('tpope/vim-sensible')
         " }}}
 
         " tpope/repeat.vim -- Dot commands on steroids {{{
-        call dein#add('tpope/vim-repeat')
+        call dein#add('tpope/vim-repeat', {'on_map' : '.'})
         " }}}
 
         " sheerun/vim-polyglot -- language packs for Vim {{{
         call dein#add('sheerun/vim-polyglot')
         " }}}
 
-        " tpope/vim-vinegar -- netrw upgrade {{{
-        call dein#add('tpope/vim-vinegar')
-        " }}}
-
-        " tpope/surround.vim -- Wrap objects with stuff using <cs[input][output], cst[input]> and remove with <ds[input]>
-        call dein#add('tpope/vim-surround')
-        " }}}
-
-        " tpope/commentary.vim -- Comment stuff out with <:gc[motion]>, uncomment with <:gcgc> {{{
-        call dein#add('tpope/vim-commentary')
-        " }}}
-
-        " tpope/unimpaired.vim -- Handy [] maps <]q> / <:cnext>, <[b> / <:bprevious>, etc.> {{{
-        call dein#add('tpope/vim-unimpaired')
+        " justinmk/vim-dirvish -- Minimal Navigator via <-> {{{
+        call dein#add('justinmk/vim-dirvish', {
+                    \ 'merged': 0,
+                    \ 'on_cmd' : 'Dirivish',
+                    \ 'on_map' : '-' })
         " }}}
 
         " tpope/vim-eunech -- Unix helpers via <:Delete>, <:Move>, ... {{{
         call dein#add('tpope/vim-eunuch')
         " }}}
 
+        " tpope/vim-vinegar -- netrw upgrade {{{
+        " call dein#add('tpope/vim-vinegar')
+        " }}}
+
+        " tpope/surround.vim -- Wrap objects with stuff using <cs[input][output], cst[input]> and remove with <ds[input]>
+        call dein#add('tpope/vim-surround', {'on_map': {'n' : ['cs', 'ds', 'ys'], 'x' : 'S'}, 'depends' : 'vim-repeat'})
+        " }}}
+
+        " osyo-manga/vim-over -- Preview substitutions with <OverCommandLine>
+        " call dein#add('osyo-manga/vim-over', { 'on_cmd' : 'OverCommandLine' })
+        " }}}
+
+
+        " tmhedberg/matchit -- extended % matching
+        " call dein#add('tmhedberg/matchit', { 'on_ft' : 'html' })
+        " }}}
+
+        " tpope/commentary.vim -- Comment stuff out with <:gc[motion]>, uncomment with <:gcgc> {{{
+        " call dein#add('tpope/vim-commentary')
+        " }}}
+
+        call dein#add('godlygeek/tabular',
+                    \ { 'on_cmd' : [ 'Tab', 'Tabularize' ]})
+
+        " tpope/unimpaired.vim -- Handy [] maps <]q> / <:cnext>, <[b> / <:bprevious>, etc.> {{{
+        call dein#add('tpope/vim-unimpaired')
+        " }}}
+
         " tpope/vim-fugitive -- A Vim Git Wrapper {{{
-        call dein#add('tpope/vim-fugitive')
+        call dein#add('tpope/vim-fugitive',
+                    \ { 'on_cmd': [ 'Git',
+                    \ 'Gstatus',
+                    \ 'Gwrite',
+                    \ 'Glog',
+                    \'Gcommit',
+                    \ 'Gblame',
+                    \ 'Ggrep',
+                    \ 'Gdiff']})
+        " }}}
+
+        " tomtom/tcomment_vim -- Commenting with motions {{{
+        call dein#add('tomtom/tcomment_vim', {'on_map': 'gc', 'on_cmd' : 'TComment'})
         " }}}
 
         " reedes/vim-lexical -- Vim Spellcheck++ {{{
@@ -203,31 +231,17 @@ function packages#setup() abort
         " call dein#add('thaerkh/vim-workspace')
         " }}}
 
-        " thaerkh/vim-workspace -- Automated Session Management with <:ToggleWorkplace> {{{
-        " call dein#add('thaerkh/vim-workspace')
-        " }}}
-
         " giole/vim-autoswap -- No swap messages; just switch or recover {{{
         " call dein#add('gioele/vim-autoswap')
         " }}}
 
-        " autozimu/LanguageClient-neovim - LSP Integration for Vim {{{
-        " call dein#add('autozimu/LanguageClient-neovim', {
-        "            \ 'rev': 'next',
-        "            \ 'build': 'bash install.sh',
-        "            \ }) " Language Server Protocol support
-
-        " if dein#tap('LanguageClient-neovim') && has('nvim')
-        "     let g:LanguageClient_serverCommands = {
-        "                 \ 'rust': ['rustup', 'run', 'nightly', 'rls'],
-        "                 \ 'javascript': ['javascript-typescript-stdio'],
-        "                 \ 'typescript': ['tsserver'],
-        "                 \ } " Language Server Protocol paths
-        "     endif
-        " " }}}
-
         " Dash -- Dash Support <Dash:> {{{
-        " call dein#add('rizzatti/dash.vim')
+        call dein#add('rizzatti/dash.vim')
+
+        if dein#tap('dash.vim') && has('nvim')
+            " Search Dash via < <leader>d{motion} >
+            nnoremap <silent> <leader>d <Plug>DashSearch
+        endif
         " }}}
 
         " Vimagit -- Emacs style Git management via <:Magit>, <C-n>, S[tage], and CC[omit] {{{
@@ -235,11 +249,43 @@ function packages#setup() abort
         " }}}
 
         " Shougo/deoplete -- dark powered neo-completion {{{
-        " call dein#add('Shougo/deoplete.nvim')
+        call dein#add('Shougo/deoplete.nvim')
 
-        " if dein#tap('Shougo/deoplete.nvim') && has('nvim')
-        "     let g:deoplete#enable_at_startup = 1 " Enable deoplete at startup
-        " endif
+        if dein#tap('deoplete.nvim') && has('nvim')
+            let g:deoplete#enable_at_startup = 1 " Enable deoplete at startup
+
+
+            " Shougo/neco-syntax - Syntax Deoplete Source {{{
+            call dein#add('Shougo/neco-syntax', {
+                        \ 'depends': 'deoplete.nvim'
+                        \ })
+            " }}}
+
+            " fszymanski/deoplete-emoji -- Emoji Deoplete Source {{{
+            call dein#add('fszymanski/deoplete-emoji', {
+                        \ 'depends': 'deoplete.nvim'
+                        \ })
+            " }}}
+        endif
+        " }}}
+
+
+        " autozimu/LanguageClient-neovim - LSP Integration for Vim {{{
+        call dein#add('autozimu/LanguageClient-neovim', {
+                    \ 'rev': 'next',
+                    \ 'build': 'bash install.sh',
+                    \ 'on_ft': ['typescript', 'javascript', 'python'],
+                    \ 'depends': 'deoplete.nvim'
+                    \ }) " Language Server Protocol support
+
+        if dein#tap('LanguageClient-neovim') && has('nvim')
+            let g:LanguageClient_serverCommands = {
+                        \ 'rust': ['rustup', 'run', 'nightly', 'rls'],
+                        \ 'javascript': ['javascript-typescript-stdio'],
+                        \ 'typescript': ['tsserver'],
+                        \ 'python': ['python-language-server'],
+                        \ } " Language Server Protocol paths
+        endif
         " }}}
 
         " Shougo/denite.vim -- Emacs Helm for Vim {{{
@@ -414,6 +460,26 @@ function! packages#update() abort
 
 endfunction
 
+function packages#deload() abort
+    " Disable some default plugins.
+    let g:loaded_gzip              = 1
+    let g:loaded_tar               = 1
+    let g:loaded_tarPlugin         = 1
+    let g:loaded_zip               = 1
+    let g:loaded_zipPlugin         = 1
+    let g:loaded_rrhelper          = 1
+    let g:loaded_2html_plugin      = 1
+    let g:loaded_vimball           = 1
+    let g:loaded_vimballPlugin     = 1
+    let g:loaded_getscript         = 1
+    let g:loaded_getscriptPlugin   = 1
+    let g:loaded_netrw             = 1
+    let g:loaded_netrwPlugin       = 1
+    let g:loaded_netrwSettings     = 1
+    let g:loaded_netrwFileHandlers = 1
+    let g:loaded_logipat           = 1
+endfunction
+
 
 function packages#source(plugin) abort
     echom "[._.] Sourcing plugin..."
@@ -440,12 +506,7 @@ function! packages#check() abort
         call dein#check_clean()
         call dein#install()
     endif
-
 endfunction
-
-" Setings ----------------------------------------------------------------------
-
-" Bindings ---------------------------------------------------------------------
 
 " Commands ---------------------------------------------------------------------
 " Define user commands for updating/cleaning the plugins.

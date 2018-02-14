@@ -34,29 +34,31 @@ augroup Startup
     autocmd!
     autocmd VimEnter * call packages#setup()
     autocmd VimEnter * call packages#check()
+    autocmd VimEnter * call packages#deload()
     autocmd VimEnter * call defaults#settings()
     autocmd VimEnter * call aesthetic#settings()
     autocmd VimEnter * call aesthetic#highlights()
-"    autocmd VimEnter * call bindings#leader()
-"    autocmd VimEnter * call bindings#normal()
-"    autocmd VimEnter * call bindings#visual()
-"    autocmd VimEnter * call bindings#terminal()
+    autocmd VimEnter * call bindings#leader()
+    autocmd VimEnter * call bindings#normal()
+    autocmd VimEnter * call bindings#insert()
+    autocmd VimEnter * call bindings#visual()
+    autocmd VimEnter * call bindings#terminal()
 augroup END
 
 " New  ---------------------------------|BufNewFile|
-augroup New 
+augroup New
     autocmd!
     " autocmd BufNewFile *.py Template *.py
     " autocmd BufNewFile call editor#preferences()
-    " autocmd BufNewFile *.py 
+    " autocmd BufNewFile *.py
     " autocmd VimEnter * call packages#setup()
 augroup END
 
 " Read ------------------------------------|BufRead|
 augroup Read
     autocmd!
-    autocmd VimEnter *.ts,*.js,*.json 
-                \ call rainbow_levels#on()
+    autocmd VimEnter *.ts,*.js,*.json
+                \ RainbowLevelsOn
     " autocmd VimEnter *.js RainbowLevelsOn
     " autocmd FileType javascript,python,php,xml,yaml RainbowLevelsOn
     " autocmd BufNewfile, BufRead *.js, *.json, *.ts call rainbow_levels#on()
@@ -85,10 +87,10 @@ augroup END
 " Save ------------------------------------|BufWrite|
 augroup Save
     autocmd!
-    autocmd BufWritePre * try | undojoin | Neoformat 
-                \ | catch /^Vim\%((\a\+)\)\=:E790/ 
-                \ | finally | silent Neoformat 
-                \ | endtry " Format on Save
+    autocmd BufWritePre * try | undojoin | Neoformat
+                \ | catch /^Vim\%((\a\+)\)\=:E790/
+                    \ | finally | silent Neoformat
+                        \ | endtry " Format on Save
 augroup END
 
 " Exit -------------------------------------|VimLeave|

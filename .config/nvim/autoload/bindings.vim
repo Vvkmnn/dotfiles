@@ -2,7 +2,14 @@
 
 function! bindings#leader() abort
     echom "[._.] Loading Leader bindings..."
-    let mapleader="\Space" " Space as Leader
+    " let mapleader="\Space"
+    " let mapleader=" "
+
+    " Leader split navigation
+    map <leader>h :wincmd h<CR>
+    map <leader>j :wincmd j<CR>
+    map <leader>k :wincmd k<CR>
+    map <leader>l :wincmd l<CR>
 
     " <;> as Buffer
     " nnoremap ; :Buffers<CR>
@@ -11,27 +18,28 @@ function! bindings#leader() abort
 
     " Leader<z> to search for character under cursor
     nnoremap <leader>z xhp/<C-R>-<CR>
-    
+
     " thaerkh/vim-workspace {{{
     nnoremap <leader>s :ToggleWorkspace<CR>
-    " 
-    " }}}
 endfunction
 
 function! bindings#normal() abort
     echom "[._.] Loading Normal mode bindings..."
 
+    " Remap Space to <Nop>?
+    nnoremap <Space> <Nop>
+
     " Disable arrow movement, resize splits instead.
-    nnoremap <Up>    :resize +2<CR>
-    nnoremap <Down>  :resize -2<CR>
+    " nnoremap <Up>    :resize +2<CR>
+    " nnoremap <Down>  :resize -2<CR>
     nnoremap <Left>  :vertical resize +2<CR>
     nnoremap <Right> :vertical resize -2<CR>
-    
-    " Split Navigation using Control
-    nnoremap <C-h> <c-w>h
-    nnoremap <C-j> <c-w>j
-    nnoremap <C-k> <c-w>k
-    nnoremap <C-l> <c-w>l
+
+    " Normal mode:
+    " nnoremap <C-h> <c-w>h
+    " nnoremap <C-j> <c-w>j
+    " nnoremap <C-k> <c-w>k
+    " nnoremap <C-l> <c-w>l
 
     " Ctrl Arrow Buffer Navigation
     " nnoremap <silent> <C-Right> <c-w>l
@@ -39,7 +47,7 @@ function! bindings#normal() abort
     " nnoremap <silent> <C-Up> <c-w>k
     " nnoremap <silent> <C-Down> <c-w>j
 
-    " <Ctrl-hjkl> Split Navigation
+    " <C-hjkl> Split Navigation
     " nnoremap <C-J> <C-W><C-J>
     " nnoremap <C-K> <C-W><C-K>
     " nnoremap <C-L> <C-W><C-L>
@@ -51,33 +59,40 @@ function! bindings#normal() abort
 
 endfunction
 
+function bindings#insert() abort
+    echom "[._.] Loading Insert mode bindings..."
+
+    " Insert mode:
+    " inoremap <C-h> <Esc><c-w>h
+    " inoremap <C-j> <Esc><c-w>j
+    " inoremap <C-k> <Esc><c-w>k
+    " inoremap <C-l> <Esc><c-w>l
+endfunction
 
 function! bindings#visual() abort
     echom "[._.] Loading Visual mode bindings..."
 
     " Sort in Visual Mode
-    vnoremap <Leader>s :sort<CR> 
+    vnoremap <Leader>s :sort<CR>
+
+    " Visual mode:
+    " vnoremap <C-h> <Esc><c-w>h
+    " vnoremap <C-j> <Esc><c-w>j
+    " vnoremap <C-k> <Esc><c-w>k
+    " vnoremap <C-l> <Esc><c-w>l
 endfunction
 
 function! bindings#terminal() abort
     echom "[._.] Loading Terminal mode bindings..."
 
+    " Terminal mode:
+    " tnoremap <C-h> <c-\><c-n><c-w>h
+    " tnoremap <C-j> <c-\><c-n><c-w>j
+    " tnoremap <C-k> <c-\><c-n><c-w>k
+    " tnoremap <C-l> <c-\><c-n><c-w>l
+    "
     " Esc to leave Terminal Mode
     tnoremap <Esc> <C-\><C-n>
     tnoremap <C-v><Esc> <Esc>
-
-    " Terminal Split Navigation using Meta
-    tnoremap <C-h> <c-\><c-n><c-w>h
-    tnoremap <C-j> <c-\><c-n><c-w>j
-    tnoremap <C-k> <c-\><c-n><c-w>k
-    tnoremap <C-l> <c-\><c-n><c-w>l
 endfunction
 
-" Search Dash via < <leader>d{motion} >
-nnoremap <silent> <leader>d <Plug>DashSearch
-
-function! bindings#plugin() abort
-    echom "[._.] Loading Plugin bindings..."
-
-
-endfunction
