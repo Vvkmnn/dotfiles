@@ -260,10 +260,12 @@ function packages#setup() abort
         " }}}
 
         " Dash -- Dash Support <Dash:> {{{
-        call dein#add('rizzatti/dash.vim')
+        call dein#add('rizzatti/dash.vim', {
+                    \ 'on_cmd': 'Dash'})
 
         if dein#tap('dash.vim') && has('nvim')
-            " Search Dash via < <leader>d{motion} >
+            "
+            " Search for word under cursor with <leader>d
             nnoremap <silent> <leader>d <Plug>DashSearch
         endif
         " }}}
@@ -316,7 +318,7 @@ function packages#setup() abort
         call dein#add('Shougo/neosnippet')
         call dein#add('Shougo/neosnippet-snippets')
 
-        if dein#tap('neosnippet') && dein#tap('deoplete') && has('nvim')
+        if dein#tap('neosnippet') && dein#tap('deoplete.nvim') && has('nvim')
             " Plugin key-mappings.
             " Note: It must be "imap" and "smap".  It uses <Plug> mappings.
             " imap <C-k>     <Plug>(neosnippet_expand_or_jump)
@@ -353,47 +355,49 @@ function packages#setup() abort
         call dein#add('Shougo/echodoc.vim')
         " }}}
         " Shougo/denite.vim -- Emacs Helm for Vim {{{
-        " call dein#add('Shougo/denite.nvim')
+        call dein#add('Shougo/denite.nvim', {
+                    \ 'on_cmd':'Denite'
+                    \ })
 
-        " if dein#tap('Shougo/denite.nvim') && has('nvim')
-        "         call denite#custom#option('_', {
-        "                 \ 'prompt': 'π:',
-        "                 \ 'empty': 0,
-        "                 \ 'winheight': 16,
-        "                 \ 'source_names': 'short',
-        "                 \ 'vertical_preview': 1,
-        "                 \ 'auto-accel': 1,
-        "                 \ 'auto-resume': 1,
-        "                 \ }) " Denite Options
+        if dein#tap('denite.nvim') && has('nvim')
+            call denite#custom#option('_', {
+                        \ 'prompt': 'π:',
+                        \ 'empty': 0,
+                        \ 'winheight': 16,
+                        \ 'source_names': 'short',
+                        \ 'vertical_preview': 1,
+                        \ 'auto-accel': 1,
+                        \ 'auto-resume': 1,
+                        \ }) " Denite Options
 
-        "         " The Silver Searcher
-        "         if executable('ag')
-        "                 call denite#custom#var('file_rec', 'command',
-        "                         \ ['ag', '-U', '--hidden', '--follow', '--nocolor', '--nogroup', '-g', ''])
+            " The Silver Searcher
+            if executable('ag')
+                call denite#custom#var('file_rec', 'command',
+                            \ ['ag', '-U', '--hidden', '--follow', '--nocolor', '--nogroup', '-g', ''])
 
-        "                 " Setup ignore patterns in your .agignore file!
-        "                 " https://github.com/ggreer/the_silver_searcher/wiki/Advanced-Usage
+                " Setup ignore patterns in your .agignore file!
+                " https://github.com/ggreer/the_silver_searcher/wiki/Advanced-Usage
 
-        "                 call denite#custom#var('grep', 'command', ['ag'])
-        "                 call denite#custom#var('grep', 'recursive_opts', [])
-        "                 call denite#custom#var('grep', 'pattern_opt', [])
-        "                 call denite#custom#var('grep', 'separator', ['--'])
-        "                 call denite#custom#var('grep', 'final_opts', [])
-        "                 call denite#custom#var('grep', 'default_opts',
-        "                         \ [ '--skip-vcs-ignores', '--vimgrep', '--smart-case', '--hidden' ])
+                call denite#custom#var('grep', 'command', ['ag'])
+                call denite#custom#var('grep', 'recursive_opts', [])
+                call denite#custom#var('grep', 'pattern_opt', [])
+                call denite#custom#var('grep', 'separator', ['--'])
+                call denite#custom#var('grep', 'final_opts', [])
+                call denite#custom#var('grep', 'default_opts',
+                            \ [ '--skip-vcs-ignores', '--vimgrep', '--smart-case', '--hidden' ])
 
-        "         " elseif executable('ack')
-        "         "     " Ack command
-        "         "     call denite#custom#var('grep', 'command', ['ack'])
-        "         "     call denite#custom#var('grep', 'recursive_opts', [])
-        "         "     call denite#custom#var('grep', 'pattern_opt', ['--match'])
-        "         "     call denite#custom#var('grep', 'separator', ['--'])
-        "         "     call denite#custom#var('grep', 'final_opts', [])
-        "         "     call denite#custom#var('grep', 'default_opts',
-        "         "                     \ ['--ackrc', $HOME.'/.config/ackrc', '-H',
-        "         "                     \ '--nopager', '--nocolor', '--nogroup', '--column'])
-        "         endif
-        "     endif
+            elseif executable('ack')
+                " Ack command
+                call denite#custom#var('grep', 'command', ['ack'])
+                call denite#custom#var('grep', 'recursive_opts', [])
+                call denite#custom#var('grep', 'pattern_opt', ['--match'])
+                call denite#custom#var('grep', 'separator', ['--'])
+                call denite#custom#var('grep', 'final_opts', [])
+                call denite#custom#var('grep', 'default_opts',
+                            \ ['--ackrc', $HOME.'/.config/ackrc', '-H',
+                            \ '--nopager', '--nocolor', '--nogroup', '--column'])
+            endif
+        endif
         " }}}
 
         " thiagoalessio/rainbow -- Color by depth! {{{
@@ -490,11 +494,9 @@ function packages#setup() abort
         " call dein#add('neomake/neomake')
         " }}}
 
-
         " vim-schlepp -- Allow the movement of lines (or blocks) of text around easily
         " call dein#add('zirrostig/vim-schlepp')
         " }}}
-
 
         " neoterm -- one terminal for everything!
         " call dein#add('kassio/neoterm')
