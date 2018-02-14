@@ -86,10 +86,10 @@ augroup END
 " Save ------------------------------------|BufWrite|
 augroup Save
     autocmd!
-    autocmd BufWritePre * try | undojoin | Neoformat
-                \ | catch /^Vim\%((\a\+)\)\=:E790/
-                    \ | finally | silent Neoformat
-                        \ | endtry " Format on Save
+    " autocmd BufWritePre * try | undojoin | Neoformat
+    "             \ | catch /^Vim\%((\a\+)\)\=:E790/
+    "                 \ | finally | silent Neoformat
+    "                     \ | endtry " Format on Save
 augroup END
 
 " Exit -------------------------------------|VimLeave|

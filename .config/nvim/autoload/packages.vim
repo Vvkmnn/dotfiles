@@ -525,7 +525,7 @@ function packages#deload() abort
     let g:loaded_vimballPlugin     = 1
     let g:loaded_getscript         = 1
     let g:loaded_getscriptPlugin   = 1
-    let g:loaded_netrw             = 1
+    let g:loaded_netrw             = 0
     let g:loaded_netrwPlugin       = 1
     let g:loaded_netrwSettings     = 1
     let g:loaded_netrwFileHandlers = 1
