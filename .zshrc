@@ -41,6 +41,11 @@ export ARCHEY_LOGO_FILE=$HOME/.logo
 # export PATH="/usr/local/sbin:$PATH"
 export PATH="$HOME/.vimr:$PATH"
 
+# Editor
+alias v='nvim'
+alias vi='nvim'
+alias vim='nvim'
+alias v!='nvim -u NONE'
 ## Environment Defaults ----------------------------
 
 # Dotfiles
@@ -76,17 +81,12 @@ export PATH="$GOPATH/bin:$PATH"
 
 ## Shell Tools -------------------------------------
 
-# nvim
-alias v=nvim
-alias vi=nvim
-alias vim=nvim
+# vimR
+alias V=$EDITOR
 export VIMCONFIG=~/.config/nvim
 export VIMDATA=~/.local/share/nvim
 export NVIMCONFIG=~/.config/nvim
 export NVIMDATA=~/.local/share/nvim
-
-# vimR
-alias V=$EDITOR
 
 # brew
 export HOMEBREW_CASK_OPTS="--appdir=/Applications"
@@ -104,7 +104,7 @@ if [ -f "${HOME}/.google/completion.zsh.inc" ]; then source "${HOME}/.google/com
 test -e "${HOME}/.iterm2/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2/.iterm2_shell_integration.zsh"
 
 # FZF
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+# [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 # thefuck
 eval "$(thefuck --alias)"

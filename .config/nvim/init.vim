@@ -60,7 +60,6 @@ augroup Read
     autocmd VimEnter *.ts,*.js,*.json
                 \ RainbowLevelsOn
     " autocmd VimEnter *.js RainbowLevelsOn
-    " autocmd FileType javascript,python,php,xml,yaml RainbowLevelsOn
     " autocmd BufNewfile, BufRead *.js, *.json, *.ts call rainbow_levels#on()
     " autocmd BufRead call editor#preferences()
     " autocmd FileType markdown,mkd call lexical#init()
@@ -95,5 +94,5 @@ augroup END
 
 " Exit -------------------------------------|VimLeave|
 augroup Exit
-    autocmd VimLeave * nested call packages#update()
+    autocmd VimLeave * nested call packages#check()
 augroup END

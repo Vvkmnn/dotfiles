@@ -9,7 +9,7 @@ let s:dein_repo_dir   = expand('$HOME/.config/nvim/pack/custom/start/dein.vim')
 execute 'set runtimepath^=' . s:dein_repo_dir
 
 function packages#setup() abort
-    echom "[._.] Setting up packages..."
+    echom "[._.] Setting up aesthetic packages..."
 
     " Start Adding Packages
     if dein#load_state(s:dein_dir)
@@ -81,6 +81,15 @@ function packages#setup() abort
         "     " let g:rainbow_active = 1 "0 if you want to enable it later via :RainbowToggle
         " endif
         " }}}
+
+        " Shougo/dein -- A Dark  Package Manager {{{
+        call dein#add(s:dein_repo_dir)
+
+        if dein#tap('dein.vim') && has('nvim')
+            let g:dein#install_progress_type = 'title'
+            " let g:dein#enable_notification = 1
+        endif
+
 
         "itchyny/lightline.vim -- A leaner vim statusline {{{
         call dein#add('itchyny/lightline.vim')
@@ -235,6 +244,21 @@ function packages#setup() abort
         " call dein#add('gioele/vim-autoswap')
         " }}}
 
+        " w0rp/ale -- Asynchrous Linting Engine {{{
+        call dein#add('w0rp/ale')
+
+        if dein#tap('ale') && has('nvim')
+            let g:ale_fix_on_save = 1 " Set this setting in vimrc if you want to fix files automatically on save
+            let g:ale_sign_error = '>>'
+            let g:ale_sign_warning = '__'
+            let g:ale_echo_msg_error_str = 'E'
+            let g:ale_echo_msg_warning_str = 'W'
+            let g:ale_echo_msg_format = '[%severity%] %s [%linter%]' " Standard format
+            let g:ale_set_quickfix = 1 " Use quickfix Window
+            let g:ale_open_list = 0 " Open Quickfix window with ale
+        endif
+        " }}}
+
         " Dash -- Dash Support <Dash:> {{{
         call dein#add('rizzatti/dash.vim')
 
@@ -288,6 +312,46 @@ function packages#setup() abort
         endif
         " }}}
 
+        " Shougo/neosnippet -- Plug-in support in Deoplete {{{
+        call dein#add('Shougo/neosnippet')
+        call dein#add('Shougo/neosnippet-snippets')
+
+        if dein#tap('neosnippet') && dein#tap('deoplete') && has('nvim')
+            " Plugin key-mappings.
+            " Note: It must be "imap" and "smap".  It uses <Plug> mappings.
+            " imap <C-k>     <Plug>(neosnippet_expand_or_jump)
+            " smap <C-k>     <Plug>(neosnippet_expand_or_jump)
+            " xmap <C-k>     <Plug>(neosnippet_expand_target)
+
+            " Insert Mode previews via Ctrl - N, Tab to complete
+            imap <expr><TAB>
+                        \ neosnippet#expandable_or_jumpable() ?
+                        \    "\<Plug>(neosnippet_expand_or_jump)" :
+                        \     pumvisible() ? "\<C-n>" : "\<TAB>"
+
+            " imap <expr><TAB> pumvisible() ? "\<C-n>" : neosnippet#expandable_or_jumpable() ? "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+            " imap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<S-TAB>"
+            " inoremap <expr><CR> pumvisible() ? deoplete#mappings#close_popup() : "\<CR>"
+
+            " SuperTab like snippets behavior.
+            "" Note: It must be "imap" and "smap".  It uses <Plug> mappings.
+            ""imap <expr><TAB>
+            "" \ pumvisible() ? "\<C-n>" :
+            "" \ neosnippet#expandable_or_jumpable() ?
+            "" \    "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+            "smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
+            "            \ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+
+            " For conceal markers.
+            " if has('conceal')
+            "     set conceallevel=2 concealcursor=niv
+            " endif
+        endif
+        " }}}
+
+        " Shougo/echodoc.vim -- Prints documentation in the echo area {{{
+        call dein#add('Shougo/echodoc.vim')
+        " }}}
         " Shougo/denite.vim -- Emacs Helm for Vim {{{
         " call dein#add('Shougo/denite.nvim')
 
@@ -332,18 +396,45 @@ function packages#setup() abort
         "     endif
         " }}}
 
-        " w0rp/ale -- Asynchrous Linting Engine {{{
-        call dein#add('w0rp/ale')
+        " thiagoalessio/rainbow -- Color by depth! {{{
+        call dein#add('thiagoalessio/rainbow_levels.vim', {
+                    \ 'merged': 0,
+                    \ 'on_cmd' : 'RainbowLevelsOn',
+                    \ })
 
-        if dein#tap('ale') && has('nvim')
-            let g:ale_fix_on_save = 1 " Set this setting in vimrc if you want to fix files automatically on save
-            let g:ale_sign_error = '>>'
-            let g:ale_sign_warning = '__'
-            let g:ale_echo_msg_error_str = 'E'
-            let g:ale_echo_msg_warning_str = 'W'
-            let g:ale_echo_msg_format = '[%severity%] %s [%linter%]' " Standard format
-            let g:ale_set_quickfix = 1 " Use quickfix Window
-            let g:ale_open_list = 1 " Open Quickfix window with ale
+
+        if dein#tap('rainbow_levels.vim') && has('nvim')
+            " dracula
+            let g:rainbow_levels = [
+                        \{'ctermfg': 84,  'guifg': '#50fa7b'},
+                        \{'ctermfg': 117, 'guifg': '#8be9fd'},
+                        \{'ctermfg': 61,  'guifg': '#6272a4'},
+                        \{'ctermfg': 212, 'guifg': '#ff79c6'},
+                        \{'ctermfg': 203, 'guifg': '#ffb86c'},
+                        \{'ctermfg': 228, 'guifg': '#f1fa8c'},
+                        \{'ctermfg': 15,  'guifg': '#f8f8f2'},
+                        \{'ctermfg': 231, 'guifg': '#525563'}]
+
+            " 256_noir
+            " let g:rainbow_levels = [
+            " \{'ctermbg': 232, 'guibg': '#080808'},
+            " \{'ctermbg': 233, 'guibg': '#121212'},
+            " \{'ctermbg': 234, 'guibg': '#1c1c1c'},
+            " \{'ctermbg': 235, 'guibg': '#262626'},
+            " \{'ctermbg': 236, 'guibg': '#303030'},
+            " \{'ctermbg': 237, 'guibg': '#3a3a3a'},
+            " \{'ctermbg': 238, 'guibg': '#444444'},
+            " \{'ctermbg': 239, 'guibg': '#4e4e4e'},
+            " \{'ctermbg': 240, 'guibg': '#585858'}]
+            " endif
+        endif
+        " }}}
+
+        " iron.vim -- Interactive Repls Over Neovim {{{
+        call dein#add('hkupty/iron.nvim')
+
+        if dein#tap('hkupty/iron.vim') && has('nvim')
+            let g:iron_repl_open_cmd = "vsplit"
         endif
         " }}}
 
@@ -368,7 +459,7 @@ function packages#setup() abort
 
         if dein#tap('neoformat') && has('nvim')
             let g:neoformat_run_all_formatters = 1
-            let g:neoformat_only_msg_on_error = 1
+            let g:neoformat_only_msg_on_error = 0
             let g:neoformat_basic_format_align = 1 " Enable alignment without FileType
             let g:neoformat_basic_format_retab = 1 " Enable tab to spaces conversion FileType
             let g:neoformat_basic_format_trim = 1 " Enable trimmming of trailing whitespace FileType
@@ -409,25 +500,9 @@ function packages#setup() abort
         " call dein#add('kassio/neoterm')
         " }}}
 
-        " iron.vim -- Interactive Repls Over Neovim {{{
-        call dein#add('hkupty/iron.nvim')
-
-        if dein#tap('hkupty/iron') && has('nvim')
-            let g:iron_repl_open_cmd = "vsplit"
-        endif
-        " }}}
-
         " haya14busa/dein-command.vim -- Dein commands (<:Dein> vs <call dein#x()> {{{
         call dein#add('haya14busa/dein-command.vim')
         " }}}
-
-        " Shougo/dein -- A Dark  Package Manager {{{
-        call dein#add('~/.config/nvim/pack/custom/start/dein.vim')
-
-        if dein#tap('dein.vim') && has('nvim')
-            let g:dein#install_progress_type = 'title'
-            " let g:dein#enable_notification = 1
-        endif
 
         call dein#end() " End Package Adds
         call dein#save_state() " Save Dein State
@@ -445,19 +520,20 @@ function packages#setup() abort
         " call dein#add('mklabs/split-term.vim')
         " call dein#add('Shougo/deol.nvim')
         " }}}
+
+        " TODO: Gui?
+        " if has("gui_running")
+        " endif
+
     endif
 endfunction
 
 function! packages#update() abort
     echom "[._.] Check for package updates..."
 
-    " call dein#load_state('~/.config/nvim/dein')
-
-    " Update if Available
     if dein#check_update()
-        silent dein#update()
+        dein#update()
     endif
-
 endfunction
 
 function packages#deload() abort
@@ -498,12 +574,7 @@ endfunction
 function! packages#check() abort
     echom "[._.] Checking packages..."
 
-    " call dein#load_state('~/.config/nvim/dein')
-
-    " Install if required
-    " TODO: Doesn't do much; update seems to work though.
     if dein#check_install()
-        call dein#check_clean()
         call dein#install()
     endif
 endfunction
