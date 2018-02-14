@@ -32,9 +32,9 @@
 " Startup ------------------------------------------
 augroup Startup
     autocmd!
+    autocmd VimEnter * call packages#deload()
     autocmd VimEnter * call packages#setup()
     autocmd VimEnter * call packages#check()
-    autocmd VimEnter * call packages#deload()
     autocmd VimEnter * call defaults#settings()
     autocmd VimEnter * call aesthetic#settings()
     autocmd VimEnter * call aesthetic#highlights()

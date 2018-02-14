@@ -15,6 +15,14 @@ function packages#setup() abort
     if dein#load_state(s:dein_dir)
         call dein#begin(s:dein_dir)
 
+        " Shougo/dein -- A Dark  Package Manager {{{
+        call dein#add(s:dein_repo_dir)
+
+        if dein#tap('dein.vim') && has('nvim')
+            let g:dein#install_progress_type = 'title'
+            " let g:dein#enable_notification = 1
+        endif
+
         " dracula/vim -- A Dark Colorscheme {{{
         call dein#add('dracula/vim')
         " }}}
@@ -56,40 +64,6 @@ function packages#setup() abort
             " endif
         endif
         " }}}
-
-        " wellle/targets.vim -- Additional Text Objects {{{
-        call dein#add('wellle/targets.vim')
-        " }}}
-
-        " wellle/targets.vim -- Additional Text Objects {{{
-        call dein#add('wellle/targets.vim')
-        " }}}
-
-        " kien/rainbow_parentheses.vim -- Better Rainbow Parenthesis {{{
-        " call dein#add('kien/rainbow_parentheses.vim')
-        " }}}
-
-        " if dein#tap('rainbow_parentheses.vim') && has('nvim')
-        "     " let g:rbpt_loadcmd_toggle = 0
-        " endif
-        " }}}
-
-        " luochen1990/rainbow -- Rainbow Parentheses Improved -- Color code by depth {{{
-        " call dein#add('luochen1990/rainbow')
-
-        " if dein#tap('rainbow.vim') && has('nvim')
-        "     " let g:rainbow_active = 1 "0 if you want to enable it later via :RainbowToggle
-        " endif
-        " }}}
-
-        " Shougo/dein -- A Dark  Package Manager {{{
-        call dein#add(s:dein_repo_dir)
-
-        if dein#tap('dein.vim') && has('nvim')
-            let g:dein#install_progress_type = 'title'
-            " let g:dein#enable_notification = 1
-        endif
-
 
         "itchyny/lightline.vim -- A leaner vim statusline {{{
         call dein#add('itchyny/lightline.vim')
@@ -176,25 +150,12 @@ function packages#setup() abort
         call dein#add('tpope/vim-eunuch')
         " }}}
 
-        " tpope/vim-vinegar -- netrw upgrade {{{
-        " call dein#add('tpope/vim-vinegar')
+        " wellle/targets.vim -- Additional Text Objects {{{
+        call dein#add('wellle/targets.vim')
         " }}}
 
         " tpope/surround.vim -- Wrap objects with stuff using <cs[input][output], cst[input]> and remove with <ds[input]>
         call dein#add('tpope/vim-surround', {'on_map': {'n' : ['cs', 'ds', 'ys'], 'x' : 'S'}, 'depends' : 'vim-repeat'})
-        " }}}
-
-        " osyo-manga/vim-over -- Preview substitutions with <OverCommandLine>
-        " call dein#add('osyo-manga/vim-over', { 'on_cmd' : 'OverCommandLine' })
-        " }}}
-
-
-        " tmhedberg/matchit -- extended % matching
-        " call dein#add('tmhedberg/matchit', { 'on_ft' : 'html' })
-        " }}}
-
-        " tpope/commentary.vim -- Comment stuff out with <:gc[motion]>, uncomment with <:gcgc> {{{
-        " call dein#add('tpope/vim-commentary')
         " }}}
 
         call dein#add('godlygeek/tabular',
@@ -203,6 +164,12 @@ function packages#setup() abort
         " tpope/unimpaired.vim -- Handy [] maps <]q> / <:cnext>, <[b> / <:bprevious>, etc.> {{{
         call dein#add('tpope/vim-unimpaired')
         " }}}
+
+
+        " airblade/vim-gitgutter -- Git status next to line numbers {{{
+        call dein#add('airblade/vim-gitgutter')
+        " }}}
+
 
         " tpope/vim-fugitive -- A Vim Git Wrapper {{{
         call dein#add('tpope/vim-fugitive',
@@ -221,27 +188,13 @@ function packages#setup() abort
         " }}}
 
         " reedes/vim-lexical -- Vim Spellcheck++ {{{
-        " call dein#add('reedes/vim-lexical')
-        " }}}
-
-        " ap/vim-buftabline -- Vim Buffer Tabs {{{
-        " call dein#add('ap/vim-buftabline')
-        " }}}
-
-        " airblade/vim-gitgutter -- Git status next to line numbers {{{
-        " call dein#add('airblade/vim-gitgutter')
-        " }}}
-
-        " roman/golden-ratio -- Golden Ratio windows {{{
-        " call dein#add('roman/golden-ratio')
-        " }}}
-
-        " thaerkh/vim-workspace -- Automated Session Management with <:ToggleWorkplace> {{{
-        " call dein#add('thaerkh/vim-workspace')
+        call dein#add('reedes/vim-lexical', {
+                    \   'on_ft': ['markdown', 'text']
+                    \ })
         " }}}
 
         " giole/vim-autoswap -- No swap messages; just switch or recover {{{
-        " call dein#add('gioele/vim-autoswap')
+        call dein#add('gioele/vim-autoswap')
         " }}}
 
         " w0rp/ale -- Asynchrous Linting Engine {{{
@@ -261,17 +214,14 @@ function packages#setup() abort
 
         " Dash -- Dash Support <Dash:> {{{
         call dein#add('rizzatti/dash.vim', {
-                    \ 'on_cmd': 'Dash'})
+                    \ 'on_cmd': 'Dash'
+                    \ })
 
         if dein#tap('dash.vim') && has('nvim')
             "
             " Search for word under cursor with <leader>d
             nnoremap <silent> <leader>d <Plug>DashSearch
         endif
-        " }}}
-
-        " Vimagit -- Emacs style Git management via <:Magit>, <C-n>, S[tage], and CC[omit] {{{
-        " call dein#add('jreybert/vimagit')
         " }}}
 
         " Shougo/deoplete -- dark powered neo-completion {{{
@@ -354,6 +304,7 @@ function packages#setup() abort
         " Shougo/echodoc.vim -- Prints documentation in the echo area {{{
         call dein#add('Shougo/echodoc.vim')
         " }}}
+
         " Shougo/denite.vim -- Emacs Helm for Vim {{{
         call dein#add('Shougo/denite.nvim', {
                     \ 'on_cmd':'Denite'
@@ -400,63 +351,14 @@ function packages#setup() abort
         endif
         " }}}
 
-        " thiagoalessio/rainbow -- Color by depth! {{{
-        call dein#add('thiagoalessio/rainbow_levels.vim', {
-                    \ 'merged': 0,
-                    \ 'on_cmd' : 'RainbowLevelsOn',
-                    \ })
+        " ap/vim-templates -- Filetype dependent templates {{{
+        call dein#add('ap/vim-templates')
 
-
-        if dein#tap('rainbow_levels.vim') && has('nvim')
-            " dracula
-            let g:rainbow_levels = [
-                        \{'ctermfg': 84,  'guifg': '#50fa7b'},
-                        \{'ctermfg': 117, 'guifg': '#8be9fd'},
-                        \{'ctermfg': 61,  'guifg': '#6272a4'},
-                        \{'ctermfg': 212, 'guifg': '#ff79c6'},
-                        \{'ctermfg': 203, 'guifg': '#ffb86c'},
-                        \{'ctermfg': 228, 'guifg': '#f1fa8c'},
-                        \{'ctermfg': 15,  'guifg': '#f8f8f2'},
-                        \{'ctermfg': 231, 'guifg': '#525563'}]
-
-            " 256_noir
-            " let g:rainbow_levels = [
-            " \{'ctermbg': 232, 'guibg': '#080808'},
-            " \{'ctermbg': 233, 'guibg': '#121212'},
-            " \{'ctermbg': 234, 'guibg': '#1c1c1c'},
-            " \{'ctermbg': 235, 'guibg': '#262626'},
-            " \{'ctermbg': 236, 'guibg': '#303030'},
-            " \{'ctermbg': 237, 'guibg': '#3a3a3a'},
-            " \{'ctermbg': 238, 'guibg': '#444444'},
-            " \{'ctermbg': 239, 'guibg': '#4e4e4e'},
-            " \{'ctermbg': 240, 'guibg': '#585858'}]
-            " endif
+        if dein#tap('vim-template') && has('nvim')
+            let g:templates_empty_files = 1
         endif
         " }}}
 
-        " iron.vim -- Interactive Repls Over Neovim {{{
-        call dein#add('hkupty/iron.nvim')
-
-        if dein#tap('hkupty/iron.vim') && has('nvim')
-            let g:iron_repl_open_cmd = "vsplit"
-        endif
-        " }}}
-
-        " Neomake -- Asynchronously run programs {{{
-        " call dein#add('neomake/neomake')
-        " }}}
-
-        " aperezdc/vim-template -- Prebuilt templates for certain filetypes via <:Template>, or <$ vim foo.x>
-        call dein#add('aperezdc/vim-template')
-
-        " if dein#tap('aperezdc/vim-template') && has('nvim')
-        "     let g:templates_debug = 1
-        " endif
-        " }}}
-
-        " vim-easyclip -- Better thought out yanking, cutting, and pasting.
-        " call dein#add('svermeulen/vim-easyclip')
-        " }}}
 
         " sbdchd/vim-neoformat -- Script formatting {{{
         call dein#add('sbdchd/neoformat')
@@ -474,61 +376,129 @@ function packages#setup() abort
         endif
         " }}}
 
-        " SirVer/ultisnips -- Vim Snippet Framework {{{
-        " call dein#add('SirVer/ultisnips')
-        " }}}
-
-        " honza/vim-snippets -- snipMate & UltiSnip Snippet Source {{{
-        " call dein#add('honza/vim-snippets')
-        " }}}
-
-        " echodoc.vim -- Displays docs in the function area
-        " call dein#add('Shougo/echodoc.vim')
-        " }}}
-
-        " Gutentags -- The Vim .tags manager  " Supertab -- Use <Tab> for all your insert completion needs
-        " call dein#add('ludovicchabant/vim-gutentags')
-        " }}}
-
-        " Neomake -- Asynchronously run Programs <:Neomake>
-        " call dein#add('neomake/neomake')
-        " }}}
-
-        " vim-schlepp -- Allow the movement of lines (or blocks) of text around easily
-        " call dein#add('zirrostig/vim-schlepp')
-        " }}}
-
-        " neoterm -- one terminal for everything!
-        " call dein#add('kassio/neoterm')
-        " }}}
-
         " haya14busa/dein-command.vim -- Dein commands (<:Dein> vs <call dein#x()> {{{
         call dein#add('haya14busa/dein-command.vim')
         " }}}
 
         call dein#end() " End Package Adds
         call dein#save_state() " Save Dein State
-
-
-        " TODO: Tbd. {{{
-        " call dein#add('ervandew/supertab')
-        " call dein#add('majutsushi/tagbar')                    " Tagbar -- a class outline viewer for Vim
-        " call dein#add('ryanoasis/vim-devicons')               " VimDevIcons -- Icons in Vim
-        " call dein#add('mhinz/vim-startify')                   " vim-startify -- Vim start page!
-        " call dein#add('junegunn/fzf.vim', { 'depends': 'fzf' }) " FZF -- Fuzzy File Finder!
-        " call dein#add('matze/vim-move')                       " vim-move -- Alt-kj for moving lines up and down
-        " call dein#add('scrooloose/nerdtree')                  " NERDTree -- Tree File System Explorer
-        " vimlab/split-term.vim -- Utilities for nvim's <:terminal> {{{
-        " call dein#add('mklabs/split-term.vim')
-        " call dein#add('Shougo/deol.nvim')
-        " }}}
-
-        " TODO: Gui?
-        " if has("gui_running")
-        " endif
-
     endif
 endfunction
+
+" tpope/vim-vinegar -- netrw upgrade {{{
+" call dein#add('tpope/vim-vinegar')
+" }}}
+
+" osyo-manga/vim-over -- Preview substitutions with <OverCommandLine>
+" call dein#add('osyo-manga/vim-over', { 'on_cmd' : 'OverCommandLine' })
+" }}}
+
+" tmhedberg/matchit -- extended % matching
+" call dein#add('tmhedberg/matchit', { 'on_ft' : 'html' })
+" }}}
+
+" tpope/commentary.vim -- Comment stuff out with <:gc[motion]>, uncomment with <:gcgc> {{{
+" call dein#add('tpope/vim-commentary')
+" }}}
+
+" ap/vim-buftabline -- Vim Buffer Tabs {{{
+" call dein#add('ap/vim-buftabline')
+" }}}
+
+" roman/golden-ratio -- Golden Ratio windows {{{
+" call dein#add('roman/golden-ratio')
+" }}}
+
+" thaerkh/vim-workspace -- Automated Session Management with <:ToggleWorkplace> {{{
+" call dein#add('thaerkh/vim-workspace')
+" }}}
+
+" Vimagit -- Emacs style Git management via <:Magit>, <C-n>, S[tage], and CC[omit] {{{
+" call dein#add('jreybert/vimagit')
+" }}}
+
+" iron.vim -- Interactive Repls Over Neovim {{{
+" call dein#add('hkupty/iron.nvim')
+"
+" if dein#tap('iron.vim') && has('nvim')
+"     let g:iron_repl_open_cmd = "vsplit"
+" endif
+" }}}
+
+" Neomake -- Asynchronously run programs {{{
+" call dein#add('neomake/neomake')
+" }}}
+
+" aperezdc/vim-template -- Prebuilt templates for certain filetypes via <:Template>, or <$ vim foo.x>
+" call dein#add('aperezdc/vim-template')
+
+" vim-easyclip -- Better thought out yanking, cutting, and pasting.
+" call dein#add('svermeulen/vim-easyclip')
+" }}}
+
+
+" TODO: Tbd. {{{
+" SirVer/ultisnips -- Vim Snippet Framework {{{
+" call dein#add('SirVer/ultisnips')
+" }}}
+
+" honza/vim-snippets -- snipMate & UltiSnip Snippet Source {{{
+" call dein#add('honza/vim-snippets')
+" }}}
+
+" echodoc.vim -- Displays docs in the function area
+" call dein#add('Shougo/echodoc.vim')
+" }}}
+
+" Gutentags -- The Vim .tags manager  " Supertab -- Use <Tab> for all your insert completion needs
+" call dein#add('ludovicchabant/vim-gutentags')
+" }}}
+
+" Neomake -- Asynchronously run Programs <:Neomake>
+" call dein#add('neomake/neomake')
+" }}}
+
+" vim-schlepp -- Allow the movement of lines (or blocks) of text around easily
+" call dein#add('zirrostig/vim-schlepp')
+" }}}
+
+" neoterm -- one terminal for everything!
+" call dein#add('kassio/neoterm')
+" }}}
+
+" call dein#add('ervandew/supertab')
+" call dein#add('majutsushi/tagbar')                    " Tagbar -- a class outline viewer for Vim
+" call dein#add('ryanoasis/vim-devicons')               " VimDevIcons -- Icons in Vim
+" call dein#add('mhinz/vim-startify')                   " vim-startify -- Vim start page!
+" call dein#add('junegunn/fzf.vim', { 'depends': 'fzf' }) " FZF -- Fuzzy File Finder!
+" call dein#add('matze/vim-move')                       " vim-move -- Alt-kj for moving lines up and down
+" call dein#add('scrooloose/nerdtree')                  " NERDTree -- Tree File System Explorer
+" vimlab/split-term.vim -- Utilities for nvim's <:terminal> {{{
+" call dein#add('mklabs/split-term.vim')
+" call dein#add('Shougo/deol.nvim')
+" }}}
+
+" kien/rainbow_parentheses.vim -- Better Rainbow Parenthesis {{{
+" call dein#add('kien/rainbow_parentheses.vim')
+" }}}
+
+" if dein#tap('rainbow_parentheses.vim') && has('nvim')
+"     " let g:rbpt_loadcmd_toggle = 0
+" endif
+" }}}
+
+" luochen1990/rainbow -- Rainbow Parentheses Improved -- Color code by depth {{{
+" call dein#add('luochen1990/rainbow')
+
+" if dein#tap('rainbow.vim') && has('nvim')
+" let g:rainbow_active = 1 "0 if you want to enable it later via :RainbowToggle
+" endif
+" }}}
+
+" TODO: Gui?
+" if has("gui_running")
+" endif
+
 
 function! packages#update() abort
     echom "[._.] Check for package updates..."
@@ -585,5 +555,5 @@ endfunction
 " Define user commands for updating/cleaning the plugins.
 " Each of them loads minpac, reloads .vimrc to register the
 " information of plugins, then performs the task.
-" command! PackUpdate packadd minpac | source $MYVIMRC | call minpac#update()
-" command! PackClean  packadd minpac | source $MYVIMRC | call minpac#clean()
+command! PackSetup packadd minpac | source $MYVIMRC | call packages#setup()
+command! PackUpdate packadd minpac | source $MYVIMRC | call packages#check()
