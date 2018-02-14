@@ -6,10 +6,10 @@ function! bindings#leader() abort
     " let mapleader=" "
 
     " Leader split navigation
-    map <leader>h :wincmd h<CR>
-    map <leader>j :wincmd j<CR>
-    map <leader>k :wincmd k<CR>
-    map <leader>l :wincmd l<CR>
+    " map <leader>h :wincmd h<CR>
+    " map <leader>j :wincmd j<CR>
+    " map <leader>k :wincmd k<CR>
+    " map <leader>l :wincmd l<CR>
 
     " <;> as Buffer
     " nnoremap ; :Buffers<CR>
@@ -35,11 +35,11 @@ function! bindings#normal() abort
     nnoremap <Left>  :vertical resize +2<CR>
     nnoremap <Right> :vertical resize -2<CR>
 
-    " Normal mode:
-    " nnoremap <C-h> <c-w>h
-    " nnoremap <C-j> <c-w>j
-    " nnoremap <C-k> <c-w>k
-    " nnoremap <C-l> <c-w>l
+    " Normal mode split navigation
+    nnoremap <C-h> <c-w>h
+    nnoremap <C-j> <c-w>j
+    nnoremap <C-k> <c-w>k
+    nnoremap <C-l> <c-w>l
 
     " Ctrl Arrow Buffer Navigation
     " nnoremap <silent> <C-Right> <c-w>l
@@ -62,11 +62,11 @@ endfunction
 function bindings#insert() abort
     echom "[._.] Loading Insert mode bindings..."
 
-    " Insert mode:
-    " inoremap <C-h> <Esc><c-w>h
-    " inoremap <C-j> <Esc><c-w>j
-    " inoremap <C-k> <Esc><c-w>k
-    " inoremap <C-l> <Esc><c-w>l
+    " Insert mode:split navigation
+    inoremap <C-h> <Esc><c-w>h
+    inoremap <C-j> <Esc><c-w>j
+    inoremap <C-k> <Esc><c-w>k
+    inoremap <C-l> <Esc><c-w>l
 endfunction
 
 function! bindings#visual() abort
@@ -75,22 +75,22 @@ function! bindings#visual() abort
     " Sort in Visual Mode
     vnoremap <Leader>s :sort<CR>
 
-    " Visual mode:
-    " vnoremap <C-h> <Esc><c-w>h
-    " vnoremap <C-j> <Esc><c-w>j
-    " vnoremap <C-k> <Esc><c-w>k
-    " vnoremap <C-l> <Esc><c-w>l
+    " Visual mode split navigation
+    vnoremap <C-h> <Esc><c-w>h
+    vnoremap <C-j> <Esc><c-w>j
+    vnoremap <C-k> <Esc><c-w>k
+    vnoremap <C-l> <Esc><c-w>l
 endfunction
 
 function! bindings#terminal() abort
     echom "[._.] Loading Terminal mode bindings..."
 
     " Terminal mode:
-    " tnoremap <C-h> <c-\><c-n><c-w>h
-    " tnoremap <C-j> <c-\><c-n><c-w>j
-    " tnoremap <C-k> <c-\><c-n><c-w>k
-    " tnoremap <C-l> <c-\><c-n><c-w>l
-    "
+    tnoremap <C-h> <c-\><c-n><c-w>h
+    tnoremap <C-j> <c-\><c-n><c-w>j
+    tnoremap <C-k> <c-\><c-n><c-w>k
+    tnoremap <C-l> <c-\><c-n><c-w>l
+
     " Esc to leave Terminal Mode
     tnoremap <Esc> <C-\><C-n>
     tnoremap <C-v><Esc> <Esc>
