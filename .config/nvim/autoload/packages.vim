@@ -9,7 +9,7 @@ let s:dein_repo_dir   = expand('$HOME/.config/nvim/pack/custom/start/dein.vim')
 execute 'set runtimepath^=' . s:dein_repo_dir
 
 function packages#setup() abort
-    echom "[._.] Setting up aesthetic packages..."
+    echom "[._.] Setting up packages..."
 
     " Start Adding Packages
     if dein#load_state(s:dein_dir)
@@ -155,15 +155,14 @@ function packages#setup() abort
         " }}}
 
         " tpope/surround.vim -- Wrap objects with stuff using <cs[input][output], cst[input]> and remove with <ds[input]>
-        call dein#add('tpope/vim-surround',
-                    \ {'on_map': {'n' : ['cs', 'ds', 'ys'], 'x' : 'S'},
+        call dein#add('tpope/vim-surround', {
+                    \ 'on_map': {'n' : ['cs', 'ds', 'ys'], 'x' : 'S'},
                     \ 'depends' : 'vim-repeat'
                     \ })
         " }}}
 
-        call dein#add('godlygeek/tabular',
-                    \ { 'on_cmd' :
-                    \ [ 'Tab', 'Tabularize' ]
+        call dein#add('godlygeek/tabular', {
+                    \ 'on_cmd' : [ 'Tab', 'Tabularize' ]
                     \ })
 
         " tpope/unimpaired.vim -- Handy [] maps <]q> / <:cnext>, <[b> / <:bprevious>, etc.> {{{
@@ -177,15 +176,24 @@ function packages#setup() abort
 
 
         " tpope/vim-fugitive -- A Vim Git Wrapper {{{
-        call dein#add('tpope/vim-fugitive',
-                    \ { 'on_cmd': [ 'Git',
+        call dein#add('tpope/vim-fugitive', { 
+                    \ 'on_cmd': [ 'Git',
                     \ 'Gstatus',
                     \ 'Gwrite',
                     \ 'Glog',
                     \'Gcommit',
                     \ 'Gblame',
                     \ 'Ggrep',
-                    \ 'Gdiff']})
+                    \ 'Gdiff']
+                    \ })
+
+
+        " Vimagit -- Emacs style Git management via <:Magit>, <C-n>, S[tage], and CC[omit] {{{
+        call dein#add('jreybert/vimagit', { 
+                    \ 'on_cmd': 'Magit'
+                    \ })
+        " }}}
+
         " }}}
 
         " tomtom/tcomment_vim -- Commenting with motions {{{
@@ -207,13 +215,14 @@ function packages#setup() abort
 
         if dein#tap('ale') && has('nvim')
             let g:ale_fix_on_save = 1 " Set this setting in vimrc if you want to fix files automatically on save
-            let g:ale_sign_error = '>>'
-            let g:ale_sign_warning = '__'
-            let g:ale_echo_msg_error_str = 'E'
-            let g:ale_echo_msg_warning_str = 'W'
+            " let g:ale_sign_error = '>>'
+            " let g:ale_sign_warning = '__'
+            " let g:ale_echo_msg_error_str = 'E'
+            " let g:ale_echo_msg_warning_str = 'W'
             let g:ale_echo_msg_format = '[%severity%] %s [%linter%]' " Standard format
             let g:ale_set_quickfix = 1 " Use quickfix Window
             let g:ale_open_list = 0 " Open Quickfix window with ale
+            " let g:ale_keep_list_window_open = 1 " Set this if you want to.
         endif
         " }}}
 
@@ -269,8 +278,11 @@ function packages#setup() abort
         " }}}
 
         " Shougo/neosnippet -- Plug-in support in Deoplete {{{
-        call dein#add('Shougo/neosnippet')
-        call dein#add('Shougo/neosnippet-snippets')
+        call dein#add('Shougo/neosnippet', {
+                    \ 'depends': 'deoplete.nvim'})
+        call dein#add('Shougo/neosnippet-snippets', {
+                    \ 'depends': ['deoplete.nvim','neosnippet']
+                    \ })
 
         if dein#tap('neosnippet') && dein#tap('deoplete.nvim') && has('nvim')
             " Plugin key-mappings.
@@ -358,7 +370,7 @@ function packages#setup() abort
         " ap/vim-templates -- Filetype dependent templates {{{
         call dein#add('ap/vim-templates')
 
-        if dein#tap('vim-template') && has('nvim')
+        if dein#tap('vim-templates') && has('nvim')
             let g:templates_empty_files = 1
         endif
         " }}}
@@ -381,7 +393,9 @@ function packages#setup() abort
         " }}}
 
         " haya14busa/dein-command.vim -- Dein commands (<:Dein> vs <call dein#x()> {{{
-        call dein#add('haya14busa/dein-command.vim')
+        call dein#add('haya14busa/dein-command.vim', {
+                    \ 'on_cmd': 'Dein',
+                    \ 'depends': 'dein.vim'})
         " }}}
 
         call dein#end() " End Package Adds
@@ -415,10 +429,6 @@ endfunction
 
 " thaerkh/vim-workspace -- Automated Session Management with <:ToggleWorkplace> {{{
 " call dein#add('thaerkh/vim-workspace')
-" }}}
-
-" Vimagit -- Emacs style Git management via <:Magit>, <C-n>, S[tage], and CC[omit] {{{
-" call dein#add('jreybert/vimagit')
 " }}}
 
 " iron.vim -- Interactive Repls Over Neovim {{{
@@ -504,7 +514,14 @@ endfunction
 " endif
 
 
-function! packages#update() abort
+function packages#clean() abort
+    echom "[._.] Cleaning packages..."
+
+    call map(dein#check_clean(), "delete(v:val, 'rf')")
+    call dein#recache_runtimepath()
+endfunction
+
+function packages#update() abort
     echom "[._.] Check for package updates..."
 
     if dein#check_update()
@@ -532,23 +549,23 @@ function packages#deload() abort
     let g:loaded_logipat           = 1
 endfunction
 
+"
+" function packages#source(plugin) abort
+"     echom "[._.] Sourcing plugin..."
+"     " Argument scope via <a:>
+"     echom a:plugin
+"
+"     if dein#load_state(s:dein_dir) " Script Scope via <s:>
+"         if dein#is_sourced(a:plugin)
+"             call dein#source(a:plugin)
+"         endif
+"     endif
+"
+" endfunction
 
-function packages#source(plugin) abort
-    echom "[._.] Sourcing plugin..."
-    " Argument scope via <a:>
-    echom a:plugin
 
-    if dein#load_state(s:dein_dir) " Script Scope via <s:>
-        if dein#is_sourced(a:plugin)
-            call dein#source(a:plugin)
-        endif
-    endif
-
-endfunction
-
-
-function! packages#check() abort
-    echom "[._.] Checking packages..."
+function packages#install() abort
+    echom "[._.] Install packages..."
 
     if dein#check_install()
         call dein#install()
@@ -559,5 +576,5 @@ endfunction
 " Define user commands for updating/cleaning the plugins.
 " Each of them loads minpac, reloads .vimrc to register the
 " information of plugins, then performs the task.
-command! PackSetup packadd minpac | source $MYVIMRC | call packages#setup()
-command! PackUpdate packadd minpac | source $MYVIMRC | call packages#check()
+" command! PackSetup packadd minpac | source $MYVIMRC | call packages#setup()
+" command! PackUpdate packadd minpac | source $MYVIMRC | call packages#check()

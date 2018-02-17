@@ -1,4 +1,4 @@
-" Vivek Menon - mail@vvkmnn.xyz
+" nstallVivek Menon - mail@vvkmnn.xyz
 
 " ##################################################
 " ##################################################
@@ -34,7 +34,7 @@ augroup Startup
     autocmd!
     autocmd VimEnter * call packages#deload()
     autocmd VimEnter * call packages#setup()
-    autocmd VimEnter * call packages#check()
+    autocmd VimEnter * call packages#install()
     autocmd VimEnter * call defaults#settings()
     autocmd VimEnter * call aesthetic#settings()
     autocmd VimEnter * call aesthetic#highlights()
@@ -57,7 +57,9 @@ augroup END
 " Read ------------------------------------|BufRead|
 augroup Read
     autocmd!
-    autocmd VimEnter *.ts,*.js,*.json
+    " autocmd BufNewFile,BufReadPre * 
+	" 	\ Bindings
+    autocmd BufNewFile,BufRead *.ts,*.js,*.json
                 \ RainbowLevelsOn
     " autocmd VimEnter *.js RainbowLevelsOn
     " autocmd BufNewfile, BufRead *.js, *.json, *.ts call rainbow_levels#on()
@@ -94,5 +96,7 @@ augroup END
 
 " Exit -------------------------------------|VimLeave|
 augroup Exit
-    autocmd VimLeave * nested call packages#check()
+    " autocmd VimLeave * call packages#update()
+    autocmd VimLeave * call packages#clean()
+    " autocmd VimLeave * call packages#update()
 augroup END

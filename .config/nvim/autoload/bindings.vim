@@ -96,3 +96,4 @@ function! bindings#terminal() abort
     tnoremap <C-v><Esc> <Esc>
 endfunction
 
+" command Bindings call bindings#leader() | \ call bindings#normal()
