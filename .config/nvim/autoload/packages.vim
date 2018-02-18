@@ -1,7 +1,7 @@
 " Packages  --------------------------------------------------------------------
 
-" import Dein if in pack/*/opt (Automatically added via pack/*/start)
-" packadd dein
+" import Dein if in pack/*/opt
+" packadd dein " Automatically added via pack/*/start
 
 " Set Path
 let s:dein_dir        = expand('$HOME/.config/nvim/dein')
@@ -99,6 +99,7 @@ function packages#setup() abort
         " taohex/lightline-buffer -- Buffer component for lightline {{{
         call dein#add('taohex/lightline-buffer')
 
+
         if dein#tap('lightline.vim') && dein#tap('lightline-buffer') && has('nvim')
             let g:lightline.component_expand = {
                         \ 'tabline': {
@@ -176,20 +177,14 @@ function packages#setup() abort
 
 
         " tpope/vim-fugitive -- A Vim Git Wrapper {{{
-        call dein#add('tpope/vim-fugitive', { 
-                    \ 'on_cmd': [ 'Git',
-                    \ 'Gstatus',
-                    \ 'Gwrite',
-                    \ 'Glog',
-                    \'Gcommit',
-                    \ 'Gblame',
-                    \ 'Ggrep',
-                    \ 'Gdiff']
+        call dein#add('tpope/vim-fugitive', {
+                    \ 'on_cmd': [ 'Git', 'Gstatus', 'Gwrite', 'Glog', 'Gcommit', 'Gblame', 'Ggrep', 'Gdiff'] ,
+                    \ 'merged': 0 ,
+                    \ 'augroup': ''
                     \ })
 
-
         " Vimagit -- Emacs style Git management via <:Magit>, <C-n>, S[tage], and CC[omit] {{{
-        call dein#add('jreybert/vimagit', { 
+        call dein#add('jreybert/vimagit', {
                     \ 'on_cmd': 'Magit'
                     \ })
         " }}}
@@ -232,7 +227,6 @@ function packages#setup() abort
                     \ })
 
         if dein#tap('dash.vim') && has('nvim')
-            "
             " Search for word under cursor with <leader>d
             nnoremap <silent> <leader>d <Plug>DashSearch
         endif
@@ -243,20 +237,19 @@ function packages#setup() abort
 
         if dein#tap('deoplete.nvim') && has('nvim')
             let g:deoplete#enable_at_startup = 1 " Enable deoplete at startup
-
-
-            " Shougo/neco-syntax - Syntax Deoplete Source {{{
-            call dein#add('Shougo/neco-syntax', {
-                        \ 'depends': 'deoplete.nvim'
-                        \ })
-            " }}}
-
-            " fszymanski/deoplete-emoji -- Emoji Deoplete Source {{{
-            call dein#add('fszymanski/deoplete-emoji', {
-                        \ 'depends': 'deoplete.nvim'
-                        \ })
-            " }}}
         endif
+        " }}}
+
+        " Shougo/neco-syntax - Syntax Deoplete Source {{{
+        call dein#add('Shougo/neco-syntax', {
+                    \ 'depends': 'deoplete.nvim'
+                    \ })
+        " }}}
+
+        " fszymanski/deoplete-emoji -- Emoji Deoplete Source {{{
+        call dein#add('fszymanski/deoplete-emoji', {
+                    \ 'depends': 'deoplete.nvim'
+                    \ })
         " }}}
 
         " autozimu/LanguageClient-neovim - LSP Integration for Vim {{{
@@ -280,6 +273,7 @@ function packages#setup() abort
         " Shougo/neosnippet -- Plug-in support in Deoplete {{{
         call dein#add('Shougo/neosnippet', {
                     \ 'depends': 'deoplete.nvim'})
+
         call dein#add('Shougo/neosnippet-snippets', {
                     \ 'depends': ['deoplete.nvim','neosnippet']
                     \ })
@@ -318,8 +312,9 @@ function packages#setup() abort
         " }}}
 
         " Shougo/echodoc.vim -- Prints documentation in the echo area {{{
-        call dein#add('Shougo/echodoc.vim')
-        " }}}
+        call dein#add('Shougo/echodoc.vim', {
+                    \ 'depends': 'deoplete.nvim'
+                    \ })
 
         " Shougo/denite.vim -- Emacs Helm for Vim {{{
         call dein#add('Shougo/denite.nvim', {
@@ -542,10 +537,10 @@ function packages#deload() abort
     let g:loaded_vimballPlugin     = 1
     let g:loaded_getscript         = 1
     let g:loaded_getscriptPlugin   = 1
-    let g:loaded_netrw             = 0
+    let g:loaded_netrw             = 1
     let g:loaded_netrwPlugin       = 1
     let g:loaded_netrwSettings     = 1
-    let g:loaded_netrwFileHandlers = 1
+    let g:loaded_netrwFileHandlers = 0
     let g:loaded_logipat           = 1
 endfunction
 
@@ -573,8 +568,7 @@ function packages#install() abort
 endfunction
 
 " Commands ---------------------------------------------------------------------
-" Define user commands for updating/cleaning the plugins.
-" Each of them loads minpac, reloads .vimrc to register the
-" information of plugins, then performs the task.
-" command! PackSetup packadd minpac | source $MYVIMRC | call packages#setup()
-" command! PackUpdate packadd minpac | source $MYVIMRC | call packages#check()
+" User commands for updating/cleaning the plugins.
+" command! Deload call packages#deload()
+" command! PackageSetup call packages#setup() | nested call packages#install()
+" command! PackageClose call packages#clean()

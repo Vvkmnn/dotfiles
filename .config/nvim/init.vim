@@ -32,71 +32,57 @@
 " Startup ------------------------------------------
 augroup Startup
     autocmd!
-    autocmd VimEnter * call packages#deload()
-    autocmd VimEnter * call packages#setup()
-    autocmd VimEnter * call packages#install()
-    autocmd VimEnter * call defaults#settings()
-    autocmd VimEnter * call aesthetic#settings()
-    autocmd VimEnter * call aesthetic#highlights()
-    autocmd VimEnter * call bindings#leader()
-    autocmd VimEnter * call bindings#normal()
-    autocmd VimEnter * call bindings#insert()
-    autocmd VimEnter * call bindings#visual()
-    autocmd VimEnter * call bindings#terminal()
+    autocmd VimEnter * nested
+                \ call packages#deload()
+                \ | call packages#setup()
+                \ | call packages#install()
+                \ | call defaults#settings()
+                \ | call aesthetic#highlights()
+                \ | call bindings#leader()
+                \ | call bindings#normal()
+                \ | call bindings#insert()
+                \ | call bindings#visual()
+                \ | call bindings#terminal()
 augroup END
 
-" New  ---------------------------------|BufNewFile|
-augroup New
-    autocmd!
-    " autocmd BufNewFile *.py Template *.py
-    " autocmd BufNewFile call editor#preferences()
-    " autocmd BufNewFile *.py
-    " autocmd VimEnter * call packages#setup()
-augroup END
-
-" Read ------------------------------------|BufRead|
+" Read ------------------------|BufNewFile, BufRead|
 augroup Read
     autocmd!
-    " autocmd BufNewFile,BufReadPre * 
-	" 	\ Bindings
     autocmd BufNewFile,BufRead *.ts,*.js,*.json
-                \ RainbowLevelsOn
+                \ call rainbow_levels#on()
     " autocmd VimEnter *.js RainbowLevelsOn
     " autocmd BufNewfile, BufRead *.js, *.json, *.ts call rainbow_levels#on()
     " autocmd BufRead call editor#preferences()
-    " autocmd FileType markdown,mkd call lexical#init()
-    " autocmd FileType markdown,mkd call lexical#init()
-    " autocmd FileType textile call lexical#init()
-    " autocmd FileType text call lexical#init({ 'spell': 0 })
 augroup END
+
+" Filetype -----------------------------|Filetype|
+" augroup FileType
+"     autocmd!
+"     autocmd FileType markdown,mkd,textile,text * nested
+"                 \ call lexical#init()
+" augroup END
 
 " Build ----------------------------|QuickFixCmdPost|
 augroup Build
     autocmd QuickFixCmdPost [^l]* nested cwindow
     autocmd QuickFixCmdPost    l* nested lwindow
-    autocmd WinEnter * if winnr('$') == 1 && getbufvar(winbufnr(winnr())
-                \ , "&buftype") == "quickfix"|q
+    autocmd WinEnter *
+                \ if winnr('$') == 1 &&
+                \ getbufvar(winbufnr(winnr()), "&buftype") == "quickfix"|q
                 \ |endif " Close Quickfix if last window
-augroup END
-
-" Edit -----------------------------|InsertEnter|
-augroup Edit
-    " autocmd QuickFixCmdPost [^l]* nested cwindow
-    " autocmd QuickFixCmdPost    l* nested lwindow
 augroup END
 
 " Save ------------------------------------|BufWrite|
 augroup Save
     autocmd!
-    " autocmd BufWritePre * try | undojoin | Neoformat
-    "             \ | catch /^Vim\%((\a\+)\)\=:E790/
-    "                 \ | finally | silent Neoformat
-    "                     \ | endtry " Format on Save
+    autocmd BufWritePre *
+                \ try | undojoin
+                \ | Neoformat
+                \ | catch /^Vim\%((\a\+)\)\=:E790/ | endtry
 augroup END
 
 " Exit -------------------------------------|VimLeave|
 augroup Exit
     " autocmd VimLeave * call packages#update()
-    autocmd VimLeave * call packages#clean()
-    " autocmd VimLeave * call packages#update()
+    autocmd VimLeave * nested call packages#clean()
 augroup END
