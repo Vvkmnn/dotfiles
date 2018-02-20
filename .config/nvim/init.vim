@@ -1,4 +1,4 @@
-" Vivek Menon - mail@vvkmnn.xyz
+" nstallVivek Menon - mail@vvkmnn.xyz
 
 " ##################################################
 " ##################################################
@@ -32,40 +32,39 @@
 " Startup ------------------------------------------
 augroup Startup
     autocmd!
-    autocmd VimEnter * call packages#deload()
-    autocmd VimEnter * call packages#setup()
-    autocmd VimEnter * call packages#check()
-    autocmd VimEnter * call defaults#settings()
-    autocmd VimEnter * call aesthetic#settings()
-    autocmd VimEnter * call aesthetic#highlights()
-    autocmd VimEnter * call bindings#leader()
-    autocmd VimEnter * call bindings#normal()
-    autocmd VimEnter * call bindings#insert()
-    autocmd VimEnter * call bindings#visual()
-    autocmd VimEnter * call bindings#terminal()
+    autocmd VimEnter * nested
+                \ call packages#deload()
+                \ | call packages#setup()
+                \ | call packages#install()
+                \ | call defaults#settings()
+                \ | call aesthetic#highlights()
+                \ | call rainbow_parentheses#toggle()
 augroup END
 
-" New  ---------------------------------|BufNewFile|
-augroup New
-    autocmd!
-    " autocmd BufNewFile *.py Template *.py
-    " autocmd BufNewFile call editor#preferences()
-    " autocmd BufNewFile *.py
-    " autocmd VimEnter * call packages#setup()
-augroup END
-
-" Read ------------------------------------|BufRead|
+" Read ------------------------|BufNewFile, BufRead|
 augroup Read
     autocmd!
-    autocmd VimEnter *.ts,*.js,*.json
-                \ RainbowLevelsOn
+    autocmd VimEnter *
+                \ call bindings#leader()
+                \ | call bindings#normal()
+                \ | call bindings#insert()
+                \ | call bindings#visual()
+                \ | call bindings#terminal()
+    autocmd BufNewFile, BufRead *.md,*.txt
+                \ call lexical#init()
+    autocmd BufNewFile, BufRead *.ts,*.js,*.json
+                \ call rainbow_levels#on()
     " autocmd VimEnter *.js RainbowLevelsOn
     " autocmd BufNewfile, BufRead *.js, *.json, *.ts call rainbow_levels#on()
     " autocmd BufRead call editor#preferences()
-    " autocmd FileType markdown,mkd call lexical#init()
-    " autocmd FileType markdown,mkd call lexical#init()
-    " autocmd FileType textile call lexical#init()
-    " autocmd FileType text call lexical#init({ 'spell': 0 })
+augroup END
+
+" Write --------------------------------|BufWrite|
+augroup Write
+    autocmd!
+    autocmd BufWrite * set nohlsearch " Remove Highlting on Write
+    " autocmd FileType markdown,mkd,textile,text * nested
+    "             \ call lexical#init()
 augroup END
 
 " Build ----------------------------|QuickFixCmdPost|
@@ -92,13 +91,17 @@ augroup END
 " Save ------------------------------------|BufWrite|
 augroup Save
     autocmd!
-    " autocmd BufWritePre * try | undojoin | Neoformat
-    "             \ | catch /^Vim\%((\a\+)\)\=:E790/
-    "                 \ | finally | silent Neoformat
-    "                     \ | endtry " Format on Save
+    autocmd BufWritePre *
+                \ try | undojoin
+                \ | Neoformat
+                \ | catch /^Vim\%((\a\+)\)\=:E790/
+                    \ | endtry " Format on Save
 augroup END
 
 " Exit -------------------------------------|VimLeave|
 augroup Exit
-    autocmd VimLeave * nested call packages#check()
+    autocmd!
+    " autocmd VimLeave * call packages#update()
+    autocmd VimLeave * nested
+                \ call packages#clean()
 augroup END
