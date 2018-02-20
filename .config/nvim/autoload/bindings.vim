@@ -18,9 +18,6 @@ function! bindings#leader() abort
 
     " Leader<z> to search for character under cursor
     nnoremap <leader>z xhp/<C-R>-<CR>
-
-    " thaerkh/vim-workspace {{{
-    nnoremap <leader>s :ToggleWorkspace<CR>
 endfunction
 
 function! bindings#normal() abort
@@ -28,6 +25,10 @@ function! bindings#normal() abort
 
     " Remap Space to <Nop>?
     nnoremap <Space> <Nop>
+
+    " Switch Highlighing on if Off
+    nnoremap <silent> n n:call ToggleHlBack()<CR>
+    nnoremap <silent> N N:call ToggleHlBack()<CR>
 
     " Disable arrow movement, resize splits instead.
     " nnoremap <Up>    :resize +2<CR>

@@ -38,29 +38,34 @@ augroup Startup
                 \ | call packages#install()
                 \ | call defaults#settings()
                 \ | call aesthetic#highlights()
-                \ | call bindings#leader()
-                \ | call bindings#normal()
-                \ | call bindings#insert()
-                \ | call bindings#visual()
-                \ | call bindings#terminal()
+                \ | call rainbow_parentheses#toggle()
 augroup END
 
 " Read ------------------------|BufNewFile, BufRead|
 augroup Read
     autocmd!
-    autocmd BufNewFile,BufRead *.ts,*.js,*.json
+    autocmd VimEnter *
+                \ call bindings#leader()
+                \ | call bindings#normal()
+                \ | call bindings#insert()
+                \ | call bindings#visual()
+                \ | call bindings#terminal()
+    autocmd BufNewFile, BufRead *.md,*.txt
+                \ call lexical#init()
+    autocmd BufNewFile, BufRead *.ts,*.js,*.json
                 \ call rainbow_levels#on()
     " autocmd VimEnter *.js RainbowLevelsOn
     " autocmd BufNewfile, BufRead *.js, *.json, *.ts call rainbow_levels#on()
     " autocmd BufRead call editor#preferences()
 augroup END
 
-" Filetype -----------------------------|Filetype|
-" augroup FileType
-"     autocmd!
-"     autocmd FileType markdown,mkd,textile,text * nested
-"                 \ call lexical#init()
-" augroup END
+" Write --------------------------------|BufWrite|
+augroup Write
+    autocmd!
+    autocmd BufWrite * set nohlsearch " Remove Highlting on Write
+    " autocmd FileType markdown,mkd,textile,text * nested
+    "             \ call lexical#init()
+augroup END
 
 " Build ----------------------------|QuickFixCmdPost|
 augroup Build
@@ -78,11 +83,14 @@ augroup Save
     autocmd BufWritePre *
                 \ try | undojoin
                 \ | Neoformat
-                \ | catch /^Vim\%((\a\+)\)\=:E790/ | endtry
+                \ | catch /^Vim\%((\a\+)\)\=:E790/
+                    \ | endtry " Format on Save
 augroup END
 
 " Exit -------------------------------------|VimLeave|
 augroup Exit
+    autocmd!
     " autocmd VimLeave * call packages#update()
-    autocmd VimLeave * nested call packages#clean()
+    autocmd VimLeave * nested
+                \ call packages#clean()
 augroup END

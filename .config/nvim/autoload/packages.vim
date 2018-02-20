@@ -6,7 +6,7 @@
 " Set Path
 let s:dein_dir        = expand('$HOME/.config/nvim/dein')
 let s:dein_repo_dir   = expand('$HOME/.config/nvim/pack/custom/start/dein.vim')
-execute 'set runtimepath^=' . s:dein_repo_dir
+set runtimepath^=s:dein_repo_dir
 
 function packages#setup() abort
     echom "[._.] Setting up packages..."
@@ -132,13 +132,50 @@ function packages#setup() abort
         call dein#add('tpope/vim-sensible')
         " }}}
 
+        " farmergreg/vim-lastplace -- Start where you ended in Vim!
+        call dein#add('farmergreg/vim-lastplace')
+        " }}}
+
+        " kana/vim-textobj-user -- https://github.com/kana/vim-textobj-user/wiki {{{
+        call dein#add('kana/vim-textobj-user')
+        " }}}
+
+        " bronson/vim-visual-star-search -- Search with * in Character Block {{{
+        call dein#add('bronson/vim-visual-star-search', {
+                    \ 'on_map': {
+                    \'x' : ['*']
+                    \ }
+                    \ })
+        " }}}
+
+        " unblevable/quick-scope -- Character match highlighting {{{
+        " call dein#add('unblevable/quick-scope', {
+        "             \'on_map': ['f', 'F', 't', 'T']
+        " \ })
+        " }}}
+
         " tpope/repeat.vim -- Dot commands on steroids {{{
-        call dein#add('tpope/vim-repeat', {'on_map' : '.'})
+        call dein#add('tpope/vim-repeat', {
+                    \ 'on_map' : '.'
+                    \ })
         " }}}
 
         " sheerun/vim-polyglot -- language packs for Vim {{{
         call dein#add('sheerun/vim-polyglot')
         " }}}
+
+        " vim-vyper -- (My attempt at) Vyper support {{{
+        call dein#add('vvkmnn/vim-vyper')
+        " \ { 'on_ft': 'vyper' })
+        " }}}
+
+        " tpope/vim-dispatch -- Async making via <Dispatch!> or <Make!>{{{
+        call dein#add('tpope/vim-dispatch', {
+                    \ 'on_cmd': ['Make', 'Make!', 'Dispatch', 'Dispatch!']
+                    \ })
+
+        " }}}
+
 
         " justinmk/vim-dirvish -- Minimal Navigator via <-> {{{
         call dein#add('justinmk/vim-dirvish', {
@@ -151,13 +188,24 @@ function packages#setup() abort
         call dein#add('tpope/vim-eunuch')
         " }}}
 
-        " wellle/targets.vim -- Additional Text Objects {{{
-        call dein#add('wellle/targets.vim')
+        " tyru/open-browser.vim -- Additional Text Objects {{{
+        " call dein#add('tyru/open-browser.vim', {
+        "             \'on_map': 'gx'
+        "             \})
+        "
+        " if dein#tap('open-browser.vim') && has('nvim')
+        "     let g:netrw_nogx = 1 " disable netrw's gx mapping.
+        "     nnoremap gx <Plug>(openbrowser-smart-search)
+        "     vnoremap gx <Plug>(openbrowser-smart-search)
+        " endif
         " }}}
 
         " tpope/surround.vim -- Wrap objects with stuff using <cs[input][output], cst[input]> and remove with <ds[input]>
         call dein#add('tpope/vim-surround', {
-                    \ 'on_map': {'n' : ['cs', 'ds', 'ys'], 'x' : 'S'},
+                    \ 'on_map': {
+                    \'n' : ['cs', 'ds', 'ys'],
+                    \'x' : ['S']
+                    \ },
                     \ 'depends' : 'vim-repeat'
                     \ })
         " }}}
@@ -197,8 +245,16 @@ function packages#setup() abort
 
         " reedes/vim-lexical -- Vim Spellcheck++ {{{
         call dein#add('reedes/vim-lexical', {
-                    \   'on_ft': ['markdown', 'text']
+                    \   'on_ft':['markdown','text','textile']
                     \ })
+
+        if dein#tap('vim-lexical') && has('nvim')
+            let g:lexical#spell = 1
+        endif
+        " }}}
+
+        " kien/rainbow_parentheses.vim -- Better Rainbow Parenthesis {{{
+        call dein#add('kien/rainbow_parentheses.vim')
         " }}}
 
         " giole/vim-autoswap -- No swap messages; just switch or recover {{{
@@ -223,12 +279,13 @@ function packages#setup() abort
 
         " Dash -- Dash Support <Dash:> {{{
         call dein#add('rizzatti/dash.vim', {
-                    \ 'on_cmd': 'Dash'
+                    \ 'on_cmd': ['Dash', 'DashSearch'],
+                    \ 'on_map': '<Plug>DashSearch'
                     \ })
 
         if dein#tap('dash.vim') && has('nvim')
             " Search for word under cursor with <leader>d
-            nnoremap <silent> <leader>d <Plug>DashSearch
+            nmap <leader>d <Plug>DashSearch
         endif
         " }}}
 
@@ -238,6 +295,31 @@ function packages#setup() abort
         if dein#tap('deoplete.nvim') && has('nvim')
             let g:deoplete#enable_at_startup = 1 " Enable deoplete at startup
         endif
+
+        " if dein#tap('neosnippet.vim') && dein#tap('deoplete.nvim')
+        "
+        "     " Insert Mode previews via Ctrl - N, Tab to complete
+        "     inoremap <expr><TAB>
+        "                 \ neosnippet#expandable_or_jumpable() ?
+        "                 \    "\<Plug>(neosnippet_expand_or_jump)" :
+        "                 \          \ pumvisible() ? "\<C-n>" : "\<TAB>"
+        "
+        "     inoremap <expr><S-TAB>
+        "                 \ pumvisible() ? "\<C-p>" : "\<S-TAB>"
+        "
+        "     inoremap <expr><CR>
+        "                 \ pumvisible() ? deoplete#mappings#close_popup() : "\<CR>"
+        "     "
+        "
+        "     " Select Mode Completions into Snippets
+        "     smap <expr><TAB>
+        "                 \ neosnippet#expandable_or_jumpable() ?
+        "                 \ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+        "     "     " For conceal markers.
+        "     "     " if has('conceal')
+        "     "     "     set conceallevel=2 concealcursor=niv
+        "     "     " endif
+        " endif
         " }}}
 
         " Shougo/neco-syntax - Syntax Deoplete Source {{{
@@ -248,6 +330,12 @@ function packages#setup() abort
 
         " fszymanski/deoplete-emoji -- Emoji Deoplete Source {{{
         call dein#add('fszymanski/deoplete-emoji', {
+                    \ 'depends': 'deoplete.nvim'
+                    \ })
+        " }}}
+
+        " zchee/deoplete-zsh -- ZSH Deoplete Source {{{
+        call dein#add('zchee/deoplete-zsh', {
                     \ 'depends': 'deoplete.nvim'
                     \ })
         " }}}
@@ -270,51 +358,46 @@ function packages#setup() abort
         endif
         " }}}
 
-        " Shougo/neosnippet -- Plug-in support in Deoplete {{{
-        call dein#add('Shougo/neosnippet', {
-                    \ 'depends': 'deoplete.nvim'})
-
-        call dein#add('Shougo/neosnippet-snippets', {
-                    \ 'depends': ['deoplete.nvim','neosnippet']
+        " SirVer/ultisnips - Ultisnips! {{{
+        call dein#add('SirVer/ultisnips', {
+                    \ 'depends':'deoplete.nvim'
                     \ })
 
-        if dein#tap('neosnippet') && dein#tap('deoplete.nvim') && has('nvim')
-            " Plugin key-mappings.
-            " Note: It must be "imap" and "smap".  It uses <Plug> mappings.
-            " imap <C-k>     <Plug>(neosnippet_expand_or_jump)
-            " smap <C-k>     <Plug>(neosnippet_expand_or_jump)
-            " xmap <C-k>     <Plug>(neosnippet_expand_target)
-
-            " Insert Mode previews via Ctrl - N, Tab to complete
-            imap <expr><TAB>
-                        \ neosnippet#expandable_or_jumpable() ?
-                        \    "\<Plug>(neosnippet_expand_or_jump)" :
-                        \     pumvisible() ? "\<C-n>" : "\<TAB>"
-
-            " imap <expr><TAB> pumvisible() ? "\<C-n>" : neosnippet#expandable_or_jumpable() ? "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
-            " imap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<S-TAB>"
-            " inoremap <expr><CR> pumvisible() ? deoplete#mappings#close_popup() : "\<CR>"
-
-            " SuperTab like snippets behavior.
-            "" Note: It must be "imap" and "smap".  It uses <Plug> mappings.
-            ""imap <expr><TAB>
-            "" \ pumvisible() ? "\<C-n>" :
-            "" \ neosnippet#expandable_or_jumpable() ?
-            "" \    "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
-            "smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
-            "            \ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
-
-            " For conceal markers.
-            " if has('conceal')
-            "     set conceallevel=2 concealcursor=niv
-            " endif
+        if dein#tap('deoplete.nvim') && dein#tap('ultisnips') && has('nvim')
+            call deoplete#custom#set('ultisnips', 'matchers', ['matcher_fuzzy'])
         endif
+
+        "
+        " honza/vim-snippets -- Ultisnip Snippets {{{
+        call dein#add('honza/vim-snippets', {
+                    \ 'depends':['ultisnips','deoplete.nvim']
+                    \ })
+        " }}}
+
+        " Shougo/neosnippet -- Plug-in support in Deoplete {{{
+        " call dein#add('Shougo/neosnippet.vim', {
+        "             \ 'depends': 'deoplete.nvim'})
+        "
+        " call dein#add('Shougo/neosnippet-snippets', {
+        "             \ 'depends': ['deoplete.nvim','neosnippet.vim']
+        "             \ })
         " }}}
 
         " Shougo/echodoc.vim -- Prints documentation in the echo area {{{
         call dein#add('Shougo/echodoc.vim', {
                     \ 'depends': 'deoplete.nvim'
                     \ })
+
+        " Shougo/deol.nvim -- Dark / Async powered Shell {{{
+        call dein#add('Shougo/deol.nvim', {
+                    \ 'on_cmd':['Deol','DeolCd','DeloEdit']
+                    \ })
+
+        if dein#tap('deol.nvim') && has('nvim')
+
+            let g:deol#prompt_pattern = '% \|%$' " Sets the pattern which matches the shell prompt.
+
+        endif
 
         " Shougo/denite.vim -- Emacs Helm for Vim {{{
         call dein#add('Shougo/denite.nvim', {
@@ -362,15 +445,6 @@ function packages#setup() abort
         endif
         " }}}
 
-        " ap/vim-templates -- Filetype dependent templates {{{
-        call dein#add('ap/vim-templates')
-
-        if dein#tap('vim-templates') && has('nvim')
-            let g:templates_empty_files = 1
-        endif
-        " }}}
-
-
         " sbdchd/vim-neoformat -- Script formatting {{{
         call dein#add('sbdchd/neoformat')
 
@@ -397,6 +471,14 @@ function packages#setup() abort
         call dein#save_state() " Save Dein State
     endif
 endfunction
+
+" ap/vim-templates -- Filetype dependent templates {{{
+" call dein#add('ap/vim-templates')
+"
+" if dein#tap('vim-templates') && has('nvim')
+"     let g:templates_empty_files = 1
+" endif
+" }}}
 
 " tpope/vim-vinegar -- netrw upgrade {{{
 " call dein#add('tpope/vim-vinegar')
@@ -487,9 +569,6 @@ endfunction
 " call dein#add('Shougo/deol.nvim')
 " }}}
 
-" kien/rainbow_parentheses.vim -- Better Rainbow Parenthesis {{{
-" call dein#add('kien/rainbow_parentheses.vim')
-" }}}
 
 " if dein#tap('rainbow_parentheses.vim') && has('nvim')
 "     " let g:rbpt_loadcmd_toggle = 0
@@ -525,6 +604,8 @@ function packages#update() abort
 endfunction
 
 function packages#deload() abort
+    echom "[._.] Deloading default packages..."
+    "
     " Disable some default plugins.
     let g:loaded_gzip              = 1
     let g:loaded_tar               = 1
@@ -540,7 +621,7 @@ function packages#deload() abort
     let g:loaded_netrw             = 1
     let g:loaded_netrwPlugin       = 1
     let g:loaded_netrwSettings     = 1
-    let g:loaded_netrwFileHandlers = 0
+    let g:loaded_netrwFileHandlers = 1
     let g:loaded_logipat           = 1
 endfunction
 
@@ -560,7 +641,7 @@ endfunction
 
 
 function packages#install() abort
-    echom "[._.] Install packages..."
+    echom "[._.] Installing packages..."
 
     if dein#check_install()
         call dein#install()
