@@ -1,8 +1,8 @@
 " Packages  --------------------------------------------------------------------
+(
 
 " import Dein if in pack/*/opt
-" packadd dein " Automatically added via pack/*/start
-
+" packadd dein " Automatically added via pack/
 " Set Path
 let s:dein_dir        = expand('$HOME/.config/nvim/dein')
 let s:dein_repo_dir   = expand('$HOME/.config/nvim/pack/custom/start/dein.vim')
@@ -296,30 +296,30 @@ function packages#setup() abort
             let g:deoplete#enable_at_startup = 1 " Enable deoplete at startup
         endif
 
-        " if dein#tap('neosnippet.vim') && dein#tap('deoplete.nvim')
-        "
-        "     " Insert Mode previews via Ctrl - N, Tab to complete
-        "     inoremap <expr><TAB>
-        "                 \ neosnippet#expandable_or_jumpable() ?
-        "                 \    "\<Plug>(neosnippet_expand_or_jump)" :
-        "                 \          \ pumvisible() ? "\<C-n>" : "\<TAB>"
-        "
-        "     inoremap <expr><S-TAB>
-        "                 \ pumvisible() ? "\<C-p>" : "\<S-TAB>"
-        "
-        "     inoremap <expr><CR>
-        "                 \ pumvisible() ? deoplete#mappings#close_popup() : "\<CR>"
-        "     "
-        "
-        "     " Select Mode Completions into Snippets
-        "     smap <expr><TAB>
-        "                 \ neosnippet#expandable_or_jumpable() ?
-        "                 \ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
-        "     "     " For conceal markers.
-        "     "     " if has('conceal')
-        "     "     "     set conceallevel=2 concealcursor=niv
-        "     "     " endif
-        " endif
+        if dein#tap('neosnippet.vim') && dein#tap('deoplete.nvim')
+        
+            " Insert Mode previews via Ctrl - N, Tab to complete
+            inoremap <expr><TAB>
+                        \ neosnippet#expandable_or_jumpable() ?
+                        \    "\<Plug>(neosnippet_expand_or_jump)" :
+                        \          \ pumvisible() ? "\<C-n>" : "\<TAB>"
+        
+            inoremap <expr><S-TAB>
+                        \ pumvisible() ? "\<C-p>" : "\<S-TAB>"
+        
+            inoremap <expr><CR>
+                        \ pumvisible() ? deoplete#mappings#close_popup() : "\<CR>"
+            "
+        
+            " Select Mode Completions into Snippets
+            smap <expr><TAB>
+                        \ neosnippet#expandable_or_jumpable() ?
+                        \ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+            "     " For conceal markers.
+            "     " if has('conceal')
+            "     "     set conceallevel=2 concealcursor=niv
+            "     " endif
+        endif
         " }}}
 
         " Shougo/neco-syntax - Syntax Deoplete Source {{{
@@ -359,28 +359,28 @@ function packages#setup() abort
         " }}}
 
         " SirVer/ultisnips - Ultisnips! {{{
-        call dein#add('SirVer/ultisnips', {
-                    \ 'depends':'deoplete.nvim'
-                    \ })
+        " call dein#add('SirVer/ultisnips', {
+        "             \ 'depends':'deoplete.nvim'
+        "             \ })
 
-        if dein#tap('deoplete.nvim') && dein#tap('ultisnips') && has('nvim')
-            call deoplete#custom#set('ultisnips', 'matchers', ['matcher_fuzzy'])
-        endif
+        " if dein#tap('deoplete.nvim') && dein#tap('ultisnips') && has('nvim')
+        "     call deoplete#custom#set('ultisnips', 'matchers', ['matcher_fuzzy'])
+        " endif
 
         "
         " honza/vim-snippets -- Ultisnip Snippets {{{
-        call dein#add('honza/vim-snippets', {
-                    \ 'depends':['ultisnips','deoplete.nvim']
-                    \ })
+        " call dein#add('honza/vim-snippets', {
+        "             \ 'depends':['ultisnips','deoplete.nvim']
+        "             \ })
         " }}}
 
         " Shougo/neosnippet -- Plug-in support in Deoplete {{{
-        " call dein#add('Shougo/neosnippet.vim', {
-        "             \ 'depends': 'deoplete.nvim'})
-        "
-        " call dein#add('Shougo/neosnippet-snippets', {
-        "             \ 'depends': ['deoplete.nvim','neosnippet.vim']
-        "             \ })
+        call dein#add('Shougo/neosnippet.vim', {
+                    \ 'depends': 'deoplete.nvim'})
+        
+        call dein#add('Shougo/neosnippet-snippets', {
+                    \ 'depends': ['deoplete.nvim','neosnippet.vim']
+                    \ })
         " }}}
 
         " Shougo/echodoc.vim -- Prints documentation in the echo area {{{
