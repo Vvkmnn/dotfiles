@@ -77,7 +77,6 @@ function packages#setup() abort
 
         " maximbaz/lightline-ale -- Ale Component for lightline {{{
         call dein#add('maximbaz/lightline-ale')
-        "
         if dein#tap('lightline.vim') && dein#tap('lightline-ale') && dein#tap('ale') && has('nvim')
             let g:lightline.component_expand = {
                         \  'linter_warnings': 'lightline#ale#warnings',
@@ -98,7 +97,6 @@ function packages#setup() abort
 
         " taohex/lightline-buffer -- Buffer component for lightline {{{
         call dein#add('taohex/lightline-buffer')
-
         if dein#tap('lightline.vim') && dein#tap('lightline-buffer') && has('nvim')
             let g:lightline.component_expand = {
                         \ 'tabline': {
@@ -138,6 +136,16 @@ function packages#setup() abort
         " sheerun/vim-polyglot -- language packs for Vim {{{
         call dein#add('sheerun/vim-polyglot')
         " }}}
+        
+        " romainl/vim-qf -- Quickfix modifiers {{{
+        call dein#add('romainl/vim-qf', {
+                     \ 'on_cmd': ['cnext','copen']
+                     \ })
+
+        if dein#tap('romainl/vim-qf') && has('nvim')
+            let g:qf_auto_open_quickfix = 0
+        endif
+        
 
         " justinmk/vim-dirvish -- Minimal Navigator via <-> {{{
         call dein#add('justinmk/vim-dirvish', {

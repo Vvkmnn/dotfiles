@@ -70,17 +70,23 @@ augroup END
 
 " Build ----------------------------|QuickFixCmdPost|
 augroup Build
-    autocmd QuickFixCmdPost [^l]* nested cwindow
-    autocmd QuickFixCmdPost    l* nested lwindow
-    autocmd WinEnter * if winnr('$') == 1 && getbufvar(winbufnr(winnr())
-                \ , "&buftype") == "quickfix"|q
-                \ |endif " Close Quickfix if last window
+    " autocmd QuickFixCmdPost [^l]* nested cwindow
+    " autocmd QuickFixCmdPost    l* nested lwindow
+    " autocmd WinEnter * if winnr('$') == 1 && getbufvar(winbufnr(winnr())
+    "             \ , "&buftype") == "quickfix"|q
+    "             \ |endif " Close Quickfix if last window
 augroup END
 
 " Edit -----------------------------|InsertEnter|
 augroup Edit
     " autocmd QuickFixCmdPost [^l]* nested cwindow
     " autocmd QuickFixCmdPost    l* nested lwindow
+augroup END
+
+" Resize ---------------------------|InsertEnter|
+augroup Resize
+    autocmd!
+    autocmd VimResized * wincmd =
 augroup END
 
 " Save ------------------------------------|BufWrite|
