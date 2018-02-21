@@ -16,12 +16,20 @@ function! bindings#leader() abort
     " nnoremap <Leader>t :Files<CR>
     " nnoremap <Leader>r :Tags<CR>
 
+
+    nnoremap <leader>q <Plug>qf_qf_toggle
     " Leader<z> to search for character under cursor
     nnoremap <leader>z xhp/<C-R>-<CR>
 endfunction
 
 function! bindings#normal() abort
     echom "[._.] Loading Normal mode bindings..."
+
+    " Hardmode!
+    " noremap h <NOP>
+    " noremap j <NOP>
+    " noremap k <NOP>
+    " noremap l <NOP>
 
     " Remap Space to <Nop>?
     nnoremap <Space> <Nop>

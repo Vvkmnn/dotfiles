@@ -1,1 +1,2 @@
 /Users/v/.anaconda/envs/introvyper
+/Users/vivek.menon/.anaconda/envs/zetacoin

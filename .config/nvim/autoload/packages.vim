@@ -1,5 +1,4 @@
 " Packages  --------------------------------------------------------------------
-(
 
 " import Dein if in pack/*/opt
 " packadd dein " Automatically added via pack/
@@ -297,20 +296,20 @@ function packages#setup() abort
         endif
 
         if dein#tap('neosnippet.vim') && dein#tap('deoplete.nvim')
-        
+
             " Insert Mode previews via Ctrl - N, Tab to complete
             inoremap <expr><TAB>
                         \ neosnippet#expandable_or_jumpable() ?
                         \    "\<Plug>(neosnippet_expand_or_jump)" :
                         \          \ pumvisible() ? "\<C-n>" : "\<TAB>"
-        
+
             inoremap <expr><S-TAB>
                         \ pumvisible() ? "\<C-p>" : "\<S-TAB>"
-        
+
             inoremap <expr><CR>
                         \ pumvisible() ? deoplete#mappings#close_popup() : "\<CR>"
             "
-        
+
             " Select Mode Completions into Snippets
             smap <expr><TAB>
                         \ neosnippet#expandable_or_jumpable() ?
@@ -377,7 +376,7 @@ function packages#setup() abort
         " Shougo/neosnippet -- Plug-in support in Deoplete {{{
         call dein#add('Shougo/neosnippet.vim', {
                     \ 'depends': 'deoplete.nvim'})
-        
+
         call dein#add('Shougo/neosnippet-snippets', {
                     \ 'depends': ['deoplete.nvim','neosnippet.vim']
                     \ })
