@@ -1139,7 +1139,7 @@
 	<key>NSWindow Frame SUUpdateAlert</key>
 	<string>970 769 620 392 0 0 2560 1418 </string>
 	<key>NSWindow Frame SharedPreferences</key>
-	<string>770 681 918 512 0 0 2560 1418 </string>
+	<string>770 642 918 512 0 0 2560 1418 </string>
 	<key>NSWindow Frame UKCrashReporter</key>
 	<string>-1341 834 592 584 -1440 540 1440 878 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
@@ -2057,7 +2057,7 @@
 			<key>Idle Code</key>
 			<integer>0</integer>
 			<key>Initial Text</key>
-			<string>reset &amp;&amp; archey</string>
+			<string></string>
 			<key>Jobs to Ignore</key>
 			<array>
 				<string>rlogin</string>
@@ -3799,7 +3799,7 @@
 	<key>SUHasLaunchedBefore</key>
 	<true/>
 	<key>SULastCheckTime</key>
-	<date>2018-02-14T21:02:51Z</date>
+	<date>2018-02-20T21:23:36Z</date>
 	<key>SUSendProfileInfo</key>
 	<false/>
 	<key>SavePasteHistory</key>
