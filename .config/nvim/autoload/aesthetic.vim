@@ -11,6 +11,9 @@ endfunction
 function! aesthetic#highlights() abort
     echom "[._.] Loading aesthetic highlights..."
 
+    " CursorLine
+    highlight CursorLine   ctermfg=NONE ctermbg=black guifg=NONE guibg=black
+
     " Split Formatting
     highlight vertsplit ctermfg=238 ctermbg=235
     highlight vertsplit guifg=238 guibg=235

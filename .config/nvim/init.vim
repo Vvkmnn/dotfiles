@@ -1,4 +1,4 @@
-" nstallVivek Menon - mail@vvkmnn.xyz
+" Vivek Menon - mail@vvkmnn.xyz
 
 " ##################################################
 " ##################################################
@@ -32,28 +32,24 @@
 " Startup ------------------------------------------
 augroup Startup
     autocmd!
-    autocmd VimEnter * nested
-                \ call packages#deload()
-                \ | call packages#setup()
-                \ | call packages#install()
-                \ | call defaults#settings()
-                \ | call aesthetic#highlights()
-                \ | call rainbow_parentheses#toggle()
+    autocmd VimEnter * nested call packages#deload()
+    autocmd VimEnter * nested call packages#setup()
+    autocmd VimEnter * nested call packages#install()
+    autocmd VimEnter * nested call defaults#settings()
+    autocmd VimEnter * nested call aesthetic#highlights()
+    autocmd VimEnter * nested call bindings#leader()
+    autocmd VimEnter * nested call bindings#normal()
+    autocmd VimEnter * nested call bindings#insert()
+    autocmd VimEnter * nested call bindings#visual()
+    autocmd VimEnter * nested call bindings#terminal()
 augroup END
 
 " Read ------------------------|BufNewFile, BufRead|
 augroup Read
     autocmd!
-    autocmd VimEnter *
-                \ call bindings#leader()
-                \ | call bindings#normal()
-                \ | call bindings#insert()
-                \ | call bindings#visual()
-                \ | call bindings#terminal()
-    autocmd BufNewFile, BufRead *.md,*.txt
-                \ call lexical#init()
-    autocmd BufNewFile, BufRead *.ts,*.js,*.json
-                \ call rainbow_levels#on()
+    autocmd BufNewFile, BufRead *.md,*.txt call rainbow_parentheses#toggle()
+    autocmd BufNewFile, BufRead *.md,*.txt call lexical#init()
+    autocmd BufNewFile, BufRead *.ts,*.js,*.json  call rainbow_levels#on()
     " autocmd VimEnter *.js RainbowLevelsOn
     " autocmd BufNewfile, BufRead *.js, *.json, *.ts call rainbow_levels#on()
     " autocmd BufRead call editor#preferences()
@@ -78,8 +74,11 @@ augroup END
 
 " Edit -----------------------------|InsertEnter|
 augroup Edit
-    " autocmd QuickFixCmdPost [^l]* nested cwindow
-    " autocmd QuickFixCmdPost    l* nested lwindow
+    autocmd!
+    au VimEnter,WinEnter,BufWinEnter *
+                \ setlocal cursorline
+    au WinLeave *
+                \ setlocal nocursorline
 augroup END
 
 " Resize ---------------------------|InsertEnter|
@@ -91,11 +90,11 @@ augroup END
 " Save ------------------------------------|BufWrite|
 augroup Save
     autocmd!
-    autocmd BufWritePre *
-                \ try | undojoin
-                \ | Neoformat
-                \ | catch /^Vim\%((\a\+)\)\=:E790/
-                    \ | endtry " Format on Save
+    " autocmd BufWritePre *
+    "             \ try | undojoin
+    "             \ | Neoformat
+    "             \ | catch /^Vim\%((\a\+)\)\=:E790/
+    "                 \ | endtry " Format on Save
 augroup END
 
 " Exit -------------------------------------|VimLeave|

@@ -1,14 +1,31 @@
 " Functions
 
+" Highlight Line on Big Cursor Move
+function! HighlightLine() abort
+    let cur_pos = winline()
+    if g:last_pos == 0
+        set cul
+        let g:last_pos = cur_pos
+        return
+    endif
+    let diff = g:last_pos - cur_pos
+    if diff > 1 || diff < -1
+        set cul
+    else
+        set nocul
+    endif
+    let g:last_pos = cur_pos
+endfunction
+
 " Toggle Search HIghlighting
-function! ToggleHlBack()
+function! ToggleHlBack() abort
     if &hlsearch == 'nohlsearch'
         set hlsearch
     endif
 endfunction
 
 " ColorScheme
-function ShowColourSchemeName()
+function ShowColourSchemeName() abort
     try
         echo g:colors_name
     catch /^Vim:E121/

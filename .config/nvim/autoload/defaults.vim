@@ -35,6 +35,7 @@ function! defaults#settings() abort
     set termguicolors              " Use Truecolor Vim
     set title titlestring=         " Enable Buffer Titles?
     set guioptions=M               " Skip loading menus
+    set cursorline                 " Highlight Current Line
     colorscheme dracula            " Dracula!
     filetype indent plugin on      " Plugins & Filetypes
     syntax enable                  " Enable Syntax

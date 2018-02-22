@@ -3,9 +3,9 @@
 " import Dein if in pack/*/opt
 " packadd dein " Automatically added via pack/
 " Set Path
-let s:dein_dir        = expand('$HOME/.config/nvim/dein')
-let s:dein_repo_dir   = expand('$HOME/.config/nvim/pack/custom/start/dein.vim')
-set runtimepath^=s:dein_repo_dir
+let s:dein_dir       = expand('$HOME/.config/nvim/dein')
+let s:dein_repo_dir  = expand('$HOME/.config/nvim/pack/custom/start/dein.vim')
+execute 'set runtimepath^=' . s:dein_repo_dir
 
 function packages#setup() abort
     echom "[._.] Setting up packages..."
@@ -21,7 +21,7 @@ function packages#setup() abort
             let g:dein#install_progress_type = 'title'
             " let g:dein#enable_notification = 1
         endif
-
+        
         " dracula/vim -- A Dark Colorscheme {{{
         call dein#add('dracula/vim')
         " }}}
@@ -33,44 +33,16 @@ function packages#setup() abort
         " thiagoalessio/rainbow -- Color by depth! {{{
         call dein#add('thiagoalessio/rainbow_levels.vim', {
                     \ 'merged': 0,
-                    \ 'on_cmd' : 'RainbowLevelsOn',
+                    \ 'on_cmd' : 'RainbowLevelsOn'
                     \ })
 
 
-        if dein#tap('rainbow_levels.vim') && has('nvim')
-            " dracula
-            let g:rainbow_levels = [
-                        \{'ctermfg': 84,  'guifg': '#50fa7b'},
-                        \{'ctermfg': 117, 'guifg': '#8be9fd'},
-                        \{'ctermfg': 61,  'guifg': '#6272a4'},
-                        \{'ctermfg': 212, 'guifg': '#ff79c6'},
-                        \{'ctermfg': 203, 'guifg': '#ffb86c'},
-                        \{'ctermfg': 228, 'guifg': '#f1fa8c'},
-                        \{'ctermfg': 15,  'guifg': '#f8f8f2'},
-                        \{'ctermfg': 231, 'guifg': '#525563'}]
-
-            " 256_noir
-            " let g:rainbow_levels = [
-            " \{'ctermbg': 232, 'guibg': '#080808'},
-            " \{'ctermbg': 233, 'guibg': '#121212'},
-            " \{'ctermbg': 234, 'guibg': '#1c1c1c'},
-            " \{'ctermbg': 235, 'guibg': '#262626'},
-            " \{'ctermbg': 236, 'guibg': '#303030'},
-            " \{'ctermbg': 237, 'guibg': '#3a3a3a'},
-            " \{'ctermbg': 238, 'guibg': '#444444'},
-            " \{'ctermbg': 239, 'guibg': '#4e4e4e'},
-            " \{'ctermbg': 240, 'guibg': '#585858'}]
-            " endif
-        endif
-        " }}}
 
         "itchyny/lightline.vim -- A leaner vim statusline {{{
-        call dein#add('itchyny/lightline.vim')
-
-        if dein#tap('lightline.vim') && has('nvim')
-            let g:lightline = {
-                        \ 'colorscheme': 'Dracula'}
-        endif
+        call dein#add('itchyny/lightline.vim', {
+         	    \ 'hook_add': join(
+                \ [' let g:lightline = { "colorcheme" : "Dracula" } '], "\n")
+                    \ })
         " }}}
 
 
@@ -141,9 +113,7 @@ function packages#setup() abort
 
         " bronson/vim-visual-star-search -- Search with * in Character Block {{{
         call dein#add('bronson/vim-visual-star-search', {
-                    \ 'on_map': {
-                    \'x' : ['*']
-                    \ }
+                    \ 'on_map': { 'x' : ['*'] }
                     \ })
         " }}}
 
@@ -178,7 +148,6 @@ function packages#setup() abort
 
         " justinmk/vim-dirvish -- Minimal Navigator via <-> {{{
         call dein#add('justinmk/vim-dirvish', {
-                    \ 'merged': 0,
                     \ 'on_cmd' : 'Dirivish',
                     \ 'on_map' : '-' })
         " }}}
@@ -188,16 +157,21 @@ function packages#setup() abort
         " }}}
 
         " tyru/open-browser.vim -- Additional Text Objects {{{
-        " call dein#add('tyru/open-browser.vim', {
-        "             \'on_map': 'gx'
-        "             \})
-        "
-        " if dein#tap('open-browser.vim') && has('nvim')
-        "     let g:netrw_nogx = 1 " disable netrw's gx mapping.
-        "     nnoremap gx <Plug>(openbrowser-smart-search)
-        "     vnoremap gx <Plug>(openbrowser-smart-search)
-        " endif
+        call dein#add('tyru/open-browser.vim', {
+                    \ 'on_map': { 'n': '<Plug>(openbrowser_smart_search)'}
+                    \})
+
+        if dein#tap('open-browser.vim') && has('nvim')
+            let g:netrw_nogx = 1 " disable netrw's gx mapping.
+            nnoremap gx <Plug>(openbrowser-smart-search)
+            vnoremap gx <Plug>(openbrowser-smart-search)
+        endif
         " }}}
+
+
+        " call dein#add('godlygeek/tabular', {
+        "             \ 'on_cmd' : [ 'Tab', 'Tabularize' ]
+        "             \ })
 
         " tpope/surround.vim -- Wrap objects with stuff using <cs[input][output], cst[input]> and remove with <ds[input]>
         call dein#add('tpope/vim-surround', {
@@ -208,10 +182,6 @@ function packages#setup() abort
                     \ 'depends' : 'vim-repeat'
                     \ })
         " }}}
-
-        call dein#add('godlygeek/tabular', {
-                    \ 'on_cmd' : [ 'Tab', 'Tabularize' ]
-                    \ })
 
         " tpope/unimpaired.vim -- Handy [] maps <]q> / <:cnext>, <[b> / <:bprevious>, etc.> {{{
         call dein#add('tpope/vim-unimpaired')
@@ -225,9 +195,7 @@ function packages#setup() abort
 
         " tpope/vim-fugitive -- A Vim Git Wrapper {{{
         call dein#add('tpope/vim-fugitive', {
-                    \ 'on_cmd': [ 'Git', 'Gstatus', 'Gwrite', 'Glog', 'Gcommit', 'Gblame', 'Ggrep', 'Gdiff'] ,
-                    \ 'merged': 0 ,
-                    \ 'augroup': ''
+                    \ 'on_cmd': [ 'Git', 'Gstatus', 'Gwrite', 'Glog', 'Gcommit', 'Gblame', 'Ggrep', 'Gdiff'] 
                     \ })
 
         " Vimagit -- Emacs style Git management via <:Magit>, <C-n>, S[tage], and CC[omit] {{{
@@ -239,9 +207,25 @@ function packages#setup() abort
         " }}}
 
         " tomtom/tcomment_vim -- Commenting with motions {{{
-        call dein#add('tomtom/tcomment_vim', {'on_map': 'gc', 'on_cmd' : 'TComment'})
+        " call dein#add('tomtom/tcomment_vim', {'on_map': 'gc', 'on_cmd' : 'TComment'})
         " }}}
 
+        " tpope/commentary.vim -- Comment stuff out with <:gc[motion]>, uncomment with <:gcgc> {{{
+        call dein#add('tpope/vim-commentary', {
+                    \ 'on_map': { 'n':'gc' , 'x':'gc'}
+                    \ })
+        " }}}
+
+        " junegunn/vim-easy-altign -- Vim Spellcheck++ {{{
+        call dein#add('junegunn/vim-easy-align', {
+                     \ 'on_cmd':   ['EasyAlign'],
+                     \ 'on_map':   { 'n': '<Plug>(EasyAlign)', 'x': '<Plug>(EasyAlign)'},
+         	     \ 'hook_add': join(
+                     \   ['nmap ga <Plug>(EasyAlign)',
+	 	    \    'xmap ga <Plug>(EasyAlign)'], "\n")
+	 	\ })
+        " }}}
+        
         " reedes/vim-lexical -- Vim Spellcheck++ {{{
         call dein#add('reedes/vim-lexical', {
                     \   'on_ft':['markdown','text','textile']
@@ -298,16 +282,16 @@ function packages#setup() abort
         if dein#tap('neosnippet.vim') && dein#tap('deoplete.nvim')
 
             " Insert Mode previews via Ctrl - N, Tab to complete
-            inoremap <expr><TAB>
-                        \ neosnippet#expandable_or_jumpable() ?
-                        \    "\<Plug>(neosnippet_expand_or_jump)" :
-                        \          \ pumvisible() ? "\<C-n>" : "\<TAB>"
+            " inoremap <expr><TAB>
+            "             \ neosnippet#expandable_or_jumpable() ?
+            "             \    "\<Plug>(neosnippet_expand_or_jump)" :
+            "             \          \ pumvisible() ? "\<C-n>" : "\<TAB>"
 
-            inoremap <expr><S-TAB>
-                        \ pumvisible() ? "\<C-p>" : "\<S-TAB>"
+            " inoremap <expr><S-TAB>
+            "             \ pumvisible() ? "\<C-p>" : "\<S-TAB>"
 
-            inoremap <expr><CR>
-                        \ pumvisible() ? deoplete#mappings#close_popup() : "\<CR>"
+            " inoremap <expr><CR>
+            "             \ pumvisible() ? deoplete#mappings#close_popup() : "\<CR>"
             "
 
             " Select Mode Completions into Snippets
@@ -491,9 +475,6 @@ endfunction
 " call dein#add('tmhedberg/matchit', { 'on_ft' : 'html' })
 " }}}
 
-" tpope/commentary.vim -- Comment stuff out with <:gc[motion]>, uncomment with <:gcgc> {{{
-" call dein#add('tpope/vim-commentary')
-" }}}
 
 " ap/vim-buftabline -- Vim Buffer Tabs {{{
 " call dein#add('ap/vim-buftabline')
@@ -501,6 +482,10 @@ endfunction
 
 " roman/golden-ratio -- Golden Ratio windows {{{
 " call dein#add('roman/golden-ratio')
+" }}}
+
+" goerz/ipynb_notedown.vim -- ipynb edit {{{
+" call dein#add('goerz/ipynb_notedown.vim')
 " }}}
 
 " thaerkh/vim-workspace -- Automated Session Management with <:ToggleWorkplace> {{{
