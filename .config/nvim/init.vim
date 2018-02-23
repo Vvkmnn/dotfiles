@@ -47,9 +47,12 @@ augroup END
 " Read ------------------------|BufNewFile, BufRead|
 augroup Read
     autocmd!
-    autocmd BufNewFile, BufRead *.md,*.txt call rainbow_parentheses#toggle()
-    autocmd BufNewFile, BufRead *.md,*.txt call lexical#init()
-    autocmd BufNewFile, BufRead *.ts,*.js,*.json  call rainbow_levels#on()
+    autocmd BufNewFile, BufRead *
+                \ | call rainbow_parentheses#toggle()
+    autocmd BufNewFile, BufRead *.md,*.txt
+                \ call lexical#init()
+    autocmd BufNewFile, BufRead *.ts,*.js,*.json
+                \ call rainbow_levels#on()
     " autocmd VimEnter *.js RainbowLevelsOn
     " autocmd BufNewfile, BufRead *.js, *.json, *.ts call rainbow_levels#on()
     " autocmd BufRead call editor#preferences()
@@ -101,6 +104,5 @@ augroup END
 augroup Exit
     autocmd!
     " autocmd VimLeave * call packages#update()
-    autocmd VimLeave * nested
-                \ call packages#clean()
+    autocmd VimLeave * nested call packages#clean()
 augroup END
