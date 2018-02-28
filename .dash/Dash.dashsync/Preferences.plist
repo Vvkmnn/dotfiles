@@ -171,12 +171,17 @@
 				<key>date</key>
 				<date>2018-01-14T20:53:39Z</date>
 			</dict>
+			<key>http://kapeli.com/feeds/Vim.xml</key>
+			<dict>
+				<key>date</key>
+				<date>2018-02-23T20:05:52Z</date>
+			</dict>
 		</dict>
 	</dict>
 	<key>isPinned</key>
-	<false/>
+	<true/>
 	<key>menuIconBehavior</key>
-	<integer>0</integer>
+	<integer>1</integer>
 	<key>placeholderDelimiter</key>
 	<string>__</string>
 	<key>profiles</key>
@@ -350,7 +355,7 @@
 			<key>isDefault</key>
 			<true/>
 			<key>isEnabled</key>
-			<false/>
+			<true/>
 			<key>name</key>
 			<string>DuckDuckGo</string>
 			<key>url</key>
