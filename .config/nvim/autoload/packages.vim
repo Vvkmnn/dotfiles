@@ -1,26 +1,20 @@
 " Packages  ------------------------------------------------------------------
-" Run via Dein, which is imported natively via pack/*/start
-" Additional logic is stored in /dein/config
 
-" import Dein if in pack/*/opt
+" Setup
+" Packages are downloaded and lazy loaded via Dein
+" which is imported natively via pack/dein/start
+" Additional logic is stored in pack/dein/config
+
 " packadd dein " Automatically added via pack/
 " Set Path
-let s:dein      = expand('$HOME/.config/nvim/dein')
 let s:dein_cache = expand('$HOME/.cache/nvim/dein')
+let s:dein_dir      = expand(s:dein_cache . '/dein')
 let s:dein_config      = expand('$HOME/.config/nvim/pack/dein/config')
 let s:dein_repo      = expand('$HOME/.config/nvim/pack/dein/start/dein.vim')
-" let  s: dein_toml  =  
-" s: dein_toml_list = split ( glob ( s: dein_toml_dir . ' /**/*.toml ' ), ' \ n ' )
 
-" Use Cache Path
-" if !dein#load_state(s:dein_cache)
-"     call dein#begin(s:dein_cache, expand('<sfile>'))
-"   finish
-" endif
-
- " Use Defined Path
-" let &path           = s:dein_repo
-
+" Configuration
+" Local Dein parameters
+let g:dein#install_max_processes = 16
 let g:dein#install_progress_type = 'title'
 let g:dein#enable_notification = 1
 let g:dein#notification_icon = '$HOME/.config/nvim/signs/warn.png'
@@ -29,19 +23,20 @@ let g:dein#install_log_filename = '$HOME/.config/nvim/pack/dein/log/dein.log'
 function packages#setup() abort
     echom "[._.] Setting up packages..."
 
-    if dein#load_state(s:dein)
-        call dein#begin(s:dein) 
+    if dein#load_state(s:dein_dir)
+        call dein#begin(s:dein_dir, $MYVIMRC) 
   call dein#add(s:dein_repo)
 let s:toml_list = split(glob(s:dein_config.'/*.toml'), '\n')
-
+" Recursively load every *.toml into Dein
  for s:toml in s:toml_list
     call dein#load_toml(s:toml)
   endfor
 
         call dein#end() 
         call dein#save_state() 
-
     endif
+    " Run source hooks for non-lazy plugins
+" call dein#call_hook('source')
 endfunction
 
         " call dein#load_toml(expand(s:dein_config . 'aesthetic.toml'))

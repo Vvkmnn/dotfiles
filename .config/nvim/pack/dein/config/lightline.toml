@@ -34,7 +34,7 @@ set showtabline=2  " always show tabline
 
 let g:lightline = {
     \ 'tabline': {
-    \   'left': [ [ 'bufferinfo' ],
+    \   'left': [ [ 'bufferinfo'],
     \             [ 'separator' ],
     \             [ 'bufferbefore', 'buffercurrent', 'bufferafter' ], ],
     \   'right': [ [ 'close' ], ],

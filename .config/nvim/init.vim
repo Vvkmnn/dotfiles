@@ -25,9 +25,11 @@
 " ##################################################
 " ##################################################
 
-" Runtime Path -------------------------------------
+" Path ---------------------------------------------
 " set runtimepath^='~/.config/nvim/dein'
 " set packpath^=~/.config/nvim/pack/*/start
+let $VIM_PATH = expand('~/.config/nvim')
+let $MYVIMRC = expand('~/.config/nvim/init.vim')
 
 " Startup ------------------------------------------
 augroup Startup
@@ -45,17 +47,19 @@ augroup Startup
 augroup END
 
 " Read ------------------------|BufNewFile, BufRead|
-" augroup Read
-"     autocmd!
-"     autocmd BufNewFile, BufRead *
-"                 \ | call rainbow_parentheses#toggle()
-"     autocmd BufNewFile, BufRead *.md,*.txt
-"                 \ call lexical#init()
-"     autocmd BufNewFile, BufRead *.ts,*.js,*.json
-"                 \ call rainbow_levels#on()
-    " autocmd VimEnter *.js RainbowLevelsOn
-    " autocmd BufNewfile, BufRead *.js, *.json, *.ts call rainbow_levels#on()
-    " autocmd BufRead call editor#preferences()
+augroup Read
+    autocmd!
+    autocmd BufNewFile, BufRead *
+                \ | call rainbow_parentheses#toggle()
+    autocmd BufNewFile, BufRead *.md,*.txt
+                \ call lexical#init()
+    autocmd BufNewFile, BufRead *.ts,*.js,*.json
+                \ call rainbow_levels#on()
+    autocmd BufWritePost *.vim,*.toml 
+                \ source $MYVIMRC | redraw " Source VIMRC if editing Vim
+  " autocmd VimEnter *.js RainbowLevelsOn
+  " autocmd BufNewfile, BufRead *.js, *.json, *.ts call rainbow_levels#on()
+  " autocmd BufRead call editor#preferences()
 augroup END
 
 " Write --------------------------------|BufWrite|
