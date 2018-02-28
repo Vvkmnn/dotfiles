@@ -1,0 +1,5 @@
+[[plugins]]
+repo = 'dracula/vim' # A Dark Colorscheme
+
+[[plugins]]
+repo = 'andreasvc/vim-256noir' # Red Numbers, White Strings

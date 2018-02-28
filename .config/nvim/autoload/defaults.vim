@@ -2,9 +2,8 @@
 
 function! defaults#settings() abort
     echom "[._.] Loading default settings..."
-
     " if &compatible
-    " set nocompatible         " Be iMproved
+    "   set nocompatible           " Be iMproved
     " endif
     set autoread                   " Autoread Files
     set encoding=utf-8             " UTF Encoding
@@ -36,8 +35,8 @@ function! defaults#settings() abort
     set title titlestring=         " Enable Buffer Titles?
     set guioptions=M               " Skip loading menus
     set cursorline                 " Highlight Current Line
+    set shell=/bin/zsh             " Use Zsh
     colorscheme dracula            " Dracula!
     filetype indent plugin on      " Plugins & Filetypes
     syntax enable                  " Enable Syntax
-    set shell=/bin/zsh             " Use Zsh
 endfunction
