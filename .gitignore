@@ -9,6 +9,7 @@ assets/
 ## nvim
 dein/**
 repos/
+files/
 
 ## alfred
 workflows/
