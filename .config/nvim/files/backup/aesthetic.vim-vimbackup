@@ -34,10 +34,19 @@ function! aesthetic#highlights() abort
 
     " CursorLine
     highlight CursorLine  ctermfg=NONE ctermbg=black guifg=NONE guibg=black
-
-    " Vertical Split
     hi vertsplit ctermbg=NONE guibg=NONE
-
+hi StatusLine ctermfg=235 ctermbg=245
+" hi StatusLineNC ctermfg=235 ctermbg=237
+" hi Search ctermbg=58 ctermfg=15
+" hi Default ctermfg=1
+" hi clear SignColumn
+" hi SignColumn ctermbg=235
+" hi GitGutterAdd ctermbg=235 ctermfg=245
+" hi GitGutterChange ctermbg=235 ctermfg=245
+" hi GitGutterDelete ctermbg=235 ctermfg=245
+" hi GitGutterChangeDelete ctermbg=235 ctermfg=245
+" hi EndOfBuffer ctermfg=237 ctermbg=235
+"
     " Split Formatting
 "    highlight vertsplit ctermfg=238 ctermbg=235
 "    highlight vertsplit guifg=238 guibg=235

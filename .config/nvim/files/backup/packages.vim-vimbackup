@@ -7,7 +7,7 @@
 
 " packadd dein " Automatically added via pack/
 " Set Path
-let s:dein_cache = expand('$HOME/.cache/nvim/')
+let s:dein_cache = expand('$HOME/.cache/nvim/dein')
 let s:dein_dir      = expand(s:dein_cache . '/dein')
 let s:dein_config      = expand('$HOME/.config/nvim/pack/dein/config')
 let s:dein_repo      = expand('$HOME/.config/nvim/pack/dein/start/dein.vim')

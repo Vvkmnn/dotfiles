@@ -4,8 +4,8 @@ repo = 'dracula/vim' # A Dark Colorscheme
 [[plugins]]
 repo = 'andreasvc/vim-256noir' # Red Numbers, White Strings
 
-# [[plugins]]
-# repo = 'ap/vim-buftabline' # Forget Vim tabs – now you can have buffer tabs 
+[[plugins]]
+repo = 'ap/vim-buftabline' # Forget Vim tabs – now you can have buffer tabs 
 
 # [[plugins]]
 # repo = 'yuttie/comfortable-motion.vim' # Brings physics-based smooth scrolling to the Vim world!

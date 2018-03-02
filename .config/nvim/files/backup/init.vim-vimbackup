@@ -38,7 +38,7 @@ augroup Startup
 			    \ | call packages#setup()
 			    \ | call packages#install()
     autocmd VimEnter * nested call aesthetic#core()
-			    \ | call aesthetic#highlights()
+			    \ | call aesthetic#minimal()
     autocmd VimEnter * nested call defaults#core()
 			    \ | call defaults#aesthetic()
 			    \ | call defaults#edit()

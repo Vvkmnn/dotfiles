@@ -4,6 +4,7 @@ hook_add = '''
 let g:lightline = { "colorcheme" : "Dracula" }
 '''
 
+
 [[plugins]]
 repo = 'maximbaz/lightline-ale' # Ale Component for lightline 
 hook_add = '''
