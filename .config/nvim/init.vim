@@ -35,15 +35,21 @@ let $MYVIMRC = expand('~/.config/nvim/init.vim')
 augroup Startup
     autocmd!
     autocmd VimEnter * nested call packages#deload()
-    autocmd VimEnter * nested call packages#setup()
-    autocmd VimEnter * nested call packages#install()
-    autocmd VimEnter * nested call defaults#settings()
-    autocmd VimEnter * nested call aesthetic#highlights()
+			    \ | call packages#setup()
+			    \ | call packages#install()
+    autocmd VimEnter * nested call aesthetic#core()
+			    \ | call aesthetic#minimal()
+    autocmd VimEnter * nested call defaults#core()
+			    \ | call defaults#aesthetic()
+			    \ | call defaults#edit()
+			    \ | call defaults#search()
+			    \ | call defaults#indent()
+			    \ | call defaults#files()
     autocmd VimEnter * nested call bindings#leader()
-    autocmd VimEnter * nested call bindings#normal()
-    autocmd VimEnter * nested call bindings#insert()
-    autocmd VimEnter * nested call bindings#visual()
-    autocmd VimEnter * nested call bindings#terminal()
+			    \ | call bindings#normal()
+			    \ | call bindings#insert()
+			    \ | call bindings#visual()
+			    \ | call bindings#terminal()
 augroup END
 
 " Read ------------------------|BufNewFile, BufRead|
@@ -65,6 +71,10 @@ augroup END
 " Write --------------------------------|BufWrite|
 augroup Write
     autocmd!
+autocmd BufReadPost *
+    \ if line("'\"") > 1 && line("'\"") <= line("$") |
+    \   execute "normal! g`\"" |
+    \ endif
     autocmd BufWrite * set nohlsearch " Remove Highlting on Write
     " autocmd FileType markdown,mkd,textile,text * nested
     "             \ call lexical#init()
@@ -107,7 +117,7 @@ augroup END
 " Exit -------------------------------------|VimLeave|
 augroup Exit
     autocmd!
-    " autocmd VimLeave * call packages#update()
-    " autocmd VimLeave * nested call packages#clean()
+    autocmd VimLeave * nested call packages#install()
+    autocmd VimLeave * nested call packages#clean()
 augroup END
 
