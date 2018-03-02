@@ -34,29 +34,34 @@ let $MYVIMRC = expand('~/.config/nvim/init.vim')
 " Startup ------------------------------------------
 augroup Startup
     autocmd!
-    autocmd VimEnter * nested call packages#deload()
-			    \ | call packages#setup()
-			    \ | call packages#install()
-    autocmd VimEnter * nested call aesthetic#core()
-			    \ | call aesthetic#highlights()
-    autocmd VimEnter * nested call defaults#core()
-			    \ | call defaults#aesthetic()
-			    \ | call defaults#edit()
-			    \ | call defaults#search()
-			    \ | call defaults#indent()
-			    \ | call defaults#files()
-    autocmd VimEnter * nested call bindings#leader()
-			    \ | call bindings#normal()
-			    \ | call bindings#insert()
-			    \ | call bindings#visual()
-			    \ | call bindings#terminal()
+    autocmd VimEnter * call packages#deload()
+    \ | call packages#setup()
+    \ | call packages#install()
+augroup END
+
+" Setup --------------------------------------------
+augroup Setup
+    autocmd!
+    autocmd VimEnter * call bindings#leader()
+                \ | call bindings#normal()
+                \ | call bindings#insert()
+                \ | call bindings#visual()
+                \ | call bindings#terminal()
+    autocmd VimEnter * call aesthetic#core()
+                \ | call aesthetic#highlights()
+    autocmd VimEnter * call defaults#core()
+                \ | call defaults#aesthetic()
+                \ | call defaults#edit()
+                \ | call defaults#search()
+                \ | call defaults#indent()
+                \ | call defaults#files()
 augroup END
 
 " Read ------------------------|BufNewFile, BufRead|
 augroup Read
     autocmd!
     autocmd BufNewFile, BufRead *
-                \ | call rainbow_parentheses#toggle()
+                \ call rainbow_parentheses#toggle()
     autocmd BufNewFile, BufRead *.md,*.txt
                 \ call lexical#init()
     autocmd BufNewFile, BufRead *.ts,*.js,*.json

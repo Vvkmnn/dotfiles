@@ -2,9 +2,9 @@
 
 function! defaults#core() abort
     echom "[._.] Loading core defaults..."
-    set nocompatible           " Be iMproved
+    " set nocompatible           " Be iMproved
     filetype indent plugin on      " Plugins & Filetypes
-    syntax enable                  " Enable Syntax
+    syntax on " Force Syntax
     set shell=/bin/zsh " Use Zsh
 endfunction
 

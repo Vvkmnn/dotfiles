@@ -1,0 +1,29 @@
+# Editing --------------------
+# Plugins to make editing in Vim more convenient
+
+[[plugins]]
+repo = 'sheerun/vim-polyglot' # A solid language pack for Vim.
+
+[[plugins]]
+repo = 'moll/vim-bbye' # Delete buffers and close files in Vim without closing your windows or messing up your layout. 
+on_cmd = 'Bdelete'
+
+[[plugins]]
+repo = 'tyru/open-browser.vim'
+on_cmd = 'OpenBrowser'
+on_map = {nx = '<Plug>(openbrowser-smart-search)'}
+hook_add = '''
+    " disable netrw's gx mapping.
+    let g:netrw_nogx = 1 
+
+    " Replace said mapping
+    nmap gx <Plug>(openbrowser-smart-search)
+    vmap gx <Plug>(openbrowser-smart-search)
+'''
+
+[[plugins]]
+repo = 'yuttie/comfortable-motion.vim' # Brings physics-based smooth scrolling to the Vim world!
+hook_add = '''
+let g:comfortable_motion_scroll_down_key = "j"
+let g:comfortable_motion_scroll_up_key = "k"
+'''

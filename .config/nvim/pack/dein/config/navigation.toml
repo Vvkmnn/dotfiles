@@ -1,0 +1,11 @@
+# Editing --------------------
+# Plugins to make navigation in Vim more convenient
+
+[[plugins]]
+repo = 'justinmk/vim-dirvish' # Minimal Navigator via <-> 
+on_cmd = 'Dirivish'
+on_map = { n = '-' }
+
+# [[plugins]]
+# repo = 'tpope/vim-eunech' # Unix helpers via <:Delete>, <:Move>, ...
+# on_cmd = ['Delete', 'Move']
