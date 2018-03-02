@@ -34,9 +34,12 @@ let s:toml_list = split(glob(s:dein_config.'/*.toml'), '\n')
 
         call dein#end() 
         call dein#save_state() 
-    endif
+        "
     " Run source hooks for non-lazy plugins
-" call dein#call_hook('source')
+    " call dein#call_hook('add')
+    " call dein#call_hook('source')
+    " call dein#call_hook('post_source')
+    endif
 endfunction
 
         " call dein#load_toml(expand(s:dein_config . 'aesthetic.toml'))

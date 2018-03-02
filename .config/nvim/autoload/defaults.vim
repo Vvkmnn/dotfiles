@@ -49,7 +49,7 @@ function! defaults#edit() abort
     set clipboard^=unnamedplus     " Prepend to clipboard
     set formatoptions+=j " Delete comment character when joining commented lines
 set report      =0         " Always report changed lines.
-set showmode               " Show current mode in command-line.
+set noshowmode               " Don't show current mode in command-line.
 set showcmd                " Show already typed keys when more are expected.
 endfunction
 

@@ -1,0 +1,8 @@
+[[plugins]]
+repo = 'dracula/vim' # A Dark Colorscheme
+
+[[plugins]]
+repo = 'andreasvc/vim-256noir' # Red Numbers, White Strings
+
+[[plugins]]
+repo = 'chriskempson/base16-vim' # Base16 for Vim

@@ -1,25 +1,32 @@
 [[plugins]]
 repo = 'itchyny/lightline.vim'
 hook_add = '''
-let g:lightline = { "colorcheme" : "Dracula" }
+let g:lightline = {
+      \ 'colorscheme': 'Dracula',
+      \ }
 '''
 
 [[plugins]]
 repo = 'maximbaz/lightline-ale' # Ale Component for lightline 
 hook_add = '''
+" Register component
 let g:lightline.component_expand = {
             \  'linter_warnings': 'lightline#ale#warnings',
             \  'linter_errors': 'lightline#ale#errors',
             \  'linter_ok': 'lightline#ale#ok',
             \ }
             
+" Color component
 let g:lightline.component_type = {
             \     'linter_warnings': 'warning',
             \     'linter_errors': 'error',
             \     'linter_ok': 'left',
             \ }
 
+" Add to Lightline
 let g:lightline.active = { 'right': [[ 'linter_errors', 'linter_warnings', 'linter_ok' ]] }
+
+" Screenshot colors
 let g:lightline#ale#indicator_warnings = "\uf071"
 let g:lightline#ale#indicator_errors = "\uf05e"
 let g:lightline#ale#indicator_ok = "\uf00c"

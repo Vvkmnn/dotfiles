@@ -1,0 +1,8 @@
+# Static
+
+# [[plugins]]
+repo = 'yuttie/comfortable-motion.vim' # Brings physics-based smooth scrolling to the Vim world!
+hook_add = '''
+let g:comfortable_motion_scroll_down_key = "j"
+let g:comfortable_motion_scroll_up_key = "k"
+'''
