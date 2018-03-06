@@ -9,17 +9,17 @@
 # '''
 
 [[plugins]]
-repo = 'autozimu/LanguageClient-neovim' # LSP Integration for Vim 
+repo = 'autozimu/LanguageClient-neovim' # LSP Integration for Vim
 rev = 'next'
-build = 'bash install.sh',
-on_ft= ['typescript', 'javascript', 'python'],
+build = './install.sh'
+on_ft= ['typescript', 'javascript', 'python']
 depends = 'deoplete.nvim'
 hook_add = '''
 let g:LanguageClient_serverCommands = {
-            \ 'rust': ['rustup', 'run', 'nightly', 'rls'],
-            \ 'javascript': ['javascript-typescript-stdio'],
-            \ 'typescript': ['tsserver'],
-            \ 'python': ['python-language-server'],
-            \ } " Language Server Protocol paths
+    \ 'rust': ['rustup', 'run', 'nightly', 'rls'],
+    \ 'javascript': ['javascript-typescript-stdio'],
+    \ 'typescript': ['tsserver'],
+    \ 'python': ['python-language-server'],
+    \ } " Language Server Protocol paths
 
-'''
+    '''
