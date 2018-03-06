@@ -1,0 +1,55 @@
+# Editing --------------------
+# Plugins to make editing in Vim more convenient
+
+[[plugins]]
+repo = 'jreybert/vimagit' # Ease your git workflow within Vim
+on_cmd = 'Magit'
+
+[[plugins]]
+repo = 'tpope/vim-eunuch' # eunuch.vim: helpers for UNIX
+on_cmd = [ 'Delete', 'Move' , 'Rename', 'Chmod', 'Mkdir', 'Find', 'Locate', 'SudoEdit', 'SudoWrite', 'Wall', 'W']
+
+[[plugins]]
+repo = 'Chiel92/vim-autoformat' # Provide easy code formatting in Vim by integrating existing code formatters.
+on_cmd = 'Autoformat'
+
+[[plugins]]
+repo = 'airblade/vim-gitgutter' # A Vim plugin which shows a git diff in the gutter (sign column) and stages/undoes hunks.
+
+# [[plugins]]
+# repo = 'jiangmiao/auto-pairs' # Vim plugin, insert or delete brackets, parens, quotes in pair
+
+# [[plugins]]
+# repo = 'seletskiy/vim-autosurround' # Automatically insert pairs (brackets, quotes) where they are supposed to be
+
+[[plugin]]
+repo = 'editorconfig/editorconfig-vim' # EditorConfig plugin for Vim
+
+# [[plugins]]
+# repo = 'justinmk/vim-sneak' # The missing motion for Vim 👟
+
+[[plugins]]
+repo = 'tmhedberg/matchit' # extended % matching for HTML, LaTeX, and many other languages
+
+[[plugins]]
+repo = 'tpope/vim-repeat' # tpope/vim-repeat: repeat.vim: enable repeating supported plugin maps with "."
+# on_map = { 'n' = '.' }
+
+[[plugins]]
+repo = 'tpope/vim-dispatch' # dispatch.vim: asynchronous build and test dispatcher
+on_cmd = ['Dispatch', 'Make']
+
+[[plugins]]
+repo = 'tpope/vim-sleuth' # sleuth.vim: Heuristically set buffer options
+
+[[plugins]]
+repo = 'tpope/vim-commentary' # commentary.vim: comment stuff out
+# on_cmd = 'Commentary'
+# on_map = {'n' = '<Plug>Commentary'}
+
+[[plugins]]
+repo = 'tpope/vim-surround' # surround.vim: quoting/parenthesizing made simple
+
+# [[plugins]]
+# repo = 'thiagoalessio/rainbow_levels.vim'
+

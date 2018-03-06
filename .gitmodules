@@ -2,11 +2,11 @@
     path = .zplug
     url = git@github.com:zplug/zplug.git
 [submodule ".nvm"]
-	path = .nvm
-	url = https://github.com/creationix/nvm.git
+    path = .nvm
+    url = https://github.com/creationix/nvm.git
 [submodule ".config/nvim/pack/dein/start/vim-polyglot"]
-	path = .config/nvim/pack/dein/start/vim-polyglot
-	url = https://github.com/sheerun/vim-polyglot.git
+    path = .config/nvim/pack/dein/start/vim-polyglot
+    url = https://github.com/sheerun/vim-polyglot.git
 [submodule ".config/nvim/pack/dein/start/dein.vim"]
-	path = .config/nvim/pack/dein/start/dein.vim
-	url = https://github.com/Shougo/dein.vim.git
+    path = .config/nvim/pack/dein/start/dein.vim
+    url = https://github.com/Shougo/dein.vim.git

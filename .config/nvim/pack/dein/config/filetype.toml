@@ -1,0 +1,25 @@
+# Filetype -------------------
+# Plugins to make filetypes in Vim more convenient
+
+# [[plugins]]
+# Manual preload via pack/dein/start
+# repo = 'sheerun/vim-polyglot' # A solid language pack for Vim.
+# lazy = 0
+# hook_source = '''
+# '''
+
+[[plugins]]
+repo = 'autozimu/LanguageClient-neovim' # LSP Integration for Vim
+rev = 'next'
+build = './install.sh'
+on_ft= ['typescript', 'javascript', 'python']
+depends = 'deoplete.nvim'
+hook_add = '''
+let g:LanguageClient_serverCommands = {
+    \ 'rust': ['rustup', 'run', 'nightly', 'rls'],
+    \ 'javascript': ['javascript-typescript-stdio'],
+    \ 'typescript': ['tsserver'],
+    \ 'python': ['python-language-server'],
+    \ } " Language Server Protocol paths
+
+    '''

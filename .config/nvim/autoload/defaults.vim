@@ -3,7 +3,9 @@
 function! defaults#core() abort
     echom "[._.] Loading core defaults..."
     " set nocompatible           " Be iMproved
-    filetype indent plugin on      " Plugins & Filetypes
+    filetype on
+    filetype indent on "Filetype Indent
+    filetype plugin on " Plugins
     syntax on " Force Syntax
     set shell=/bin/zsh " Use Zsh
 endfunction
@@ -13,8 +15,8 @@ function! defaults#aesthetic() abort
     set mousefocus                 " Follow Mouse Focus
     set wmh=0                      " Split Vertically
     set fillchars=                 " Window Characters
-set ttyfast                " Faster redrawing.
-set lazyredraw             " Only redraw when necessary.
+    set ttyfast                " Faster redrawing.
+    set lazyredraw             " Only redraw when necessary.
     set splitright                 " Split to the right
     set number " Show currenrt line number
     set relativenumber             " Relative line numbers
@@ -28,10 +30,13 @@ set lazyredraw             " Only redraw when necessary.
     set termguicolors              " Use Truecolor Vim
     set guioptions=M               " Skip loading menus
     set cursorline                 " Highlight Current Line
-    set so=999                     " Keep cursorline in center 
+    set so=999                     " Keep cursorline in center
     set sidescrolloff=5            " Mimimum side scrolling area
     set title titlestring=         " Enable Buffer Titles?
-set synmaxcol   =200       " Only highlight the first 200 columns.
+    set synmaxcol   =200       " Only highlight the first 200 columns.
+    if !has('gui_running')
+        set t_Co=256
+    endif
 endfunction
 
 function! defaults#edit() abort
@@ -48,9 +53,9 @@ function! defaults#edit() abort
     set nrformats-=octal           " Increment in Decimal, not binary
     set clipboard^=unnamedplus     " Prepend to clipboard
     set formatoptions+=j " Delete comment character when joining commented lines
-set report      =0         " Always report changed lines.
-set noshowmode               " Don't show current mode in command-line.
-set showcmd                " Show already typed keys when more are expected.
+    set report      =0         " Always report changed lines.
+    set noshowmode               " Don't show current mode in command-line.
+    set showcmd                " Show already typed keys when more are expected.
 endfunction
 
 function! defaults#search() abort
@@ -65,7 +70,7 @@ endfunction
 function! defaults#indent() abort
     echom "[._.] Loading editing defaults..."
     set autoindent                 " Autoindent new lines
-set smartindent
+    set smartindent
     set smarttab                   " Adopt <Tab> setup
     set tabstop=8                  " Always insert spaces
     set softtabstop=4              " instead of tabs
@@ -78,7 +83,7 @@ function! defaults#files() abort
     set autoread                   " Autoread Files
     set encoding=utf-8             " UTF Encoding
     if !isdirectory($VIM_PATH.'/files') && exists('*mkdir')
-      call mkdir($VIM_PATH.'/files') " create directory if needed
+        call mkdir($VIM_PATH.'/files') " create directory if needed
     endif
     set backup " backup files
     set backupdir   =$VIM_PATH/files/backup/
