@@ -11,10 +11,11 @@ let s:dein_cache = expand('$HOME/.cache/nvim/')
 let s:dein_dir      = expand(s:dein_cache . '/dein')
 let s:dein_config      = expand('$HOME/.config/nvim/pack/dein/config')
 let s:dein_repo      = expand('$HOME/.config/nvim/pack/dein/start/dein.vim')
+let s:lang_repo      = expand('$HOME/.config/nvim/pack/dein/start/vim-polyglot')
 
 " Configuration
 " Local Dein parameters
-let g:dein#install_max_processes = 16
+let g:dein#install_max_processes = 32
 let g:dein#install_progress_type = 'title'
 let g:dein#enable_notification = 1
 let g:dein#notification_icon = '$HOME/.config/nvim/signs/warn.png'
@@ -26,9 +27,11 @@ function packages#setup() abort
     if dein#load_state(s:dein_dir)
         call dein#begin(s:dein_dir, $MYVIMRC) 
   call dein#add(s:dein_repo)
+  call dein#add(s:lang_repo)
 let s:toml_list = split(glob(s:dein_config.'/*.toml'), '\n')
 " Recursively load every *.toml into Dein
  for s:toml in s:toml_list
+    " echom "[._.] Installing package list" s:toml
     call dein#load_toml(s:toml)
   endfor
 
@@ -36,9 +39,8 @@ let s:toml_list = split(glob(s:dein_config.'/*.toml'), '\n')
         call dein#save_state() 
         "
     " Run source hooks for non-lazy plugins
-    " call dein#call_hook('add')
-    " call dein#call_hook('source')
-    " call dein#call_hook('post_source')
+    call dein#call_hook('source')
+    call dein#call_hook('post_source')
     endif
 endfunction
 
@@ -547,7 +549,7 @@ endfunction
 
 function packages#deload() abort
     echom "[._.] Deloading default packages..."
-    "
+    
     " Disable some default plugins.
     let g:loaded_gzip              = 1
     let g:loaded_tar               = 1
@@ -560,10 +562,10 @@ function packages#deload() abort
     let g:loaded_vimballPlugin     = 1
     let g:loaded_getscript         = 1
     let g:loaded_getscriptPlugin   = 1
-    let g:loaded_netrw             = 0
-    let g:loaded_netrwPlugin       = 0
-    let g:loaded_netrwSettings     = 0
-    let g:loaded_netrwFileHandlers = 0
+    " let g:loaded_netrw             = 0
+    " let g:loaded_netrwPlugin       = 0
+    " let g:loaded_netrwSettings     = 0
+    " let g:loaded_netrwFileHandlers = 0
     let g:loaded_logipat           = 1
 endfunction
 
