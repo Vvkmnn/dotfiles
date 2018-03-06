@@ -7,3 +7,6 @@
 [submodule ".config/nvim/pack/dein/start/vim-polyglot"]
 	path = .config/nvim/pack/dein/start/vim-polyglot
 	url = https://github.com/sheerun/vim-polyglot.git
+[submodule ".config/nvim/pack/dein/start/dein.vim"]
+	path = .config/nvim/pack/dein/start/dein.vim
+	url = https://github.com/Shougo/dein.vim.git
