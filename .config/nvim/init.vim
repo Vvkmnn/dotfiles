@@ -70,6 +70,10 @@ augroup END
 " Read ------------------------|BufNewFile, BufRead|
 augroup Read
     autocmd!
+    autocmd BufReadPost *
+                \ if line("'\"") > 1 && line("'\"") <= line("$") |
+                \   execute "normal! g`\"" |
+                \ endif " Jump to last known position in buffer
     " autocmd BufEnter * syntax sync fromstart
     " autocmd BufNewFile, BufRead *.md,*.txt
     "             \ call lexical#init()
@@ -85,10 +89,7 @@ augroup END
 " Write --------------------------------|BufWrite|
 augroup Write
     autocmd!
-    autocmd BufReadPost *
-                \ if line("'\"") > 1 && line("'\"") <= line("$") |
-                \   execute "normal! g`\"" |
-                \ endif
+    autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif " Close completionw window if no more completions
     autocmd BufWrite * set nohlsearch " Remove Highlting on Write
 augroup END
 
