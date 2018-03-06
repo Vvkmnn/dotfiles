@@ -1,0 +1,63 @@
+# Completion -----------------
+# Plugins to make completions in Vim more convenient
+
+[[plugins]]
+repo = 'Shougo/deoplete.nvim'  # dark powered neo-completion {{{
+    on_event = 'InsertCharPre'
+        hook_add =
+        '''
+        let g:deoplete#enable_at_startup = 1 " Enable deoplete at startup
+        let g:deoplete#enable_ignore_case =1 " Ignore case
+
+        let g:deoplete#auto_complete_delay = 0
+        let g:deoplete#auto_complete_start_length = 1
+        let g:deoplete#enable_camel_case = 0
+        let g:deoplete#enable_ignore_case = 0
+        let g:deoplete#enable_refresh_always = 0
+        '''
+
+# [[plugins]]
+# repo = 'Shougo/neosnippet.vim'
+#     on_event = 'InsertCharPre'
+#     depends = 'deoplete.nvim'
+#     hook_add =
+#     '''
+
+#     " SuperTab like snippets behavior.
+#     " Note: It must be "imap" and "smap".  It uses <Plug> mappings.
+#     "imap <expr><TAB>
+#     " \ pumvisible() ? "\<C-n>" :
+#     " \ neosnippet#expandable_or_jumpable() ?
+#     " \    "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+#     smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
+#     \ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+
+#     " For conceal markers.
+#     if has('conceal')
+#         set conceallevel=2 concealcursor=niv
+#             endif
+#             '''
+
+# [[plugins]]
+# repo = 'Shougo/neosnippet-snippets'
+#     on_event = 'InsertCharPre'
+#     depends = ['deoplete.nvim', 'neosnippet.vim']
+
+        [[plugins]]
+        repo = 'Shougo/neco-syntax'
+            on_event = 'InsertCharPre'
+            depends = 'deoplete.nvim'
+
+            [[plugins]]
+            repo = 'SirVer/ultisnips'
+                on_event = 'InsertCharPre'
+                depends = ['deoplete.nvim']
+                hook_add = '''
+                call deoplete#custom#set('ultisnips', 'matchers', ['matcher_fuzzy'])
+                '''
+
+                [[plugins]]
+                repo = 'honza/vim-snippets'
+                    on_event = 'InsertCharPre'
+                    depends = ['deoplete.nvim', 'ultisnips']
+

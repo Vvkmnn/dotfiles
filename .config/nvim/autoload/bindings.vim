@@ -34,10 +34,6 @@ function! bindings#normal() abort
     " Remap Space to <Nop>?
     nnoremap <Space> <Nop>
 
-    " Switch Highlighing on if Off
-    nnoremap <silent> n n:call ToggleHlBack()<CR>
-    nnoremap <silent> N N:call ToggleHlBack()<CR>
-
     " Disable arrow movement, resize splits instead.
     " nnoremap <Up>    :resize +2<CR>
     " nnoremap <Down>  :resize -2<CR>

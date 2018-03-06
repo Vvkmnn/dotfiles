@@ -1,8 +1,0 @@
-[[plugins]]
-repo = 'thiagoalessio/rainbow_levels.vim'
- 
- [[plugins]]
- repo = 'justinmk/vim-dirvish'
- on_cmd = 'Dirivish'
- on_map = '-'
- 

@@ -1,8 +1,20 @@
+# Colorschemes ---------------
+# Vim themes and colorschemes, preferably with Lightline Support
+
 [[plugins]]
 repo = 'dracula/vim' # A Dark Colorscheme
+
+[[plugins]]
+repo = 'yuttie/hydrangea-vim' # Hydrangea theme for Vim.
 
 [[plugins]]
 repo = 'andreasvc/vim-256noir' # Red Numbers, White Strings
 
 [[plugins]]
 repo = 'chriskempson/base16-vim' # Base16 for Vim
+
+[[plugins]]
+repo = 'jacoborus/tender.vim' # A 24bit colorscheme for Vim, Airline and Lightline
+
+[[plugins]]
+repo = "altercation/vim-colors-solarized" # precision colorscheme for the vim text editor
