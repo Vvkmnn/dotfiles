@@ -8,6 +8,15 @@
 # hook_source = '''
 # '''
 
+# [[plugins]]
+# repo = 'roxma/python-support.nvim' # use a single command :PythonSupportInit to initialize python support for neovim.
+# # on_ft = ['python']
+# hook_add = '''
+# " PythonSupportInitPython2
+# " PythonSupportInitPython3
+# '''
+
+
 [[plugins]]
 repo = 'autozimu/LanguageClient-neovim' # LSP Integration for Vim
 rev = 'next'
