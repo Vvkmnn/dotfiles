@@ -9,17 +9,20 @@
 " Set Path
 let s:dein_cache = expand('$HOME/.cache/nvim/')
 let s:dein_dir      = expand(s:dein_cache . '/dein')
-let s:dein_config      = expand('$HOME/.config/nvim/pack/dein/config')
-let s:dein_repo      = expand('$HOME/.config/nvim/pack/dein/start/dein.vim')
-let s:lang_repo      = expand('$HOME/.config/nvim/pack/dein/start/vim-polyglot')
+let s:dein_pack      = expand('$HOME/.config/nvim/pack/dein')
+let s:dein_start     = expand(s:dein_pack .'/start')
+let s:dein_config      = expand(s:dein_pack .'/config')
+let s:dein_log      = expand(s:dein_pack .'/log')
+let s:dein_repo      = expand(s:dein_start . '/dein.vim')
+let s:lang_repo      = expand(s:dein_start . '/vim-polyglot')
 
 " Configuration
 " Local Dein parameters
 let g:dein#install_max_processes = 32
 let g:dein#install_progress_type = 'title'
 let g:dein#enable_notification = 1
-let g:dein#notification_icon = '$HOME/.config/nvim/signs/warn.png'
-let g:dein#install_log_filename = '$HOME/.config/nvim/pack/dein/log/dein.log'
+let g:dein#notification_icon = '$HOME/.config/nvim/signs'
+let g:dein#install_log_filename = expand(s:dein_log.'/dein.log')
 
 function packages#setup() abort
     echom "[._.] Setting up packages..."

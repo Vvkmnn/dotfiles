@@ -96,7 +96,6 @@ augroup END
 " Format -------------------------------|BufWrite|
 augroup Write
     autocmd!
-    autocmd BufWrite * Autoformat
 augroup END
 
 " Build ----------------------------|QuickFixCmdPost|
@@ -116,6 +115,18 @@ augroup Edit
     autocmd WinLeave * setlocal nocursorline
 augroup END
 
+" Completion -----------------------|InsertEnter|
+" augroup Complete
+"     autocmd User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
+"                 \ 'name': 'buffer',
+"                 \ 'whitelist': ['*'],
+"                 \ 'blacklist': ['go'],
+"                 \ 'priority': 1,
+"                 \ 'completor': function('asyncomplete#sources#buffer#completor'),
+"                 \ }))
+"
+" augroup END
+
 " Resize ---------------------------|InsertEnter|
 augroup Resize
     autocmd!
@@ -125,6 +136,7 @@ augroup END
 " Save ------------------------------------|BufWrite|
 augroup Save
     autocmd!
+    " autocmd BufWrite * Autoformat
     " autocmd BufWritePre *
     "             \ try | undojoin
     "             \ | Neoformat
