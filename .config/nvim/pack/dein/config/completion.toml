@@ -1,28 +1,53 @@
 # Completion -----------------
 # Plugins to make completions in Vim more convenient
 
-# [[ plugins ]]
-# repo = 'roxma/nvim-completion-manager'
-# hook_add = '''
-# " don't give |ins-completion-menu| messages.  For example,
-# " '-- XXX completion (YYY)', 'match 1 of 2', 'The only match',
-# '''
-
 [[plugins]]
 repo = 'Shougo/deoplete.nvim'  # dark powered neo-completion {{{
 # depends = ['neosnippet.vim', 'auto-pairs']
 on_event = 'InsertCharPre'
 hook_add =
 '''
-" let g:deoplete#enable_at_startup = 1 " Enable deoplete at startup
-let g:deoplete#enable_ignore_case =1 " Ignore case
+let g:deoplete#enable_at_startup = 1 " Enable deoplete at startup
+let g:deoplete#enable_ignore_case = 1 " Ignore case
 
-let g:deoplete#auto_complete_delay = 0 " No delay
 " let g:deoplete#auto_complete_start_length = 1 " Maximum options to show
+l
 let g:deoplete#enable_refresh_always = 0 " Refresh immediately
+let g:deoplete#auto_complete_delay = 0 " No delay
 
-" No number of completions messages
-" set shortmess+=c
+" Bindings ----
+" <TAB>: completion.
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ deoplete#manual_complete()
+
+" <S-TAB>: completion back.
+inoremap <expr><S-TAB>  pumvisible() ? "\<C-p>" : "\<C-h>"
+
+" <C-h>, <BS>: close popup and delete backword char.
+inoremap <expr><C-h> deoplete#smart_close_popup()."\<C-h>"
+inoremap <expr><BS> deoplete#smart_close_popup()."\<C-h>"
+
+" inoremap <expr><C-g> deoplete#undo_completion()
+" <C-l>: redraw candidates
+inoremap <expr><C-g>       deoplete#refresh()
+inoremap <silent><expr><C-l>       deoplete#complete_common_string()
+
+" <CR>: close popup and save indent.
+inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
+inoremap <expr> '  pumvisible() ? deoplete#close_popup() : "'"
+
+" Functions ----
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~ '\s'
+endfunction
+
+function! s:my_cr_function() abort
+  return deoplete#cancel_popup() . "\<CR>"
+endfunction
+
 '''
 
 [[plugins]]
@@ -35,6 +60,13 @@ hook_add = '''
 [[plugins]]
 repo = 'honza/vim-snippets'
 
+[[plugins]]
+repo = 'Shougo/echodoc.vim'
+on_event = 'CompleteDone'
+hook_source = '''
+" let g:echodoc#type = 'signature'
+call echodoc#enable()
+'''
 #[[plugins]]
 #repo = 'Shougo/neosnippet.vim'
 # hook_add = '''
