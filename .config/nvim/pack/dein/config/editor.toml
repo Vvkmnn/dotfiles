@@ -16,8 +16,11 @@ on_cmd = 'Autoformat'
 [[plugins]]
 repo = 'airblade/vim-gitgutter' # A Vim plugin which shows a git diff in the gutter (sign column) and stages/undoes hunks.
 
-# [[plugins]]
-# repo = 'jiangmiao/auto-pairs' # Vim plugin, insert or delete brackets, parens, quotes in pair
+[[plugins]]
+repo = 'jiangmiao/auto-pairs' # Vim plugin, insert or delete brackets, parens, quotes in pair
+hook_add = '''
+let g:AutoPairsMapCR=0
+'''
 
 # [[plugins]]
 # repo = 'seletskiy/vim-autosurround' # Automatically insert pairs (brackets, quotes) where they are supposed to be

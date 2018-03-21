@@ -3,61 +3,164 @@
 
 [[plugins]]
 repo = 'Shougo/deoplete.nvim'  # dark powered neo-completion {{{
-    on_event = 'InsertCharPre'
-        hook_add =
-        '''
-        let g:deoplete#enable_at_startup = 1 " Enable deoplete at startup
-        let g:deoplete#enable_ignore_case =1 " Ignore case
+# depends = ['neosnippet.vim', 'auto-pairs']
+on_event = 'InsertCharPre'
+hook_add =
+'''
+let g:deoplete#enable_at_startup = 1 " Enable deoplete at startup
+let g:deoplete#enable_ignore_case = 1 " Ignore case
 
-        let g:deoplete#auto_complete_delay = 0
-        let g:deoplete#auto_complete_start_length = 1
-        let g:deoplete#enable_camel_case = 0
-        let g:deoplete#enable_ignore_case = 0
-        let g:deoplete#enable_refresh_always = 0
-        '''
+" let g:deoplete#auto_complete_start_length = 1 " Maximum options to show
+l
+let g:deoplete#enable_refresh_always = 0 " Refresh immediately
+let g:deoplete#auto_complete_delay = 0 " No delay
+
+" Bindings ----
+" <TAB>: completion.
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ deoplete#manual_complete()
+
+" <S-TAB>: completion back.
+inoremap <expr><S-TAB>  pumvisible() ? "\<C-p>" : "\<C-h>"
+
+" <C-h>, <BS>: close popup and delete backword char.
+inoremap <expr><C-h> deoplete#smart_close_popup()."\<C-h>"
+inoremap <expr><BS> deoplete#smart_close_popup()."\<C-h>"
+
+" inoremap <expr><C-g> deoplete#undo_completion()
+" <C-l>: redraw candidates
+inoremap <expr><C-g>       deoplete#refresh()
+inoremap <silent><expr><C-l>       deoplete#complete_common_string()
+
+" <CR>: close popup and save indent.
+inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
+inoremap <expr> '  pumvisible() ? deoplete#close_popup() : "'"
+
+" Functions ----
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~ '\s'
+endfunction
+
+function! s:my_cr_function() abort
+  return deoplete#cancel_popup() . "\<CR>"
+endfunction
+
+'''
+
+[[plugins]]
+repo = 'SirVer/ultisnips'
+hook_add = '''
+" call deoplete#custom#set('ultisnips', 'matchers', ['matcher_fuzzy'])
+" call deoplete#custom#source('ultisnips', 'rank', 1000)
+'''
+
+[[plugins]]
+repo = 'honza/vim-snippets'
+
+[[plugins]]
+repo = 'Shougo/echodoc.vim'
+on_event = 'CompleteDone'
+hook_source = '''
+" let g:echodoc#type = 'signature'
+call echodoc#enable()
+'''
+#[[plugins]]
+#repo = 'Shougo/neosnippet.vim'
+# hook_add = '''
+# let g:deoplete#ignore_sources = {}
+# let g:deoplete#ignore_sources._ = ["neosnippet"]
+
+# # " If we <Tab> inside a completion menu jump to the next item. 
+# # " Otherwise check if there is any snippet to expand, if yes expand it. Also if inside a snippet and we need to jump <Tab> jumps. 
+# # " If none of the above matches we just call our usual 'tab'.
+
+# function! s:neosnippet_complete()
+#   if pumvisible()
+#     return "\<c-n>"
+#   else
+#     if neosnippet#expandable_or_jumpable() 
+#       return "\<Plug>(neosnippet_expand_or_jump)"
+#     endif
+#     return "\<tab>"
+#   endif
+# endfunction
+
+# imap <expr><TAB> <SID>neosnippet_complete()
+# '''
+
+
+# on_event = 'InsertCharPre'
+# on_map = '<Plug>'
+
+[[plugins]]
+repo = 'Shougo/neosnippet-snippets'
+# on_event = 'InsertCharPre'
+# depends = ['deoplete.nvim', 'neosnippet.vim']
 
 # [[plugins]]
-# repo = 'Shougo/neosnippet.vim'
+# repo = 'Shougo/neco-syntax'
+# # on_event = 'InsertCharPre'
+# depends = 'deoplete.nvim'
+
+# [[plugins]]
+# repo = 'SirVer/ultisnips'
 #     on_event = 'InsertCharPre'
-#     depends = 'deoplete.nvim'
-#     hook_add =
+#     depends = ['deoplete.nvim']
+#     hook_add = '''
+#     call deoplete#custom#set('ultisnips', 'matchers', ['matcher_fuzzy'])
 #     '''
 
-#     " SuperTab like snippets behavior.
-#     " Note: It must be "imap" and "smap".  It uses <Plug> mappings.
-#     "imap <expr><TAB>
-#     " \ pumvisible() ? "\<C-n>" :
-#     " \ neosnippet#expandable_or_jumpable() ?
-#     " \    "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
-#     smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
-#     \ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+#     [[plugins]]
+#     repo = 'honza/vim-snippets'
+#         on_event = 'InsertCharPre'
+#         depends = ['deoplete.nvim', 'ultisnips']
+#
 
-#     " For conceal markers.
-#     if has('conceal')
-#         set conceallevel=2 concealcursor=niv
-#             endif
-#             '''
+# asynccomplete.vim {{{
 
 # [[plugins]]
-# repo = 'Shougo/neosnippet-snippets'
-#     on_event = 'InsertCharPre'
-#     depends = ['deoplete.nvim', 'neosnippet.vim']
+# repo = 'prabirshrestha/vim-lsp'
 
-        [[plugins]]
-        repo = 'Shougo/neco-syntax'
-            on_event = 'InsertCharPre'
-            depends = 'deoplete.nvim'
+# [[plugins]]
+# repo = 'prabirshrestha/async.vim'
 
-            [[plugins]]
-            repo = 'SirVer/ultisnips'
-                on_event = 'InsertCharPre'
-                depends = ['deoplete.nvim']
-                hook_add = '''
-                call deoplete#custom#set('ultisnips', 'matchers', ['matcher_fuzzy'])
-                '''
+# [[plugins]]
+# repo = 'prabirshrestha/asyncomplete.vim' 
+# hook_add = '''
+# " echom "async"
+# let g:asyncomplete_auto_popup = 1
+# let g:asyncomplete_remove_duplicates = 1
+# let g:asyncomplete_force_refresh_on_context_changed = 1
+# let g:asyncomplete_log_file = expand('$HOME/.config/nvim/pack/dein/log/asyncomplete.log') " for asyncomplete.vim log
+# '''
 
-                [[plugins]]
-                repo = 'honza/vim-snippets'
-                    on_event = 'InsertCharPre'
-                    depends = ['deoplete.nvim', 'ultisnips']
-
+# # depends = 'async.vim'
+# # hook_add = '''
+# # let g:asyncomplete_use_default_mappings = 1 " Tab Completion
+# # '''
+#
+# [[plugins]]
+# repo= 'prabirshrestha/vim-lsp'
+#
+#
+#
+#         [[plugins]]
+#         repo = 'prabirshrestha/asyncomplete-buffer.vim'
+# on_event = 'InsertCharPre'
+# depends = 'asyncomplete.vim'
+# on_event = 'InsertCharPre'
+# hook_add = '''
+# echom "buffer"
+# " autocmd User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
+# "             \ 'name': 'buffer',
+# "             \ 'whitelist': ['*'],
+# "             \ 'blacklist': ['go'],
+# "             \ 'completor': function('asyncomplete#sources#buffer#completor'),
+# "             \ }))
+# '''
+#
+# on_event = 'InsertCharPre'
+# }}}
