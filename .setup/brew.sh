@@ -147,6 +147,12 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
         # nnn - great terminal file navigator
         brew install nnn
 
+        # chunkwm - the tiling window manager
+        brew install chunkwm
+
+        # khd - Modal Hotkey daemon
+        brew install skhd
+
         # }}}
 
 	# Postinstall and Cleanup
