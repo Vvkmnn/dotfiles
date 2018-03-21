@@ -39,9 +39,9 @@ chunkc set window_focus_cycle            monitor
 
 # border 
 chunkc set focused_border_color          0xff8B0000
-chunkc set focused_border_width          5
-chunkc set focused_border_radius         5
-chunkc set focused_border_skip_floating  1
+chunkc set focused_border_width          2
+chunkc set focused_border_radius         2
+chunkc set focused_border_skip_floating  0
 
 # mouse 
 chunkc set mouse_follows_focus           intrinsic

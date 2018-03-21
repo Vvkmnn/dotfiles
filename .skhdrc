@@ -30,17 +30,17 @@
 #                                  an EOL character signifies the end of the bind.
 
 
-# open terminal, blazingly fast compared to iTerm/Hyper
+# open Alacritty, blazingly fast GPU terminal
 cmd - return : open -na /Applications/Alacritty.app
 
 # close focused window
-alt - w : chunkc tiling::window --close
+ctrl - w : chunkc tiling::window --close
 
 # focus window
-alt - h : chunkc tiling::window --focus west
-alt - j : chunkc tiling::window --focus south
-alt - k : chunkc tiling::window --focus north
-alt - l : chunkc tiling::window --focus east
+ctrl - h : chunkc tiling::window --focus west
+ctrl - j : chunkc tiling::window --focus south
+ctrl - k : chunkc tiling::window --focus north
+ctrl - l : chunkc tiling::window --focus east
 
 cmd - j : chunkc tiling::window --focus prev
 cmd - k : chunkc tiling::window --focus next
@@ -49,16 +49,16 @@ cmd - k : chunkc tiling::window --focus next
 shift + alt - 0 : chunkc tiling::desktop --equalize
 
 # swap window
-shift + alt - h : chunkc tiling::window --swap west
-shift + alt - j : chunkc tiling::window --swap south
-shift + alt - k : chunkc tiling::window --swap north
-shift + alt - l : chunkc tiling::window --swap east
+ctrl + alt - h : chunkc tiling::window --swap west
+ctrl + alt - j : chunkc tiling::window --swap south
+ctrl + alt - k : chunkc tiling::window --swap north
+ctrl + alt - l : chunkc tiling::window --swap east
 
 # move window
-shift + cmd - h : chunkc tiling::window --warp west
-shift + cmd - j : chunkc tiling::window --warp south
-shift + cmd - k : chunkc tiling::window --warp north
-shift + cmd - l : chunkc tiling::window --warp east
+ctrl + cmd - h : chunkc tiling::window --warp west
+ctrl + cmd - j : chunkc tiling::window --warp south
+ctrl + cmd - k : chunkc tiling::window --warp north
+ctrl + cmd - l : chunkc tiling::window --warp east
 
 # make floating window fill screen
 shift + alt - up     : chunkc tiling::window --grid-layout 1:1:0:0:1:1
@@ -113,6 +113,7 @@ ctrl + alt - j : chunkc tiling::window --use-insertion-point south
 ctrl + alt - k : chunkc tiling::window --use-insertion-point north
 ctrl + alt - l : chunkc tiling::window --use-insertion-point east
 
+# Binary Split Controls
 # rotate tree
 alt - r : chunkc tiling::desktop --rotate 90
 
@@ -126,7 +127,7 @@ alt - x : chunkc tiling::desktop --mirror horizontal
 alt - a : chunkc tiling::desktop --toggle offset
 
 # toggle window fullscreen
-alt - f : chunkc tiling::window --toggle fullscreen
+ctrl - f : chunkc tiling::window --toggle fullscreen
 
 # toggle window native fullscreen
 shift + alt - f : chunkc tiling::window --toggle native-fullscreen
@@ -137,6 +138,9 @@ alt - d : chunkc tiling::window --toggle parent
 # toggle window split type
 alt - e : chunkc tiling::window --toggle split
 
+# float / unfloat window 
+ctrl - b : chunkc tiling::window --toggle float;\
+#
 # float / unfloat window and center on screen
 alt - t : chunkc tiling::window --toggle float;\
           chunkc tiling::window --grid-layout 4:4:1:1:2:2
@@ -149,9 +153,9 @@ alt - s : chunkc tiling::window --toggle sticky;\
 shift + alt - t : chunkc set window_float_next 1
 
 # change layout of desktop
-ctrl + alt - a : chunkc tiling::desktop --layout bsp
-ctrl + alt - s : chunkc tiling::desktop --layout monocle
-ctrl + alt - d : chunkc tiling::desktop --layout float
+ctrl + alt - b : chunkc tiling::desktop --layout bsp
+ctrl + alt - m : chunkc tiling::desktop --layout monocle
+ctrl + alt - f : chunkc tiling::desktop --layout float
 
 ctrl + alt - w : chunkc tiling::desktop --deserialize ~/.chunkwm_layouts/dev_1
 
