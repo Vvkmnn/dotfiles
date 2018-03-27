@@ -2,6 +2,10 @@
 # Plugins to search around Vim (via Denite)
 
 [[plugins]]
+repo = 'bronson/vim-visual-star-search
+on_map = '*'
+
+[[plugins]]
 repo = 'Shougo/denite.nvim' # 🐉 Dark powered asynchronous unite all interfaces for Neovim/Vim8
 on_cmd = 'Denite'
 if = 'has("python3")'
