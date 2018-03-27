@@ -60,9 +60,10 @@
     dotfiles checkout
     dotfiles config status.showUntrackedFiles no
 
-## Setup
+## Install
 
     ./.setup/setup.sh
+    ./.setup/...
 
 ## Update
 
