@@ -30,6 +30,10 @@
 
 [A](https://medium.com/@webprolific/getting-started-with-dotfiles-43c3602fd789) [dotfile](https://dotfiles.github.io) [repo](https://news.ycombinator.com/item?id=11070797).
 
+## Screenshot
+
+![](Screenshot.png)
+
 ## Setup
 
     git init --bare $HOME/.dotfiles
