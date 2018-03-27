@@ -32,7 +32,7 @@
 
 ## Screenshot
 
-![](Screenshot.png)
+![](screenshot.png)
 
 ## Setup
 
