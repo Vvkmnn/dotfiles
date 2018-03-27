@@ -1,3 +1,5 @@
 /Users/v/.anaconda/envs/introvyper
 /Users/vivek.menon/.anaconda/envs/zetacoin
 /Users/vivek.menon/.anaconda/envs/aind2-nlp-capstone
+/Users/v/.anaconda/envs/touristai
+/Users/v/.anaconda/envs/touristai
