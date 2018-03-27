@@ -2,7 +2,7 @@
 # Plugins to search around Vim (via Denite)
 
 [[plugins]]
-repo = 'bronson/vim-visual-star-search
+repo = 'bronson/vim-visual-star-search'
 on_map = '*'
 
 [[plugins]]
