@@ -31,16 +31,14 @@
 
 
 # open Alacritty, blazingly fast GPU terminal
-cmd - return : open -na /Applications/Alacritty.app
-
-# close focused window
-ctrl - w : chunkc tiling::window --close
+alt - return : open -na /Applications/Alacritty.app
+cmd - return : open -na /Applications/Google Chrome.app
 
 # focus window
-ctrl - h : chunkc tiling::window --focus west
-ctrl - j : chunkc tiling::window --focus south
-ctrl - k : chunkc tiling::window --focus north
-ctrl - l : chunkc tiling::window --focus east
+alt - h : chunkc tiling::window --focus west
+alt - j : chunkc tiling::window --focus south
+alt - k : chunkc tiling::window --focus north
+alt - l : chunkc tiling::window --focus east
 
 cmd - j : chunkc tiling::window --focus prev
 cmd - k : chunkc tiling::window --focus next
@@ -123,11 +121,14 @@ alt - y : chunkc tiling::desktop --mirror vertical
 # mirror tree x-axis
 alt - x : chunkc tiling::desktop --mirror horizontal
 
+# close focused window
+alt - w : chunkc tiling::window --close
+
 # toggle desktop offset
 alt - a : chunkc tiling::desktop --toggle offset
 
 # toggle window fullscreen
-ctrl - f : chunkc tiling::window --toggle fullscreen
+alt - f : chunkc tiling::window --toggle fullscreen
 
 # toggle window native fullscreen
 shift + alt - f : chunkc tiling::window --toggle native-fullscreen
@@ -139,7 +140,7 @@ alt - d : chunkc tiling::window --toggle parent
 alt - e : chunkc tiling::window --toggle split
 
 # float / unfloat window 
-ctrl - b : chunkc tiling::window --toggle float;\
+alt - b : chunkc tiling::window --toggle float;\
 #
 # float / unfloat window and center on screen
 alt - t : chunkc tiling::window --toggle float;\
