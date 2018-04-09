@@ -2,7 +2,9 @@
   "NotebookApp": {
     "nbserver_extensions": {
       "jupyterlab": true,
-      "jupyter_nbextensions_configurator": true
-    }
+      "jupyter_nbextensions_configurator": true,
+      "nb_conda": true
+    },
+    "kernel_spec_manager_class": "nb_conda_kernels.CondaKernelSpecManager"
   }
 }
