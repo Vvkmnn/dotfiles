@@ -53,8 +53,8 @@ endfunction
 [[plugins]]
 repo = 'SirVer/ultisnips'
 hook_add = '''
-" call deoplete#custom#set('ultisnips', 'matchers', ['matcher_fuzzy'])
-" call deoplete#custom#source('ultisnips', 'rank', 1000)
+call deoplete#custom#set('ultisnips', 'matchers', ['matcher_fuzzy'])
+call deoplete#custom#source('ultisnips', 'rank', 1000)
 '''
 
 [[plugins]]
