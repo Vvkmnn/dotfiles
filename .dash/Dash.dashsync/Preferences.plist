@@ -210,7 +210,7 @@
 		<key>keyCode</key>
 		<integer>2</integer>
 		<key>modifiers</key>
-		<integer>4352</integer>
+		<integer>4096</integer>
 	</dict>
 	<key>searchUsingSelectedTextKey</key>
 	<dict>
