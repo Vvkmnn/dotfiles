@@ -81,6 +81,11 @@ export PATH="$GOPATH/bin:$PATH"
 
 ## Shell Tools -------------------------------------
 
+# Sleep
+alias sleepoff='sudo pmset -b sleep 0; sudo pmset -b disablesleep 1'
+
+alias sleepon='sudo pmset -b sleep 5; sudo pmset -b disablesleep 0'
+
 # vimR
 alias V=$EDITOR
 export VIMCONFIG=~/.config/nvim
