@@ -32,7 +32,12 @@
 
 # open Alacritty, blazingly fast GPU terminal
 alt - return : open -na /Applications/Alacritty.app
-cmd - return : open -a /Applications/Google Chrome.app
+# shit - return : open -na /Applications/Google Chrome.app
+ctrl + alt - return : open /Applications/Emacs.app
+# cmd - return : open -a /Applications/Google Chrome.app
+
+# MacOS screenshot solution
+cmd + shift - 4 -> : chunkc border::clear
 
 # focus window
 alt - h : chunkc tiling::window --focus west
