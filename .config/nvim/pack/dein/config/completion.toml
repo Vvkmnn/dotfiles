@@ -1,74 +1,80 @@
 # Completion -----------------
 # Plugins to make completions in Vim more convenient
 
+# deoplate version {{{
 [[plugins]]
-repo = 'Shougo/deoplete.nvim'  # dark powered neo-completion {{{
-# depends = ['neosnippet.vim', 'auto-pairs']
+repo = 'jiangmiao/auto-pairs' # Vim plugin, insert or delete brackets, parens, quotes in pair
 on_event = 'InsertCharPre'
+hook_add = '''
+let g:AutoPairsMapCR=0
+'''
+
+[[plugins]]
+repo = 'Shougo/context_filetype.vim' # Handles fenced code
+
+[[plugins]]
+repo = 'Shougo/deoplete.nvim'  
+on_event = 'InsertCharPre'
+depends = ['context_filetype.vim', 'auto-pairs', 'neosnippet.vim']
 hook_add =
 '''
 let g:deoplete#enable_at_startup = 1 " Enable deoplete at startup
-let g:deoplete#enable_ignore_case = 1 " Ignore case
+let g:deoplete#enable_smart_case = 1 " Smart case
 
-" let g:deoplete#auto_complete_start_length = 1 " Maximum options to show
-l
-let g:deoplete#enable_refresh_always = 0 " Refresh immediately
+" let g:deoplete#enable_refresh_always = 0 " Refresh immediately
 let g:deoplete#auto_complete_delay = 0 " No delay
 
-" Bindings ----
-" <TAB>: completion.
-inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ deoplete#manual_complete()
 
-" <S-TAB>: completion back.
-inoremap <expr><S-TAB>  pumvisible() ? "\<C-p>" : "\<C-h>"
 
-" <C-h>, <BS>: close popup and delete backword char.
-inoremap <expr><C-h> deoplete#smart_close_popup()."\<C-h>"
-inoremap <expr><BS> deoplete#smart_close_popup()."\<C-h>"
 
-" inoremap <expr><C-g> deoplete#undo_completion()
-" <C-l>: redraw candidates
-inoremap <expr><C-g>       deoplete#refresh()
-inoremap <silent><expr><C-l>       deoplete#complete_common_string()
-
-" <CR>: close popup and save indent.
-inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
-inoremap <expr> '  pumvisible() ? deoplete#close_popup() : "'"
-
-" Functions ----
-function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~ '\s'
-endfunction
-
-function! s:my_cr_function() abort
-  return deoplete#cancel_popup() . "\<CR>"
-endfunction
-
+imap <expr><TAB> pumvisible() ? "\<C-n>" : neosnippet#expandable_or_jumpable() ? "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+smap <expr><TAB> pumvisible() ? "\<C-n>" : neosnippet#expandable_or_jumpable() ? "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+imap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<S-TAB>"
+smap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<S-TAB>"
+inoremap <expr><CR> pumvisible() ? deoplete#mappings#close_popup() : "\<CR>"
 '''
 
-[[plugins]]
-repo = 'SirVer/ultisnips'
-hook_add = '''
-call deoplete#custom#set('ultisnips', 'matchers', ['matcher_fuzzy'])
-call deoplete#custom#source('ultisnips', 'rank', 1000)
-'''
+# snippets {{{
 
 [[plugins]]
+repo = 'Shougo/neosnippet.vim'
+on_event = 'InsertCharPre'
+depends = ['deoplete.nvim', 'neosnippet-snippets']
+
+[[plugins]]
+repo = 'Shougo/neosnippet-snippets'
+on_event = 'InsertCharPre'
+
+# [[plugins]]
 repo = 'honza/vim-snippets'
+on_event = 'InsertCharPre'
 
 [[plugins]]
-repo = 'Shougo/echodoc.vim'
-on_event = 'CompleteDone'
-hook_source = '''
-" let g:echodoc#type = 'signature'
-call echodoc#enable()
+repo = 'scrooloose/snipmate-snippets'
+on_event = 'InsertCharPre'
+depends = ['deoplete.nvim', 'neosnippet.vim']
+hook_add = '''
+let g:neosnippet#enable_snipmate_compatibility = 1
 '''
-#[[plugins]]
-#repo = 'Shougo/neosnippet.vim'
+
+# }}}
+
+# language server protocol {{{
+
+
+[[plugins]]
+repo = 'autozimu/LanguageClient-neovim'
+branch = 'next',
+do = 'bash install.sh'
+hook_add = '''
+let g:LanguageClient_serverCommands = {
+    \ 'rust': ['rustup', 'run', 'nightly', 'rls'],
+    \ 'javascript': ['javascript-typescript-stdio'],
+    \ 'javascript.jsx': ['javascript-typescript-stdio'],
+    \ }
+'''
+# }}}
+
 # hook_add = '''
 # let g:deoplete#ignore_sources = {}
 # let g:deoplete#ignore_sources._ = ["neosnippet"]
@@ -95,10 +101,6 @@ call echodoc#enable()
 # on_event = 'InsertCharPre'
 # on_map = '<Plug>'
 
-[[plugins]]
-repo = 'Shougo/neosnippet-snippets'
-# on_event = 'InsertCharPre'
-# depends = ['deoplete.nvim', 'neosnippet.vim']
 
 # [[plugins]]
 # repo = 'Shougo/neco-syntax'
@@ -107,60 +109,85 @@ repo = 'Shougo/neosnippet-snippets'
 
 # [[plugins]]
 # repo = 'SirVer/ultisnips'
-#     on_event = 'InsertCharPre'
-#     depends = ['deoplete.nvim']
-#     hook_add = '''
-#     call deoplete#custom#set('ultisnips', 'matchers', ['matcher_fuzzy'])
-#     '''
+# on_event = 'InsertCharPre'
+# depends = ['deoplete.nvim']
+# hook_add = '''
+# call deoplete#custom#set('ultisnips', 'matchers', ['matcher_fuzzy'])
+# '''
 
-#     [[plugins]]
-#     repo = 'honza/vim-snippets'
-#         on_event = 'InsertCharPre'
-#         depends = ['deoplete.nvim', 'ultisnips']
-#
+# [[plugins]]
+# repo = 'mhartington/nvim-typescript'
+# on_event = 'InsertCharPre'
+# depends = ['context_filetype']
+# on_ft = ['typescript']
 
 # asynccomplete.vim {{{
-
-# [[plugins]]
-# repo = 'prabirshrestha/vim-lsp'
-
-# [[plugins]]
-# repo = 'prabirshrestha/async.vim'
-
 # [[plugins]]
 # repo = 'prabirshrestha/asyncomplete.vim' 
+# merged = 0
 # hook_add = '''
-# " echom "async"
-# let g:asyncomplete_auto_popup = 1
+# echom "async"
+# let g:g:asyncomplete_auto_popup = 1
+# let g:asyncomplete_use_default_mappings = 1 " Tab Completion
 # let g:asyncomplete_remove_duplicates = 1
-# let g:asyncomplete_force_refresh_on_context_changed = 1
 # let g:asyncomplete_log_file = expand('$HOME/.config/nvim/pack/dein/log/asyncomplete.log') " for asyncomplete.vim log
 # '''
 
-# # depends = 'async.vim'
-# # hook_add = '''
-# # let g:asyncomplete_use_default_mappings = 1 " Tab Completion
-# # '''
-#
 # [[plugins]]
-# repo= 'prabirshrestha/vim-lsp'
-#
-#
-#
-#         [[plugins]]
-#         repo = 'prabirshrestha/asyncomplete-buffer.vim'
-# on_event = 'InsertCharPre'
-# depends = 'asyncomplete.vim'
-# on_event = 'InsertCharPre'
+# repo = 'SirVer/ultisnips'
 # hook_add = '''
-# echom "buffer"
-# " autocmd User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
-# "             \ 'name': 'buffer',
-# "             \ 'whitelist': ['*'],
-# "             \ 'blacklist': ['go'],
-# "             \ 'completor': function('asyncomplete#sources#buffer#completor'),
-# "             \ }))
 # '''
-#
-# on_event = 'InsertCharPre'
-# }}}
+# 
+# [[plugins]]
+# repo = 'honza/vim-snippets'
+# 
+# # # depends = 'async.vim'
+# # # hook_add = '''
+# # # '''
+# #
+# # [[plugins]]
+# # repo= 'prabirshrestha/vim-lsp'
+# #
+# #
+# #
+# 
+# [[plugins]]
+# repo = 'prabirshrestha/asyncomplete-buffer.vim'
+# on_event = 'asyncomcplete_setup'
+# depends = 'asyncomplete.vim'
+# hook_add = '''
+# call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
+#     \ 'name': 'buffer',
+#     \ 'whitelist': ['*'],
+#     \ 'blacklist': ['go'],
+#     \ 'completor': function('asyncomplete#sources#buffer#completor'),
+#     \ }))
+# '''
+# 
+# [[plugins]]
+# repo = 'yami-beta/asyncomplete-omni.vim'
+# on_event = 'asyncomcplete_setup'
+# depends = 'asyncomplete.vim'
+# hook_add = '''
+# call asyncomplete#register_source(asyncomplete#sources#omni#get_source_options({
+# \ 'name': 'omni',
+# \ 'whitelist': ['*'],
+# \ 'blacklist': ['c', 'cpp', 'html'],
+# \ 'completor': function('asyncomplete#sources#omni#completor')
+# \  }))
+# '''
+# 
+# [[plugins]]
+# repo = 'prabirshrestha/asyncomplete.vim'
+# on_event = 'asyncomcplete_setup'
+# depends = ['asyncomplete.vim', 'vim-gutentags']
+# hook_add = '''
+# call asyncomplete#register_source(asyncomplete#sources#tags#get_source_options({
+#     \ 'name': 'tags',
+#     \ 'whitelist': ['c'],
+#     \ 'completor': function('asyncomplete#sources#tags#completor'),
+#     \ 'config': {
+#     \    'max_file_size': 50000000,
+#     \  },
+#     \ }))
+# '''

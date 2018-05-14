@@ -1,0 +1,5 @@
+# Swap -----------------------
+# Plugins to make swapfiles in Vim more convenient
+
+[[plugins]]
+repo = 'gioele/vim-autoswap'

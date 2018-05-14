@@ -3,8 +3,7 @@
 function! aesthetic#core() abort
     echom "[._.] Loading core aesthetic..."
     set background=dark
-     colorscheme dracula " Dracula!
-     " colorscheme hydrangea
+    colorscheme hydrangea
 endfunction
 
 " function! aesthetic#minimal() abort
@@ -32,13 +31,13 @@ function! aesthetic#highlights() abort
     echom "[._.] Loading aesthetic highlights..."
 
     " CursorLine
-    highlight CursorLine ctermfg=NONE ctermbg=black guifg=NONE guibg=black
+    highlight CursorLine ctermfg=NONE ctermbg=black guifg=NONE guibg=NONE
 
     " Vertical Split
     highlight vertsplit ctermfg=NONE ctermbg=NONE guifg=NONE guibg=NONE
 
     " Line Numbers
-    highlight LineNr  ctermbg=NONE guibg=NONE
+    highlight LineNr ctermbg=NONE guibg=NONE 
 "
 "    " StatusLine
 "    " set statusline=%=%P\ %f\ %m

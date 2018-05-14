@@ -31,8 +31,7 @@
 # Settings
 export LANG=en_US.UTF-8
 export BROWSER=open
-export VISUAL='nvim' # -S
-export EDITOR='vimr' # --nvim -S
+export EDITOR='/Applications/Emacs.app/Contents/MacOS/bin/emacsclient -c'
 export TERM=xterm-256color
 export ARCHEY_LOGO_FILE=$HOME/.logo
 
@@ -42,10 +41,11 @@ export ARCHEY_LOGO_FILE=$HOME/.logo
 export PATH="$HOME/.vimr:$PATH"
 
 # Editor
+alias es='/Applications/Emacs.app/Contents/MacOS/Emacs --daemon'
+alias emacs='/Applications/Emacs.app/Contents/MacOS/bin/emacsclient -c -n'
 alias v='nvim'
-alias vi='nvim'
-alias vim='nvim'
 alias v!='nvim -u NONE'
+
 ## Environment Defaults ----------------------------
 
 # Dotfiles

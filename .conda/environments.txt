@@ -7,3 +7,6 @@
 /Users/v/.anaconda/envs/voiceai
 /Users/v/.anaconda/envs/voiceai
 /Users/v/.anaconda/envs/aind-vui
+/Users/v/.anaconda/envs/fs_project1
+/Users/v/.anaconda/envs/movieTrailers
+/Users/v/.anaconda/envs/vyper

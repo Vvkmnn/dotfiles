@@ -34,9 +34,9 @@ function! defaults#aesthetic() abort
     set sidescrolloff=5            " Mimimum side scrolling area
     set title titlestring=         " Enable Buffer Titles?
     set synmaxcol   =200       " Only highlight the first 200 columns.
-    if !has('gui_running')
-        set t_Co=256
-    endif
+    " if !has('gui_running')
+    "     set t_Co=256
+    " endif
 endfunction
 
 function! defaults#edit() abort
@@ -62,6 +62,7 @@ function! defaults#search() abort
     echom "[._.] Loading search defaults..."
     set hlsearch                   " Highlight search matches
     set incsearch                  " Keep searching as we type
+    set shortmess+=c            " Don't show match count
     set wrapscan               " Searches wrap around end-of-file.
     set ignorecase                 " Case insensitive matching
     " set smartcase                  " Automatically match Case
