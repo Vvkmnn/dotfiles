@@ -31,20 +31,20 @@
 # Settings
 export LANG=en_US.UTF-8
 export BROWSER=open
-export EDITOR='/Applications/Emacs.app/Contents/MacOS/bin/emacsclient -c'
+export EDITOR="/Applications/Emacs.app/Contents/MacOS/bin/emacsclient -c"
 export TERM=xterm-256color
 export ARCHEY_LOGO_FILE=$HOME/.logo
 
 # Runtime Path
 # export PATH="/usr/local/bin:$PATH"
 # export PATH="/usr/local/sbin:$PATH"
-export PATH="$HOME/.vimr:$PATH"
+# export PATH="$HOME/.vimr:$PATH"
+# export PATH="/usr/local/bin:$PATH"
 
 # Editor
-alias es='/Applications/Emacs.app/Contents/MacOS/Emacs --daemon'
-alias emacs='/Applications/Emacs.app/Contents/MacOS/bin/emacsclient -c -n'
 alias v='nvim'
 alias v!='nvim -u NONE'
+# alias e='emacsclient -c'
 
 ## Environment Defaults ----------------------------
 
@@ -69,15 +69,15 @@ KEYTIMEOUT=1
 export haskell="stack ghci"
 
 # Python 3
-export PATH="${HOME}/.anaconda/bin:$PATH" # Anaconda Distribution
+# export PATH="${HOME}/.anaconda/bin:$PATH" # Anaconda Distribution
 
 # Node
 # export NVM_DIR=~/.nvm
 # source $(brew --prefix nvm)/nvm.sh
 
 # Go
-export GOPATH="$HOME/.go"
-export PATH="$GOPATH/bin:$PATH"
+# export GOPATH="$HOME/.go"
+# export PATH="$GOPATH/bin:$PATH"
 
 ## Shell Tools -------------------------------------
 
@@ -139,12 +139,15 @@ zplug "zsh-users/zsh-completions", from:oh-my-zsh
 # Syntax highlighting
 zplug "zsh-users/zsh-syntax-highlighting", defer:2
 
+# Emacs
+zplug "plugins/emacs", from:oh-my-zsh
+
 # Sublime Support
 # zplug "plugins/sublime", from:oh-my-zsh
 
 # Vi(m) Mode {{{
 # export RPS1="%{$reset_color%}"
-zplug "plugins/vi-mode", from:oh-my-zsh
+# zplug "plugins/vi-mode", from:oh-my-zsh
 # }}}
 
 # Git Plugin
@@ -187,10 +190,10 @@ zplug "rupa/z", use:z.sh
 zplug "andrewferrier/fzf-z"
 
 # nvm - Autoloading and upgrading
-zplug "lukechilds/zsh-nvm"
+# zplug "lukechilds/zsh-nvm"
 
 # nvm-auto - Autoload .nvmrc
-zplug "dijitalmunky/nvm-auto"
+# zplug "dijitalmunky/nvm-auto"
 
 # v - jump into vim!
 # zplug "meain/v"
@@ -215,6 +218,17 @@ zplug load # --verbose
 
 ## Plugin Settings ---------------------------------
 
+# Emacs {{{
+# Checks if there's a frame open
+# emacsclient -n -e “(if (> (length (frame-list)) 1) ‘t)” 2> /dev/null | grep t &> /dev/null
+
+# if [ “$?” -eq “1” ]; then
+#     emacsclient -a ‘’ -nqc “$@” &> /dev/null
+# else
+#     emacsclient -nq “$@” &> /dev/null
+# fi
+# }}}
+
 # fzf {{{
 # export FZF_DEFAULT_OPTS='--height 40% --reverse --border'
 
@@ -228,4 +242,15 @@ zplug load # --verbose
 # Use RG for faster search
 # export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.git/*"'
 
+# emacs {{{
+if [ -n "$INSIDE_EMACS" ]; then
+    export ZSH_THEME="rawsyntax"
+else
+    export ZSH_THEME="robbyrussell"
+fi
+
+}}}
+
 #}}}
+export PATH="/usr/local/sbin:$PATH"
+export PATH="/usr/local/opt/node@6/bin:$PATH"
