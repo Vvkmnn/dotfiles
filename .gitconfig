@@ -173,6 +173,7 @@
 [user]
     name = Vivek Menon
     email = mail@vvkmnn.xyz
+
 [credential]
     helper = osxkeychain
 
@@ -181,3 +182,7 @@
 
 [status]
 	submoduleSummary = true
+
+[core]
+    excludesfile = ~/.globalgitignore
+    editor = emacsclient
