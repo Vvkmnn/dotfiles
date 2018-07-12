@@ -431,10 +431,14 @@ This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
 
+  ;; Autoread changed files
+  ;; https://stackoverflow.com/questions/1480572/how-to-have-emacs-auto-refresh-all-buffers-when-files-have-changed-on-disk
+  (global-auto-revert-mode t)
+
   ;; Change some Vim Bindings
   ;; https://medium.com/@bobbypriambodo/blazingly-fast-spacemacs-with-persistent-server-92260f2118b7
-  (evil-leader/set-key
-    “q q” ‘spacemacs/frame-killer)
+  ;; (evil-leader/set-key
+  ;;   “q q” ‘spacemacs/frame-killer)
 
   ;; Use Zsh and Set buffer size
   ;; (setq multi-term-program "/usr/bin/zsh")

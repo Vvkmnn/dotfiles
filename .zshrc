@@ -35,14 +35,16 @@ export TERM=xterm-256color
 export ARCHEY_LOGO_FILE=$HOME/.logo
 
 # Editor
-export ALTERNATE_EDITOR=""
-export EDITOR="emacsclient -c -a emacs"         # $EDITOR opens in terminal
-export VISUAL="emacsclient -c -a emacs"         # $VISUAL opens in GUI mode
+export VISUAL='open -a /Applications/Emacs.app/Contents/MacOS/Emacs' # $VISUAL opens any edits in in GUI mode
+export EDITOR=$VISUAL
+export ALTERNATE_EDITOR='vim'                   # $EDITOR if all else fails
+# export EDITOR='emacsclient -a'                # $EDITOR opens terminal edits in GUI mode
 
 # Editor
 alias v='vim'
 alias v!='nvim -u NONE'
-# alias emacs=/Applications/Emacs.app/Contents/MacOS/Emacs -c 
+alias e=$VISUAL
+alias emacs=$VISUAL
 
 # Runtime Path
 # export PATH="/usr/local/bin:$PATH"

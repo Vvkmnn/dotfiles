@@ -80,7 +80,7 @@
 
 [core]
     # use nvim
-    editor = nvim
+    editor = $VISUAL -W
     
     # Use custom `.gitignore` and `.gitattributes`
     excludesfile = ~/.gitignore
@@ -182,10 +182,10 @@
     template = ~/.gitmessage
 
 [status]
-	submoduleSummary = false
+	submoduleSummary = true
 
 [core]
     excludesfile = ~/.globalgitignore
-    editor = emacsclient
+
 [submodule]
 	recurse = true
