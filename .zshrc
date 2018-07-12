@@ -31,9 +31,18 @@
 # Settings
 export LANG=en_US.UTF-8
 export BROWSER=open
-export EDITOR="/Applications/Emacs.app/Contents/MacOS/bin/emacsclient -c"
 export TERM=xterm-256color
 export ARCHEY_LOGO_FILE=$HOME/.logo
+
+# Editor
+export ALTERNATE_EDITOR=""
+export EDITOR="emacsclient -c -a emacs"         # $EDITOR opens in terminal
+export VISUAL="emacsclient -c -a emacs"         # $VISUAL opens in GUI mode
+
+# Editor
+alias v='vim'
+alias v!='nvim -u NONE'
+# alias emacs=/Applications/Emacs.app/Contents/MacOS/Emacs -c 
 
 # Runtime Path
 # export PATH="/usr/local/bin:$PATH"
@@ -41,10 +50,6 @@ export ARCHEY_LOGO_FILE=$HOME/.logo
 # export PATH="$HOME/.vimr:$PATH"
 # export PATH="/usr/local/bin:$PATH"
 
-# Editor
-alias v='nvim'
-alias v!='nvim -u NONE'
-# alias e='emacsclient -c'
 
 ## Environment Defaults ----------------------------
 
@@ -57,7 +62,7 @@ alias d="dotfiles"
 # alias d?="dotfiles commit"
 
 # Vim-mode
-bindkey -v
+# bindkey -v
 KEYTIMEOUT=1
 
 ## Language Defaults -------------------------------
@@ -87,7 +92,6 @@ alias sleepoff='sudo pmset -b sleep 0; sudo pmset -b disablesleep 1'
 alias sleepon='sudo pmset -b sleep 5; sudo pmset -b disablesleep 0'
 
 # vimR
-alias V=$EDITOR
 export VIMCONFIG=~/.config/nvim
 export VIMDATA=~/.local/share/nvim
 export NVIMCONFIG=~/.config/nvim
@@ -108,6 +112,10 @@ if [ -f "${HOME}/.google/completion.zsh.inc" ]; then source "${HOME}/.google/com
 # iterm2
 test -e "${HOME}/.iterm2/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2/.iterm2_shell_integration.zsh"
 
+# node@6
+export PATH="/usr/local/sbin:$PATH"
+export PATH="/usr/local/opt/node@6/bin:$PATH"
+
 # FZF
 # [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
@@ -118,7 +126,7 @@ eval "$(thefuck --alias)"
 
 # checkBot
 # ZLE_LPROMPT_INDENT=0
-RPROMPT='v@%M %(?,%F{green}[-_-]%f,%F{red}[ಠ_ಠ]%f)'
+# RPROMPT='v@%M %(?,%F{green}[-_-]%f,%F{red}[ಠ_ಠ]%f)'
 
 ## Shell Plugins -----------------------------------
 
@@ -140,7 +148,7 @@ zplug "zsh-users/zsh-completions", from:oh-my-zsh
 zplug "zsh-users/zsh-syntax-highlighting", defer:2
 
 # Emacs
-zplug "plugins/emacs", from:oh-my-zsh
+# zplug "plugins/emacs", from:oh-my-zsh
 
 # Sublime Support
 # zplug "plugins/sublime", from:oh-my-zsh
@@ -159,22 +167,68 @@ zplug "plugins/git", from:oh-my-zsh
 # denysdovhan/spaceship-prompt {{{
 zplug "denysdovhan/spaceship-prompt", use:spaceship.zsh, from:github, as:theme
 
-SPACESHIP_CHAR_SYMBOL='ॐ   '
+SPACESHIP_CHAR_SYMBOL=' ॐ '
+# RPROMPT='v@%M %(?,%F{green}[-_-]%f,%F{red}[ಠ_ಠ]%f)'
 SPACESHIP_PROMPT_SEPARATE_LINE=true
 SPACESHIP_PROMPT_ADD_NEWLINE=true
 # SPACESHIP_PROMPT_COLOR=red
-SPACESHIP_DIR_TRUNC=3
+
+SPACESHIP_TIME_COLOR=blue
+SPACESHIP_TIME_SHOW=always
+SPACESHIP_USER_SHOW=always
+SPACESHIP_TIME_12HR=true
+SPACESHIP_USER_PREFIX=''
+SPACESHIP_USER_SUFFIX=''
+SPACESHIP_USER_COLOR=red
+SPACESHIP_HOST_SHOW=always
+# SPACESHIP_HOST_COLOR=red
+SPACESHIP_HOST_PREFIX=' on '
+SPACESHIP_HOST_SUFFIX=' %(?,%F{green}[-_-]%f,%F{red}[ಠ_ಠ]%f)'
 SPACESHIP_VI_MODE_SHOW=true
 # SPACESHIP_VI_MODE_COLOR=cyan
 # SPACESHIP_VI_MODE_INSERT=∇ # Nabla, normal mode
 # SPACESHIP_VI_MODE_NORMAL=Δ # Delta, edit mode
-SPACESHIP_USER_SHOW=false
-SPACESHIP_PYENV_SHOW=false
-SPACESHIP_CONDA_SHOW=true
-SPACESHIP_KUBECONTEXT_SHOW=false
-SPACESHIP_TIME_SHOW=always
-SPACESHIP_TIME_COLOR=blue
 SPACESHIP_BATTERY_SHOW=true
+
+SPACESHIP_PROMPT_ORDER=(
+  time          # Time stampts section
+  dir           # Current directory section
+  git           # Git section (git_branch + git_status)
+  hg            # Mercurial section (hg_branch  + hg_status)
+  package       # Package version
+  node          # Node.js section
+  ruby          # Ruby section
+  elixir        # Elixir section
+  xcode         # Xcode section
+  swift         # Swift section
+  golang        # Go section
+  php           # PHP section
+  rust          # Rust section
+  haskell       # Haskell Stack section
+  julia         # Julia section
+  docker        # Docker section
+  aws           # Amazon Web Services section
+  venv          # virtualenv section
+  conda         # conda virtualenv section
+  pyenv         # Pyenv section
+  dotnet        # .NET section
+  ember         # Ember.js section
+  kubecontext   # Kubectl context section
+  exec_time     # Execution time
+  line_sep      # Line break
+  vi_mode       # Vi-mode indicator
+  jobs          # Background jobs indicator
+  exit_code     # Exit code section
+  char          # Prompt character
+)
+SPACESHIP_RPROMPT_ORDER=(
+  jobs          # Background jobs indicator
+  user          # Username section
+  host          # Hostname section
+  exit_code     # Exit code section
+  battery       # Battery level and status
+)
+
 # }}}
 
 # Athame (Vim in Shell)
@@ -243,14 +297,13 @@ zplug load # --verbose
 # export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.git/*"'
 
 # emacs {{{
-if [ -n "$INSIDE_EMACS" ]; then
-    export ZSH_THEME="rawsyntax"
-else
-    export ZSH_THEME="robbyrussell"
-fi
-
-}}}
+# emacs () { pgrep -xiq emacs && emacsclient -n $@ || emacsclient -n -c --alternate-editor="" $@; }
+#
+# if [ -n "$INSIDE_EMACS" ]; then
+#     export ZSH_THEME="rawsyntax"
+# else
+#     export ZSH_THEME="robbyrussell"
+# fi
+# }}}
 
 #}}}
-export PATH="/usr/local/sbin:$PATH"
-export PATH="/usr/local/opt/node@6/bin:$PATH"

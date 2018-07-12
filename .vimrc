@@ -56,29 +56,29 @@ Plug 'tpope/vim-vinegar'
 Plug 'roman/golden-ratio'
 
 " Vim Fuzzy Find
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-Plug 'junegunn/fzf.vim'
+" Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+" Plug 'junegunn/fzf.vim'
 
 " Tmux Navigator
-Plug 'christoomey/vim-tmux-navigator'
+" Plug 'christoomey/vim-tmux-navigator'
 
 " Commenting Operator gcc{motion}
 Plug 'tpope/vim-commentary'
 
 " Dash integration
-Plug 'rizzatti/dash.vim'
+" Plug 'rizzatti/dash.vim'
 
 " Syntax Highlighter
-Plug 'scrooloose/syntastic'
+" Plug 'scrooloose/syntastic'
 
 " Tab magic?
 Plug 'tpope/vim-sleuth'
 
 " Codi - interactive code scratchpads!
-Plug 'metakirby5/codi.vim'
+" Plug 'metakirby5/codi.vim'
 
 " Git management!
-Plug 'tpope/vim-fugitive'
+" Plug 'tpope/vim-fugitive'
 
 " Autoformat for Vim
 Plug 'chiel92/vim-autoformat'
@@ -87,10 +87,10 @@ Plug 'chiel92/vim-autoformat'
 Plug 'dracula/vim'
 
 " Markdown Preview from Vi
-Plug 'kannokanno/previm'
+" Plug 'kannokanno/previm'
 
 " Open Default Browser
-Plug 'tyru/open-browser.vim'
+" Plug 'tyru/open-browser.vim'
 
 " Vim Airline (Status Bar)
 Plug 'bling/vim-airline'
