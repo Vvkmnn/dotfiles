@@ -80,7 +80,7 @@
 
 [core]
     # use nvim
-    editor = $VISUAL -W
+    editor = vim
     
     # Use custom `.gitignore` and `.gitattributes`
     excludesfile = ~/.gitignore
