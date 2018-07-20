@@ -2,9 +2,11 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>hidehat</key>
+	<key>enabled</key>
 	<true/>
-	<key>showOnScreen</key>
-	<integer>1</integer>
+	<key>enabledFiles</key>
+	<true/>
+	<key>enabledImages</key>
+	<true/>
 </dict>
 </plist>
