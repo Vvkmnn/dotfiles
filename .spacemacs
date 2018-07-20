@@ -65,8 +65,7 @@ values."
    ;; Uncomment some layer names and press <SPC f e R> (Vim style) or
    ;; <M-m f e R> (Emacs style) to install them.
    ;; ----------------------------------------------------------------
-   dotspacemacs-configuration-layers
-   '(
+   dotspacemacs-configuration-layers '(
 
      ;; Languages
      emacs-lisp
@@ -74,11 +73,16 @@ values."
      javascript
      clojure
      markdown
+     shell-scripts
+     csv
 
      ;; Emacs
-     better-defaults
-     ivy
+     helm
+     ibuffer
+     smex
      gtags
+     vinegar
+     evil-commentary
      (shell :variables
             shell-default-shell 'eshell
             shell-default-height 30
@@ -101,10 +105,13 @@ values."
           org-enable-github-support t
           org-enable-reveal-js-support t)
 
-     ;; Operating System
+     ;; Environment
+     dash
      osx
-
-     )
+     slack
+     xkcd
+     emoji
+  )
 
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
@@ -125,7 +132,10 @@ values."
    ;; `used-but-keep-unused' installs only the used packages but won't uninstall
    ;; them if they become unused. `all' installs *all* packages supported by
    ;; Spacemacs and never uninstall them. (default is `used-only')
-   dotspacemacs-install-packages 'used-only))
+   dotspacemacs-install-packages 'used-only
+
+   )
+  )
 
 (defun dotspacemacs/init ()
   "Initialization function.
@@ -166,11 +176,16 @@ values."
    ;; with `:variables' keyword (similar to layers). Check the editing styles
    ;; section of the documentation for details on available variables.
    ;; (default 'vim)
-   dotspacemacs-editing-style 'vim
-
+   ;; https://github.com/syl20bnr/spacemacs/blob/develop/doc/DOCUMENTATION.org#vim
+   dotspacemacs-editing-style '(vim :variables
+                                    vim-style-visual-feedback t
+                                    vim-style-remap-Y-to-y$ t
+                                    vim-style-retain-visual-state-on-shift t
+                                    vim-style-visual-line-move-text t
+                                    vim-style-ex-substitute-global nil)
 
    ;; Spacemacs line theme
-   dotspacemacs-mode-line-theme 'all-the-icons
+   dotspacemacs-mode-line-theme '(all-the-icons :separator wave)
 
    ;; If non nil output loading progress in `*Messages*' buffer. (default nil)
    dotspacemacs-verbose-loading t
@@ -292,7 +307,7 @@ values."
 
    ;; if non nil, the helm header is hidden when there is only one source.
    ;; (default nil)
-   dotspacemacs-helm-no-header nil
+   dotspacemacs-helm-no-header t
 
    ;; define the position to display `helm', options are `bottom', `top',;; `left', or `right'. (default 'bottom)
    dotspacemacs-helm-position 'bottom
@@ -431,14 +446,22 @@ This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
 
+  ;; Editor
   ;; Autoread changed files
   ;; https://stackoverflow.com/questions/1480572/how-to-have-emacs-auto-refresh-all-buffers-when-files-have-changed-on-disk
   (global-auto-revert-mode t)
 
   ;; Change some Vim Bindings
   ;; https://medium.com/@bobbypriambodo/blazingly-fast-spacemacs-with-persistent-server-92260f2118b7
-  ;; (evil-leader/set-key
-  ;;   “q q” ‘spacemacs/frame-killer)
+  ;; (evil-leader/set-key “q q” ‘spacemacs/frame-killer)
+
+  ;; The vim-surround case
+  ;; https://github.com/syl20bnr/spacemacs/blob/develop/doc/DOCUMENTATION.org#the-vim-surround-case
+  (evil-define-key 'visual evil-surround-mode-map "s" 'evil-substitute)
+  (evil-define-key 'visual evil-surround-mode-map "S" 'evil-surround-region)
+
+  ;; Fuck .#Lockfiles
+  (setq create-lockfiles nil)
 
   ;; Use Zsh and Set buffer size
   ;; (setq multi-term-program "/usr/bin/zsh")
@@ -446,12 +469,10 @@ you should place your code here."
   ;;           (lambda ()
   ;;             (setq term-buffer-maximum-size 10000)))
 
-  ;; Fuck .#Lockfiles
-  (setq create-lockfiles nil)
-
   ;; Helm in Window?
   ;; (setq helm-split-window-default-side 'same)
 
+  ;; Environment
   ;; Add Node 6 to Path
   (setenv "PATH" (concat (getenv "PATH") ":/usr/local/opt/node@6/bin"))
   (add-to-list 'exec-path "/usr/local/opt/node@6/bin")
@@ -496,7 +517,7 @@ This function is called at the very end of Spacemacs initialization."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (ggtags counsel-gtags powerline vi-tilde-fringe rainbow-mode rainbow-identifiers ox-reveal ox-gfm parent-mode projectile flx smartparens iedit anzu evil goto-chg undo-tree f company-quickhelp color-identifiers-mode dash clojure-snippets clj-refactor hydra inflections edn multiple-cursors paredit s peg cider-eval-sexp-fu highlight cider spinner queue pkg-info clojure-mode epl bind-map bind-key packed helm avy helm-core async popup typescript-mode skewer-mode simple-httpd json-snatcher json-reformat js2-mode company-tern dash-functional tern xterm-color unfill smeargle shell-pop orgit org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-mime org-download mwim multi-term markdown-mode magit-gitflow htmlize helm-gitignore helm-company helm-c-yasnippet gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter fuzzy flyspell-correct-helm flyspell-correct flycheck-pos-tip pos-tip flycheck evil-magit magit magit-popup git-commit ghub with-editor eshell-z eshell-prompt-extras esh-help diff-hl company-statistics company auto-yasnippet yasnippet auto-dictionary ac-ispell auto-complete define-word ws-butler winum which-key web-mode web-beautify volatile-highlights uuidgen use-package toc-org tide tagedit spaceline slim-mode scss-mode sass-mode reveal-in-osx-finder restart-emacs request rainbow-delimiters pug-mode popwin persp-mode pcre2el pbcopy paradox osx-trash osx-dictionary org-plus-contrib org-bullets open-junk-file neotree move-text mmm-mode markdown-toc macrostep lorem-ipsum livid-mode linum-relative link-hint launchctl json-mode js2-refactor js-doc indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-css-scss helm-ag google-translate golden-ratio gh-md flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu emmet-mode elisp-slime-nav dumb-jump diminish column-enforce-mode coffee-mode clean-aindent-mode auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line))))
+    (twilight-anti-bright-theme soothe-theme powerline vi-tilde-fringe rainbow-mode rainbow-identifiers ox-reveal ox-gfm parent-mode projectile flx smartparens iedit anzu evil goto-chg undo-tree f company-quickhelp color-identifiers-mode dash clojure-snippets clj-refactor hydra inflections edn multiple-cursors paredit s peg cider-eval-sexp-fu highlight cider spinner queue pkg-info clojure-mode epl bind-map bind-key packed helm avy helm-core async popup typescript-mode skewer-mode simple-httpd json-snatcher json-reformat js2-mode company-tern dash-functional tern xterm-color unfill smeargle shell-pop orgit org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-mime org-download mwim multi-term markdown-mode magit-gitflow htmlize helm-gitignore helm-company helm-c-yasnippet gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter fuzzy flyspell-correct-helm flyspell-correct flycheck-pos-tip pos-tip flycheck evil-magit magit magit-popup git-commit ghub with-editor eshell-z eshell-prompt-extras esh-help diff-hl company-statistics company auto-yasnippet yasnippet auto-dictionary ac-ispell auto-complete define-word ws-butler winum which-key web-mode web-beautify volatile-highlights uuidgen use-package toc-org tide tagedit spaceline slim-mode scss-mode sass-mode reveal-in-osx-finder restart-emacs request rainbow-delimiters pug-mode popwin persp-mode pcre2el pbcopy paradox osx-trash osx-dictionary org-plus-contrib org-bullets open-junk-file neotree move-text mmm-mode markdown-toc macrostep lorem-ipsum livid-mode linum-relative link-hint launchctl json-mode js2-refactor js-doc indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-css-scss helm-ag google-translate golden-ratio gh-md flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu emmet-mode elisp-slime-nav dumb-jump diminish column-enforce-mode coffee-mode clean-aindent-mode auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
