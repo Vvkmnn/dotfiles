@@ -9,7 +9,7 @@
 			<key>Vim</key>
 			<dict>
 				<key>date</key>
-				<date>2018-01-14T20:53:16Z</date>
+				<date>2018-07-20T18:36:11Z</date>
 				<key>entry</key>
 				<dict>
 					<key>aliases</key>
@@ -103,7 +103,7 @@
 			<key>NodeJS_Online</key>
 			<dict>
 				<key>date</key>
-				<date>2018-04-19T18:15:44Z</date>
+				<date>2018-07-20T18:36:13Z</date>
 				<key>entry</key>
 				<dict>
 					<key>aliases</key>
@@ -163,6 +163,11 @@
 				<key>date</key>
 				<date>2017-08-24T23:27:51Z</date>
 			</dict>
+			<key>http://kapeli.com/feeds/TypeScript.xml</key>
+			<dict>
+				<key>date</key>
+				<date>2018-07-20T18:42:09Z</date>
+			</dict>
 		</dict>
 		<key>uninstalled</key>
 		<dict>
@@ -208,23 +213,23 @@
 	<key>searchKey</key>
 	<dict>
 		<key>keyCode</key>
-		<integer>2</integer>
+		<integer>-1</integer>
 		<key>modifiers</key>
-		<integer>4096</integer>
+		<integer>0</integer>
 	</dict>
 	<key>searchUsingSelectedTextKey</key>
 	<dict>
 		<key>keyCode</key>
-		<integer>2</integer>
+		<integer>-1</integer>
 		<key>modifiers</key>
-		<integer>6144</integer>
+		<integer>0</integer>
 	</dict>
 	<key>shouldRestoreTabs</key>
 	<false/>
 	<key>shouldShowStatusIcon</key>
 	<true/>
 	<key>shouldStartAtLogin</key>
-	<false/>
+	<true/>
 	<key>shouldSyncBookmarks</key>
 	<true/>
 	<key>shouldSyncDocsets</key>

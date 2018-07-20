@@ -30,40 +30,41 @@
 #                                  an EOL character signifies the end of the bind.
 
 
-# open Alacritty, blazingly fast GPU terminal
+# open Alacritty,  terminal
 # alt - return : open -na /Applications/Alacritty.app
-#
-# open Kitty, the terminal emulator
+
+# open kitty, the terminal
 cmd - return : /Applications/Kitty.app/Contents/MacOS/kitty --single-instance -d ~
-# Open Spacemacs, the Editor
-ctrl - return : open /Applications/Emacs.app
 
 # Open Chrome, the browser
-cmd + ctrl - return : open /Applications/Google\ Chrome.app/
-# 
+ctrl - return : open /Applications/Google\ Chrome.app/
+
+# Open Spacemacs, the Editor
+cmd + ctrl - return : open /Applications/Emacs.app
+
 # NOTE(vvkmnn): MacOS screenshot solution
 cmd + shift - 4 -> : chunkc border::clear
 
 # NOTE(vvkmnn): Using this hijacks existing cmd-tab behavior on MacOS; but instead of switching between just two, switches between all!
 # focus window
-ctrl - j : chunkc tiling::window --focus next
-ctrl - k: chunkc tiling::window --focus prev
-# cmd - h : chunkc tiling::window --focus west
-# cmd - j : chunkc tiling::window --focus south
-# cmd - k : chunkc tiling::window --focus north
-# cmd - l : chunkc tiling::window --focus east
+ctrl - j : chunkc tiling::window --focus north
+ctrl - k: chunkc tiling::window --focus south
+ctrl - h : chunkc tiling::window --focus east
+ctrl - l : chunkc tiling::window --focus west
+# cmd - j : chunkc tiling::window --focus next
+# cmd - k : chunkc tiling::window --focus prev
 
 
 # focus monitor
-ctrl + cmd - j  : chunkc tiling::monitor -f prev
-ctrl + cmd - k  : chunkc tiling::monitor -f next
+cmd - j  : chunkc tiling::monitor -f next
+cmd - k  : chunkc tiling::monitor -f prev
 # ctrl + alt - 1  : chunkc tiling::monitor -f 1
 # ctrl + alt - 2  : chunkc tiling::monitor -f 2
 # ctrl + alt - 3  : chunkc tiling::monitor -f 3
 
 # send window to monitor and follow focus
-ctrl + cmd - l  : chunkc tiling::window --send-to-monitor prev; chunkc tiling::monitor -f prev
-ctrl + cmd - h  : chunkc tiling::window --send-to-monitor next; chunkc tiling::monitor -f next
+ctrl + cmd - j  : chunkc tiling::window --send-to-monitor next; chunkc tiling::monitor -f next
+ctrl + cmd - k  : chunkc tiling::window --send-to-monitor prev; chunkc tiling::monitor -f prev
 # ctrl + cmd - 1  : chunkc tiling::window --send-to-monitor 1; chunkc tiling::monitor -f 1
 # ctrl + cmd - 2  : chunkc tiling::window --send-to-monitor 2; chunkc tiling::monitor -f 2
 # ctrl + cmd - 3  : chunkc tiling::window --send-to-monitor 3; chunkc tiling::monitor -f 3
@@ -72,7 +73,7 @@ ctrl + cmd - h  : chunkc tiling::window --send-to-monitor next; chunkc tiling::m
 # Binary Split Controls
 # rotate tree
 alt - r : chunkc tiling::desktop --rotate 90
- 
+
 # mirror tree y-axis
 # alt - y : chunkc tiling::desktop --mirror vertical
 
@@ -81,13 +82,13 @@ alt - r : chunkc tiling::desktop --rotate 90
 
 # close focused window
 alt - w : chunkc tiling::window --close
- 
+
 # toggle desktop offset
 # alt - a : chunkc tiling::desktop --toggle offset
- 
+
 # # toggle window fullscreen
 alt - f : chunkc tiling::window --toggle fullscreen
- 
+
 # toggle window native fullscreen
 # shift + alt - f : chunkc tiling::window --toggle native-fullscreen
 
@@ -172,4 +173,3 @@ ctrl + alt - f : chunkc tiling::desktop --layout float
 # ctrl + alt - j : chunkc tiling::window --use-insertion-point south
 # ctrl + alt - k : chunkc tiling::window --use-insertion-point north
 # ctrl + alt - l : chunkc tiling::window --use-insertion-point east
-
