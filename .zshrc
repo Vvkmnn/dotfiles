@@ -79,7 +79,9 @@ export haskell="stack ghci"
 # export PATH="${HOME}/.anaconda/bin:$PATH" # Anaconda Distribution
 
 # Node
-# export NVM_DIR=~/.nvm
+export NVM_DIR=~/.nvm
+export NVM_AUTO_USE=true
+export NVM_LAZY_LOAD=true
 # source $(brew --prefix nvm)/nvm.sh
 
 # Go
@@ -246,7 +248,7 @@ zplug "rupa/z", use:z.sh
 zplug "andrewferrier/fzf-z"
 
 # nvm - Autoloading and upgrading
-# zplug "lukechilds/zsh-nvm"
+zplug "lukechilds/zsh-nvm"
 
 # nvm-auto - Autoload .nvmrc
 # zplug "dijitalmunky/nvm-auto"
