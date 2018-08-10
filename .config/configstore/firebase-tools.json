@@ -1,0 +1,45 @@
+{
+	"analytics-uuid": "b568e280-20a9-422b-a994-911911109ab4",
+	"motd": {
+		"minVersion": "3.0.5"
+	},
+	"motd.fetched": 1532376551376,
+	"usage": false,
+	"user": {
+		"azp": "563584335869-fgrhgmd47bqnekij5i8b5pr03ho849e6.apps.googleusercontent.com",
+		"aud": "563584335869-fgrhgmd47bqnekij5i8b5pr03ho849e6.apps.googleusercontent.com",
+		"sub": "106368974984412567554",
+		"hd": "hydra.investments",
+		"email": "vivek@hydra.investments",
+		"email_verified": true,
+		"at_hash": "diTyVVYfUIUOWUidLPU_Zg",
+		"exp": 1532114761,
+		"iss": "accounts.google.com",
+		"iat": 1532111161
+	},
+	"tokens": {
+		"expires_at": 1532380151309,
+		"refresh_token": "1/QiH43lQYWBUw25E5eucTpR9ezhlB429EnCzSqECImwE",
+		"scopes": [
+			"email",
+			"https://www.googleapis.com/auth/cloud-platform",
+			"https://www.googleapis.com/auth/cloudplatformprojects.readonly",
+			"https://www.googleapis.com/auth/firebase",
+			"openid"
+		],
+		"access_token": "ya29.GlwBBr41SsziO4UUwN2Fs8OGQt4aM24jSpH8Ft8AM95kpOd9kzTN6OW1EJ2EVOi8poiDbrHiUFGB1pPsR_eqCLmIwbxEU-cKVztg_TZUGkXXeK1BchGir0uLwPzyCA",
+		"expires_in": 3600,
+		"scope": "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/firebase https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/plus.me https://www.googleapis.com/auth/cloudplatformprojects.readonly",
+		"token_type": "Bearer",
+		"id_token": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImM2YWY3Y2FhMDg5NWZkMDFlNzc4ZGNlYWE3YTc5ODgzNDdkOGYyNWMifQ.eyJhenAiOiI1NjM1ODQzMzU4NjktZmdyaGdtZDQ3YnFuZWtpajVpOGI1cHIwM2hvODQ5ZTYuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI1NjM1ODQzMzU4NjktZmdyaGdtZDQ3YnFuZWtpajVpOGI1cHIwM2hvODQ5ZTYuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMDYzNjg5NzQ5ODQ0MTI1Njc1NTQiLCJoZCI6Imh5ZHJhLmludmVzdG1lbnRzIiwiZW1haWwiOiJ2aXZla0BoeWRyYS5pbnZlc3RtZW50cyIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJhdF9oYXNoIjoibGtuVFV0MUJCeGlYV19QbnJYcUxSZyIsImV4cCI6MTUzMjM4MDE1MSwiaXNzIjoiYWNjb3VudHMuZ29vZ2xlLmNvbSIsImlhdCI6MTUzMjM3NjU1MX0.aKXLsit_MyiS5lFT-HofacSW5LGTHXk1UKt_tZ9aKrMfam81PC7tb1TaD5aklB_UODCHKOWGrxFeZYG-fxmh4xxekOzCKN0OCEJc55Kjo-zAkhB-MIE3DuBANvD6bETfOQKi69cVfGDVsC7hqF_1cg8YkTqIilOktefKWpuxfzNuXhG9swFZw5o1y-SffSwo3Z7eBqwWUedEldHCMAjttu5EHJYsIoCDue6dhckh9AuTFohFyaKFCf5BzUSjhrlvXO9w4qiMJWHHhHreBBqefT_uOr-HX4upKJZcwhMhs2rGrJoODRHSSrRlol_yoZ1PzSLlKWjheccTL4WpdLQ1og"
+	},
+	"activeProjects": {
+		"/Users/v/Documents/hydra/hydraWatcher": "production",
+		"/Users/v/Documents/hydra/hydraFunctions": "hydrafunctions",
+		"/Users/v/Documents/hydra/hydra-monorepo": "testing",
+		"/Users/v/Documents/test/hydra-monorepo": "testing",
+		"/Users/v/Documents/test/lake-monorepo": "testing",
+		"/Users/v/Documents/lake/lake-monorepo": "testing",
+		"/Users/v/Documents/lake/lake-exchange": "testing"
+	}
+}

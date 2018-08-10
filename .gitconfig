@@ -182,7 +182,7 @@
     template = ~/.gitmessage
 
 [status]
-	submoduleSummary = true
+	submoduleSummary = false
 
 [core]
     excludesfile = ~/.globalgitignore

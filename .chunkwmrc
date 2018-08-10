@@ -93,7 +93,8 @@ chunkc core::load ffm.so
 
 chunkc tiling::rule --owner \"System Preferences\" --subrole AXStandardWindow --state tile
 chunkc tiling::rule --owner Finder --name Copy --state float &
+chunkc tiling::rule --owner Pages name Fonts --state float &
 chunkc tiling::rule --owner \"App Store\" --state float &
 chunkc tiling::rule --owner \"FaceTime\" --state float &
-chunkc tiling::rule --owner Emacs --except "^$" --state tile
+# chunkc tiling::rule --owner Emacs --except "^$" --state tile
 

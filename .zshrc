@@ -69,6 +69,9 @@ KEYTIMEOUT=1
 
 ## Language Defaults -------------------------------
 
+# Python 3 > 2
+export python='python3'
+
 # Ruby
 # export PATH="$PATH:$HOME/.rvm/bin"
 
@@ -92,7 +95,6 @@ export NVM_LAZY_LOAD=true
 
 # Sleep
 alias sleepoff='sudo pmset -b sleep 0; sudo pmset -b disablesleep 1'
-
 alias sleepon='sudo pmset -b sleep 5; sudo pmset -b disablesleep 0'
 
 # vimR
@@ -171,12 +173,14 @@ zplug "plugins/git", from:oh-my-zsh
 # denysdovhan/spaceship-prompt {{{
 zplug "denysdovhan/spaceship-prompt", use:spaceship.zsh, from:github, as:theme
 
-SPACESHIP_CHAR_SYMBOL=' ॐ '
+SPACESHIP_CHAR_SYMBOL='ॐ '
+# SPACESHIP_CHAR_SYMBOL='ॐ> '
+# SPACESHIP_CHAR_SYMBOL='>> '
 # RPROMPT='v@%M %(?,%F{green}[-_-]%f,%F{red}[ಠ_ಠ]%f)'
 SPACESHIP_PROMPT_SEPARATE_LINE=true
 SPACESHIP_PROMPT_ADD_NEWLINE=true
 # SPACESHIP_PROMPT_COLOR=red
-
+SPACESHIP_DIR_TRUNC=2
 SPACESHIP_TIME_COLOR=blue
 SPACESHIP_TIME_SHOW=always
 SPACESHIP_USER_SHOW=always
@@ -192,6 +196,7 @@ SPACESHIP_VI_MODE_SHOW=true
 # SPACESHIP_VI_MODE_COLOR=cyan
 # SPACESHIP_VI_MODE_INSERT=∇ # Nabla, normal mode
 # SPACESHIP_VI_MODE_NORMAL=Δ # Delta, edit mode
+SPACESHIP_BATTERY_PREFIX=' at '
 SPACESHIP_BATTERY_SHOW=true
 
 SPACESHIP_PROMPT_ORDER=(
@@ -229,8 +234,8 @@ SPACESHIP_RPROMPT_ORDER=(
   jobs          # Background jobs indicator
   user          # Username section
   host          # Hostname section
-  exit_code     # Exit code section
   battery       # Battery level and status
+  exit_code     # Exit code section
 )
 
 # }}}

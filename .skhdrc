@@ -37,7 +37,7 @@
 cmd - return : /Applications/Kitty.app/Contents/MacOS/kitty --single-instance -d ~
 
 # Open Chrome, the browser
-ctrl - return : open /Applications/Google\ Chrome.app/
+cmd + shift - return : open /Applications/Google\ Chrome.app/
 
 # Open Spacemacs, the Editor
 cmd + ctrl - return : open /Applications/Emacs.app
