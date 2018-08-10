@@ -6,6 +6,15 @@
 	<true/>
 	<key>autoExpandSnippetsSound</key>
 	<false/>
+	<key>hotkey</key>
+	<dict>
+		<key>key</key>
+		<integer>8</integer>
+		<key>mod</key>
+		<integer>524288</integer>
+		<key>string</key>
+		<string>C</string>
+	</dict>
 	<key>snippetKeyword</key>
 	<string>s</string>
 </dict>
