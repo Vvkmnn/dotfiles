@@ -47,10 +47,10 @@ cmd + shift - 4 -> : chunkc border::clear
 
 # NOTE(vvkmnn): Using this hijacks existing cmd-tab behavior on MacOS; but instead of switching between just two, switches between all!
 # focus window
-ctrl - j : chunkc tiling::window --focus north
-ctrl - k: chunkc tiling::window --focus south
-ctrl - h : chunkc tiling::window --focus east
-ctrl - l : chunkc tiling::window --focus west
+cmd - j : chunkc tiling::window --focus north
+cmd - k: chunkc tiling::window --focus south
+cmd - h : chunkc tiling::window --focus east
+cmd - l : chunkc tiling::window --focus west
 # cmd - j : chunkc tiling::window --focus next
 # cmd - k : chunkc tiling::window --focus prev
 
