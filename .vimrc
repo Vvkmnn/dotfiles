@@ -43,6 +43,9 @@ call plug#begin('~/.vim/plugged')
 " Sensible Defaults
 Plug 'tpope/vim-sensible'
 
+" Language Support
+Plug 'sheerun/vim-polyglot'
+
 " Vim tree navigation
 " Plug 'scrooloose/nerdtree'
 
@@ -66,7 +69,7 @@ Plug 'roman/golden-ratio'
 Plug 'tpope/vim-commentary'
 
 " Dash integration
-" Plug 'rizzatti/dash.vim'
+Plug 'rizzatti/dash.vim'
 
 " Syntax Highlighter
 " Plug 'scrooloose/syntastic'
@@ -78,7 +81,7 @@ Plug 'tpope/vim-sleuth'
 " Plug 'metakirby5/codi.vim'
 
 " Git management!
-" Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-fugitive'
 
 " Autoformat for Vim
 Plug 'chiel92/vim-autoformat'
@@ -90,7 +93,7 @@ Plug 'dracula/vim'
 " Plug 'kannokanno/previm'
 
 " Open Default Browser
-" Plug 'tyru/open-browser.vim'
+Plug 'tyru/open-browser.vim'
 
 " Vim Airline (Status Bar)
 Plug 'bling/vim-airline'

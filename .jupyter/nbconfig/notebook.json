@@ -1,25 +1,30 @@
 {
   "load_extensions": {
+    "nbextensions_configurator/config_menu/main": false,
     "vim_binding/vim_binding": true,
-    "contrib_nbextensions_help_item/main": true,
-    "nbextensions_configurator/config_menu/main": true,
-    "select_keymap/main": false,
     "help_panel/help_panel": true,
-    "toggle_all_line_numbers/main": true,
-    "code_prettify/autopep8": false,
-    "code_prettify/code_prettify": true,
-    "jupyter-vim-binding": false,
-    "jupyter-vim-binding/vim_binding": false,
-    "vim-binding/vim_binding": true
+    "code_prettify/code_prettify": false,
+    "spellchecker/main": false,
+    "code_prettify/autopep8": true,
+    "table_beautifier/main": true,
+    "splitcell/splitcell": false,
+    "autoscroll/main": false,
+    "hide_header/main": false,
+    "zenmode/main": false,
+    "varInspector/main": true,
+    "chrome-clipboard/main": true,
+    "jupyter-js-widgets/extension": true,
+    "toc2/main": true
   },
-  "Cell": {
-    "cm_config": {
-      "lineNumbers": true
+  "spellchecker": {
+    "add_toolbar_button": false
+  },
+  "help_panel_add_toolbar_button": true,
+  "varInspector": {
+    "window_display": false,
+    "cols": {
+      "lenName": "20",
+      "lenType": "20"
     }
-  },
-  "Notebook": {
-    "Toolbar": true,
-    "Header": true
-  },
-  "help_panel_add_toolbar_button": true
+  }
 }
