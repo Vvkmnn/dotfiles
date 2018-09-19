@@ -37,11 +37,11 @@ export ARCHEY_LOGO_FILE=$HOME/.logo
 # Editor
 export VISUAL='open -a /Applications/Emacs.app/Contents/MacOS/Emacs' # $VISUAL opens any edits in in GUI mode
 export EDITOR=$VISUAL
-export ALTERNATE_EDITOR='vim'                   # $EDITOR if all else fails
-# export EDITOR='emacsclient -a'                # $EDITOR opens terminal edits in GUI mode
+export ALTERNATE_EDITOR='vim'                                        # $EDITOR if all else fails
+export EDITOR='open -a /Applications/Emacs.app/Contents/MacOS/Emacs' # $EDITOR opens terminal edits in GUI mode
 
 # Editor
-alias v='vim'
+alias v='nvim'
 alias v!='nvim -u NONE'
 alias e=$VISUAL
 alias emacs=$VISUAL
@@ -79,13 +79,11 @@ bindkey -v
 export haskell="stack ghci"
 
 # Anaconda (Python 3 Variant)
-export PATH="${HOME}/.miniconda/bin:$PATH"
+# export PATH="${HOME}/.miniconda/bin:$PATH"
 
 # Node
 export NVM_DIR=~/.nvm
-export NVM_AUTO_USE=true
-export NVM_LAZY_LOAD=true
-# source $(brew --prefix nvm)/nvm.sh
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
 
 # Go
 # export GOPATH="$HOME/.go"
@@ -251,7 +249,7 @@ zplug "rupa/z", use:z.sh
 zplug "andrewferrier/fzf-z"
 
 # nvm - Autoloading and upgrading
-zplug "lukechilds/zsh-nvm"
+# zplug "lukechilds/zsh-nvm"
 
 # nvm-auto - Autoload .nvmrc
 # zplug "dijitalmunky/nvm-auto"
