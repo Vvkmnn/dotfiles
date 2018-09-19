@@ -1,20 +1,31 @@
 {
+  "MarkdownCell": {
+    "cm_config": {
+      "lineWrapping": true
+    }
+  },
+  "CodeCell": {
+    "cm_config": {
+      "lineWrapping": true
+    }
+  },
   "load_extensions": {
     "nbextensions_configurator/config_menu/main": false,
     "vim_binding/vim_binding": true,
     "help_panel/help_panel": true,
     "code_prettify/code_prettify": false,
     "spellchecker/main": false,
-    "code_prettify/autopep8": true,
-    "table_beautifier/main": true,
+    "code_prettify/autopep8": false,
+    "table_beautifier/main": false,
     "splitcell/splitcell": false,
     "autoscroll/main": false,
     "hide_header/main": false,
     "zenmode/main": false,
-    "varInspector/main": true,
-    "chrome-clipboard/main": true,
+    "varInspector/main": false,
+    "chrome-clipboard/main": false,
     "jupyter-js-widgets/extension": true,
-    "toc2/main": true
+    "toc2/main": false,
+    "contrib_nbextensions_help_item/main": false
   },
   "spellchecker": {
     "add_toolbar_button": false
