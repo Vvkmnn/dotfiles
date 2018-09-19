@@ -14,6 +14,9 @@ repo = 'Chiel92/vim-autoformat' # Provide easy code formatting in Vim by integra
 on_cmd = 'Autoformat'
 
 [[plugins]]
+repo = 'wakatime/vim-wakatime' # Code Time tracking
+
+[[plugins]]
 repo = 'airblade/vim-gitgutter' # A Vim plugin which shows a git diff in the gutter (sign column) and stages/undoes hunks.
 
 [[plugins]]

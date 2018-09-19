@@ -1,4 +1,4 @@
-# Completion -----------------
+# Completion -----------------wakatime-cli
 # Plugins to make completions in Vim more convenient
 
 # deoplate version {{{
@@ -15,7 +15,7 @@ repo = 'Shougo/context_filetype.vim' # Handles fenced code
 [[plugins]]
 repo = 'Shougo/deoplete.nvim'  
 on_event = 'InsertCharPre'
-depends = ['context_filetype.vim', 'auto-pairs', 'neosnippet.vim']
+depends = ['context_filetype.vim', 'auto-pairs']
 hook_add =
 '''
 let g:deoplete#enable_at_startup = 1 " Enable deoplete at startup
@@ -23,7 +23,6 @@ let g:deoplete#enable_smart_case = 1 " Smart case
 
 " let g:deoplete#enable_refresh_always = 0 " Refresh immediately
 let g:deoplete#auto_complete_delay = 0 " No delay
-
 
 
 
@@ -36,45 +35,45 @@ inoremap <expr><CR> pumvisible() ? deoplete#mappings#close_popup() : "\<CR>"
 
 # snippets {{{
 
-[[plugins]]
-repo = 'Shougo/neosnippet.vim'
-on_event = 'InsertCharPre'
-depends = ['deoplete.nvim', 'neosnippet-snippets']
-
-[[plugins]]
-repo = 'Shougo/neosnippet-snippets'
-on_event = 'InsertCharPre'
-
-# [[plugins]]
-repo = 'honza/vim-snippets'
-on_event = 'InsertCharPre'
-
-[[plugins]]
-repo = 'scrooloose/snipmate-snippets'
-on_event = 'InsertCharPre'
-depends = ['deoplete.nvim', 'neosnippet.vim']
-hook_add = '''
-let g:neosnippet#enable_snipmate_compatibility = 1
-'''
+#  [[plugins]]
+#  repo = 'Shougo/neosnippet.vim'
+#  on_event = 'InsertCharPre'
+#  depends = ['deoplete.nvim', 'neosnippet-snippets']
+#  
+#  [[plugins]]
+#  repo = 'Shougo/neosnippet-snippets'
+#  on_event = 'InsertCharPre'
+#  
+#  # [[plugins]]
+#  repo = 'honza/vim-snippets'
+#  on_event = 'InsertCharPre'
+#  
+#  [[plugins]]
+#  repo = 'scrooloose/snipmate-snippets'
+#  on_event = 'InsertCharPre'
+#  depends = ['deoplete.nvim', 'neosnippet.vim']
+#  hook_add = '''
+#  let g:neosnippet#enable_snipmate_compatibility = 1
+#  '''
 
 # }}}
 
 # language server protocol {{{
 
 
-[[plugins]]
-repo = 'autozimu/LanguageClient-neovim'
-branch = 'next',
-do = 'bash install.sh'
-hook_add = '''
-let g:LanguageClient_serverCommands = {
-    \ 'rust': ['rustup', 'run', 'nightly', 'rls'],
-    \ 'javascript': ['javascript-typescript-stdio'],
-    \ 'javascript.jsx': ['javascript-typescript-stdio'],
-    \ }
-'''
-# }}}
-
+# [[plugins]]
+# repo = 'autozimu/LanguageClient-neovim'
+# branch = 'next',
+# do = 'bash install.sh'
+# hook_add = '''
+# let g:LanguageClient_serverCommands = {
+#     \ 'rust': ['rustup', 'run', 'nightly', 'rls'],
+#     \ 'javascript': ['javascript-typescript-stdio'],
+#     \ 'javascript.jsx': ['javascript-typescript-stdio'],
+#     \ }
+# '''
+# # }}}
+# 
 # hook_add = '''
 # let g:deoplete#ignore_sources = {}
 # let g:deoplete#ignore_sources._ = ["neosnippet"]
