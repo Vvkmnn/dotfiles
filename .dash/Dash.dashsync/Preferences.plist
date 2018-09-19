@@ -242,7 +242,7 @@
 			<key>NodeJS_Online</key>
 			<dict>
 				<key>date</key>
-				<date>2018-07-20T18:36:13Z</date>
+				<date>2018-09-07T20:07:48Z</date>
 				<key>entry</key>
 				<dict>
 					<key>aliases</key>
@@ -362,14 +362,14 @@
 		<key>keyCode</key>
 		<integer>2</integer>
 		<key>modifiers</key>
-		<integer>4352</integer>
+		<integer>4096</integer>
 	</dict>
 	<key>searchUsingSelectedTextKey</key>
 	<dict>
 		<key>keyCode</key>
 		<integer>2</integer>
 		<key>modifiers</key>
-		<integer>4864</integer>
+		<integer>4352</integer>
 	</dict>
 	<key>shouldRestoreTabs</key>
 	<false/>

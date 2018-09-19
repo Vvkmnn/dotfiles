@@ -24,7 +24,7 @@
 }
 div#notebook {
  font-family: sans-serif;
- font-size: 11pt;
+ font-size: 11.5pt;
  line-height: 170%;
  color: #303030;
  -webkit-font-smoothing: antialiased !important;
@@ -32,7 +32,7 @@ div#notebook {
 body,
 div.body {
  font-family: sans-serif;
- font-size: 11pt;
+ font-size: 11.5pt;
  color: #303030;
  background-color: #ffffff;
  background: #ffffff;
@@ -248,14 +248,14 @@ body > #header {
  z-index: 100;
 }
 .list_container {
- font-size: 11pt;
+ font-size: 11.5pt;
  color: #303030;
  border: none;
  text-shadow: none !important;
 }
 .list_container > div {
  border-bottom: 1px solid rgba(180,180,180,.14);
- font-size: 11pt;
+ font-size: 11.5pt;
 }
 .list_header > div,
 .list_item > div {
@@ -268,7 +268,7 @@ body > #header {
  margin-left: -1px;
  vertical-align: middle;
  line-height: 22px;
- font-size: 11pt;
+ font-size: 11.5pt;
 }
 .item_icon {
  color: #126dce;
@@ -314,7 +314,7 @@ body > #header {
 }
 button#tree-selector-btn {
  height: 34px;
- font-size: 10.0pt;
+ font-size: 10.5pt;
  border: none;
  left: 0px;
  border-radius: 0px !important;
@@ -360,7 +360,7 @@ div.list_item:hover {
  background-color: #fafafa;
 }
 .breadcrumb > li {
- font-size: 10.0pt;
+ font-size: 10.5pt;
  color: #303030;
  border: none;
  text-shadow: none !important;
@@ -448,7 +448,7 @@ ul#tabs a {
 }
 div#notebook {
  font-family: sans-serif;
- font-size: 11pt;
+ font-size: 11.5pt;
  padding-top: 4px;
 }
 .notebook_app {
@@ -459,28 +459,28 @@ div#notebook {
  background-color: #ffffff;
  min-height: 0px;
  box-shadow: none;
- width: 80%;
+ width: 70%;
  margin-right: auto;
  margin-left: auto;
 }
 div#ipython-main-app.container {
- width: 80%;
+ width: 70%;
  margin-right: auto;
  margin-left: auto;
  margin-right: auto;
  margin-left: auto;
 }
 .container {
- width: 80%;
+ width: 70%;
  margin-right: auto;
  margin-left: auto;
 }
 div#menubar-container {
  width: 100%;
- width: 80%;
+ width: 70%;
 }
 div#header-container {
- width: 80%;
+ width: 70%;
 }
 .notebook_app #header,
 .edit_app #header {
@@ -491,7 +491,7 @@ div#header-container {
 #header,
 .edit_app #header {
  font-family: sans-serif;
- font-size: 11pt;
+ font-size: 11.5pt;
  box-shadow: none;
  background-color: #ffffff;
 }
@@ -533,7 +533,7 @@ p.navbar-text.indicator_area {
 }
 .navbar-default {
  font-family: sans-serif;
- font-size: 11pt;
+ font-size: 11.5pt;
  background-color: #ffffff;
  border-color: #d4d4d4;
  line-height: 1.5em;
@@ -541,7 +541,7 @@ p.navbar-text.indicator_area {
 }
 .navbar-default .navbar-nav > li > a {
  font-family: sans-serif;
- font-size: 11pt;
+ font-size: 11.5pt;
  color: #303030;
  display: block;
  line-height: 1.5em;
@@ -637,7 +637,7 @@ div.notification_widget.info,
  color: #126dce;
 }
 .item_buttons .kernel-name {
- font-size: 11pt;
+ font-size: 11.5pt;
  color: #126dce;
 }
 .running_notebook_icon:before {
@@ -816,7 +816,7 @@ i.fa.fa-icon {
 }
 .dropdown-menu {
  font-family: sans-serif;
- font-size: 11pt;
+ font-size: 11.5pt;
  box-shadow: none;
  padding: 0px;
  text-align: left;
@@ -827,7 +827,7 @@ i.fa.fa-icon {
 }
 .dropdown-menu:hover {
  font-family: sans-serif;
- font-size: 11pt;
+ font-size: 11.5pt;
  box-shadow: none;
  padding: 0px;
  text-align: left;
@@ -838,7 +838,7 @@ i.fa.fa-icon {
 }
 .dropdown-menu > li > a {
  font-family: sans-serif;
- font-size: 10.0pt;
+ font-size: 10.5pt;
  display: block;
  padding: 10px 20px 9px 10px;
  color: #303030;
@@ -872,7 +872,7 @@ i.fa.fa-icon {
 .dropdown-menu > .disabled > a:hover,
 .dropdown-menu > .disabled > a:focus {
  font-family: sans-serif;
- font-size: 10.0pt;
+ font-size: 10.5pt;
  font-weight: normal;
  color: #828892;
  padding: none;
@@ -986,7 +986,7 @@ div.kse-dropdown > .dropdown-menu,
 .item_buttons > .btn,
 .item_buttons > .btn-group,
 .item_buttons > .input-group {
- font-size: 11pt;
+ font-size: 11.5pt;
  background: transparent;
  background-color: transparent;
  border: 0px solid #e4e4e4;
@@ -1109,7 +1109,7 @@ div.dynamic-buttons > button,
 }
 .dropdown-header {
  font-family: sans-serif !important;
- font-size: 11pt !important;
+ font-size: 11.5pt !important;
  color: #ff7823 !important;
  border-bottom: none !important;
  padding: 0px !important;
@@ -1173,7 +1173,7 @@ fieldset[disabled] .btn-default.focus {
 }
 .input-group-addon {
  padding: 2px 5px;
- font-size: 11pt;
+ font-size: 11.5pt;
  font-weight: normal;
  height: auto;
  color: #303030;
@@ -1253,7 +1253,7 @@ div.modal-footer > button:hover {
 }
 .modal-content {
  font-family: sans-serif;
- font-size: 10.0pt;
+ font-size: 10.5pt;
  position: relative;
  background: #e4e4e4;
  background-color: #e4e4e4;
@@ -1264,7 +1264,7 @@ div.modal-footer > button:hover {
 }
 .modal-header {
  font-family: sans-serif;
- font-size: 11pt;
+ font-size: 11.5pt;
  color: #303030;
  background: #e4e4e4;
  background-color: #e4e4e4;
@@ -1308,7 +1308,7 @@ div.panel-default,
 .panel,
 .panel-default {
  font-family: sans-serif;
- font-size: 11pt;
+ font-size: 11.5pt;
  background-color: #f4f4f4;
  color: #303030;
  margin-bottom: 14px;
@@ -1367,7 +1367,7 @@ textarea {
 }
 select.form-control.select-xs {
  height: 33px;
- font-size: 11pt;
+ font-size: 11.5pt;
 }
 .toolbar select,
 .toolbar label {
@@ -1687,7 +1687,7 @@ div.output_wrapper {
 div.output_subarea.output_text.output_stream.output_stdout,
 div.output_subarea.output_text {
  font-family: "Hack", monospace, monospace;
- font-size: 11pt !important;
+ font-size: 9.5pt !important;
  line-height: 150% !important;
  background-color: #ffffff;
  color: #303030;
@@ -1696,7 +1696,7 @@ div.output_subarea.output_text {
 }
 div.output_area pre {
  font-family: "Hack", monospace, monospace;
- font-size: 11pt !important;
+ font-size: 9.5pt !important;
  line-height: 151% !important;
  color: #303030;
  border-top-right-radius: 0px;
@@ -1707,7 +1707,7 @@ div.output_area {
 }
 div.output_html {
  font-family: "Hack", monospace, monospace;
- font-size: 11pt;
+ font-size: 9.5pt;
  color: #353535;
  background-color: #ffffff;
  background: #ffffff;
@@ -1791,7 +1791,7 @@ div.text_cell,
 div.text_cell_render pre,
 div.text_cell_render {
  font-family: sans-serif;
- font-size: 13pt;
+ font-size: 11pt;
  line-height: 130% !important;
  color: #353535;
  background: #ffffff;
@@ -1903,7 +1903,7 @@ div.text_cell.rendered.selected .prompt {
 }
 div.rendered_html code {
  font-family: "Hack", monospace, monospace;
- font-size: 11pt;
+ font-size: 9.5pt;
  padding-top: 3px;
  padding-left: 2px;
  color: #303030;
@@ -1919,7 +1919,7 @@ samp {
 .well code,
 code {
  font-family: "Hack", monospace, monospace;
- font-size: 11pt !important;
+ font-size: 9.5pt !important;
  line-height: 170% !important;
  color: #353535;
  background: #efefef;
@@ -1928,7 +1928,7 @@ code {
 }
 kbd {
  padding: 1px;
- font-size: 11pt;
+ font-size: 9.5pt;
  font-weight: 800;
  color: #303030;
  background-color: transparent !important;
@@ -1939,7 +1939,7 @@ pre {
  display: block;
  padding: 8.5px;
  margin: 0 0 9px;
- font-size: 10.0pt;
+ font-size: 10.5pt;
  line-height: 1.42857143;
  color: #303030;
  background-color: #efefef;
@@ -1959,7 +1959,7 @@ div.rendered_html {
 }
 div.rendered_html pre {
  font-family: "Hack", monospace, monospace;
- font-size: 11pt !important;
+ font-size: 9.5pt !important;
  line-height: 170% !important;
  color: #353535 !important;
  background: #efefef;
@@ -1975,7 +1975,7 @@ div.rendered_html pre {
 div.text_cell_render pre,
 div.text_cell_render code {
  font-family: "Hack", monospace, monospace;
- font-size: 11pt !important;
+ font-size: 9.5pt !important;
  line-height: 170% !important;
  color: #353535;
  background: #ffffff;
@@ -2086,7 +2086,7 @@ div#_vivaldi-spatnav-focus-indicator._vivaldi-spatnav-focus-indicator {
 }
 .rendered_html td {
  font-family: sans-serif !important;
- font-size: 11pt;
+ font-size: 9.5pt;
 }
 .rendered_html table {
  font-family: sans-serif !important;
@@ -2100,7 +2100,7 @@ div#_vivaldi-spatnav-focus-indicator._vivaldi-spatnav-focus-indicator {
 }
 .rendered_html thead {
  font-family: sans-serif !important;
- font-size: 12.0pt !important;
+ font-size: 10.5pt !important;
  background: #ebebeb;
  color: #353535;
  border-bottom: 1px solid #ebebeb;
@@ -2128,7 +2128,7 @@ div.widget-area {
 }
 div.widget-area a {
  font-family: sans-serif;
- font-size: 10.0pt;
+ font-size: 10.5pt;
  font-weight: normal;
  font-style: normal;
  color: #303030;
@@ -2137,7 +2137,7 @@ div.widget-area a {
 div.widget-area a:hover,
 div.widget-area a:focus {
  font-family: sans-serif;
- font-size: 10.0pt;
+ font-size: 10.5pt;
  font-weight: normal;
  font-style: normal;
  color: #2f2f2f;
@@ -2537,7 +2537,7 @@ div.collapsible_headings_toggle .fa-caret-right:before {
 #navigate_menu a,
 .toc {
  color: #303030 !important;
- font-size: 11pt !important;
+ font-size: 9.5pt !important;
 }
 #toc li > span:hover {
  background-color: #d4d4d4 !important;
@@ -2546,15 +2546,15 @@ div.collapsible_headings_toggle .fa-caret-right:before {
 #navigate_menu a:hover,
 .toc {
  color: #1c1c1c !important;
- font-size: 11pt !important;
+ font-size: 9.5pt !important;
 }
 #toc-wrapper .toc-item-num {
  color: #ff7823 !important;
- font-size: 11pt !important;
+ font-size: 9.5pt !important;
 }
 input.raw_input {
  font-family: "Hack", monospace, monospace;
- font-size: 11pt !important;
+ font-size: 9.5pt !important;
  color: #303030;
  background-color: #efefef;
  border-color: #ececec;
@@ -2642,7 +2642,7 @@ body > div.modal.cmd-palette.typeahead-field {
 .typeahead-dropdown,
 .typeahead-list {
  font-family: sans-serif;
- font-size: 11pt;
+ font-size: 11.5pt;
  color: #303030;
  background-color: #ffffff;
  border: none;
@@ -2787,7 +2787,7 @@ div#short-key-bindings-intro.well,
 }
 .terminal-app .terminal {
  font-family: "Hack", monospace, monospace;
- font-size: 11pt;
+ font-size: 9.5pt;
  line-height: 170%;
  color: #303030;
  background: #ededed;
@@ -2903,7 +2903,7 @@ div#pager .ui-resizable-handle {
 div.CodeMirror,
 div.CodeMirror pre {
  font-family: "Hack", monospace, monospace;
- font-size: 11pt;
+ font-size: 9.5pt;
  line-height: 170%;
  color: #303030;
 }
@@ -2965,7 +2965,7 @@ div.js-error {
 }
 .ipython_tooltip {
  font-family: "Hack", monospace, monospace;
- font-size: 11pt;
+ font-size: 9.5pt;
  line-height: 170%;
  border: 2px solid #dadada;
  background: #eeeeee;
@@ -2979,7 +2979,7 @@ div.js-error {
 }
 .ipython_tooltip .tooltiptext pre {
  font-family: "Hack", monospace, monospace;
- font-size: 11pt;
+ font-size: 9.5pt;
  line-height: 170%;
  background: #eeeeee;
  background-color: #eeeeee;
@@ -3001,7 +3001,7 @@ div.tooltiptext.bigtooltip {
 }
 .cm-s-ipython.CodeMirror {
  font-family: "Hack", monospace, monospace;
- font-size: 11pt;
+ font-size: 9.5pt;
  background: #ededed;
  color: #303030;
  border-radius: 2px;
@@ -3224,7 +3224,7 @@ body :focus .MathJax {
  margin-left: 2px;
  overflow: auto;
  font-family: "Hack", monospace, monospace;
- font-size: 11pt;
+ font-size: 9.5pt;
  color: #303030;
  width: auto;
 }
