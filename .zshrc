@@ -37,11 +37,12 @@ export ARCHEY_LOGO_FILE=$HOME/.logo
 # Editor
 export VISUAL='open -a /Applications/Emacs.app/Contents/MacOS/Emacs' # $VISUAL opens any edits in in GUI mode
 export EDITOR=$VISUAL
-export ALTERNATE_EDITOR='vim'                                        # $EDITOR if all else fails
+export ALTERNATE_EDITOR='nvim'                                        # $EDITOR if all else fails
 export EDITOR='open -a /Applications/Emacs.app/Contents/MacOS/Emacs' # $EDITOR opens terminal edits in GUI mode
 
 # Editor
 alias v='nvim'
+# alias vim='nvim'
 alias v!='nvim -u NONE'
 alias e=$VISUAL
 alias emacs=$VISUAL
@@ -124,7 +125,12 @@ test -e "${HOME}/.iterm2/.iterm2_shell_integration.zsh" && source "${HOME}/.iter
 # [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 # thefuck
-eval "$(thefuck --alias)"
+# eval "$(thefuck --alias)"
+
+# kitty
+autoload -Uz compinit
+compinit
+# kitty + complete setup zsh | source /dev/stdin # Completion for kitty
 
 ## Shell Theme -------------------------------------
 
@@ -246,7 +252,7 @@ zplug "zpm-zsh/autoenv"
 zplug "rupa/z", use:z.sh
 
 # Fzf-z -- Z and fzf play nice
-zplug "andrewferrier/fzf-z"
+# zplug "andrewferrier/fzf-z"
 
 # nvm - Autoloading and upgrading
 # zplug "lukechilds/zsh-nvm"
@@ -259,6 +265,9 @@ zplug "andrewferrier/fzf-z"
 
 # git-open - Jump straight to a git repo with <git open>
 zplug 'paulirish/git-open'
+
+# thefuck - command autocorrection
+zplug "plugins/thefuck", from:oh-my-zsh
 
 # Dracula theme for zsh
 # zplug 'dracula/zsh', as:theme
