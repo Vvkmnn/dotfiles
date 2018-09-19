@@ -34,13 +34,13 @@
 # alt - return : open -na /Applications/Alacritty.app
 
 # open kitty, the terminal
-cmd - return : /Applications/Kitty.app/Contents/MacOS/kitty --single-instance -d ~
+ctrl - return : /Applications/Kitty.app/Contents/MacOS/kitty --single-instance -d ~
 
 # Open Chrome, the browser
-cmd + shift - return : open /Applications/Google\ Chrome.app/
+shift - return : open /Applications/Google\ Chrome.app/
 
 # Open Spacemacs, the Editor
-cmd + ctrl - return : open /Applications/Emacs.app
+ctrl + cmd - return : open /Applications/Emacs.app
 
 # NOTE(vvkmnn): MacOS screenshot solution
 cmd + shift - 4 -> : chunkc border::clear
@@ -49,11 +49,10 @@ cmd + shift - 4 -> : chunkc border::clear
 # focus window
 cmd - j : chunkc tiling::window --focus north
 cmd - k: chunkc tiling::window --focus south
-cmd - h : chunkc tiling::window --focus east
-cmd - l : chunkc tiling::window --focus west
+cmd - h : chunkc tiling::window --focus west
+cmd - l : chunkc tiling::window --focus east
 # cmd - j : chunkc tiling::window --focus next
 # cmd - k : chunkc tiling::window --focus prev
-
 
 # focus monitor
 cmd - j  : chunkc tiling::monitor -f next
@@ -65,8 +64,8 @@ cmd - k  : chunkc tiling::monitor -f prev
 # send window to monitor and follow focus
 ctrl + cmd - j  : chunkc tiling::window --send-to-monitor prev; chunkc tiling::monitor -f prev
 ctrl + cmd - k  : chunkc tiling::window --send-to-monitor next; chunkc tiling::monitor -f next
-# ctrl + cmd - 1  : chunkc tiling::window --send-to-monitor 1; chunkc tiling::monitor -f 1
-# ctrl + cmd - 2  : chunkc tiling::window --send-to-monitor 2; chunkc tiling::monitor -f 2
+ctrl + cmd - h  : chunkc tiling::window --send-to-monitor 1; chunkc tiling::monitor -f 1
+ctrl + cmd - l  : chunkc tiling::window --send-to-monitor 2; chunkc tiling::monitor -f 2
 # ctrl + cmd - 3  : chunkc tiling::window --send-to-monitor 3; chunkc tiling::monitor -f 3
 
 
