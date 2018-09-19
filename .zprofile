@@ -1,4 +1,4 @@
-# Path for Bash
+# Path for ZSH
 
 # Miniconda Python
 PATH="$HOME/.miniconda/bin:$PATH"
