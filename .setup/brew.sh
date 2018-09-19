@@ -150,9 +150,20 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
         # chunkwm - the tiling window manager
         brew install chunkwm
 
-        # khd - Modal Hotkey daemon
+        # skhd - Modal Hotkey daemon
         brew install skhd
+        # }}}
 
+        # languagetool - Needed for Wordnut {{{
+        brew install languagetool
+        # }}}
+
+        # wordnet - word lookup
+        brew install wordnet
+        # }}}
+
+        # wakatime - Time tracking
+        brew install wakatime-cli
         # }}}
 
 	# Postinstall and Cleanup
