@@ -14,5 +14,5 @@
     path = .emacs.d
     url = https://github.com/hlissner/doom-emacs
 [submodule ".fzf"]
-	path = .fzf
-	url = https://github.com/junegunn/fzf.git
+    path = .fzf
+    url = https://github.com/junegunn/fzf.git
