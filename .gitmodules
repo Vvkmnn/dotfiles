@@ -12,7 +12,7 @@
     url = https://github.com/syl20bnr/spacemacs.git
 [submodule ".emacs.d"]
     path = .emacs.d
-    url = https://github.com/hlissner/doom-emacs
+    url = https://github.com/hlissner/doom-emacs#develop
 [submodule ".config/doom"]
 	path = .config/doom
-	url = git@github.com:Vvkmnn/v.doom.d.git
+	url = git@github.com:Vvkmnn/v.doom.d.git#develop
