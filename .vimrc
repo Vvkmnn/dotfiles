@@ -60,7 +60,7 @@ Plug 'roman/golden-ratio'
 
 " Vim Fuzzy Find
 " Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-" Plug 'junegunn/fzf.vim'
+Plug 'junegunn/fzf.vim'
 
 " Tmux Navigator
 " Plug 'christoomey/vim-tmux-navigator'
@@ -144,6 +144,13 @@ let mapleader=" "
 
 " Relative numbers
 set relativenumber
+
+" No swapfile
+set noswapfile
+set directory^=$HOME/.vim/tmp//
+
+" Local Buffer Folder
+set browsedir=buffer
 
 " Manage Swaps and Backups
 set backupdir=~/.vim/backup//

@@ -80,7 +80,7 @@
 			<key>LaTeX_Math_Symbols</key>
 			<dict>
 				<key>date</key>
-				<date>2018-08-13T23:34:50Z</date>
+				<date>2018-10-13T19:50:32Z</date>
 				<key>entry</key>
 				<dict>
 					<key>aliases</key>
@@ -131,7 +131,7 @@
 			<key>Vim</key>
 			<dict>
 				<key>date</key>
-				<date>2018-07-20T18:36:11Z</date>
+				<date>2019-02-23T04:47:09Z</date>
 				<key>entry</key>
 				<dict>
 					<key>aliases</key>
@@ -169,7 +169,7 @@
 			<key>evhub/coconut</key>
 			<dict>
 				<key>date</key>
-				<date>2018-08-17T13:04:56Z</date>
+				<date>2018-11-15T17:20:17Z</date>
 				<key>entry</key>
 				<dict>
 					<key>name</key>
@@ -242,7 +242,7 @@
 			<key>NodeJS_Online</key>
 			<dict>
 				<key>date</key>
-				<date>2018-09-07T20:07:48Z</date>
+				<date>2018-12-05T20:02:13Z</date>
 				<key>entry</key>
 				<dict>
 					<key>aliases</key>
@@ -269,7 +269,9 @@
 		<dict/>
 	</dict>
 	<key>DHWebViewIsDark</key>
-	<false/>
+	<true/>
+	<key>actuallyDarkWebView</key>
+	<true/>
 	<key>annotationsAreShown</key>
 	<false/>
 	<key>bookmarks</key>
@@ -360,23 +362,23 @@
 	<key>searchKey</key>
 	<dict>
 		<key>keyCode</key>
-		<integer>2</integer>
+		<integer>-1</integer>
 		<key>modifiers</key>
-		<integer>4096</integer>
+		<integer>0</integer>
 	</dict>
 	<key>searchUsingSelectedTextKey</key>
 	<dict>
 		<key>keyCode</key>
-		<integer>2</integer>
+		<integer>-1</integer>
 		<key>modifiers</key>
-		<integer>4352</integer>
+		<integer>0</integer>
 	</dict>
 	<key>shouldRestoreTabs</key>
 	<false/>
 	<key>shouldShowStatusIcon</key>
-	<true/>
+	<false/>
 	<key>shouldStartAtLogin</key>
-	<true/>
+	<false/>
 	<key>shouldSyncBookmarks</key>
 	<true/>
 	<key>shouldSyncDocsets</key>

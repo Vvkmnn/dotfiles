@@ -34,13 +34,26 @@
 
 ![](screenshot.png)
 
+## Install
+
+``` sh
+git init --bare $HOME/.dotfiles
+alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
+dotfiles pull
+```
+
 ## Setup
 
-    git init --bare $HOME/.dotfiles
-    alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
-    config dotfiles--local status.showUntrackedFiles no
-    echo "alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'" >> $HOME/.bashrc
-    echo "alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'" >> $HOME/.zshrc
+``` sh
+dotfiles config --local status.showUntrackedFiles no # Only watch specified folders, not every folder in $HOME
+```
+
+## Submodules
+
+``` sh
+dotfiles submodule init # Create all folders 
+dotfiles submodule update # Update all folders to master branch
+```
 
 ## Backup
 

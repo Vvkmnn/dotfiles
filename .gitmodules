@@ -7,12 +7,11 @@
 [submodule ".config/nvim/pack/dein/start/dein.vim"]
     path = .config/nvim/pack/dein/start/dein.vim
     url = https://github.com/Shougo/dein.vim.git
-[submodule ".emacs.d.bak"]
-    path = .emacs.d.bak
-    url = https://github.com/syl20bnr/spacemacs.git
 [submodule ".emacs.d"]
     path = .emacs.d
-    url = https://github.com/hlissner/doom-emacs#develop
+    url = https://github.com/hlissner/doom-emacs
+    branch = develop
 [submodule ".config/doom"]
-	path = .config/doom
-	url = git@github.com:Vvkmnn/v.doom.d.git#develop
+    path = .config/doom
+    url = git@github.com:Vvkmnn/v.doom.d.git
+    branch = local

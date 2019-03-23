@@ -71,5 +71,15 @@ brew cask install tunnelbear
 # Contexts - Window Switcher
 brew cask  install contexts
 
+# remembear - Password manager
+brew cask install remembear
+
+# tunnelbear - VPN
+brew cask install tunnelbear
+
+# tunnelbear - VPN
+brew cask install brave-browser
+
 # Afred - Better Spotlight
 brew cask install alfred
+brew install emacs-mac --with-dbus --with-modules --with-xml2 --with-ctags --with-spacemacs-icon

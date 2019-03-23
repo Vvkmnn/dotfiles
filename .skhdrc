@@ -30,33 +30,40 @@
 #                                  an EOL character signifies the end of the bind.
 
 
-# open Alacritty,  terminal
-# alt - return : open -na /Applications/Alacritty.app
+## terminal
+# open alacritty, the terminal
+# ctrl - return : open -na /Applications/Alacritty.app/
 
 # open kitty, the terminal
 ctrl - return : /Applications/Kitty.app/Contents/MacOS/kitty --single-instance -d ~
 
-# Open Chrome, the browser
-shift - return : open /Applications/Google\ Chrome.app/
+# Open New Firefox
+# shift - space: open /Applications/Firefox.app/ -new-window
+
+# Open Nearby Brave
+shift - return : open /Applications/Brave\ Browser.app/ 
+
+# Open Nearby Chromium
+# shift - return : open /Applications/Chromium.app/
 
 # Open Spacemacs, the Editor
-ctrl + cmd - return : open /Applications/Emacs.app
+ctrl + cmd - return : open /Applications/Emacs.app/
 
 # NOTE(vvkmnn): MacOS screenshot solution
 cmd + shift - 4 -> : chunkc border::clear
-
+#
 # NOTE(vvkmnn): Using this hijacks existing cmd-tab behavior on MacOS; but instead of switching between just two, switches between all!
 # focus window
-cmd - j : chunkc tiling::window --focus north
-cmd - k: chunkc tiling::window --focus south
-cmd - h : chunkc tiling::window --focus west
-cmd - l : chunkc tiling::window --focus east
+# alt - j : chunkc tiling::window --focus north
+# alt - k: chunkc tiling::window --focus south
+# alt - h : chunkc tiling::window --focus west
+# alt - l : chunkc tiling::window --focus east
 # cmd - j : chunkc tiling::window --focus next
 # cmd - k : chunkc tiling::window --focus prev
 
 # focus monitor
-cmd - j  : chunkc tiling::monitor -f next
-cmd - k  : chunkc tiling::monitor -f prev
+# cmd - j  : chunkc tiling::monitor -f next
+# cmd - k  : chunkc tiling::monitor -f prev
 # ctrl + alt - 1  : chunkc tiling::monitor -f 1
 # ctrl + alt - 2  : chunkc tiling::monitor -f 2
 # ctrl + alt - 3  : chunkc tiling::monitor -f 3
@@ -68,6 +75,28 @@ ctrl + cmd - h  : chunkc tiling::window --send-to-monitor 1; chunkc tiling::moni
 ctrl + cmd - l  : chunkc tiling::window --send-to-monitor 2; chunkc tiling::monitor -f 2
 # ctrl + cmd - 3  : chunkc tiling::window --send-to-monitor 3; chunkc tiling::monitor -f 3
 
+# Expand windows?
+# shift + cmd - a : chunkc tiling::window --use-temporary-ratio 0.05 --adjust-window-edge west; chunkc tiling::window --use-temporary-ratio -0.05 --adjust-window-edge east
+# shift + cmd - s : chunkc tiling::window --use-temporary-ratio 0.05 --adjust-window-edge south; chunkc tiling::window --use-temporary-ratio -0.05 --adjust-window-edge north
+# shift + cmd - w : chunkc tiling::window --use-temporary-ratio 0.05 --adjust-window-edge north; chunkc tiling::window --use-temporary-ratio -0.05 --adjust-window-edge south
+# shift + cmd - d : chunkc tiling::window --use-temporary-ratio 0.05 --adjust-window-edge east; chunkc tiling::window --use-temporary-ratio -0.05 --adjust-window-edge west
+
+# create desktops
+#
+# create desktop, move window and follow focus
+# ctrl + cmd - n : chunkc tiling::desktop --create;\
+#                  ids=$(chunkc tiling::query --desktops-for-monitor $(chunkc tiling::query --monitor-for-desktop $(chunkc tiling::query --desktop id)));\
+#                  chunkc tiling::window --send-to-desktop $(echo ${ids##* });\
+#                  chunkc tiling::desktop --focus $(echo ${ids##* })
+
+
+# create desktop and follow focus
+# ctrl + cmd - m : chunkc tiling::desktop --create;\
+#                 ids=$(chunkc tiling::query --desktops-for-monitor $(chunkc tiling::query --monitor-for-desktop $(chunkc tiling::query --desktop id)));\
+#                 chunkc tiling::desktop --focus $(echo ${ids##* })
+
+# create desktop and follow focus
+alt - x : chunkc tiling::desktop --annihilate
 
 # Binary Split Controls
 # rotate tree

@@ -135,14 +135,16 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
         brew install htop
 
         # fzf
-        # brew install fzf
-        # $(brew --prefix)/opt/fzf/install
+        brew install fzf # && $(brew --prefix)/opt/fzf/install
 
         # htop
         brew install htop
 
         # ripgrep - recursive regex search (Silver Surfer / ack + GNU grep)
         brew install rg
+
+	# pyenv - simple python version management
+	brew install pyenv
 
         # nnn - great terminal file navigator
         brew install nnn
@@ -152,19 +154,16 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
         # skhd - Modal Hotkey daemon
         brew install skhd
-        # }}}
 
         # languagetool - Needed for Wordnut {{{
         brew install languagetool
-        # }}}
 
         # wordnet - word lookup
         brew install wordnet
-        # }}}
 
         # wakatime - Time tracking
-        brew install wakatime-cli
-        # }}}
+        # brew install wakatime-cli
+        
 
 	# Postinstall and Cleanup
 	brew doctor

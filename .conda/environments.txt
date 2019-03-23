@@ -1,2 +1,6 @@
 /Users/v/.miniconda
 /Users/v/.miniconda/envs/hydra
+/Users/v/.miniconda/envs/prakash-codeChallenge
+/Users/v/.miniconda/envs/test
+/Users/v/.miniconda/envs/execute
+/Users/v/.miniconda/envs/lake-analysis

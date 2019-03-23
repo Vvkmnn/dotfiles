@@ -5,7 +5,10 @@
 sudo -v
 
 # Install Zsh
-brew install zsh
+brew install zsh 
+
+# Install Zsh completions
+zsh-completions
 
 # Install Zplug
 # brew install zplug

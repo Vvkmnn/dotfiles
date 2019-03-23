@@ -1,5 +1,38 @@
 #!/usr/bin/env bash
 
-# Vanilla Vim
-alias pvim="vim -u NONE -N"
+
+
+alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
+
+# Editor
+alias v='vim' # Vim
+# alias vim='nvim' # NeoVim
+alias pvim="vim -u NONE -N" # Vanilla Vim
+alias v!='vim -u NONE'
+alias e=$VISUAL #Emacs
+# alias emacs=$VISUAL
+
+# REPLs
+alias snek='python3'
+
+# Work
+alias tokyo='gcloud compute --project "lake-hydra" ssh --zone "asia-northeast1-b" "tokyo-gcloud-32-hydra"'
+
+# Runtime Path
+# export PATH="/usr/local/bin:$PATH"
+# export PATH="/usr/local/sbin:$PATH"
+# export PATH="$HOME/.vimr:$PATH"
+# export PATH="/usr/local/bin:$PATH"
+
+
+## Environment Defaults ----------------------------
+
+# Dotfiles
+alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
+alias d="dotfiles"
+# alias ds="dotfiles status"
+# alias d+="dotfiles add"
+# alias d-="dotfiles remove"
+# alias d?="dotfiles commit"
+
 
