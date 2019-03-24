@@ -1,29 +1,217 @@
-startup_message off
+#                       
+#                       `......`                    
+#                 ./shmMMMMMMMMMNmho:`              
+#              :smMMMMMMMMMMMMMMMMMMMMms-           
+#           `omMMMMMMMMMMMMMMMMm+:+shmMMMm+`        
+#          oNMMMMMMMMMMMMMMMMd:     /mMMMMMN+       
+#        -mMMMMMMMMMMMMMMMMMN     oNMMMMMMMMMd.     
+#       /MMMMMMMMMMMMMMMMMMMd    -MMMMMMMMMMMMN-    
+#      :MMMMMMMMMMMMMMMMMMMMy    :MMMMMMMMMMMMMN-   
+#     `NMMMMMMMMMMMMNo:+shmMo    +MMMMMMMMMMMMMMm   
+#     oMMMMMMMMMMMm/     :hM+    oMMMMMMMMMMMMMMM/  
+#     mMMMMMMMMMMM/    /mMMMs    yMMMMMMMMMMMMMMMh  
+#    `MMMMMMMMMMMMM/   :MMMMMs   hMMMMMMMMMMMMMMMm  
+#     NMMMMMMMMMMMMM:   /MMMMMs  mMMMMMMMMMMMMMMMd  
+#     hMMMMMMMMMMMMMM:   /MMMMMs NMMMMMMMMMMMMMMMs  
+#     :MMMMMMMMMMMMMMM:   /MMMMMyMMMMMMMMMMMMMMMM-  
+#      hMMMMMMMMMMMMMMN:   /MMMMMMMMMMMMMMMMMMMMs   
+#      `dMMMMMMMMMMMMMMN-   /MMMMMMMMMMMMMMMMMMh    
+#       `hMMMMMMMMMMMMMMN-   /MMMMMMMMMMMMMMMMy     
+#         +NMMMMMMMMMMMMMN-   +MMMMMMMMMMMMMN/      
+#          `sNMMMMMMMMMMMMN+:` +MMMMMMMMMMNo`       
+#            `+dMMMMMMMMMMMMMMNdNMMMMMMMd/`         
+#               .+hNMMMMMMMMMMMMMMMMmy/`            
+#                   `:+oyyhhhhyso/-`                
+#                                                    
+# © Vivek Menon
+# mail@vvkmnn.xyz 
 
-# if we accidentally hangup, don't be all attached when we come back. 
+# ------------------------------------------------------------------------------
+# SCREEN SETTINGS
+# ------------------------------------------------------------------------------
+
+startup_message off
+#nethack on
+
+#defflow on # will force screen to process ^S/^Q
+deflogin on
 autodetach on
 
-# more scrollbacks!
-defscrollback 10000
+# turn visual bell on
+vbell on
+# vbell_msg "   Wuff  ----  Wuff!!  "
 
-# disable use of the "alternate" terminal
-# thus allowing scrollbars to function as normal in
-# many terminal emulators! <3 it
-termcapinfo xterm* ti@:te@
+# define a bigger scrollback, default is 100 lines
+defscrollback 1024
 
-# have screen update terminal emulators titlebar
-termcapinfo xterm* 'hs:ts=\E]0;:fs=\007:ds=\E]0;\007'
-defhstatus "screen ^E (^Et) | $USER@^EH"
+# ------------------------------------------------------------------------------
+# SCREEN KEYBINDINGS
+# ------------------------------------------------------------------------------
 
-# but dont print i.e. "bell in window 0" status craps
+# Remove some stupid / dangerous key bindings
+bind ^k
+#bind L
+bind ^\
+
+# Make them better
+bind \\ quit
+bind K kill
+bind I login on
+bind O login off
+bind } history
+
+# An example of a "screen scraper" which will launch urlview on the current
+# screen window
+#
+#bind ^B eval "hardcopy_append off" "hardcopy -h $HOME/.screen-urlview" "screen urlview $HOME/.screen-urlview"
+
+# ------------------------------------------------------------------------------
+# TERMINAL SETTINGS
+# ------------------------------------------------------------------------------
+
+# The vt100 description does not mention "dl". *sigh*
+termcapinfo vt100 dl=5\E[M
+
+# turn sending of screen messages to hardstatus off
 #hardstatus off
+# hardstatus on
 
-shelltitle "$ |bash"
+# Set the hardstatus prop on gui terms to set the titlebar/icon title
+termcapinfo xterm*|rxvt*|kterm*|Eterm* hs:ts=\E]0;:fs=\007:ds=\E]0;\007
+# use this for the hard status string
+#hardstatus string "%h%? users: %u%?"
 
-hardstatus alwayslastline
-hardstatus string '%{= kG}[ %{G}%H %{g}][%= %{=kw}%?%-Lw%?%{r}(%{W}%n*%f%t%?(%u)%?%{r})%{w}%?%+Lw%?%?%= %{g}][%{B}%Y-%m-%d %{W}%c %{g}]'
+# An alternative hardstatus to display a bar at the bottom listing the
+# windownames and highlighting the current windowname in blue. (This is only
+# enabled if there is no hardstatus setting for your terminal)
+#
+# hardstatus alwayslastline "%-Lw%{= BW}%50>%n%f* %t%{-}%+Lw%<"
+# hardstatus alwayslastline "%{b kB}%{s yB}%l%{b kB} %{b kB}%{rs Y}%-Lw%{BY}%50>%n%{R}%f%{B} %t%{YB}%+Lw%<"
+# hardstatus alwayslastline "%{.kW}%-w%{.bW}%t [%n]%{-}%+w %=%{..G} %H %{..Y} %Y/%m/%d %c"
+hardstatus alwayslastline "%{b kw}%H %{r}%1` %{w}| %{g}%c %{w}| %{y}%d.%m.%Y %{w}| %{g}%l %{w}| %{-b kw}%u %-Lw%{= rW}%50> %n%f %t %{-}%+Lw%<"
+hardstatus alwayslastline "%{b kw}%H %{r}%1` %{w}| %{g}%c %{w}| %{y}%d.%m.%Y %{w}| %{-b kw}%u %-Lw%{= rW}%50> %n%f %t %{-}%+Lw%<"
 
-defflow off
+# set these terminals up to be 'optimal' instead of vt100
+termcapinfo xterm*|linux*|rxvt*|Eterm* OP
 
-#rvm needs this
-shell -${SHELL}
+# Change the xterm initialization string from is2=\E[!p\E[?3;4l\E[4l\E>
+# (This fixes the "Aborted because of window size change" konsole symptoms found
+#  in bug #134198)
+termcapinfo xterm 'is=\E[r\E[m\E[2J\E[H\E[?7h\E[?1;4;6l'
+
+# To get screen to add lines to xterm's scrollback buffer, uncomment the
+# following termcapinfo line which tells xterm to use the normal screen buffer
+# (which has scrollback), not the alternate screen buffer.
+#
+termcapinfo xterm|xterms|xs|rxvt ti@:te@
+
+# Enable non-blocking mode to better cope with flaky ssh connections.
+defnonblock 5
+
+# ------------------------------------------------------------------------------
+# STATUS
+# ------------------------------------------------------------------------------
+
+# don't use the hardstatus line for system messages, use reverse video instead
+# (we'll be using it for the list of tab windows - see hardstatus alwayslastline
+# below)
+# hardstatus off
+
+# use the caption line for the computer name, load, hstatus (as set by zsh), & time
+# the caption line gets repeated for each window being displayed (using :split),
+# so we'll use color cues to differentiate the caption of the current, active
+# window, and the others.
+#    always                  - display the caption continuously.  Since
+#                              hardstatus is 'alwayslastline', it will be on the
+#                              next to last line.
+#    "%?%F"                  - if (leading '%?') this region has focus ('%F') 
+#                              (e.g. it's the only region being displayed, or,
+#                              if in split-screen mode, it's the currently active
+#                              region)
+#      "%{= Kk}"               - set the colorscheme to blac[k] on grey (bright blac[K]),
+#                                with no other effects (standout, underline, etc.)
+#    "%:"                    - otherwise ('%:' between a pair of '%?'s)
+#      "%{=u kR}"              - set the colorscheme to [R]ed on blac[k], and
+#                                underline it, but no other effects (bold, standout, etc.) 
+#    "%?"                    - end if (trailing '%?')
+#    "  %h "                 - print two spaces, tthne the [h]ardstatus of the
+#                              current tab window (as set by zsh - see zshrc) and
+#                              then another space.
+#    "%-024="                - either pad (with spaces) or truncate the previous
+#                              text so that the rest of the caption string starts
+#                              24 characters ('024') from the right ('-') edge of
+#                              the caption line.
+#                              NOTE: omitting the '0' before the '24' would pad
+#                              or truncate the text so it would be 24% from the
+#                              right.
+#    "%{+b}                  - add ('+') [b]old to the current text effects, but
+#                              don't change the current colors.
+#    " %C:%s%a %D %d %M %Y"  - print the [C]urrent time, a colon, the [s]econds,
+#                              whether it's [a]m or pm, the [D]ay name, the [d]ay
+#                              of the month, the [M]onth, and the [Y]ear.
+#                              (this takes up 24 characters, so the previous
+#                              pad/truncate command makes sure the clock doesn't
+#                              get pushed off of the caption line)
+#    "%{= dd}"               - revert to the [d]efault background and [d]efault
+#                              foreground colors, respectively, with no ('= ')
+#                              other effects.
+#  other things that might be useful later are
+#    " %H"                   - print a space, then the [H]ostname.
+#    "(%{.K}%l%{-}):"        - print a '(', then change the text color to grey
+#                              (aka bright blac[K]), and print the current system
+#                              [l]oad.  Then revert to the previous colorscheme
+#                              ('%{-}') and print a close ')' and a colon.
+#                              NOTE: the load is only updated when some other
+#                              portion of the caption string needs to be changed
+#                              (like the seconds in the clock, or if there were a
+#                              backtick command)
+#    "%0`"                   - put the output of a backtick command in the line
+#    "%-024<"                - don't pad, just truncate if the string is past 24
+#                              characters from the right edge
+#    "%-="                   - pad (with spaces) the previous text text so that
+#                              the rest of the caption string is justified
+#                              against the right edge of the screen.
+#                              NOTE: doesn't appear to truncate previous text.
+# caption always           "%?%F%{= Kk}%:%{=u kR}%?  %h %-024=%{+b} %C%a %D %d %M %Y%{= db}"
+
+# use the hardstatus line for the window list
+#    alwayslastline      - always display the hardstatus as the last line of the
+#                          terminal
+#    "%{= kR} %-Lw"      - change to a blac[k] background with bright [R]ed text,
+#                          and print all the tab [w]indow numbers and titles in
+#                          the [L]ong format (ie with flags) upto ('-') the
+#                          current tab window
+#    "%{=b Kk} %n%f %t " - change to grey (bright blac[K]) background with
+#                          [b]old blac[k] text, with no other effects, and print
+#                          the [n]umber of the current tab window, any [f]lags it
+#                          might have, and the [t]itle of the current tab window
+#                          (as set by zsh - see zshrc).
+#                          NOTE: the color match with the caption line makes it
+#                          appear as if a 'tab' is dropping down from the caption
+#                          line, highlighting the number & title of the current
+#                          tab window.  Nifty, ain't it)
+#    "%{-}%+Lw "         - revert to the previous color scheme (red on black)
+#                          and print all the tab [w]indow numbers and titles in
+#                          the [L]ong format (ie with flags) after ('+') the
+#                          current tab window.
+#    "%=%{= dd}"         - pad all the way to the right (since there is no text
+#                          that follows this) and revert to the [d]efault
+#                          background and [d]efault foreground colors, with no
+#                          ('= ') other effects.
+# hardstatus alwayslastline "%{= kR} %-Lw%{=b Kk} %n%f %t %{-}%+Lw %=%{= dd}"
+
+# hardstatus alwayslastline "%?%F%{= Kk}%:%{=u kR}%?  %h %-024=%{+b} %C%a %D %d %M %Y%{= db}%{= kR} %-Lw%{=b Kk} %n%f %t %{-}%+Lw %=%{= dd}"
+# ------------------------------------------------------------------------------
+# STARTUP SCREENS
+# ------------------------------------------------------------------------------
+
+# Example of automatically running some programs in windows on screen startup.
+#
+#   The following will open top in the first window, an ssh session to monkey
+#   in the next window, and then open mutt and tail in windows 8 and 9
+#   respectively.
+#
+# screen htop
+# screen -t monkey ssh monkey
+# screen -t mail 8 mutt
+# screen -t daemon 9 tail -f /var/log/daemon.log
