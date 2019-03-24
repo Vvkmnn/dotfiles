@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-
-
 alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 
 # Editor
@@ -15,8 +13,17 @@ alias e=$VISUAL #Emacs
 # REPLs
 alias snek='python3'
 
-# Work
-alias tokyo='gcloud compute --project "lake-hydra" ssh --zone "asia-northeast1-b" "tokyo-gcloud-32-hydra"'
+# Work 
+# Hydra {{{
+hydra_32() {
+    gcloud compute --project "lake-hydra" ssh --zone "us-east1-b" "gcloud-hydra-32"
+}
+
+hydra_64() {
+    gcloud compute --project "lake-hydra" ssh --zone "us-central1-c" "gcloud-hydra-64"
+}
+
+# }}}
 
 # Runtime Path
 # export PATH="/usr/local/bin:$PATH"

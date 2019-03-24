@@ -26,17 +26,32 @@
 # ##################################################
 # ##################################################
 
-# Path
-if [ -f ~/.profile ]; then
-    . ~/.profile
-fi
 
-# Aliases
-if [ -f ~/.alias ]; then
-    . ~/.alias
-fi
+if [ -n "$ZSH_VERSION" ]; then
+    # prompt
+    PURE_PROMPT_SYMBOL="ॐ "
+    RPROMPT='v@%M %(?,%F{green}[-_-]%f,%F{red}[ಠ_ಠ]%f)'
 
-# Shell
-if [ -f ~/.shell ]; then
-    . ~/.shell
+    ## brew
+    export HOMEBREW_CASK_OPTS="--appdir=/Applications"
+
+    ## gcloud
+    if [ -f "${HOME}/.google/path.zsh.inc" ]; then source "${HOME}/.google/path.zsh.inc"; fi
+    if [ -f "${HOME}/.google/completion.zsh.inc" ]; then source "${HOME}/.google/completion.zsh.inc"; fi
+
+    ## fzf
+    [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+    ## z 
+    . /usr/local/etc/profile.d/z.sh
+
+    # Zim (Framework)
+    export ZIM_HOME=${ZDOTDIR:-${HOME}}/.zim # Define zim location
+
+[[ -s ${ZIM_HOME}/init.zsh ]] && source ${ZIM_HOME}/init.zsh # Start zim
+
+elif [ -n "$BASH_VERSION" ]; then
+   # assume Bash
+else
+   # asume something else
 fi
