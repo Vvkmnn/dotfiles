@@ -34,9 +34,12 @@ export TERM=xterm-256color
 export ARCHEY_LOGO_FILE=$HOME/.logo
 
 # Editor
-export VISUAL='emacs' # $VISUAL opens any edits in in GUI mode
-export EDITOR=$VISUAL # $EDITOR opens terminal edits in GUI mode
+export EDITOR='vim' # $VISUAL is the default for most shells
+export EDITOR=$VISUAL # $EDITOR in case
 export ALTERNATE_EDITOR='vim'                                        # $EDITOR if all else fails
+
+# Brew
+export HOMEBREW_CASK_OPTS="--appdir=/Applications"
 
 ## Path --------------------------------------------
 
@@ -53,7 +56,7 @@ PATH="$HOME/.emacs.d/bin:$PATH"
 PATH="/Applications/Emacs.app/Contents/MacOS/bin:$PATH"
 
 ## Work --------------------------------------------
-# PATH="$HOME/Documents/lake/lake-hydra/bin:$PATH"
+PATH="$HOME/Documents/lake/lake-hydra/bin:$PATH"
 
 
 

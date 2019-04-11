@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+# Hydra {{{
+hydra_32() {
+    gcloud compute --project "lake-hydra" ssh --zone "us-east1-b" "gcloud-hydra-32"
+}
+
+hydra_64() {
+    gcloud compute --project "lake-hydra" ssh --zone "us-central1-c" "gcloud-hydra-64"
+}
+# }}} 
+
+

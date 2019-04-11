@@ -32,9 +32,6 @@ if [ -n "$ZSH_VERSION" ]; then
     PURE_PROMPT_SYMBOL="ॐ "
     RPROMPT='v@%M %(?,%F{green}[-_-]%f,%F{red}[ಠ_ಠ]%f)'
 
-    ## brew
-    export HOMEBREW_CASK_OPTS="--appdir=/Applications"
-
     ## gcloud
     if [ -f "${HOME}/.google/path.zsh.inc" ]; then source "${HOME}/.google/path.zsh.inc"; fi
     if [ -f "${HOME}/.google/completion.zsh.inc" ]; then source "${HOME}/.google/completion.zsh.inc"; fi

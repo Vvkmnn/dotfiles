@@ -3,43 +3,22 @@
 alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 
 # Editor
+## Vim
 alias v='vim' # Vim
-# alias vim='nvim' # NeoVim
 alias pvim="vim -u NONE -N" # Vanilla Vim
 alias v!='vim -u NONE'
-alias e=$VISUAL #Emacs
-# alias emacs=$VISUAL
+# alias nvim='nvim' # NeoVim
 
-# REPLs
-alias snek='python3'
-
-# Work 
-# Hydra {{{
-hydra_32() {
-    gcloud compute --project "lake-hydra" ssh --zone "us-east1-b" "gcloud-hydra-32"
-}
-
-hydra_64() {
-    gcloud compute --project "lake-hydra" ssh --zone "us-central1-c" "gcloud-hydra-64"
-}
-
-# }}}
-
-# Runtime Path
-# export PATH="/usr/local/bin:$PATH"
-# export PATH="/usr/local/sbin:$PATH"
-# export PATH="$HOME/.vimr:$PATH"
-# export PATH="/usr/local/bin:$PATH"
-
-
-## Environment Defaults ----------------------------
+## Emacs
+alias e='emacsclient --c' #Emacs
 
 # Dotfiles
 alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
-alias d="dotfiles"
+# alias d="dotfiles"
 # alias ds="dotfiles status"
 # alias d+="dotfiles add"
 # alias d-="dotfiles remove"
 # alias d?="dotfiles commit"
 
-
+# REPLs
+alias snek='python3'
