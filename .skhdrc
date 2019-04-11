@@ -41,7 +41,10 @@ ctrl - return : /Applications/Kitty.app/Contents/MacOS/kitty --single-instance -
 # shift - space: open /Applications/Firefox.app/ -new-window
 
 # Open Nearby Brave
-shift - return : open /Applications/Brave\ Browser.app/ 
+shift - return : open -n /Applications/Brave\ Browser.app/ 
+
+# Open Nearby Brave
+cmd + shift - return : open /Applications/Brave\ Browser.app/ 
 
 # Open Nearby Chromium
 # shift - return : open /Applications/Chromium.app/
@@ -58,8 +61,8 @@ cmd + shift - 4 -> : chunkc border::clear
 # alt - k: chunkc tiling::window --focus south
 # alt - h : chunkc tiling::window --focus west
 # alt - l : chunkc tiling::window --focus east
-# cmd - j : chunkc tiling::window --focus next
-# cmd - k : chunkc tiling::window --focus prev
+ctrl - j : chunkc tiling::window --focus next
+ctrl - k : chunkc tiling::window --focus prev
 
 # focus monitor
 # cmd - j  : chunkc tiling::monitor -f next

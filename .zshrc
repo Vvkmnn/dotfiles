@@ -36,6 +36,11 @@ if [ -f ~/.alias ]; then
     . ~/.alias
 fi
 
+# Functions
+if [ -f ~/.functions ]; then
+    . ~/.functions
+fi
+
 # Shell
 if [ -f ~/.shell ]; then
     . ~/.shell

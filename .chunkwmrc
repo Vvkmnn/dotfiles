@@ -136,7 +136,7 @@ chunkc tiling::rule --owner VLC --except "^$" --state tile
 chunkc tiling::rule --owner Emacs --except "^$" --state tile
 
 # Follow Desktop
-chunkc tiling::rule --owner Emacs --desktop 2 --follow-desktop 
+# chunkc tiling::rule --owner Emacs --desktop 2 --follow-desktop 
 chunkc tiling::rule --owner Discord --desktop 3 --follow-desktop 
 chunkc tiling::rule --owner \"Canary Mail\" --desktop 4 --follow-desktop 
 # chunkc tiling::rule --owner \"Brave Browser\" --desktop 3 --follow-desktop &
