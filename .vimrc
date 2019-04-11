@@ -60,7 +60,7 @@ Plug 'roman/golden-ratio'
 
 " Vim Fuzzy Find
 " Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-Plug 'junegunn/fzf.vim'
+" Plug 'junegunn/fzf.vim'
 
 " Tmux Navigator
 " Plug 'christoomey/vim-tmux-navigator'
@@ -124,7 +124,7 @@ nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 
 " FZF Completion
-imap <c-x><c-l> <plug>(fzf-complete-line)
+" imap <c-x><c-l> <plug>(fzf-complete-line)
 
 " Sort in Visual Mode
 vnoremap <Leader>s :sort<CR>
