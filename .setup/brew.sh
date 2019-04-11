@@ -163,6 +163,9 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
         # wakatime - Time tracking
         # brew install wakatime-cli
+
+	# hunspell - the best spell checker
+	brew install hunspell
         
 
 	# Postinstall and Cleanup
