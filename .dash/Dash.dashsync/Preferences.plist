@@ -242,7 +242,7 @@
 			<key>NodeJS_Online</key>
 			<dict>
 				<key>date</key>
-				<date>2018-12-05T20:02:13Z</date>
+				<date>2019-04-03T17:34:57Z</date>
 				<key>entry</key>
 				<dict>
 					<key>aliases</key>
@@ -271,7 +271,7 @@
 	<key>DHWebViewIsDark</key>
 	<true/>
 	<key>actuallyDarkWebView</key>
-	<true/>
+	<false/>
 	<key>annotationsAreShown</key>
 	<false/>
 	<key>bookmarks</key>
@@ -333,7 +333,7 @@
 		</dict>
 	</dict>
 	<key>isPinned</key>
-	<true/>
+	<false/>
 	<key>menuIconBehavior</key>
 	<integer>1</integer>
 	<key>placeholderDelimiter</key>
@@ -362,9 +362,9 @@
 	<key>searchKey</key>
 	<dict>
 		<key>keyCode</key>
-		<integer>-1</integer>
+		<integer>4</integer>
 		<key>modifiers</key>
-		<integer>0</integer>
+		<integer>2048</integer>
 	</dict>
 	<key>searchUsingSelectedTextKey</key>
 	<dict>
@@ -376,9 +376,9 @@
 	<key>shouldRestoreTabs</key>
 	<false/>
 	<key>shouldShowStatusIcon</key>
-	<false/>
+	<true/>
 	<key>shouldStartAtLogin</key>
-	<false/>
+	<true/>
 	<key>shouldSyncBookmarks</key>
 	<true/>
 	<key>shouldSyncDocsets</key>
@@ -388,7 +388,7 @@
 	<key>shouldSyncView</key>
 	<true/>
 	<key>showInDock</key>
-	<true/>
+	<false/>
 	<key>sortDocsetsAlphabetically</key>
 	<true/>
 	<key>versionedDHCheatRepo</key>
