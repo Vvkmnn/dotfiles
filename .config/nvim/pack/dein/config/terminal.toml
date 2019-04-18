@@ -1,3 +1,0 @@
-[[plugins]]
-repo='metakirby5/codi.vim'
-on_cmd='Codi'

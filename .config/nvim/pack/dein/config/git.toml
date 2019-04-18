@@ -1,8 +1,0 @@
-## Git
-## Plugins for git
-
-[[plugins]]
-repo = 'tpope/vim-fugitive'
-
-[[plugins]]
-repo = 'airblade/vim-gitgutter'
