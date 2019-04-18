@@ -9,3 +9,6 @@
     path = .config/doom
     url = git@github.com:Vvkmnn/v.doom.d.git
     branch = local
+[submodule "/Users/v/.config/nvim"]
+	path = /Users/v/.config/nvim
+	url = git@github.com:Vvkmnn/v.nvim.git
