@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
-
 # Editor
 ## Vim
 alias v='vim' # Vim
