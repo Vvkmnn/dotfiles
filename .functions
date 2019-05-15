@@ -1,13 +1,24 @@
 #!/usr/bin/env bash
 
 # Hydra {{{
-hydra_32() {
-    gcloud compute --project "lake-hydra" ssh --zone "us-east1-b" "gcloud-hydra-32"
+
+cloud_hydra() {
+	# Connects to cloud hydras. For private use only.
+
+	if [ $# -gt 0 ]; then
+		case $1 in
+		"1")
+			gcloud compute --project "lake-hydra" ssh --zone "us-central1-c" "gcloud-hydra-96"
+			;;
+		"2")
+			gcloud compute --project "lake-hydra" ssh --zone "us-central1-c" "gcloud-hydra-96-2"
+			;;
+		*)
+			echo "[lake/gcloud-hdyra] unrecognized arg $1. Specify server."
+			;;
+		esac
+	else
+		echo "[lake/gcloud-hdyra] no arg supplied. Which server?"
+	fi
 }
-
-hydra_64() {
-    gcloud compute --project "lake-hydra" ssh --zone "us-central1-c" "gcloud-hydra-64"
-}
-# }}} 
-
-
+# }}}
