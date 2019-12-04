@@ -1,10 +1,9 @@
-#!/usr/bin/env bash
-
 # Editor
 ## Vim
 alias v='vim' # Vim
 alias pvim="vim -u NONE -N" # Vanilla Vim
 alias v!='vim -u NONE'
+# alias v?='vim -d'
 # alias nvim='nvim' # NeoVim
 
 ## Emacs
@@ -17,6 +16,10 @@ alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
 # alias d+="dotfiles add"
 # alias d-="dotfiles remove"
 # alias d?="dotfiles commit"
+
+# Game
+alias _game="brew services stop yabai && brew services stop skhd"
+alias _normal="brew services start yabai && brew services start skhd"
 
 # REPLs
 alias snek='python3'

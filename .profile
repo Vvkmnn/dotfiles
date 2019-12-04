@@ -33,6 +33,11 @@ export BROWSER=open
 export TERM=xterm-256color
 export ARCHEY_LOGO_FILE=$HOME/.logo
 
+# Prompt
+export PURE_PROMPT_SYMBOL="ॐ "
+export PROMPT_CHAR="?"
+export RPROMPT='v@%M %(?,%F{green}[-_-]%f,%F{red}[ಠ_ಠ]%f)'
+
 # Editor
 export EDITOR='vim' # $VISUAL is the default for most shells
 export EDITOR=$VISUAL # $EDITOR in case
@@ -46,27 +51,54 @@ export LDFLAGS="-L/usr/local/opt/openssl/lib"
 export CPPFLAGS="-I/usr/local/opt/openssl/include"
 export PKG_CONFIG_PATH="/usr/local/opt/openssl/lib/pkgconfig"
 
+# llvm
+export LDFLAGS="-L/usr/local/opt/llvm/lib"
+export CPPFLAGS="-I/usr/local/opt/llvm/include"
+
+# emacs/pdf-tools
+# export PKG_CONFIG_PATH=/usr/local/Cellar/zlib/1.2.8/lib/pkgconfig:/usr/local/lib/pkgconfig:/opt/X11/lib/pkgconfig
+
 
 ## Path --------------------------------------------
 
+## personal
+export PATH="$HOME/Documents/bin:$PATH"
+export PATH="$HOME/Documents/dev/github-jack:$PATH"
+
 ## brew
-PATH="/usr/local/sbin:$PATH"
+export PATH="/usr/local/sbin:$PATH"
 
 ## openSSL
-PATH="/usr/local/opt/openssl/bin:$PATH"
+export PATH="/usr/local/opt/openssl/bin:$PATH"
 
-# Miniconda Python
-PATH="$HOME/.miniconda/bin:$PATH"
+# Python (Anaconda)
+# PATH="$HOME/.miniconda/bin:$PATH"
+export PATH="/usr/local/anaconda3/bin:$PATH"
 
-# NVM Node
-PATH="$HOME/.nvm/versions/node/v12.1.0/bin:$PATH"
+# Ruby
+export PATH="/usr/local/opt/ruby/bin:$PATH"
 
-# Doom Emacs
-PATH="$HOME/.emacs.d/bin:$PATH"
+# Node (NVM)
+# export PATH="$HOME/.nvm/versions/node/v12.1.0/bin:$PATH"
+
+# LaTeX
+export PATH="/Library/TeX/texbin:$PATH"
+
+# Emacs (Doom)
+export PATH="$HOME/.emacs.d/bin:$PATH"
+
+# LLVM
+export PATH="/usr/local/opt/llvm/bin:$PATH"
+
+# Go
+export GOROOT=/usr/local/Cellar/go/1.13.4/libexec
+export GOPATH=$HOME/Documents/dev/go
+export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
 
 # MacOS (Brew) Emacs
-PATH="/Applications/Emacs.app/Contents/MacOS/bin:$PATH"
+# export PATH="/Applications/Emacs.app/Contents/MacOS/bin:$PATH"
+
 
 ## Work --------------------------------------------
-PATH="$HOME/Documents/lake/lake-hydra/bin:$PATH"
+# PATH="$HOME/Documents/lake/lake-hydra/bin:$PATH"
 

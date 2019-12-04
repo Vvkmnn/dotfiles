@@ -1,5 +1,15 @@
 #!/usr/bin/env bash
 
+
+# Vim {{{
+# Vim Diff
+vd()
+{
+vim -d -- "$1" "$2"
+}
+
+# }}}
+
 # Hydra {{{
 
 cloud_hydra() {
