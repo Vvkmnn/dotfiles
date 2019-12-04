@@ -1,6 +1,0 @@
-{
-  "load_extensions": {
-    "nbextensions_configurator/tree_tab/main": true,
-    "nb_conda/tree": true
-  }
-}
