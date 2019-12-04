@@ -1,11 +1,10 @@
-
-
-# spectacle - hotkey window management
-brew cask install spectacle
-
+#!/usr/bin/env bash
 
 # Mac App Store via Mas
-# brew install mas
+brew install mas
+
+# Spark - Email by Readdle
+mas install 1176895641 
 
 # Install App Store Xcode
 # mas install 497799835
@@ -19,5 +18,5 @@ brew cask install spectacle
 # Install Simplenote
 # mas install 692867256
 
-# Install Pocket
+# Pocket
 mas install 568494494

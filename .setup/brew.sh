@@ -112,6 +112,10 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
         # Tmux {{{
 	brew install tmux
+
+	# spectacle - hotkey window management
+	# brew cask install spectacle
+
         # }}}
 
 
@@ -167,6 +171,11 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 	# hunspell - the best spell checker
 	brew install hunspell
         
+	# ispell - another spellchecker (for Doom Emacs), with English
+	brew install ispell --with-lang-en
+
+	# direnv - directory based environments via .envrc with unloading
+	brew install direnv
 
 	# Postinstall and Cleanup
 	brew doctor
