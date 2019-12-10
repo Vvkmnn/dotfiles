@@ -1,4 +1,7 @@
 # Editor
+## Brew
+alias cask='brew cask' # Shorthand
+
 ## Vim
 alias v='vim' # Vim
 alias pvim="vim -u NONE -N" # Vanilla Vim

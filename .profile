@@ -63,7 +63,7 @@ export CPPFLAGS="-I/usr/local/opt/llvm/include"
 
 ## personal
 export PATH="$HOME/Documents/bin:$PATH"
-export PATH="$HOME/Documents/dev/github-jack:$PATH"
+# export PATH="$HOME/Documents/dev/github-jack:$PATH"
 
 ## brew
 export PATH="/usr/local/sbin:$PATH"
