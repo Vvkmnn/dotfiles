@@ -61,44 +61,60 @@ export CPPFLAGS="-I/usr/local/opt/llvm/include"
 
 ## Path --------------------------------------------
 
-## personal
-export PATH="$HOME/Documents/bin:$PATH"
-# export PATH="$HOME/Documents/dev/github-jack:$PATH"
+case "$(uname -s)" in
 
-## brew
-export PATH="/usr/local/sbin:$PATH"
+       Darwin)
+        echo '[¬_¬] Loading macOS environment...'
 
-## openSSL
-export PATH="/usr/local/opt/openssl/bin:$PATH"
+        ## Personal ----------------------------------------
+        export PATH="$HOME/Documents/bin:$PATH"
+        # export PATH="$HOME/Documents/dev/github-jack:$PATH"
 
-# Python (Anaconda)
-# PATH="$HOME/.miniconda/bin:$PATH"
-export PATH="/usr/local/anaconda3/bin:$PATH"
+        ## brew
+        export PATH="/usr/local/sbin:$PATH"
 
-# Ruby
-export PATH="/usr/local/opt/ruby/bin:$PATH"
+        ## openSSL
+        export PATH="/usr/local/opt/openssl/bin:$PATH"
 
-# Node (NVM)
-# export PATH="$HOME/.nvm/versions/node/v12.1.0/bin:$PATH"
+        # Python (Anaconda)
+        # PATH="$HOME/.miniconda/bin:$PATH"
+        export PATH="/usr/local/anaconda3/bin:$PATH"
 
-# LaTeX
-export PATH="/Library/TeX/texbin:$PATH"
+        # Ruby
+        export PATH="/usr/local/opt/ruby/bin:$PATH"
 
-# Emacs (Doom)
-export PATH="$HOME/.emacs.d/bin:$PATH"
+        # Node (NVM)
+        # export PATH="$HOME/.nvm/versions/node/v12.1.0/bin:$PATH"
 
-# LLVM
-export PATH="/usr/local/opt/llvm/bin:$PATH"
+        # LaTeX
+        export PATH="/Library/TeX/texbin:$PATH"
 
-# Go
-export GOROOT=/usr/local/Cellar/go/1.13.4/libexec
-export GOPATH=$HOME/Documents/dev/go
-export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
+        # Emacs (Doom)
+        export PATH="$HOME/.emacs.d/bin:$PATH"
 
-# MacOS (Brew) Emacs
-# export PATH="/Applications/Emacs.app/Contents/MacOS/bin:$PATH"
+        # LLVM
+        export PATH="/usr/local/opt/llvm/bin:$PATH"
+
+        # Go
+        export GOROOT=/usr/local/Cellar/go/1.13.4/libexec
+        export GOPATH=$HOME/Documents/dev/go
+        export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
+
+        # MacOS (Brew) Emacs
+        # export PATH="/Applications/Emacs.app/Contents/MacOS/bin:$PATH"
 
 
-## Work --------------------------------------------
-# PATH="$HOME/Documents/lake/lake-hydra/bin:$PATH"
+        ## Work --------------------------------------------
+        # PATH="$HOME/Documents/lake/lake-hydra/bin:$PATH"
+        ;;
+
+        Linux)
+         echo '[¬_¬] Loading Linux environment...'
+         ;;
+
+        CYGWIN*|MINGW32*|MSYS*|MINGW*)
+         echo '[¬_¬] Loading Windows environment...'
+         ;;
+
+esac
 
