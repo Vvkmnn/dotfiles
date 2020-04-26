@@ -1,3 +1,4 @@
 /usr/local/anaconda3
 /usr/local/anaconda3/envs/AlphaZeroAI
 /usr/local/anaconda3/envs/zipline
+/usr/local/anaconda3/envs/balena

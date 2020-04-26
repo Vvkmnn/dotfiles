@@ -177,6 +177,9 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 	# direnv - directory based environments via .envrc with unloading
 	brew install direnv
 
+	# tldr - simplified man page
+	brew install direnv
+
 	# Postinstall and Cleanup
 	brew doctor
 	brew cleanup
