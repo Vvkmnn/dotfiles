@@ -8,7 +8,8 @@ brew install emacs-mac --with-spacemacs-icon --with-natural-title-bar
 git clone https://github.com/hlissner/doom-emacs ~/.emacs.d
 
 # Doom Config
-got clone git@github.com:Vvkmnn/v.doom.d.git ~/.config/doom
+git clone git@github.com:Vvkmnn/v.doom.d.git ~/.config/doom
+ln -s ~/.config/doom/ ~/.v.doom.d 
 
 # Doom Refresh
 doom refresh

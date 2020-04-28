@@ -29,14 +29,15 @@
 ## Environment -------------------------------------
 
 export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
 export BROWSER=open
 export TERM=xterm-256color
 export ARCHEY_LOGO_FILE=$HOME/.logo
 
 # Prompt
-export PURE_PROMPT_SYMBOL="ॐ "
-export PROMPT_CHAR="?"
-export RPROMPT='v@%M %(?,%F{green}[-_-]%f,%F{red}[ಠ_ಠ]%f)'
+# export PURE_PROMPT_SYMBOL="ॐ "
+# export PROMPT_CHAR="?"
+# export RPROMPT='v@%M %(?,%F{green}[-_-]%f,%F{red}[ಠ_ಠ]%f)'
 
 # Editor
 export EDITOR='vim' # $VISUAL is the default for most shells
@@ -91,6 +92,14 @@ case "$(uname -s)" in
 
         # Emacs (Doom)
         export PATH="$HOME/.emacs.d/bin:$PATH"
+        
+        # Clang
+        export CPATH=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include
+
+        # Go
+        export GOROOT=/usr/local/Cellar/go/1.13.4/libexec
+        export GOPATH=$HOME/Documents/dev/go
+        export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
 
         # LLVM
         export PATH="/usr/local/opt/llvm/bin:$PATH"
@@ -117,4 +126,7 @@ case "$(uname -s)" in
          ;;
 
 esac
+
+## Fun ---------------------------------------------
+export PATH="/Applications/Alacritty.app/Contents/MacOS/:$PATH"
 

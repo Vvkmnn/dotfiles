@@ -14,7 +14,7 @@ zsh-completions
 # brew install zplug
 
 # Add Zsh to list of approved shells
-ssudo sh -c "echo $(which zsh) >> /etc/shells"
+sudo sh -c "echo $(which zsh) >> /etc/shells"
 
 # Switch Default Shell to Zsh
 chsh -s $(which zsh)
