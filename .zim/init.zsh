@@ -1,0 +1,37 @@
+zimfw() { source /home/v/.zim/zimfw.zsh "${@}" }
+fpath=(/home/v/.zim/modules/git/functions /home/v/.zim/modules/utility/functions /home/v/.zim/modules/git-info/functions /home/v/.zim/modules/git/functions /home/v/.zim/modules/utility/functions /home/v/.zim/modules/git-info/functions /home/v/.zim/modules/git/functions /home/v/.zim/modules/utility/functions /home/v/.zim/modules/git-info/functions ${fpath})
+autoload -Uz git-alias-lookup git-branch-current git-branch-delete-interactive git-dir git-ignore-add git-root git-stash-clear-interactive git-stash-recover git-submodule-move git-submodule-remove mkcd mkpw coalesce git-action git-info git-alias-lookup git-branch-current git-branch-delete-interactive git-dir git-ignore-add git-root git-stash-clear-interactive git-stash-recover git-submodule-move git-submodule-remove mkcd mkpw coalesce git-action git-info git-alias-lookup git-branch-current git-branch-delete-interactive git-dir git-ignore-add git-root git-stash-clear-interactive git-stash-recover git-submodule-move git-submodule-remove mkcd mkpw coalesce git-action git-info
+source /home/v/.zim/modules/environment/init.zsh
+source /home/v/.zim/modules/git/init.zsh
+source /home/v/.zim/modules/input/init.zsh
+source /home/v/.zim/modules/termtitle/init.zsh
+source /home/v/.zim/modules/utility/init.zsh
+source /home/v/.zim/modules/steeef/steeef.zsh-theme
+source /home/v/.zim/modules/minimal/minimal.zsh-theme
+source /home/v/.zim/modules/zsh-completions/zsh-completions.plugin.zsh
+source /home/v/.zim/modules/completion/init.zsh
+source /home/v/.zim/modules/zsh-autosuggestions/zsh-autosuggestions.zsh
+source /home/v/.zim/modules/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source /home/v/.zim/modules/zsh-history-substring-search/zsh-history-substring-search.zsh
+source /home/v/.zim/modules/environment/init.zsh
+source /home/v/.zim/modules/git/init.zsh
+source /home/v/.zim/modules/input/init.zsh
+source /home/v/.zim/modules/termtitle/init.zsh
+source /home/v/.zim/modules/utility/init.zsh
+source /home/v/.zim/modules/steeef/steeef.zsh-theme
+source /home/v/.zim/modules/zsh-completions/zsh-completions.plugin.zsh
+source /home/v/.zim/modules/completion/init.zsh
+source /home/v/.zim/modules/zsh-autosuggestions/zsh-autosuggestions.zsh
+source /home/v/.zim/modules/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source /home/v/.zim/modules/zsh-history-substring-search/zsh-history-substring-search.zsh
+source /home/v/.zim/modules/environment/init.zsh
+source /home/v/.zim/modules/git/init.zsh
+source /home/v/.zim/modules/input/init.zsh
+source /home/v/.zim/modules/termtitle/init.zsh
+source /home/v/.zim/modules/utility/init.zsh
+source /home/v/.zim/modules/steeef/steeef.zsh-theme
+source /home/v/.zim/modules/zsh-completions/zsh-completions.plugin.zsh
+source /home/v/.zim/modules/completion/init.zsh
+source /home/v/.zim/modules/zsh-autosuggestions/zsh-autosuggestions.zsh
+source /home/v/.zim/modules/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source /home/v/.zim/modules/zsh-history-substring-search/zsh-history-substring-search.zsh

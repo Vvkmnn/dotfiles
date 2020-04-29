@@ -1,28 +1,59 @@
-# Editor
-## Brew
-alias cask='brew cask' # Shorthand
+#! /usr/bin/env bash
+
+# Dotfiles
+alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
 
 ## Vim
 alias v='vim' # Vim
 alias pvim="vim -u NONE -N" # Vanilla Vim
 alias v!='vim -u NONE'
-# alias v?='vim -d'
-# alias nvim='nvim' # NeoVim
 
-## Emacs
-alias e='emacsclient --c' #Emacs
+case "$(uname -s)" in
+       
+       # macOS
+       Darwin)
 
-# Dotfiles
-alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
-# alias d="dotfiles"
-# alias ds="dotfiles status"
-# alias d+="dotfiles add"
-# alias d-="dotfiles remove"
-# alias d?="dotfiles commit"
+        # Editor
+        ## Brew
+        alias cask='brew cask' # Shorthand
 
-# Game
-alias _game="brew services stop yabai && brew services stop skhd"
-alias _normal="brew services start yabai && brew services start skhd"
+        # alias v?='vim -d'
+        # alias nvim='nvim' # NeoVim
 
-# REPLs
-alias snek='python3'
+        ## Emacs
+        alias e='emacsclient --c' #Emacs
+
+        # alias d="dotfiles"
+        # alias ds="dotfiles status"
+        # alias d+="dotfiles add"
+        # alias d-="dotfiles remove"
+        # alias d?="dotfiles commit"
+
+        # Game
+        alias _game="brew services stop yabai && brew services stop skhd"
+        alias _normal="brew services start yabai && brew services start skhd"
+
+        # REPLs
+        alias snek='python3'
+
+         ;;
+
+        # Debian
+        Linux)
+
+        ## Emacs
+        alias e='
+        export DISPLAY=:0.0
+        export LIBGL_ALWAYS_INDIRECT=1
+        setxkbmap -layout us
+        setsid emacs
+        '
+
+
+         ;;
+
+        CYGWIN*|MINGW32*|MSYS*|MINGW*)
+         ;;
+
+esac
+

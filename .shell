@@ -1,9 +1,4 @@
-#! /usr/bin/env bash
-# Vivek Menon - vvkmnn.xyz
-
-# ##################################################
-# ##################################################
-# ######################        ####################
+#! /usr/bin/env bash # Vivek Menon - vvkmnn.xyz # ################################################## # ################################################## # ######################        ####################
 # ################                    ##############
 # #############                #######   ###########
 # ###########                #########     #########
@@ -27,53 +22,341 @@
 # ##################################################
 # ##################################################
 
-# ZSH
-if [ -n "$ZSH_VERSION" ]; then
+case "$(uname -s)" in
+   Linux)
 
-	# autoenv
-	# source $(brew --prefix autoenv)/activate.sh
+    # Zsh
+    if [ -n "$ZSH_VERSION" ]; then
 
-	## gcloud
-	if [ -f "${HOME}/.google/path.zsh.inc" ]; then source "${HOME}/.google/path.zsh.inc"; fi
-	if [ -f "${HOME}/.google/completion.zsh.inc" ]; then source "${HOME}/.google/completion.zsh.inc"; fi
+       # Start configuration added by Zim install {{{
+       #
+       # User configuration sourced by interactive shells
+       #
 
-	## fzf
-	[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+       # -----------------
+       # Zsh configuration
+       # -----------------
 
-	## z
-	. /usr/local/etc/profile.d/z.sh
+       #
+       # History
+       #
 
-	## nvm
-	export NVM_DIR="$HOME/.nvm"
-	[ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh" # This loads nvm
+       # Remove older command from the history if a duplicate is to be added.
+       setopt HIST_IGNORE_ALL_DUPS
 
-	# conda
-	# !! Contents within this block are managed by 'conda init' !!
-	__conda_setup="$('/usr/local/anaconda3/bin/conda' 'shell.zsh' 'hook' 2>/dev/null)"
-	if [ $? -eq 0 ]; then
-		eval "$__conda_setup"
-	else
-		if [ -f "/usr/local/anaconda3/etc/profile.d/conda.sh" ]; then
-			. "/usr/local/anaconda3/etc/profile.d/conda.sh"
-		else
-			export PATH="/usr/local/anaconda3/bin:$PATH"
-		fi
-	fi
-	unset __conda_setup
+       #
+       # Input/output
+       #
 
-	# Zim (Framework)
-	export ZIM_HOME=${ZDOTDIR:-${HOME}}/.zim                     # Define zim location
-	[[ -s ${ZIM_HOME}/init.zsh ]] && source ${ZIM_HOME}/init.zsh # Start zim
+       # Set editor default keymap to emacs (`-e`) or vi (`-v`)
+       bindkey -e
 
-# elif [ -n "$BASH_VERSION" ]; then
-# 	# assume Bash
-# 	echo "fuckbash"
+       # Prompt for spelling correction of commands.
+       #setopt CORRECT
 
-# FiSH
-# elif [ -n "$FISH_VERSION" ]; then
-# 	set fish_greeting
+       # Customize spelling correction prompt.
+       #SPROMPT='zsh: correct %F{red}%R%f to %F{green}%r%f [nyae]? '
 
-# else
-# 	echo "fuckthis"
-# 	# asume something else
-fi
+       # Remove path separator from WORDCHARS.
+       WORDCHARS=${WORDCHARS//[\/]}
+
+
+       # --------------------
+       # Module configuration
+       # --------------------
+
+       #
+       # completion
+       #
+
+       # Set a custom path for the completion dump file.
+       # If none is provided, the default ${ZDOTDIR:-${HOME}}/.zcompdump is used.
+       #zstyle ':zim:completion' dumpfile "${ZDOTDIR:-${HOME}}/.zcompdump-${ZSH_VERSION}"
+
+       #
+       # git
+       #
+
+       # Set a custom prefix for the generated aliases. The default prefix is 'G'.
+       #zstyle ':zim:git' aliases-prefix 'g'
+
+       #
+       # input
+       #
+
+       # Append `../` to your input for each `.` you type after an initial `..`
+       #zstyle ':zim:input' double-dot-expand yes
+
+       #
+       # termtitle
+       #
+
+       # Set a custom terminal title format using prompt expansion escape sequences.
+       # See http://zsh.sourceforge.net/Doc/Release/Prompt-Expansion.html#Simple-Prompt-Escapes
+       # If none is provided, the default '%n@%m: %~' is used.
+       #zstyle ':zim:termtitle' format '%1~'
+
+       #
+       # zsh-autosuggestions
+       #
+
+       # Customize the style that the suggestions are shown with.
+       # See https://github.com/zsh-users/zsh-autosuggestions/blob/master/README.md#suggestion-highlight-style
+       #ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=10'
+
+       #
+       # zsh-syntax-highlighting
+       #
+
+       # Set what highlighters will be used.
+       # See https://github.com/zsh-users/zsh-syntax-highlighting/blob/master/docs/highlighters.md
+       ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
+
+       # Customize the main highlighter styles.
+       # See https://github.com/zsh-users/zsh-syntax-highlighting/blob/master/docs/highlighters/main.md#how-to-tweak-it
+       #typeset -A ZSH_HIGHLIGHT_STYLES
+       #ZSH_HIGHLIGHT_STYLES[comment]='fg=10'
+
+       # ------------------
+       # Initialize modules
+       # ------------------
+
+       if [[ ${ZIM_HOME}/init.zsh -ot ${ZDOTDIR:-${HOME}}/.zimrc ]]; then
+         # Update static initialization script if it's outdated, before sourcing it
+         source ${ZIM_HOME}/zimfw.zsh init -q
+       fi
+       source ${ZIM_HOME}/init.zsh
+
+       # ------------------------------
+       # Post-init module configuration
+       # ------------------------------
+
+       #
+       # zsh-history-substring-search
+       #
+
+       # Bind ^[[A/^[[B manually so up/down works both before and after zle-line-init
+       bindkey '^[[A' history-substring-search-up
+       bindkey '^[[B' history-substring-search-down
+
+       # Bind up and down keys
+       zmodload -F zsh/terminfo +p:terminfo
+       if [[ -n ${terminfo[kcuu1]} && -n ${terminfo[kcud1]} ]]; then
+         bindkey ${terminfo[kcuu1]} history-substring-search-up
+         bindkey ${terminfo[kcud1]} history-substring-search-down
+       fi
+
+       bindkey '^P' history-substring-search-up
+       bindkey '^N' history-substring-search-down
+       bindkey -M vicmd 'k' history-substring-search-up
+       bindkey -M vicmd 'j' history-substring-search-down
+       # }}} End configuration added by Zim install
+
+    # Bash
+    elif [ -n "$BASH_VERSION" ]; then
+
+      # ~/.bashrc: executed by bash(1) for non-login shells.
+       
+       # If not running interactively, don't do anything
+       case $- in
+           *i*) ;;
+             *) return;;
+       esac
+       
+       # don't put duplicate lines or lines starting with space in the history.
+       # See bash(1) for more options
+       HISTCONTROL=ignoreboth
+       
+       # append to the history file, don't overwrite it
+       shopt -s histappend
+       
+       # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
+       HISTSIZE=1000
+       HISTFILESIZE=2000
+       
+       # check the window size after each command and, if necessary,
+       # update the values of LINES and COLUMNS.
+       shopt -s checkwinsize
+       
+       # If set, the pattern "**" used in a pathname expansion context will
+       # match all files and zero or more directories and subdirectories.
+       #shopt -s globstar
+       
+       # make less more friendly for non-text input files, see lesspipe(1)
+       #[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+       
+       # set variable identifying the chroot you work in (used in the prompt below)
+       if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
+           debian_chroot=$(cat /etc/debian_chroot)
+       fi
+       
+       # set a fancy prompt (non-color, unless we know we "want" color)
+       case "$TERM" in
+           xterm-color|*-256color) color_prompt=yes;;
+       esac
+       
+       # uncomment for a colored prompt, if the terminal has the capability; turned
+       # off by default to not distract the user: the focus in a terminal window
+       # should be on the output of commands, not on the prompt
+       #force_color_prompt=yes
+       
+       if [ -n "$force_color_prompt" ]; then
+           if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
+       	# We have color support; assume it's compliant with Ecma-48
+       	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
+       	# a case would tend to support setf rather than setaf.)
+       	color_prompt=yes
+           else
+       	color_prompt=
+           fi
+       fi
+       
+       if [ "$color_prompt" = yes ]; then
+           PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+       else
+           PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+       fi
+       unset color_prompt force_color_prompt
+       
+       # If this is an xterm set the title to user@host:dir
+       case "$TERM" in
+       xterm*|rxvt*)
+           PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+           ;;
+       *)
+           ;;
+       esac
+       
+       # enable color support of ls and also add handy aliases
+       if [ -x /usr/bin/dircolors ]; then
+           test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+           alias ls='ls --color=auto'
+           #alias dir='dir --color=auto'
+           #alias vdir='vdir --color=auto'
+       
+           #alias grep='grep --color=auto'
+           #alias fgrep='fgrep --color=auto'
+           #alias egrep='egrep --color=auto'
+       fi
+       
+       # colored GCC warnings and errors
+       #export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
+       
+       # some more ls aliases
+       #alias ll='ls -l'
+       #alias la='ls -A'
+       #alias l='ls -CF'
+       
+       # Alias definitions.
+       # You may want to put all your additions into a separate file like
+       # ~/.bash_aliases, instead of adding them here directly.
+       # See /usr/share/doc/bash-doc/examples in the bash-doc package.
+       
+       if [ -f ~/.bash_aliases ]; then
+           . ~/.bash_aliases
+       fi
+       
+       # enable programmable completion features (you don't need to enable
+       # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
+       # sources /etc/bash.bashrc).
+       if ! shopt -oq posix; then
+         if [ -f /usr/share/bash-completion/bash_completion ]; then
+           . /usr/share/bash-completion/bash_completion
+         elif [ -f /etc/bash_completion ]; then
+           . /etc/bash_completion
+         fi
+       fi
+
+    # FiSH
+    elif [ -n "$FISH_VERSION" ]; then
+    #   set fish_greeting
+
+    else
+    #   echo "fuckthis"
+    #   # asume something else
+    fi
+
+   ;;
+
+   Darwin)
+     echo '[¬_¬] Loading Darwin shell...'
+    # autoenv
+    # source $(brew --prefix autoenv)/activate.sh
+
+    ## gcloud
+    if [ -f "${HOME}/.google/path.zsh.inc" ]; then source "${HOME}/.google/path.zsh.inc"; fi
+    if [ -f "${HOME}/.google/completion.zsh.inc" ]; then source "${HOME}/.google/completion.zsh.inc"; fi
+
+    ## fzf
+    [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+    ## z
+    . /usr/local/etc/profile.d/z.sh
+
+    ## nvm
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh" # This loads nvm
+
+    ## nvm
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
+
+    # conda
+    # !! Contents within this block are managed by 'conda init' !!
+    __conda_setup="$('/usr/local/anaconda3/bin/conda' 'shell.zsh' 'hook' 2>/dev/null)"
+    if [ $? -eq 0 ]; then
+            eval "$__conda_setup"
+    else
+            if [ -f "/usr/local/anaconda3/etc/profile.d/conda.sh" ]; then
+                    . "/usr/local/anaconda3/etc/profile.d/conda.sh"
+            else
+                    export PATH="/usr/local/anaconda3/bin:$PATH"
+            fi
+    fi
+    unset __conda_setup
+
+    # Zim (Framework)
+    export ZIM_HOME=${ZDOTDIR:-${HOME}}/.zim                     # Define zim location
+    [[ -s ${ZIM_HOME}/init.zsh ]] && source ${ZIM_HOME}/init.zsh # Start zim
+
+    # elif [ -n "$BASH_VERSION" ]; then
+    # 	# assume Bash
+    # 	echo "fuckbash"
+
+    # FiSH
+    # elif [ -n "$FISH_VERSION" ]; then
+    # 	set fish_greeting
+
+    # else
+    # 	echo "fuckthis"
+    # 	# asume something else
+    # fi
+
+    # conda 
+    # !! Contents within this block are managed by 'conda init' !!
+    __conda_setup="$('/usr/local/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+    if [ $? -eq 0 ]; then
+        eval "$__conda_setup"
+    else
+        if [ -f "/usr/local/anaconda3/etc/profile.d/conda.sh" ]; then
+            . "/usr/local/anaconda3/etc/profile.d/conda.sh"
+        else
+            export PATH="/usr/local/anaconda3/bin:$PATH"
+        fi
+    fi
+    unset __conda_setup
+    
+    # Zim (Framework)
+    export ZIM_HOME=${ZDOTDIR:-${HOME}}/.zim # Define zim location
+    [[ -s ${ZIM_HOME}/init.zsh ]] && source ${ZIM_HOME}/init.zsh # Start zim
+    ;;
+
+    Linux)
+     echo '[¬_¬] Loading Linux shell...'
+     ;;
+
+    CYGWIN*|MINGW32*|MSYS*|MINGW*)
+     echo '[¬_¬] '
+     ;;
+
+esac

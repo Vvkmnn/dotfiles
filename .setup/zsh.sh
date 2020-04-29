@@ -1,22 +1,29 @@
 #!/usr/bin/env bash
 # Install and switch to Zshell
 
-# Ask for the administrator password upfront.
-sudo -v
+case "$(uname -s)" in
+   Linux)
 
-# Install Zsh
-brew install zsh 
+   curl -fsSL https://raw.githubusercontent.com/zimfw/install/master/install.zsh | zsh
 
-# Install Zsh completions
-zsh-completions
+   ;;
+Darwin)
+    # Ask for the administrator password upfront.
+    sudo -v
 
-# Install Zplug
-# brew install zplug
+    # Install Zsh
+    brew install zsh 
 
-# Add Zsh to list of approved shells
-sudo sh -c "echo $(which zsh) >> /etc/shells"
+    # Install Zsh completions
+    zsh-completions
 
-# Switch Default Shell to Zsh
-chsh -s $(which zsh)
+    # Install Zplug
+    # brew install zplug
 
+    # Add Zsh to list of approved shells
+    sudo sh -c "echo $(which zsh) >> /etc/shells"
 
+    # Switch Default Shell to Zsh
+    chsh -s $(which zsh)
+ ;;
+esac

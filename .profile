@@ -1,3 +1,4 @@
+#! /usr/bin/env bash
 # Vivek Menon - vvkmnn.xyz
 
 # ##################################################
@@ -42,32 +43,35 @@ export ARCHEY_LOGO_FILE=$HOME/.logo
 # Editor
 export EDITOR='vim' # $VISUAL is the default for most shells
 export EDITOR=$VISUAL # $EDITOR in case
-export ALTERNATE_EDITOR='vim'                                        # $EDITOR if all else fails
-
-# Brew
-export HOMEBREW_CASK_OPTS="--appdir=/Applications"
-
-# openSSL
-export LDFLAGS="-L/usr/local/opt/openssl/lib"
-export CPPFLAGS="-I/usr/local/opt/openssl/include"
-export PKG_CONFIG_PATH="/usr/local/opt/openssl/lib/pkgconfig"
-
-# llvm
-export LDFLAGS="-L/usr/local/opt/llvm/lib"
-export CPPFLAGS="-I/usr/local/opt/llvm/include"
-
-# emacs/pdf-tools
-# export PKG_CONFIG_PATH=/usr/local/Cellar/zlib/1.2.8/lib/pkgconfig:/usr/local/lib/pkgconfig:/opt/X11/lib/pkgconfig
-
-
-## Path --------------------------------------------
+export ALTERNATE_EDITOR='vim' # $EDITOR if all else fails
 
 case "$(uname -s)" in
 
        Darwin)
         echo '[¬_¬] Loading macOS environment...'
+        # Prompt
+        export PURE_PROMPT_SYMBOL="ॐ "
+        export PROMPT_CHAR="?"
+        export RPROMPT='v@%M %(?,%F{green}[-_-]%f,%F{red}[ಠ_ಠ]%f)'
+
+        # Brew
+        export HOMEBREW_CASK_OPTS="--appdir=/Applications"
+
+        # openSSL
+        export LDFLAGS="-L/usr/local/opt/openssl/lib"
+        export CPPFLAGS="-I/usr/local/opt/openssl/include"
+        export PKG_CONFIG_PATH="/usr/local/opt/openssl/lib/pkgconfig"
+
+        # llvm
+        export LDFLAGS="-L/usr/local/opt/llvm/lib"
+        export CPPFLAGS="-I/usr/local/opt/llvm/include"
+
+        # emacs/pdf-tools
+        # export PKG_CONFIG_PATH=/usr/local/Cellar/zlib/1.2.8/lib/pkgconfig:/usr/local/lib/pkgconfig:/opt/X11/lib/pkgconfig
+
 
         ## Personal ----------------------------------------
+
         export PATH="$HOME/Documents/bin:$PATH"
         # export PATH="$HOME/Documents/dev/github-jack:$PATH"
 
@@ -112,13 +116,17 @@ case "$(uname -s)" in
         # MacOS (Brew) Emacs
         # export PATH="/Applications/Emacs.app/Contents/MacOS/bin:$PATH"
 
+        ## Fun ---------------------------------------------
+        export PATH="/Applications/Alacritty.app/Contents/MacOS/:$PATH"
 
         ## Work --------------------------------------------
         # PATH="$HOME/Documents/lake/lake-hydra/bin:$PATH"
         ;;
 
         Linux)
-         echo '[¬_¬] Loading Linux environment...'
+
+        # Emacs (Doom)
+        export PATH="$HOME/.emacs.d/bin:$PATH"
          ;;
 
         CYGWIN*|MINGW32*|MSYS*|MINGW*)
@@ -126,7 +134,4 @@ case "$(uname -s)" in
          ;;
 
 esac
-
-## Fun ---------------------------------------------
-export PATH="/Applications/Alacritty.app/Contents/MacOS/:$PATH"
 
