@@ -7,7 +7,6 @@ source /home/v/.zim/modules/input/init.zsh
 source /home/v/.zim/modules/termtitle/init.zsh
 source /home/v/.zim/modules/utility/init.zsh
 source /home/v/.zim/modules/steeef/steeef.zsh-theme
-source /home/v/.zim/modules/minimal/minimal.zsh-theme
 source /home/v/.zim/modules/zsh-completions/zsh-completions.plugin.zsh
 source /home/v/.zim/modules/completion/init.zsh
 source /home/v/.zim/modules/zsh-autosuggestions/zsh-autosuggestions.zsh

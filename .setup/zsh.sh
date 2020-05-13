@@ -4,7 +4,19 @@
 case "$(uname -s)" in
    Linux)
 
-   curl -fsSL https://raw.githubusercontent.com/zimfw/install/master/install.zsh | zsh
+   # Install ZSh
+   sudo apt-get -y install zsh curl
+
+   # Zimfw
+   # NOTE Appends templates from github.com/zimfw/zimfw; already included in
+   # dotfiles
+   # curl -fsSL https://raw.githubusercontent.com/zimfw/install/master/install.zsh | zsh
+   
+   # Switch Default Shell to Zsh
+   chsh -s $(which zsh)
+
+   # Update Zim
+   zimfw update
 
    ;;
 Darwin)
@@ -25,5 +37,6 @@ Darwin)
 
     # Switch Default Shell to Zsh
     chsh -s $(which zsh)
- ;;
+
+    ;;
 esac
