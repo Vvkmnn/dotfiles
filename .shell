@@ -26,9 +26,14 @@ case "$(uname -s)" in
    Linux)
 
     # Zsh
-    if [ -n "$ZSH_VERSION" ]; then
+    if [ -n "$BASH_VERSION" ]; then
+        true
 
-       # Start configuration added by Zim install {{{
+    # ZSH
+    elif [ -n "$ZSH_VERSION" ]; then
+
+       # https://github.com/zimfw/zimfw
+       # Zim {{{
        #
        # User configuration sourced by interactive shells
        #
@@ -269,15 +274,15 @@ case "$(uname -s)" in
 
     # FiSH
     elif [ -n "$FISH_VERSION" ]; then
+        echo "TODO fish"
     #   set fish_greeting
 
     else
-    #   echo "fuckthis"
+        echo "TODO .shell"
     #   # asume something else
     fi
 
-   ;;
-
+    ;;
    Darwin)
      echo '[¬_¬] Loading Darwin shell...'
     # autoenv
