@@ -77,6 +77,7 @@ chmod +x ./setup/<example>.sh
 ./.setup/<example>.sh
 
 # useful
+capslock.sh
 zsh.sh
 brave.sh
 emacs.sh
