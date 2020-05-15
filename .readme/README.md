@@ -69,11 +69,17 @@ zimfw update
 ## Setup`
 
 ```
-# guided
+# TODO guided
 ./.setup/setup.sh
 
 # individual
+chmod +x ./setup/<example>.sh
 ./.setup/<example>.sh
+
+# useful
+zsh.sh
+brave.sh
+emacs.sh
 ```
 
 ## Backup
