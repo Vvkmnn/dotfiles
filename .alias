@@ -41,13 +41,17 @@ case "$(uname -s)" in
         # Debian
         Linux)
 
+        # Python 3
+        alias python='/usr/bin/python3'
+        alias pip='/usr/bin/pip3'
+
         ## Emacs
-        alias e='
-        export DISPLAY=:0.0
-        export LIBGL_ALWAYS_INDIRECT=1
-        setxkbmap -layout us
-        setsid emacs
-        '
+        ## alias e='
+        ## export DISPLAY=:0.0
+        ## export LIBGL_ALWAYS_INDIRECT=1
+        ## setxkbmap -layout us
+        ## setsid emacs
+        ## '
 
 
          ;;

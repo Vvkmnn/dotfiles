@@ -3,16 +3,39 @@
 
 case "$(uname -s)" in
    Linux)
-   # Ubuntu PPA
+   # Ubuntu PPA (snapshot)
    # https://launchpad.net/~ubuntu-elisp/+archive/ubuntu/ppa
-   sudo add-apt-repository -y ppa:ubuntu-elisp/ppa && sudo apt-get update
+   sudo add-apt-repository -y ppa:ubuntu-elisp/ppa 
+       
+   # Doom Dependencies 
+   # Ubuntu 20.04
+   sudo apt-get update
+   sudo apt install -y git fd-find ripgrep emacs python-is-python3
 
-   # Install Dependencies for Doom Emacs
-   sudo apt install -y git fd-find ripgrep emacs-snapshot
+   # Python3 Dependencies
+   # pip install black pyflakes isort pipenv nosetests pytest
 
-   # Doom Emacs
-    git clone --depth 1 https://github.com/hlissner/doom-emacs ~/.emacs.d
-    ~/.emacs.d/bin/doom install
+   # Cleanup
+   sudo apt autoremove
+
+   # Doom Emacs 
+   # included in dotfiles with submodule init && submodule update
+   # git clone --depth 1 https://github.com/hlissner/doom-emacs ~/.emacs.d
+   # ~/.emacs.d/bin/doom install
+
+   # Available from dotfiles and path
+   # .config/doom .emacs.d
+
+   # Install packages
+   doom install
+
+   # Compile
+   doom compile :core
+
+   # Cleanup
+   doom sync
+   doom doctor
+
     
    ;;
 Darwin)
