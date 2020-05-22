@@ -76,11 +76,14 @@ zimfw update
 chmod +x ./setup/<example>.sh
 ./.setup/<example>.sh
 
-# useful
+# core
+vim.sh   # Editor
+zsh.sh   # Shell
+brave.sh # Browser
+emacs.sh # IDE
+
+# utility
 capslock.sh
-zsh.sh
-brave.sh
-emacs.sh
 ```
 
 ## Backup

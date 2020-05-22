@@ -10,7 +10,10 @@ case "$(uname -s)" in
    # Doom Dependencies 
    # Ubuntu 20.04
    sudo apt-get update
-   sudo apt install -y git fd-find ripgrep emacs python-is-python3
+   sudo apt install -y git fd-find ripgrep emacs python-is-python3 shellcheck snapd
+
+   # Snapd for shfmt
+   sudo snap install shfmt
 
    # Python3 Dependencies
    # pip install black pyflakes isort pipenv nosetests pytest
@@ -71,3 +74,4 @@ Darwin)
 
     ;;
 esac
+npm i -g bash-language-server

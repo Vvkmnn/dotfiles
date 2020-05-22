@@ -35,11 +35,6 @@ export BROWSER=open
 export TERM=xterm-256color
 export ARCHEY_LOGO_FILE=$HOME/.logo
 
-# Prompt
-# export PURE_PROMPT_SYMBOL="ॐ "
-# export PROMPT_CHAR="?"
-# export RPROMPT='v@%M %(?,%F{green}[-_-]%f,%F{red}[ಠ_ಠ]%f)'
-
 # Editor
 export EDITOR='vim' # $VISUAL is the default for most shells
 export EDITOR=$VISUAL # $EDITOR in case
@@ -125,8 +120,19 @@ case "$(uname -s)" in
 
         Linux)
 
+        # Zsh Prompt
+        export SPACESHIP_CHAR_SYMBOL="ॐ  "
+        PACESHIP_PROMPT_SEPARATE_LINE=false
+        PACESHIP_PROMPT_ADD_NEWLINE=false
+
+        SPACESHIP_TIME_SHOW=true
+        # export PROMPT_CHAR="?"
+        # export RPROMPT='v@%M %(?,%F{green}[-_-]%f,%F{red}[ಠ_ಠ]%f)'
+
+
         # Source Xorg settings
-        . ~/.xprofile
+        # TODO Causes some dangerous bugs
+        # . ~/.xprofile
 
         # Python
         export PATH="$HOME/.local/bin:$PATH"

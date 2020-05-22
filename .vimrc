@@ -105,7 +105,7 @@ Plug 'vim-airline/vim-airline-themes'
 call plug#end()
 
 " -----------------------------
-" Bindings
+" Keybinds
 " -----------------------------
 
 " Space as Leader
@@ -128,6 +128,14 @@ nnoremap <C-L> <C-W><C-L>
 
 " Sort in Visual Mode
 vnoremap <Leader>s :sort<CR>
+
+" -----------------------------
+" Commands
+" -----------------------------
+
+" W for sudo :w
+" NOTE https://www.cyberciti.biz/faq/vim-vi-text-editor-save-file-without-root-permission/
+command W :execute ':silent w !sudo tee % > /dev/null' | :edit!
 
 " -----------------------------
 " Defaults
@@ -232,10 +240,9 @@ filetype off
 filetype plugin indent on
 syntax on
 
-" macOS clipboard 
-if $TMUX == ''
-    set clipboard+=unnamed
-end
+" Clipboard
+set clipboard=unnamed,unnamedplus
+set mouse=a
 
 " Set background
 set background=dark
