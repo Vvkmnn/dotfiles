@@ -26,22 +26,16 @@
 # ##################                ################
 # ##################################################
 # ##################################################
+
 # Path
-if [ -f ~/.profile ]; then
-    . ~/.profile
-fi
+[ -f ~/.profile ] && . ~/.profile
 
 # Aliases
-if [ -f ~/.alias ]; then
-    . ~/.alias
-fi
+[ -f ~/.alias ] && . ~/.alias
 
 # Functions
-if [ -f ~/.functions ]; then
-    . ~/.functions
-fi
+[ -f ~/.functions ] && . ~/.functions
 
 # Shell
-if [ -f ~/.shell ]; then
-    . ~/.shell
-fi
+[ -f ~/.shell ] && . ~/.shell
+

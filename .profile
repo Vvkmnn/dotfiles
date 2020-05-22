@@ -34,122 +34,118 @@ export LC_ALL=en_US.UTF-8
 export BROWSER=open
 export TERM=xterm-256color
 export ARCHEY_LOGO_FILE=$HOME/.logo
-
 # Editor
-export EDITOR='vim' # $VISUAL is the default for most shells
-export EDITOR=$VISUAL # $EDITOR in case
+export EDITOR='vim'           # $VISUAL is the default for most shells
+export EDITOR=$VISUAL         # $EDITOR in case
 export ALTERNATE_EDITOR='vim' # $EDITOR if all else fails
 
+# Prompt
+export RPROMPT='v@%M %(?,%F{green}[-_-]%f,%F{red}[ಠ_ಠ]%f)'
+
+# OS=$(uname -s)
 case "$(uname -s)" in
+Linux)
+	echo '[¬_¬]...'
 
-       Darwin)
-        echo '[¬_¬] Loading macOS environment...'
-        # Prompt
-        export PURE_PROMPT_SYMBOL="ॐ "
-        export PROMPT_CHAR="?"
-        export RPROMPT='v@%M %(?,%F{green}[-_-]%f,%F{red}[ಠ_ಠ]%f)'
+	# Zsh Theme
+	if [ -f ~/.theme ] && . ~/.theme
 
-        # Brew
-        export HOMEBREW_CASK_OPTS="--appdir=/Applications"
+	# Source Xorg settings
+	# TODO Causes some dangerous bugs
+	if [ -f ~/.xprofile ] && . ~/.xprofile
 
-        # openSSL
-        export LDFLAGS="-L/usr/local/opt/openssl/lib"
-        export CPPFLAGS="-I/usr/local/opt/openssl/include"
-        export PKG_CONFIG_PATH="/usr/local/opt/openssl/lib/pkgconfig"
+	# GO
+	export PATH="$HOME/go/bin:$PATH"
+	export GOPATH=$HOME/go/bin
 
-        # llvm
-        export LDFLAGS="-L/usr/local/opt/llvm/lib"
-        export CPPFLAGS="-I/usr/local/opt/llvm/include"
+	# Python
+	export PATH="$HOME/.local/bin:$PATH"
+	export PYTHONPATH=$HOME/.local/bin
 
-        # emacs/pdf-tools
-        # export PKG_CONFIG_PATH=/usr/local/Cellar/zlib/1.2.8/lib/pkgconfig:/usr/local/lib/pkgconfig:/opt/X11/lib/pkgconfig
+	# NVM
+	export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+	[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
 
+	# Emacs (Doom)
+	export PATH="$HOME/.emacs.d/bin:$PATH"
 
-        ## Personal ----------------------------------------
+	;;
 
-        export PATH="$HOME/Documents/bin:$PATH"
-        # export PATH="$HOME/Documents/dev/github-jack:$PATH"
+Darwin)
+	echo '[¬_¬] Loading macOS environment...'
+	# Prompt
+	export PURE_PROMPT_SYMBOL="ॐ "
 
-        ## brew
-        export PATH="/usr/local/sbin:$PATH"
+	# Brew
+	export HOMEBREW_CASK_OPTS="--appdir=/Applications"
 
-        ## openSSL
-        export PATH="/usr/local/opt/openssl/bin:$PATH"
+	# openSSL
+	export LDFLAGS="-L/usr/local/opt/openssl/lib"
+	export CPPFLAGS="-I/usr/local/opt/openssl/include"
+	export PKG_CONFIG_PATH="/usr/local/opt/openssl/lib/pkgconfig"
 
-        # Python (Anaconda)
-        # PATH="$HOME/.miniconda/bin:$PATH"
-        export PATH="/usr/local/anaconda3/bin:$PATH"
+	# llvm
+	export LDFLAGS="-L/usr/local/opt/llvm/lib"
+	export CPPFLAGS="-I/usr/local/opt/llvm/include"
 
-        # Ruby
-        export PATH="/usr/local/opt/ruby/bin:$PATH"
+	# emacs/pdf-tools
+	# export PKG_CONFIG_PATH=/usr/local/Cellar/zlib/1.2.8/lib/pkgconfig:/usr/local/lib/pkgconfig:/opt/X11/lib/pkgconfig
 
-        # Node (NVM)
-        # export PATH="$HOME/.nvm/versions/node/v12.1.0/bin:$PATH"
+	## Personal ----------------------------------------
 
-        # LaTeX
-        export PATH="/Library/TeX/texbin:$PATH"
+	export PATH="$HOME/Documents/bin:$PATH"
+	# export PATH="$HOME/Documents/dev/github-jack:$PATH"
 
-        # Emacs (Doom)
-        export PATH="$HOME/.emacs.d/bin:$PATH"
-        
-        # Clang
-        export CPATH=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include
+	## brew
+	export PATH="/usr/local/sbin:$PATH"
 
-        # Go
-        export GOROOT=/usr/local/Cellar/go/1.13.4/libexec
-        export GOPATH=$HOME/Documents/dev/go
-        export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
+	## openSSL
+	export PATH="/usr/local/opt/openssl/bin:$PATH"
 
-        # LLVM
-        export PATH="/usr/local/opt/llvm/bin:$PATH"
+	# Python (Anaconda)
+	# PATH="$HOME/.miniconda/bin:$PATH"
+	export PATH="/usr/local/anaconda3/bin:$PATH"
 
-        # Go
-        export GOROOT=/usr/local/Cellar/go/1.13.4/libexec
-        export GOPATH=$HOME/Documents/dev/go
-        export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
+	# Ruby
+	export PATH="/usr/local/opt/ruby/bin:$PATH"
 
-        # MacOS (Brew) Emacs
-        # export PATH="/Applications/Emacs.app/Contents/MacOS/bin:$PATH"
+	# Node (NVM)
+	# export PATH="$HOME/.nvm/versions/node/v12.1.0/bin:$PATH"
 
-        ## Fun ---------------------------------------------
-        export PATH="/Applications/Alacritty.app/Contents/MacOS/:$PATH"
+	# LaTeX
+	export PATH="/Library/TeX/texbin:$PATH"
 
-        ## Work --------------------------------------------
-        # PATH="$HOME/Documents/lake/lake-hydra/bin:$PATH"
-        ;;
+	# Emacs (Doom)
+	export PATH="$HOME/.emacs.d/bin:$PATH"
 
-        Linux)
+	# Clang
+	export CPATH=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include
 
-        # Zsh Prompt
-        export SPACESHIP_CHAR_SYMBOL="ॐ  "
-        PACESHIP_PROMPT_SEPARATE_LINE=false
-        PACESHIP_PROMPT_ADD_NEWLINE=false
+	# Go
+	export GOROOT=/usr/local/Cellar/go/1.13.4/libexec
+	export GOPATH=$HOME/Documents/dev/go
+	export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
 
-        SPACESHIP_TIME_SHOW=true
-        # export PROMPT_CHAR="?"
-        # export RPROMPT='v@%M %(?,%F{green}[-_-]%f,%F{red}[ಠ_ಠ]%f)'
+	# LLVM
+	export PATH="/usr/local/opt/llvm/bin:$PATH"
 
+	# Go
+	export GOROOT=/usr/local/Cellar/go/1.13.4/libexec
+	export GOPATH=$HOME/Documents/dev/go
+	export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
 
-        # Source Xorg settings
-        # TODO Causes some dangerous bugs
-        # . ~/.xprofile
+	# MacOS (Brew) Emacs
+	# export PATH="/Applications/Emacs.app/Contents/MacOS/bin:$PATH"
 
-        # Python
-        export PATH="$HOME/.local/bin:$PATH"
-        export PYTHONPATH=$HOME/.local/bin
+	## Fun ---------------------------------------------
+	export PATH="/Applications/Alacritty.app/Contents/MacOS/:$PATH"
 
-        # NVM
-        export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+	## Work --------------------------------------------
+	# PATH="$HOME/Documents/lake/lake-hydra/bin:$PATH"
+	;;
 
-        # Emacs (Doom)
-        export PATH="$HOME/.emacs.d/bin:$PATH"
-
-         ;;
-
-        CYGWIN*|MINGW32*|MSYS*|MINGW*)
-         echo '[¬_¬] Loading Windows environment...'
-         ;;
+CYGWIN* | MINGW32* | MSYS* | MINGW*)
+	echo '[¬_¬] Loading Windows environment...'
+	;;
 
 esac
-
