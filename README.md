@@ -30,10 +30,6 @@
 
 [A](https://medium.com/@webprolific/getting-started-with-dotfiles-43c3602fd789) [dotfile](https://dotfiles.github.io) [repo](https://news.ycombinator.com/item?id=11070797).
 
-## Screenshot
-
-![](./assets/screenshot.png)
-
 ## Pre Install
 
 ``` sh
