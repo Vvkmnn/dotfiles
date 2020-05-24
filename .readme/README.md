@@ -34,11 +34,11 @@
 
 ![](screenshot.png)
 
-## Setup
+## Pre Install
 
 ``` sh
 # debian
-sudo apt get install git zsh curl
+sudo apt get install git zsh curl vim
 ```
 
 ## Install
@@ -61,14 +61,6 @@ dotfiles config status.showUntrackedFiles no
 ## Post Install
 
 ```
-# zsh
-chsh -s $(which zsh)
-zimfw update
-```
-
-## Setup`
-
-```
 # TODO guided
 ./.setup/setup.sh
 
@@ -84,6 +76,7 @@ emacs.sh # IDE
 
 # utility
 capslock.sh
+ubuntu.sh
 ```
 
 ## Backup
