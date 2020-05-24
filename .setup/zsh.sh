@@ -15,8 +15,8 @@ case "$(uname -s)" in
    # Switch Default Shell to Zsh
    chsh -s $(which zsh)
 
-   # Update Zim
-   zimfw update
+   # Restart into Zsh
+   exec zsh -l
 
    ;;
 Darwin)
