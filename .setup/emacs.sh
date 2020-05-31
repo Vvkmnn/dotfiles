@@ -5,21 +5,12 @@ case "$(uname -s)" in
    Linux)
    # Ubuntu PPA (snapshot)
    # https://launchpad.net/~ubuntu-elisp/+archive/ubuntu/ppa
-   sudo add-apt-repository -y ppa:ubuntu-elisp/ppa 
+   # sudo add-apt-repository -y ppa:ubuntu-elisp/ppa 
        
    # Doom Dependencies 
    # Ubuntu 20.04
    sudo apt-get update
-   sudo apt install -y git fd-find ripgrep emacs python-is-python3 shellcheck snapd
-
-   # Snapd for shfmt
-   sudo snap install shfmt
-
-   # Python3 Dependencies
-   # pip install black pyflakes isort pipenv nosetests pytest
-
-   # Cleanup
-   sudo apt autoremove
+   sudo apt install -y git fd-find ripgrep emacs python3-pip python-is-python3 shellcheck markdown python3-venv
 
    # Doom Emacs 
    # included in dotfiles with submodule init && submodule update
@@ -33,11 +24,20 @@ case "$(uname -s)" in
    doom install
 
    # Compile
-   doom compile :core
+   # doom compile :core
 
    # Cleanup
    doom sync
    doom doctor
+
+   # Python3 Dependencies
+   pip install black pyflakes isort pipenv pytest
+   
+   # Node Dependencies
+    npm i -g bash-language-server
+
+   # Cleanup
+   sudo apt autoremove
 
     
    ;;
@@ -74,4 +74,3 @@ Darwin)
 
     ;;
 esac
-npm i -g bash-language-server

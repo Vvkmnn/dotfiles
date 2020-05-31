@@ -11,7 +11,7 @@
 "     oMMMMMMMMMMMm/     :hM+    oMMMMMMMMMMMMMMM/  
 "     mMMMMMMMMMMM/    /mMMMs    yMMMMMMMMMMMMMMMh  
 "    `MMMMMMMMMMMMM/   :MMMMMs   hMMMMMMMMMMMMMMMm  
-"     NMMMMMMMMMMMMM:   /MMMMMs  mMMMMMMMMMMMMMMMd  
+"    `MMMMMMMMMMMMMM:   /MMMMMs  mMMMMMMMMMMMMMMMd  
 "     hMMMMMMMMMMMMMM:   /MMMMMs NMMMMMMMMMMMMMMMs  
 "     :MMMMMMMMMMMMMMM:   /MMMMMyMMMMMMMMMMMMMMMM-  
 "      hMMMMMMMMMMMMMMN:   /MMMMMMMMMMMMMMMMMMMMs   
@@ -24,7 +24,7 @@
 "                   `:+oyyhhhhyso/-`                
 "                                                    
 " © Vivek Menon
-" mail@vvkmnn.xyz 
+" v@vvkmnn.xyz 
 
 " -----------------------------
 " Plugins 
@@ -52,11 +52,11 @@ Plug 'sheerun/vim-polyglot'
 " Vim split navigation
 Plug 'tpope/vim-vinegar'
 
-"Tiling Window Manager
-" Plug 'spolu/dwm.vim'
+" Vim Tiling Window Manager
+Plug 'spolu/dwm.vim'
 
 " Golden Ratio
-Plug 'roman/golden-ratio'
+" Plug 'roman/golden-ratio'
 
 " Vim Fuzzy Find
 " Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
@@ -92,6 +92,12 @@ Plug 'dracula/vim'
 " Markdown Preview from Vi
 " Plug 'kannokanno/previm'
 
+" Matchit 
+Plug 'adelarsq/vim-matchit'
+
+" Vim Rainbow
+Plug 'frazrepo/vim-rainbow'
+
 " Open Default Browser
 Plug 'tyru/open-browser.vim'
 
@@ -101,8 +107,27 @@ Plug 'bling/vim-airline'
 " Vim Airline Themes (for Dracula)
 Plug 'vim-airline/vim-airline-themes'
 
+" Vim Lightline
+" Plug 'itchyny/lightline.vim'
+ 
 " Initialize/Install Plugin System
 call plug#end()
+
+" -----------------------------
+" Autoload
+" -----------------------------
+
+" VimPlug
+autocmd VimEnter *
+  \  if len(filter(copy(g:plugs), '!isdirectory(v:val.dir)'))
+  \|   PlugInstall --sync | q
+  \| endif
+
+" vim-commentary
+autocmd FileType apache setlocal commentstring=#\ %s
+
+" vim-rainbow
+au FileType c,cpp,objc,objcpp call rainbow#load()
 
 " -----------------------------
 " Keybinds

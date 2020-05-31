@@ -56,12 +56,17 @@ dotfiles config status.showUntrackedFiles no
 
 ## Post Install
 
+
 ```
+# submodules
+dotfiles submodule init
+dotfiles submodule update
+
 # TODO guided
 ./.setup/setup.sh
 
 # individual
-chmod +x ./setup/<example>.sh
+chmod +x ./setup/*.sh
 ./.setup/<example>.sh
 
 # core

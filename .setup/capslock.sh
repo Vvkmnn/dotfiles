@@ -9,7 +9,7 @@ case "$(uname -s)" in
    sudo apt install -y xcape
 
    ;;
-Darwin)
+   Darwin)
 
-    ;;
+   ;;
 esac

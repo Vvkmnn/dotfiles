@@ -47,9 +47,11 @@ case "$(uname -s)" in
         source ~/.zplug/init.zsh
 
         zplug "plugins/git",   from:oh-my-zsh
-        zplug "paulirish/git-open", as:plugin
+        # zplug "paulirish/git-open", as:plugin
         zplug "zsh-users/zsh-syntax-highlighting"
         zplug "zsh-users/zsh-completions"
+        # zplug "zpm-zsh/autoenv"
+        # zplug "zpm-zsh/colors"
         zplug "knu/z", use:z.sh
         zplug "denysdovhan/spaceship-prompt", use:spaceship.zsh, from:github, as:theme
 

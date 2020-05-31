@@ -71,10 +71,10 @@ set_from_resource $ws19 i3-wm.workspace.19.name "19"
 # Launcher dialogs
 ###############################################################################
 
-## Launch // Terminal // <> Enter ##
+## Launch // Terminal // <> Space ##
 bindsym $mod+Return exec /usr/bin/x-terminal-emulator
 
-## Launch // Browser // <><Shift> Enter ##
+## Launch // Browser // <><Shift> Space ##
 bindsym $mod+Shift+Return exec gtk-launch $(xdg-settings get default-web-browser)
 
 ## Launch // Editor // <><Ctrl> Enter ##
@@ -132,15 +132,15 @@ bindsym $mod+8 workspace number $ws8
 bindsym $mod+9 workspace number $ws9
 bindsym $mod+0 workspace number $ws10
 ## Navigate // Workspace 11 - 19 // <><Ctrl> 0..9 ##
-bindsym $mod+Ctrl+1 workspace number $ws11
-bindsym $mod+Ctrl+2 workspace number $ws12
-bindsym $mod+Ctrl+3 workspace number $ws13
-bindsym $mod+Ctrl+4 workspace number $ws14
-bindsym $mod+Ctrl+5 workspace number $ws15
-bindsym $mod+Ctrl+6 workspace number $ws16
-bindsym $mod+Ctrl+7 workspace number $ws17
-bindsym $mod+Ctrl+8 workspace number $ws18
-bindsym $mod+Ctrl+9 workspace number $ws19
+# bindsym $mod+Ctrl+1 workspace number $ws11
+# bindsym $mod+Ctrl+2 workspace number $ws12
+# bindsym $mod+Ctrl+3 workspace number $ws13
+# bindsym $mod+Ctrl+4 workspace number $ws14
+# bindsym $mod+Ctrl+5 workspace number $ws15
+# bindsym $mod+Ctrl+6 workspace number $ws16
+# bindsym $mod+Ctrl+7 workspace number $ws17
+# bindsym $mod+Ctrl+8 workspace number $ws18
+# bindsym $mod+Ctrl+9 workspace number $ws19
 
 ## Navigate // Next Workspace // <> Tab ##
 bindsym $mod+Tab workspace next
@@ -198,26 +198,27 @@ bindsym $mod+Shift+t focus mode_toggle
 bindsym $mod+t layout toggle tabbed splith splitv
 
 ## Modify // Move Window to Workspace 1 - 10 // <><Shift> 0..9 ##
-bindsym $mod+Shift+1 move container to workspace number $ws1
-bindsym $mod+Shift+2 move container to workspace number $ws2
-bindsym $mod+Shift+3 move container to workspace number $ws3
-bindsym $mod+Shift+4 move container to workspace number $ws4
-bindsym $mod+Shift+5 move container to workspace number $ws5
-bindsym $mod+Shift+6 move container to workspace number $ws6
-bindsym $mod+Shift+7 move container to workspace number $ws7
-bindsym $mod+Shift+8 move container to workspace number $ws8
-bindsym $mod+Shift+9 move container to workspace number $ws9
-bindsym $mod+Shift+0 move container to workspace number $ws10
+bindsym $mod+Ctrl+1 move container to workspace number $ws1
+bindsym $mod+Ctrl+2 move container to workspace number $ws2
+bindsym $mod+Ctrl+3 move container to workspace number $ws3
+bindsym $mod+Ctrl+4 move container to workspace number $ws4
+bindsym $mod+Ctrl+5 move container to workspace number $ws5
+bindsym $mod+Ctrl+6 move container to workspace number $ws6
+bindsym $mod+Ctrl+7 move container to workspace number $ws7
+bindsym $mod+Ctrl+8 move container to workspace number $ws8
+bindsym $mod+Ctrl+9 move container to workspace number $ws9
+bindsym $mod+Ctrl+0 move container to workspace number $ws10
+
 ## Modify // Move Window to Workspace 11 - 19// <><Ctrl><Shift> 0..9 ##
-bindsym $mod+Shift+Ctrl+1 move container to workspace number $ws11
-bindsym $mod+Shift+Ctrl+2 move container to workspace number $ws12
-bindsym $mod+Shift+Ctrl+3 move container to workspace number $ws13
-bindsym $mod+Shift+Ctrl+4 move container to workspace number $ws14
-bindsym $mod+Shift+Ctrl+5 move container to workspace number $ws15
-bindsym $mod+Shift+Ctrl+6 move container to workspace number $ws16
-bindsym $mod+Shift+Ctrl+7 move container to workspace number $ws17
-bindsym $mod+Shift+Ctrl+8 move container to workspace number $ws18
-bindsym $mod+Shift+Ctrl+9 move container to workspace number $ws19
+# bindsym $mod+Shift+Ctrl+1 move container to workspace number $ws11
+# bindsym $mod+Shift+Ctrl+2 move container to workspace number $ws12
+# bindsym $mod+Shift+Ctrl+3 move container to workspace number $ws13
+# bindsym $mod+Shift+Ctrl+4 move container to workspace number $ws14
+# bindsym $mod+Shift+Ctrl+5 move container to workspace number $ws15
+# bindsym $mod+Shift+Ctrl+6 move container to workspace number $ws16
+# bindsym $mod+Shift+Ctrl+7 move container to workspace number $ws17
+# bindsym $mod+Shift+Ctrl+8 move container to workspace number $ws18
+# bindsym $mod+Shift+Ctrl+9 move container to workspace number $ws19
 
 # move focused container to workspace, move to workspace
 ## Modify // Carry Window to Workspace 1 - 10// <><Alt> 0..9 ##
@@ -251,11 +252,11 @@ hide_edge_borders smart
 # Session Management
 ###############################################################################
 
-## Session // Exit App // <> w #
-bindsym $mod+w [con_id="__focused__"] kill
+## Session // Exit App // <Ctrl> w #
+bindsym $mod+Ctrl+w [con_id="__focused__"] kill
 
-## Session // Terminate App // <><Ctrl> q ##
-bindsym $mod+Ctrl+q [con_id="__focused__"] exec --no-startup-id kill -9 $(xdotool getwindowfocus getwindowpid)
+## Session // Terminate App // <Ctrl> q ##
+bindsym Ctrl+w [con_id="__focused__"] exec --no-startup-id kill -9 $(xdotool getwindowfocus getwindowpid)
 
 ## Session // Reload i3 Config // <><Shift> c ##
 bindsym $mod+Shift+c reload
@@ -280,12 +281,12 @@ set_from_resource $i3-wm.program.shutdown i3-wm.program.shutdown /usr/bin/gnome-
 bindsym $mod+Shift+p exec $i3-wm.program.shutdown
 
 ## Session // Lock Screen // <> Escape ##
-set_from_resource $i3-wm.program.lock i3-wm.program.lock dbus-send --type=method_call --dest=org.gnome.ScreenSaver /org/gnome/ScreenSaver org.gnome.ScreenSaver.Lock
-bindsym $mod+Escape exec $i3-wm.program.lock
+# set_from_resource $i3-wm.program.lock i3-wm.program.lock dbus-send --type=method_call --dest=org.gnome.ScreenSaver /org/gnome/ScreenSaver org.gnome.ScreenSaver.Lock
+# bindsym $mod+Escape exec $i3-wm.program.lock
 
 ## Session // Sleep // <><Shift> s ##
-set_from_resource $i3-wm.program.sleep i3-wm.program.sleep systemctl suspend
-bindsym $mod+Shift+s exec $i3-wm.program.sleep
+# set_from_resource $i3-wm.program.sleep i3-wm.program.sleep systemctl suspend
+# bindsym $mod+Shift+s exec $i3-wm.program.sleep
 
 ###############################################################################
 # System Management
@@ -387,8 +388,8 @@ default_border pixel $i3-wm.window.border.size
 default_floating_border pixel $i3-wm.floatingwindow.border.size
 
 # Specify the distance between windows in pixels. (i3-gaps)
-set_from_resource $i3-wm.gaps.inner.size i3-wm.gaps.inner.size 5
-set_from_resource $i3-wm.gaps.outer.size i3-wm.gaps.outer.size 0
+set_from_resource $i3-wm.gaps.inner.size i3-wm.gaps.inner.size 10
+set_from_resource $i3-wm.gaps.outer.size i3-wm.gaps.outer.size 10
 gaps inner $i3-wm.gaps.inner.size
 gaps outer $i3-wm.gaps.outer.size
 
@@ -409,8 +410,8 @@ popup_during_fullscreen $i3-wm.gaps.popup_during_fullscreen
 ###############################################################################
 
 # Create variables from Xresources for i3's look.
-set_from_resource $focused.color.border i3-wm.client.focused.color.border "#002b36"
-set_from_resource $focused.color.background i3-wm.client.focused.color.background "#586e75"
+set_from_resource $focused.color.border i3-wm.client.focused.color.border "#DC143C"
+set_from_resource $focused.color.background i3-wm.client.focused.color.background "#DC143C"
 set_from_resource $focused.color.text i3-wm.client.focused.color.text "#fdf6e3"
 set_from_resource $focused.color.indicator i3-wm.client.focused.color.indicator "#268bd2"
 set_from_resource $focused.color.child_border i3-wm.client.focused.color.child_border
