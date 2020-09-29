@@ -100,9 +100,9 @@ bindsym $mod+Ctrl+space exec $i3-wm.program.launcher.window
 set_from_resource $i3-wm.program.help i3-wm.program.help /usr/bin/remontoire-toggle
 bindsym $mod+Shift+question exec --no-startup-id $i3-wm.program.help
 
-## Launch // File Search // <><Alt> Space ##
+## Launch // File Search // <><Ctrl> f ##
 set_from_resource $i3-wm.program.file_search i3-wm.program.file_search rofi -show find -modi find:/usr/share/rofi/modi/finder.sh
-bindsym $mod+$alt+space exec $i3-wm.program.file_search
+bindsym $mod+Ctrl+f exec $i3-wm.program.file_search
 
 ###############################################################################
 # Window and Workspace Navigation
@@ -252,11 +252,11 @@ hide_edge_borders smart
 # Session Management
 ###############################################################################
 
-## Session // Exit App // <Ctrl> w #
+## Session // Exit App // <>><Ctrl> w ##
 bindsym $mod+Ctrl+w [con_id="__focused__"] kill
 
-## Session // Terminate App // <Ctrl> q ##
-bindsym Ctrl+w [con_id="__focused__"] exec --no-startup-id kill -9 $(xdotool getwindowfocus getwindowpid)
+## Session // Terminate App // <>> w ##
+bindsym $mod+w [con_id="__focused__"] exec --no-startup-id kill -9 $(xdotool getwindowfocus getwindowpid)
 
 ## Session // Reload i3 Config // <><Shift> c ##
 bindsym $mod+Shift+c reload

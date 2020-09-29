@@ -40,6 +40,9 @@ case "$(uname -s)" in
 
         # Debian
         Linux)
+        
+        # Nautilus
+        alias open='nautilus .'
 
         # Python 3
         alias python='/usr/bin/python3'

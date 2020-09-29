@@ -38,4 +38,3 @@
 
 # Shell
 [ -f ~/.shell ] && . ~/.shell
-
