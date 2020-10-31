@@ -41,6 +41,8 @@ export ALTERNATE_EDITOR='vim' # $EDITOR if all else fails
 
 # Prompt
 export RPROMPT='v@%M %(?,%F{green}[-_-]%f,%F{red}[ಠ_ಠ]%f)'
+export PROMPT='ॐ'
+
 
 # OS=$(uname -s)
 # case "$(uname -s)" in
@@ -132,7 +134,7 @@ export RPROMPT='v@%M %(?,%F{green}[-_-]%f,%F{red}[ಠ_ಠ]%f)'
 
 # Source Xorg settings
 # TODO Causes some dangerous bugs
-[ -f ~/.xprofile ] && . ~/.xprofile
+# [ -f ~/.xprofile ] && . ~/.xprofile
 
 # GO
 export PATH="$HOME/go/bin:$PATH"

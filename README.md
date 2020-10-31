@@ -34,7 +34,7 @@
 
 ``` sh
 # debian
-sudo apt get install git zsh curl vim
+sudo apt get install git zsh curl vim python3-pip
 ```
 
 ## Install
@@ -46,16 +46,24 @@ cat ~/.ssh/id_rsa.pub
 
 # github
 alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
-dotfiles stash
 git clone --bare git@github.com:Vvkmnn/dotfiles.git --branch <device> $HOME/.dotfiles
+dotfiles stash
 dotfiles checkout
 
 # optional
 dotfiles config status.showUntrackedFiles no
 ```
 
-## Post Install
+## Backup
 
+```
+cd
+mkdir -p .backup && \
+dotfiles checkout 2>&1 | egrep "\s+\." | awk {'print $1'} | \
+xargs -I{} mv {} .backup/{}
+```
+
+## Post Install
 
 ```
 # submodules
@@ -72,25 +80,15 @@ chmod +x ./setup/*.sh
 # core
 vim.sh   # Editor
 zsh.sh   # Shell
-brave.sh # Browser
 emacs.sh # IDE
+#brave.sh # Browser TODO Opera
 
 # utility
 capslock.sh
-ubuntu.sh
-```
-
-## Backup
-
-```
-cd
-mkdir -p .backup && \
-dotfiles checkout 2>&1 | egrep "\s+\." | awk {'print $1'} | \
-xargs -I{} mv {} .backup/{}
+debian.sh
 ```
 
 ## Update
-
 
 ``` sh
 # combined

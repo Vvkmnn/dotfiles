@@ -3,14 +3,21 @@
 
 case "$(uname -s)" in
    Linux)
-   # Ubuntu PPA (snapshot)
-   # https://launchpad.net/~ubuntu-elisp/+archive/ubuntu/ppa
-   # sudo add-apt-repository -y ppa:ubuntu-elisp/ppa 
-       
-   # Doom Dependencies 
-   # Ubuntu 20.04
+   # Debian
+   # Emacs 27 
+   # Ubuntu PPA (snapshot://willschenk.com/articles/2020/upgrading_emacs_on_debian/ 
+   sudo apt-get install software-properties-common wget
    sudo apt-get update
-   sudo apt install -y git fd-find ripgrep emacs python3-pip python-is-python3 shellcheck markdown python3-venv
+   
+   # Sign + Add
+   # wget -q http://emacs.ganneff.de/apt.key -O- | sudo apt-key add
+   # sudo add-apt-repository "deb http://emacs.ganneff.de/ buster main"
+   # sudo apt-get update
+       
+   # Install
+   sudo apt-get install emacs
+   # sudo apt-get install emacs-snapshot
+   sudo update-alternatives --config emacsclient
 
    # Doom Emacs 
    # included in dotfiles with submodule init && submodule update
@@ -31,14 +38,13 @@ case "$(uname -s)" in
    doom doctor
 
    # Python3 Dependencies
-   pip install black pyflakes isort pipenv pytest
-   
+   pip install black pyflakes isort pipenv pytest 'python-language-server[all]'
+
    # Node Dependencies
-    npm i -g bash-language-server
+   # npm i -g bash-language-server
 
    # Cleanup
    sudo apt autoremove
-
     
    ;;
 Darwin)

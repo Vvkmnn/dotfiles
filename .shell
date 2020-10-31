@@ -35,199 +35,69 @@ case "$(uname -s)" in
     # ZSH
     elif [ -n "$ZSH_VERSION" ]; then
 
-         ## ---[ ZSH Options ]----------------------------------------------------
-         ## General
-         setopt   NO_BEEP CLOBBER
-         setopt   MULTIOS CORRECT_ALL AUTO_CD
-         setopt   CD_ABLE_VARS
+        # zinit {{{
+        ### Preload
+        source ~/.zinit/bin/zinit.zsh
 
-         ## does not work together nicely with menu select:
-         setopt   BASH_AUTO_LIST
-         setopt   NO_LIST_AMBIGUOUS
+        ### Packages
+        # Two regular plugins loaded without investigating.
+        zinit light zsh-users/zsh-autosuggestions
+        zinit light zdharma/fast-syntax-highlighting
 
-         ## History
-         setopt   INC_APPEND_HISTORY EXTENDED_HISTORY HIST_IGNORE_DUPS HIST_FIND_NO_DUPS
-         setopt	 HIST_EXPIRE_DUPS_FIRST
-         #setopt  SHARE_HISTORY
-         setopt   HIST_REDUCE_BLANKS HIST_SAVE_NO_DUPS
-         HISTSIZE=1000
-         SAVEHIST=1000
-         HISTFILE=~/.zhistory
-         DIRSTACKSIZE=20
+        # Plugin history-search-multi-word loaded with investigating.
+        zinit load zdharma/history-search-multi-word
 
+        # Load the pure theme, with zsh-async library that's bundled with it.
+        zinit ice pick"async.zsh" src"pure.zsh"
+        zinit light sindresorhus/pure
 
-         ## ---[ Modules ]-------------------------------------------------------
-         zmodload -i zsh/complist
-         autoload -Uz compinit
-         compinit
+       # coreutils package from Homebrew; you can also use
+       # https://github.com/ogham/exa)
+       zinit ice atclone"dircolors -b LS_COLORS > c.zsh" atpull'%atclone' pick"c.zsh" nocompile'!'
+       zinit light trapd00r/LS_COLORS
 
+       # make'!...' -> run make before atclone & atpull
+       # zinit ice as"program" make'!' atclone'./direnv hook zsh > zhook.zsh' atpull'%atclone' src"zhook.zsh"
+       # zinit light direnv/direnv
+   
+       ### post load 
+        autoload -Uz _zinit
+        (( ${+_comps} )) && _comps[zinit]=_zinit
 
-         ## ---[ Completition system ]-------------------------------------------
+        # }}}
 
-         ## If unset, the cursor is set to the end of the word if completion is
-         ## started. Otherwise it stays there and completion is done from both ends.
-         ## This is needed for the prefix completer
-         setopt COMPLETE_IN_WORD
-         ## don't move the cursor to the end AFTER a completion was inserted
-         #setopt NO_ALWAYS_TO_END
-
-         #setopt LIST_PACKED
-
-         ## Prevents aliases on the command line from being internally substituted before completion is attempted.
-         ## The effect is to make the alias a distinct command for completion purposes.
-         ##setopt COMPLETE_ALIASES
-
-         ## general completion technique
-         ##zstyle ':completion:*' use-compctl false
-
-         ### which completers to use
-         ###
-         ### for use with expand-or-complete-prefix :
-         ###zstyle ':completion:*' completer _complete _match _list _ignored _correct _approximate
-         ### for use with expand-or-complete :
-         ##zstyle ':completion:*' completer _complete _match _prefix:-complete _list _correct _approximate _prefix:-approximate _ignored
-         ### _list anywhere to the completers always only lists completions on first tab
-
-         ##zstyle ':completion:*:prefix-complete:*' completer _complete
-         ##zstyle ':completion:*:prefix-approximate:*' completer _approximate
-
-         ### configure the match completer, more flexible of GLOB_COMPLETE
-         ### with original set to only it doesn't act like a `*' was inserted at the cursor position
-         ##zstyle ':completion:*:match:*' original only
-
-
-         ##zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
-
-         ### allow 2 erros in correct completer
-         ##zstyle ':completion:*:correct:*' max-errors 2 not-numeric
-         #### allow one error for every three characters typed in approximate completer
-         ##zstyle -e ':completion:*:approximate:*' max-errors 'reply=( $(( ($#PREFIX + $#SUFFIX) / 3 )) numeric )'
-
-         ## use menu selection with TAB-TAB
-         ##zstyle ':completion:*' menu select=1
-         ## zstyle ':completion:*' menu select=1 _list _complete _ignored _approximate
-
-         ## Add colors in completions
-         #eval $(dircolors)
-         #zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
-         #autoload colors && colors
-
-         ## Messages/warnings format
-         #zstyle ':completion:*' verbose yes
-         #zstyle ':completion:*:descriptions' format $'%{\e[01;31m%}---- %d%{\e[m%}'
-         #zstyle ':completion:*:messages' format $'%{\e[01;04;31m%}---- %d%{\e[m%}'
-         #zstyle ':completion:*:warnings' format $'%{\e[01;04;31m%}---- No matches for: %d%{\e[m%}'
-         #zstyle ':completion:*:corrections' format $'%{\e[0;31m%}%d (errors: %e)%{\e[m%}'
-         ## make completions appear below the description of which listing they come from
-         #zstyle ':completion:*' group-name ''
-         #zstyle ':completion:*:default' select-prompt %SScrolling active: current selection at %p%s
-
-         ### Some functions, like _apt and _dpkg, are very slow. You can use a cache in order to proxy the list of results:
-         #zstyle ':completion:*' use-cache on
-         #zstyle ':completion:*' cache-path ~/.zsh/cache
-
-         ## complete man pages
-         #zstyle ':completion:*:manuals' separate-sections true
-         #zstyle ':completion:*:manuals.(^1*)' insert-sections true
-
-         ## ignore uninteresting user accounts
-         #zstyle ':completion:*:*:*:users' ignored-patterns \
-         #    adm apache avahi avahi-autoipd backup bind bin cl-builder colord couchdb daemon dictd festival \
-         #    games gdm gnats haldaemon halt hplip ident identd irc jetty junkbust kernoops libuuid lightdm \
-         #    list lp mail mailnull man messagebus named news nfsnobody nobody nscd ntp operator pcap postfix \
-         #    postgres proxy pulse radvd rpc rpcuser rpm rtkit saned shutdown speech-dispatcher squid sshd \
-         #    statd stunnel4 sync sys syslog uucp usbmux vcsa vde2-net www-data xfs
-
-         ## ignore uninteresting hosts
-         #zstyle ':completion:*:*:*:hosts' ignored-patterns \
-         #    localhost loopback ip6-localhost ip6-loopback localhost6 localhost6.localdomain6 localhost.localdomain
-
-         ##hosts=( $(</etc/hosts) )
-         ## 1. All /etc/hosts hostnames are in autocomplete
-         ## 2. If you have a comment in /etc/hosts like #%foobar.domain,
-         ##    then foobar.domain will show up in autocomplete!
-         ##myhosts=( $(awk '/^[^#]/ {print $2 $3" "$4" "$5}' /etc/hosts | grep -v ip6- && grep "^#%" /etc/hosts | awk -F% '{print $2}') )
-         ##zstyle ':completion:*:(ping|mtr|ssh|scp|sftp):*' hosts $myhosts
-         ##zstyle ':completion:*:(ssh|scp|sftp):*' users $users
-
-
-         ## tab completion for PID :D
-         #zstyle ':completion:*:*:kill:*' menu yes select
-         #zstyle ':completion:*:kill:*' force-list always
-
-         ### If you end up using a directory as argument, this will remove the trailing slash (usefull in ln):
-         ##zstyle ':completion:*' squeeze-slashes true
-
-         ### cd will never select the parent directory (e.g.: cd ../<TAB>):
-         #zstyle ':completion:*:(cd|mv|cp):*' ignore-parents parent pwd
-
-         #zstyle ':completion:*:(ls|mv|cd|chdir|pushd|popd):*' special-dirs ..
-
-         ### ignores filenames already in the line
-         #zstyle ':completion:*:(rm|kill|diff):*' ignore-line yes
-
-         ### Ignore completion functions for commands you don't have:
-         #zstyle ':completion:*:functions' ignored-patterns '_*'
-
-         ### don't complete backup files as executables
-         #zstyle ':completion:*:complete:-command-::commands' ignored-patterns '*\~'
-
-         ## A newly added command will may not be found or will cause false
-         ## correction attempts, if you got auto-correction set. By setting the
-         ## following style, we force accept-line() to rehash, if it cannot
-         ## find the first word on the command line in the $command[] hash.
-         #zstyle ':acceptline:*' rehash true
-
-
-         # ---[ Window title ]--------------------------------------------------
-         case $TERM in
-             *xterm*|rxvt|rxvt-unicode|rxvt-256color|rxvt-unicode-256color|(dt|k|E)term)
-                 precmd () { print -Pn "\e]0;[%n@%M][%~]%#\a" }
-                 preexec () { print -Pn "\e]0;[%n@%M][%~]%# ($1)\a" }
-             ;;
-             screen)
-               precmd () {
-                 print -Pn "\e]83;title \"$1\"\a"
-                 print -Pn "\e]0;$TERM - (%L) [%n@%M]%# [%~]\a"
-               }
-               preexec () {
-                 print -Pn "\e]83;title \"$1\"\a"
-                 print -Pn "\e]0;$TERM - (%L) [%n@%M]%# [%~] ($1)\a"
-               }
-             ;;
-         esac
-
-        # zplug {{{
+        # # zplug {{{
 
         # Check if zplug is installed
-        if [[ ! -d ~/.zplug ]]; then
-          git clone https://github.com/zplug/zplug ~/.zplug
-          source ~/.zplug/init.zsh && zplug update --self
-        fi
+        # if [[ ! -d ~/.zplug ]]; then
+        #   git clone https://github.com/zplug/zplug ~/.zplug
+        #   source ~/.zplug/init.zsh && zplug update --self
+        # fi
 
         # Essential
-        source ~/.zplug/init.zsh
+        # source ~/.zplug/init.zsh
 
-        zplug "plugins/git",   from:oh-my-zsh
-        zplug "paulirish/git-open", as:plugin
-        zplug "zsh-users/zsh-syntax-highlighting"
-        zplug "zsh-users/zsh-completions"
-        # zplug "zpm-zsh/autoenv"
-        # zplug "zpm-zsh/colors"
-        zplug "knu/z", use:z.sh
-        zplug "denysdovhan/spaceship-prompt", use:spaceship.zsh, from:github, as:theme
+        # zplug "plugins/git",   from:oh-my-zsh
+        # zplug "paulirish/git-open", as:plugin
+        # zplug "zsh-users/zsh-syntax-highlighting"
+        # zplug "zsh-users/zsh-history-substring-search"
+        # zplug "zsh-users/zsh-completions"
+        # # zplug "zpm-zsh/autoenv"
+        # # zplug "zpm-zsh/colors"
+        # zplug "knu/z", use:z.sh
+        # zplug "denysdovhan/spaceship-prompt", use:spaceship.zsh, from:github, as:theme
 
-        # Install packages that have not been installed yet
-        if ! zplug check --verbose; then
-            printf "Install? [y/N]: "
-            if read -q; then
-                echo; zplug install
-            else
-                echo
-            fi
-        fi
+        # # Install packages that have not been installed yet
+        # if ! zplug check --verbose; then
+        #     printf "Install? [y/N]: "
+        #     if read -q; then
+        #         echo; zplug install
+        #     else
+        #         echo
+        #     fi
+        # fi
 
-        zplug load
+        # zplug load
         # }}}
         
 

@@ -1,4 +1,4 @@
-#! /usr/bin/env bash
+#install ! /usr/bin/env bash
 
 # Dotfiles
 alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
@@ -49,12 +49,12 @@ case "$(uname -s)" in
         alias pip='/usr/bin/pip3'
 
         ## Emacs
-        ## alias e='
-        ## export DISPLAY=:0.0
-        ## export LIBGL_ALWAYS_INDIRECT=1
-        ## setxkbmap -layout us
-        ## setsid emacs
-        ## '
+        alias e='
+        export DISPLAY=:0.0
+        export LIBGL_ALWAYS_INDIRECT=1
+        setxkbmap -layout us
+        setsid emacs
+        '
 
 
          ;;

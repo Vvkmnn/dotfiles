@@ -177,7 +177,7 @@
     email = mail@vvkmnn.xyz
 
 [credential]
-    helper = osxkeychain
+	helper = store --file ~/.git-credentials
 
 [commit]
     template = ~/.gitmessage
