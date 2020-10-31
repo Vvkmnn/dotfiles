@@ -177,7 +177,7 @@
     email = mail@vvkmnn.xyz
 
 [credential]
-	helper = store --file ~/.git-credentials
+	helper = cache --timeout=9000
 
 [commit]
     template = ~/.gitmessage

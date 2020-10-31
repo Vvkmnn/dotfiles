@@ -51,7 +51,9 @@ dotfiles stash
 dotfiles checkout
 
 # optional
+git config --global credential.helper 'cache --timeout=7777'
 dotfiles config status.showUntrackedFiles no
+
 ```
 
 ## Backup
@@ -84,8 +86,8 @@ emacs.sh # IDE
 #brave.sh # Browser TODO Opera
 
 # utility
-capslock.sh
 debian.sh
+capslock.sh
 ```
 
 ## Update
