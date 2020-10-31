@@ -41,10 +41,9 @@ export ALTERNATE_EDITOR='vim' # $EDITOR if all else fails
 
 # Prompt
 export RPROMPT='v@%M %(?,%F{green}[-_-]%f,%F{red}[ಠ_ಠ]%f)'
-export PROMPT='ॐ'
+export PROMPT=' ॐ  '
 
-
-# OS=$(uname -s)
+ #OS=$(uname -s)
 # case "$(uname -s)" in
 #     Linux)
 # ;;

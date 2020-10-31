@@ -40,9 +40,12 @@ case "$(uname -s)" in
         source ~/.zinit/bin/zinit.zsh
 
         ### Packages
-        # Two regular plugins loaded without investigating.
+        # regular plugins loaded without investigating.
         zinit light zsh-users/zsh-autosuggestions
         zinit light zdharma/fast-syntax-highlighting
+        # zinit load paulirish/git-open # TODO Fix; not working
+        zinit load knu/z
+        # zinit light denysdovhan/spaceship-prompt
 
         # Plugin history-search-multi-word loaded with investigating.
         zinit load zdharma/history-search-multi-word
