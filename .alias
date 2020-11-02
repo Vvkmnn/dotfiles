@@ -4,6 +4,9 @@
 alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
 alias d="dotfiles"
 
+## Update
+alias u="sudo apt update && sudo apt upgrade && sudo apt autoremove"
+
 ## Vim
 alias v='vim' # Vim
 alias pvim="vim -u NONE -N" # Vanilla Vim

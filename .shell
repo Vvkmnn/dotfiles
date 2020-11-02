@@ -61,9 +61,12 @@ case "$(uname -s)" in
         zinit ice from"gh-r" as"program"
         zinit load junegunn/fzf-bin
 
+        # fast async ++ spaceship?
+        zinit load agkozak/agkozak-zsh-prompt
+
         # Load the pure theme, with zsh-async library that's bundled with it.
-        zinit ice pick"async.zsh" src"pure.zsh"
-        zinit light sindresorhus/pure
+        # zinit ice pick"async.zsh" src"pure.zsh"
+        # zinit light sindresorhus/pure
 
         # TODO https://zdharma.org/zinit/wiki/GALLERY/
         # zinit ice wait'!' lucid nocompletions \
@@ -93,7 +96,22 @@ case "$(uname -s)" in
 
        bindkey $key[Up] up-line-or-history
        bindkey $key[Down] down-line-or-history
-        # }}}
+
+       # Exit status
+       # AGKOZAK_CUSTOM_PROMPT='%(!!?@?..%B%F{red}(%?%)%f%b )'
+       # Command execution time
+       # AGKOZAK_CUSTOM_PROMPT+='%(9V.%9v .)'
+       # Username and hostname
+       AGKOZAK_CUSTOM_PROMPT+='%(!.%S%B.%B%F{green})%n%1v%(!.%b%s.%f%b) '
+       # Path
+       AGKOZAK_CUSTOM_PROMPT+=$'%B%F{blue}%2v%f%b\n'
+       # Prompt character
+       AGKOZAK_CUSTOM_PROMPT+=' ॐ ' #'%(4V.:.%#) '
+       # Git status
+       AGKOZAK_CUSTOM_RPROMPT+='%(3V.%F{yellow}%3v%f.) '
+       # Bot face status
+       AGKOZAK_CUSTOM_RPROMPT+='v@%M %(?,%F{green}[-_-]%f,%F{red}[ಠ_ಠ]%f) ' 
+         #  }}}
 
         # # zplug {{{
 

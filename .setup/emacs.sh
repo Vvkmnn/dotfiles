@@ -80,3 +80,6 @@ Darwin)
 
     ;;
 esac
+npm install -g marked markdownlint
+sudo apt install aspell
+sudo apt-get install build-essential xz-utils curl
