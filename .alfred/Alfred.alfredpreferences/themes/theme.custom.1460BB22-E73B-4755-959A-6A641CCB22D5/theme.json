@@ -4,58 +4,58 @@
       "textSpacing" : 5,
       "subtext" : {
         "size" : 12,
-        "colorSelected" : "#FFFFFFC4",
+        "colorSelected" : "#FFFFFFCB",
         "font" : "System",
-        "color" : "#00000065"
+        "color" : "#FFFFFF7E"
       },
       "shortcut" : {
         "size" : 16,
         "colorSelected" : "#FFFFFFFF",
         "font" : "System",
-        "color" : "#480069FF"
+        "color" : "#FFFFFF7E"
       },
-      "backgroundSelected" : "#EC1B00FF",
+      "backgroundSelected" : "#C60000FF",
       "text" : {
         "size" : 18,
         "colorSelected" : "#FFFFFFFF",
         "font" : "System",
-        "color" : "#000000E5"
+        "color" : "#FFFFFFCB"
       },
       "iconPaddingHorizontal" : 4,
       "paddingVertical" : 3,
       "iconSize" : 40
     },
     "search" : {
-      "paddingVertical" : 4,
-      "background" : "#FFFFFF00",
-      "spacing" : 4,
+      "paddingVertical" : 5,
+      "background" : "#0000003E",
+      "spacing" : 8,
       "text" : {
         "size" : 34,
-        "colorSelected" : "#000000FF",
+        "colorSelected" : "#FFFFFFFF",
         "font" : "System Light",
-        "color" : "#000000FF"
+        "color" : "#FFFFFFFF"
       },
-      "backgroundSelected" : "#FFBAB8FF"
+      "backgroundSelected" : "#C60000FF"
     },
     "window" : {
-      "color" : "#FFFFFFE5",
-      "paddingHorizontal" : 0,
+      "color" : "#000000C6",
+      "paddingHorizontal" : 9,
       "width" : 559,
       "borderPadding" : 0,
       "borderColor" : "#0000007F",
-      "blur" : 19,
+      "blur" : 15,
       "roundness" : 3,
-      "paddingVertical" : 4
+      "paddingVertical" : 8
     },
     "credit" : "v",
     "separator" : {
-      "color" : "#CBCBCBF3",
+      "color" : "#A50000FF",
       "thickness" : 0
     },
     "scrollbar" : {
-      "color" : "#A9A9A9FF",
+      "color" : "#358188FF",
       "thickness" : 2
     },
-    "name" : "vAlfred"
+    "name" : "vAlfred2"
   }
 }

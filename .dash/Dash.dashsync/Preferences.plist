@@ -169,7 +169,7 @@
 			<key>evhub/coconut</key>
 			<dict>
 				<key>date</key>
-				<date>2018-11-15T17:20:17Z</date>
+				<date>2019-12-09T17:47:26Z</date>
 				<key>entry</key>
 				<dict>
 					<key>name</key>
@@ -242,7 +242,7 @@
 			<key>NodeJS_Online</key>
 			<dict>
 				<key>date</key>
-				<date>2019-04-03T17:34:57Z</date>
+				<date>2019-12-06T01:53:40Z</date>
 				<key>entry</key>
 				<dict>
 					<key>aliases</key>
@@ -271,7 +271,7 @@
 	<key>DHWebViewIsDark</key>
 	<true/>
 	<key>actuallyDarkWebView</key>
-	<false/>
+	<true/>
 	<key>annotationsAreShown</key>
 	<false/>
 	<key>bookmarks</key>
@@ -292,6 +292,16 @@
 	<dict>
 		<key>installed</key>
 		<dict>
+			<key>http://kapeli.com/feeds/Bash.xml</key>
+			<dict>
+				<key>date</key>
+				<date>2019-12-08T18:27:28Z</date>
+			</dict>
+			<key>http://kapeli.com/feeds/Emacs_Lisp.xml</key>
+			<dict>
+				<key>date</key>
+				<date>2019-08-15T19:58:27Z</date>
+			</dict>
 			<key>http://kapeli.com/feeds/Julia.xml</key>
 			<dict>
 				<key>date</key>
@@ -345,6 +355,8 @@
 			<true/>
 			<key>name</key>
 			<string>Default</string>
+			<key>placeholder</key>
+			<string>bash</string>
 			<key>searchSnippets</key>
 			<true/>
 		</dict>
@@ -362,16 +374,16 @@
 	<key>searchKey</key>
 	<dict>
 		<key>keyCode</key>
-		<integer>4</integer>
+		<integer>-1</integer>
 		<key>modifiers</key>
-		<integer>2048</integer>
+		<integer>0</integer>
 	</dict>
 	<key>searchUsingSelectedTextKey</key>
 	<dict>
 		<key>keyCode</key>
-		<integer>-1</integer>
+		<integer>4</integer>
 		<key>modifiers</key>
-		<integer>0</integer>
+		<integer>4096</integer>
 	</dict>
 	<key>shouldRestoreTabs</key>
 	<false/>
@@ -388,7 +400,7 @@
 	<key>shouldSyncView</key>
 	<true/>
 	<key>showInDock</key>
-	<false/>
+	<true/>
 	<key>sortDocsetsAlphabetically</key>
 	<true/>
 	<key>versionedDHCheatRepo</key>
