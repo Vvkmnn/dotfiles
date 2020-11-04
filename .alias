@@ -4,8 +4,9 @@
 alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
 alias d="dotfiles"
 
-## Update
+## Debian
 alias u="sudo apt update && sudo apt upgrade && sudo apt autoremove"
+alias v="/mnt/c/Users/v"
 
 ## Vim
 alias v='vim' # Vim
