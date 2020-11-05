@@ -136,6 +136,9 @@ au FileType c,cpp,objc,objcpp call rainbow#load()
 " Space as Leader
 let mapleader=" "
 
+" Escape via jj
+inoremap jj <ESC>
+
 " Ctrl Arrow Buffer Navigation
 nnoremap <silent> <C-Right> <c-w>l
 nnoremap <silent> <C-Left> <c-w>h
@@ -153,6 +156,7 @@ nnoremap <C-L> <C-W><C-L>
 
 " Sort in Visual Mode
 vnoremap <Leader>s :sort<CR>
+
 
 " -----------------------------
 " Commands
