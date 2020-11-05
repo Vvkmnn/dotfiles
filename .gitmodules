@@ -13,5 +13,5 @@
     path = .config/nvim
     url = git@github.com:Vvkmnn/v.nvim.git
 [submodule "/home/v/.zinit/bin"]
-	path = /home/v/.zinit/bin
+	path = .zinit/bin
 	url = https://github.com/zdharma/zinit.git
