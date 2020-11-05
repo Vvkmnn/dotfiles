@@ -27,7 +27,7 @@ Darwin)
     brew install zsh 
 
     # Install Zsh completions
-    zsh-completions
+    # zsh-completions
 
     # Install Zplug
     # brew install zplug
