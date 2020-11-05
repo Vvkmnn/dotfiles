@@ -26,7 +26,7 @@
 # ##################################################
 
 case "$(uname -s)" in
-   Linux)
+   Linux|Darwin)
 
     # Zsh
     if [ -n "$BASH_VERSION" ]; then
@@ -106,7 +106,7 @@ case "$(uname -s)" in
        # Path
        AGKOZAK_CUSTOM_PROMPT+=$'%B%F{blue}%2v%f%b\n'
        # Prompt character
-       AGKOZAK_CUSTOM_PROMPT+=' ॐ ' #'%(4V.:.%#) '
+       AGKOZAK_CUSTOM_PROMPT+=' ॐ    ' #'%(4V.:.%#) '
        # Git status
        AGKOZAK_CUSTOM_RPROMPT+='%(3V.%F{yellow}%3v%f.) '
        # Bot face status
@@ -147,8 +147,11 @@ case "$(uname -s)" in
         # zplug load
         # }}}
         
-
+    ## nvm
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh" # This loads nvm
     # Bash
+    
     elif [ -n "$BASH_VERSION" ]; then
 
       # ~/.bashrc: executed by bash(1) for non-login shells.
@@ -274,42 +277,39 @@ case "$(uname -s)" in
     fi
 
     ;;
-   Darwin)
-     echo '[¬_¬] Loading Darwin shell...'
+   # Darwin)
+     # echo '[¬_¬] Loading Darwin shell...'
     # autoenv
     # source $(brew --prefix autoenv)/activate.sh
 
     ## gcloud
-    if [ -f "${HOME}/.google/path.zsh.inc" ]; then source "${HOME}/.google/path.zsh.inc"; fi
-    if [ -f "${HOME}/.google/completion.zsh.inc" ]; then source "${HOME}/.google/completion.zsh.inc"; fi
+    # if [ -f "${HOME}/.google/path.zsh.inc" ]; then source "${HOME}/.google/path.zsh.inc"; fi
+    # if [ -f "${HOME}/.google/completion.zsh.inc" ]; then source "${HOME}/.google/completion.zsh.inc"; fi
 
     ## fzf
-    [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+    # [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
     ## z
-    . /usr/local/etc/profile.d/z.sh
+    # . /usr/local/etc/profile.d/z.sh
+
 
     ## nvm
-    export NVM_DIR="$HOME/.nvm"
-    [ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh" # This loads nvm
-
-    ## nvm
-    export NVM_DIR="$HOME/.nvm"
-    [ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
+    # export NVM_DIR="$HOME/.nvm"
+    # [ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
 
     # conda
     # !! Contents within this block are managed by 'conda init' !!
-    __conda_setup="$('/usr/local/anaconda3/bin/conda' 'shell.zsh' 'hook' 2>/dev/null)"
-    if [ $? -eq 0 ]; then
-            eval "$__conda_setup"
-    else
-            if [ -f "/usr/local/anaconda3/etc/profile.d/conda.sh" ]; then
-                    . "/usr/local/anaconda3/etc/profile.d/conda.sh"
-            else
-                    export PATH="/usr/local/anaconda3/bin:$PATH"
-            fi
-    fi
-    unset __conda_setup
+    # __conda_setup="$('/usr/local/anaconda3/bin/conda' 'shell.zsh' 'hook' 2>/dev/null)"
+    # if [ $? -eq 0 ]; then
+    #         eval "$__conda_setup"
+    # else
+    #         if [ -f "/usr/local/anaconda3/etc/profile.d/conda.sh" ]; then
+    #                 . "/usr/local/anaconda3/etc/profile.d/conda.sh"
+    #         else
+    #                 export PATH="/usr/local/anaconda3/bin:$PATH"
+    #         fi
+    # fi
+    # unset __conda_setup
 
     # Zim (Framework)
     # export ZIM_HOME=${ZDOTDIR:-${HOME}}/.zim                     # Define zim location
@@ -330,29 +330,29 @@ case "$(uname -s)" in
 
     # conda 
     # !! Contents within this block are managed by 'conda init' !!
-    __conda_setup="$('/usr/local/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-    if [ $? -eq 0 ]; then
-        eval "$__conda_setup"
-    else
-        if [ -f "/usr/local/anaconda3/etc/profile.d/conda.sh" ]; then
-            . "/usr/local/anaconda3/etc/profile.d/conda.sh"
-        else
-            export PATH="/usr/local/anaconda3/bin:$PATH"
-        fi
-    fi
-    unset __conda_setup
+    # __conda_setup="$('/usr/local/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+    # if [ $? -eq 0 ]; then
+    #     eval "$__conda_setup"
+    # else
+    #     if [ -f "/usr/local/anaconda3/etc/profile.d/conda.sh" ]; then
+    #         . "/usr/local/anaconda3/etc/profile.d/conda.sh"
+    #     else
+    #         export PATH="/usr/local/anaconda3/bin:$PATH"
+    #     fi
+    # fi
+    # unset __conda_setup
     
-    # Zim (Framework)
-    export ZIM_HOME=${ZDOTDIR:-${HOME}}/.zim # Define zim location
-    [[ -s ${ZIM_HOME}/init.zsh ]] && source ${ZIM_HOME}/init.zsh # Start zim
-    ;;
+    # # Zim (Framework)
+    # export ZIM_HOME=${ZDOTDIR:-${HOME}}/.zim # Define zim location
+    # [[ -s ${ZIM_HOME}/init.zsh ]] && source ${ZIM_HOME}/init.zsh # Start zim
+    # ;;
 
-    Linux)
-     echo '[¬_¬] Loading Linux shell...'
-     ;;
+    # Linux)
+    #  echo '[¬_¬] Loading Linux shell...'
+    #  ;;
 
     CYGWIN*|MINGW32*|MSYS*|MINGW*)
-     echo '[¬_¬] '
+     echo '[¬_¬] TODO DOS shell'
      ;;
 
 esac
