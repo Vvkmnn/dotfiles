@@ -11,5 +11,8 @@ case "$(uname -s)" in
    ;;
    Darwin)
 
+   # karabiner-elements
+   brew cask install karabiner-elements
+
    ;;
 esac
