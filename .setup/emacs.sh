@@ -28,17 +28,20 @@ case "$(uname -s)" in
    # .config/doom .emacs.d
 
    # Install packages
-   doom install
+   doom install && doom doctor
 
    # Compile
    # doom compile :core
 
    # Cleanup
-   doom sync
-   doom doctor
+   doom sync 
 
    # Python3 Dependencies
    pip install black pyflakes isort pipenv pytest 'python-language-server[all]'
+
+npm install -g marked markdownlint
+sudo apt install aspell
+sudo apt-get install build-essential xz-utils curl
 
    # Node Dependencies
    # npm i -g bash-language-server
@@ -51,17 +54,25 @@ Darwin)
 
     # Install emacs with natural title bars
     # this one works with skhd & yabai on macOS
-    brew install emacs-mac --with-spacemacs-icon --with-natural-title-bar
+    # brew install emacs-mac --with-spacemacs-icon --with-natural-title-bar
+    # brew link --overwrite emacs-mac
+    # brew cask install emacs-mac-spacemacs-icon
+    # ln -s /usr/local/opt/emacs-mac/Emacs.app /Applications
 
+    # Emacs Plus
+    brew tap d12frosted/emacs-plus
+    brew install emacs-plus --with-spacemacs-icon	
+
+    # NOTE Handled by git submodule init
     # Doom Emacs
-    git clone https://github.com/hlissner/doom-emacs ~/.emacs.d
+    # git clone https://github.com/hlissner/doom-emacs ~/.emacs.d
 
     # Doom Config
-    git clone git@github.com:Vvkmnn/v.doom.d.git ~/.config/doom
-    ln -s ~/.config/doom/ ~/.v.doom.d 
+    # git clone git@github.com:Vvkmnn/v.doom.d.git ~/.config/doom
+    # ln -s ~/.config/doom/ ~/.v.doom.d 
 
-    # Doom Refresh
-    doom refresh
+    # Doom Status
+    doom sync && doom doctor
 
     # Emacs as a Daemon / Server
     # ln -sfv /usr/local/opt/emacs/*.plist ~/Library/LaunchAgents
@@ -73,13 +84,23 @@ Darwin)
     # https://superuser.com/questions/50095/how-can-i-run-mac-osx-graphical-emacs-in-daemon-mode
     # Use the emacs config that forks Doom!
     # brew cask install emacs-mac-spacemacs-icon
-    # brew install emacs-plus --with-natural-title-bar
+    # brew install emacs-plus --with-spacemacs-icon
     # brew tap caskroom/fonts && brew cask install font-source-code-pro
 
+    # Packages
 
+    # json
+    brew install jq
+
+    # python
+    pip3 install pipenv
+
+    # web
+    npm install -g stylelint
 
     ;;
+
+
 esac
-npm install -g marked markdownlint
-sudo apt install aspell
-sudo apt-get install build-essential xz-utils curl
+brew install luarocks
+luarocks --server http://luarocks.org/dev install digestif
