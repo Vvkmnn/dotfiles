@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# Install Vim
 
 case "$(uname -s)" in
    Linux)
@@ -10,11 +9,13 @@ case "$(uname -s)" in
    # Set Default Xterm
    sudo update-alternatives --config x-terminal-emulator
 
-   ;
-Darwin)`
+   ;;
+    Darwin)
 
     # Install Zsh
     # brew install vim
-#
+
+    # Alacritty
+    brew install --cask alacritty
    ;;
 esac
