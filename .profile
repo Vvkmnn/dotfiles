@@ -129,7 +129,7 @@ export PROMPT=' ॐ  '
 
 
 # Zsh Theme
-[ -f ~/.theme ] && . ~/.theme
+# [ -f ~/.theme ] && . ~/.theme
 
 # Source Xorg settings
 # TODO Causes some dangerous bugs

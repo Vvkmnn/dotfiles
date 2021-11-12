@@ -35,82 +35,88 @@ case "$(uname -s)" in
     # ZSH
     elif [ -n "$ZSH_VERSION" ]; then
 
+        # Zim {{{
+        # Define Zim location
+        : ${ZIM_HOME=${ZDOTDIR:-${HOME}}/.zim}
+        # }}} End configuration added by Zim install
+        # }}}
+
         # zinit {{{
-        ### Preload
-        source ~/.zinit/bin/zinit.zsh
+        # ### Preload
+        # source ~/.zinit/bin/zinit.zsh
    
-        ### Packages
-        # regular plugins loaded without investigating.
-        zinit light zsh-users/zsh-autosuggestions
-        zinit light zdharma/fast-syntax-highlighting
+        # ### Packages
+        # # regular plugins loaded without investigating.
+        # zinit light zsh-users/zsh-autosuggestions
+        # zinit light zdharma/fast-syntax-highlighting
 
-        # Completions
-        zinit ice blockf
-        zinit light zsh-users/zsh-completions
+        # # Completions
+        # zinit ice blockf
+        # zinit light zsh-users/zsh-completions
 
-        # Fun
-        zinit light paulirish/git-open # TODO Fix; not working
-        zinit load knu/z
+        # # Fun
+        # zinit light paulirish/git-open # TODO Fix; not working
+        # zinit load knu/z
 
-        # zinit light denysdovhan/spaceship-prompt
+        # # zinit light denysdovhan/spaceship-prompt
 
-        # Plugin history-search-multi-word loaded with investigating.
-        zinit load zdharma/history-search-multi-word
+        # # Plugin history-search-multi-word loaded with investigating.
+        # zinit load zdharma/history-search-multi-word
 
-        # After automatic unpacking it provides program "fzf".
-        zinit ice from"gh-r" as"program"
-        zinit load junegunn/fzf-bin
+        # # After automatic unpacking it provides program "fzf".
+        # zinit ice from"gh-r" as"program"
+        # zinit load junegunn/fzf-bin
 
-        # fast async ++ spaceship?
-        zinit load agkozak/agkozak-zsh-prompt
+        # # fast async ++ spaceship?
+        # zinit load agkozak/agkozak-zsh-prompt
 
-        # Load the pure theme, with zsh-async library that's bundled with it.
-        # zinit ice pick"async.zsh" src"pure.zsh"
-        # zinit light sindresorhus/pure
+        # # Load the pure theme, with zsh-async library that's bundled with it.
+        # # zinit ice pick"async.zsh" src"pure.zsh"
+        # # zinit light sindresorhus/pure
 
-        # TODO https://zdharma.org/zinit/wiki/GALLERY/
-        # zinit ice wait'!' lucid nocompletions \
-        #              compile"{zinc_functions/*,segments/*,zinc.zsh}" \
-        #                       atload'!prompt_zinc_setup; prompt_zinc_precmd'
-        # zinit load robobenklein/zinc
+        # # TODO https://zdharma.org/zinit/wiki/GALLERY/
+        # # zinit ice wait'!' lucid nocompletions \
+        # #              compile"{zinc_functions/*,segments/*,zinc.zsh}" \
+        # #                       atload'!prompt_zinc_setup; prompt_zinc_precmd'
+        # # zinit load robobenklein/zinc
 
 
-       # coreutils package from Homebrew; you can also use
-       # https://github.com/ogham/exa)
-       zinit ice atclone"dircolors -b LS_COLORS > c.zsh" atpull'%atclone' pick"c.zsh" nocompile'!'
-       zinit light trapd00r/LS_COLORS
+       # # coreutils package from Homebrew; you can also use
+       # # https://github.com/ogham/exa)
+       # zinit ice atclone"dircolors -b LS_COLORS > c.zsh" atpull'%atclone' pick"c.zsh" nocompile'!'
+       # zinit light trapd00r/LS_COLORS
 
-       # make'!...' -> run make before atclone & atpull
-       # zinit ice as"program" make'!' atclone'./direnv hook zsh > zhook.zsh' atpull'%atclone' src"zhook.zsh"
-       # zinit light direnv/direnv
+       # # make'!...' -> run make before atclone & atpull
+       # # zinit ice as"program" make'!' atclone'./direnv hook zsh > zhook.zsh' atpull'%atclone' src"zhook.zsh"
+       # # zinit light direnv/direnv
     
-       ### post load 
-        autoload -Uz _zinit
-        (( ${+_comps} )) && _comps[zinit]=_zinit
+       # ### post load 
+        # autoload -Uz _zinit
+        # (( ${+_comps} )) && _comps[zinit]=_zinit
 
-       ### variables
-       # TODO not working? https://github.com/marlonrichert/zsh-autocomplete
-       zstyle ':autocomplete:tab:*' fzf yes
-       zstyle ':completion:*' verbose no
-       zstyle ':autocomplete:list-choices:*' max-lines 1
+       # ### variables
+       # # TODO not working? https://github.com/marlonrichert/zsh-autocomplete
+       # zstyle ':autocomplete:tab:*' fzf yes
+       # zstyle ':completion:*' verbose no
+       # zstyle ':autocomplete:list-choices:*' max-lines 1
 
-       bindkey $key[Up] up-line-or-history
-       bindkey $key[Down] down-line-or-history
+       # bindkey $key[Up] up-line-or-history
+       # bindkey $key[Down] down-line-or-history
 
-       # Exit status
-       # AGKOZAK_CUSTOM_PROMPT='%(!!?@?..%B%F{red}(%?%)%f%b )'
-       # Command execution time
-       # AGKOZAK_CUSTOM_PROMPT+='%(9V.%9v .)'
-       # Username and hostname
-       AGKOZAK_CUSTOM_PROMPT+='%(!.%S%B.%B%F{green})%n%1v%(!.%b%s.%f%b) '
-       # Path
-       AGKOZAK_CUSTOM_PROMPT+=$'%B%F{blue}%2v%f%b\n'
-       # Prompt character
-       AGKOZAK_CUSTOM_PROMPT+=' ॐ    ' #'%(4V.:.%#) '
-       # Git status
-       AGKOZAK_CUSTOM_RPROMPT+='%(3V.%F{yellow}%3v%f.) '
-       # Bot face status
-       AGKOZAK_CUSTOM_RPROMPT+='v@%M %(?,%F{green}[-_-]%f,%F{red}[ಠ_ಠ]%f) ' 
+       # # Exit status
+       # # AGKOZAK_CUSTOM_PROMPT='%(!!?@?..%B%F{red}(%?%)%f%b )'
+       # # Command execution time
+       # # AGKOZAK_CUSTOM_PROMPT+='%(9V.%9v .)'
+       # # Username and hostname
+       # AGKOZAK_CUSTOM_PROMPT+='%(!.%S%B.%B%F{green})%n%1v%(!.%b%s.%f%b) '
+       # # Path
+       # AGKOZAK_CUSTOM_PROMPT+=$'%B%F{blue}%2v%f%b\n'
+       # # Prompt character
+       # AGKOZAK_CUSTOM_PROMPT+=' ॐ    ' #'%(4V.:.%#) '
+       # # Git status
+       # AGKOZAK_CUSTOM_RPROMPT+='%(3V.%F{yellow}%3v%f.) '
+       # # Bot face status
+       # AGKOZAK_CUSTOM_RPROMPT+='v@%M %(?,%F{green}[-_-]%f,%F{red}[ಠ_ಠ]%f) ' 
          #  }}}
 
         # # zplug {{{

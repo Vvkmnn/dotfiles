@@ -1,10 +1,15 @@
 
 ### CLI {{{
-# open alacritty, the terminal 
+# open alacritty
 # ctrl - return : open -na /Applications/Alacritty.app/ -v
+# ctrl - return : alacritty
+
+# Open regular terminal
+ctrl - return : open -a Terminal ~
 
 # open kitty, the terminal
-ctrl - return : /Applications/Kitty.app/Contents/MacOS/kitty --single-instance -d ~
+# ctrl - return : /Applications/Kitty.app/Contents/MacOS/kitty --single-instance -d ~
+
 ### }}}
 
 ### GUI {{{
@@ -19,6 +24,12 @@ ctrl + cmd - return : open /Applications/Emacs.app/
 # }}}
 
 ### Browser {{{
+# Open Safari
+shift - return : open /Applications/Safari.app/
+
+# Open New Broser (Brave)
+# cmd + shift - return : open /Applications/Safari.app/
+
 # Open New Firefox
 # shift - space: open /Applications/Firefox.app/ -new-window
 
@@ -26,13 +37,18 @@ ctrl + cmd - return : open /Applications/Emacs.app/
 # cmd + shift - return : open /Applications/Vivaldi.app/ 
 
 # Open Nearby Browser (Brave)
-shift - return : open -n /Applications/Brave\ Browser.app/ 
+# shift - return : open -n /Applications/Brave\ Browser.app/ 
 
 # Open New Broser (Brave)
-cmd + shift - return : open /Applications/Brave\ Browser.app/ 
+ctrl + shift - return : open /Applications/Google\ Chrome.app/
 
 # Open Nearby Chromium
 # shift - return : open /Applications/Chromium.app/
+# }}}
+
+### Tools {{{
+# ctrl - / : open /Applications/Notes.app/
+
 # }}}
 
 # NOTE(vvkmnn): MacOS screenshot solution
@@ -177,7 +193,7 @@ alt - a : yabai -m space --toggle padding; yabai -m space --toggle gap
 alt - d : yabai -m window --toggle zoom-parent
 
 # toggle window fullscreen zoom
-ctrl - w : yabai -m window --toggle zoom-fullscreen
+ctrl - f : yabai -m window --toggle zoom-fullscreen
 
 # toggle window native fullscreen
 shift + alt - f : yabai -m window --toggle native-fullscreen
