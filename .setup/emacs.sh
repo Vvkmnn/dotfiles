@@ -54,14 +54,17 @@ Darwin)
 
     # Install emacs with natural title bars
     # this one works with skhd & yabai on macOS
-    # brew install emacs-mac --with-spacemacs-icon --with-natural-title-bar
+    brew tap railwaycat/emacsmacport
+    brew install emacs-mac-spacemacs-icon
+
+    # brew install --cask emacs-mac --with-spacemacs-icon --with-natural-title-bar
     # brew link --overwrite emacs-mac
-    # brew cask install emacs-mac-spacemacs-icon
+    # brew --cask install emacs-mac-spacemacs-icon
     # ln -s /usr/local/opt/emacs-mac/Emacs.app /Applications
 
     # Emacs Plus
-    brew tap d12frosted/emacs-plus
-    brew install emacs-plus --with-spacemacs-icon	
+    # brew tap d12frosted/emacs-plus
+    # brew install emacs-plus --with-spacemacs-icon	
 
     # NOTE Handled by git submodule init
     # Doom Emacs
