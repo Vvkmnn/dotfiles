@@ -35,9 +35,42 @@ case "$(uname -s)" in
     # ZSH
     elif [ -n "$ZSH_VERSION" ]; then
 
+        ## Antigen {{{
+
+        # If no file, curl
+        if [[ ! -f .antigen.zsh ]]; then
+          curl -L git.io/antigen > .antigen.zsh 
+        fi
+
+
+        # Essential
+        # [ -f  .antigen.zsh ] && . .antigen.zsh
+        source .antigen.zsh
+
+        # Load the oh-my-zsh's library.
+        # antigen use oh-my-zsh
+
+        # Bundles from the default repo (robbyrussell's oh-my-zsh).
+        # antigen bundle git
+        # antigen bundle heroku
+        # antigen bundle pip
+        # antigen bundle lein
+        # antigen bundle command-not-found
+
+        # Syntax highlighting bundle.
+        # antigen bundle zsh-users/zsh-syntax-highlighting
+
+        # Load the theme.
+        # antigen theme robbyrussell
+        # antigen theme romkatv/powerlevel10k
+
+        # Tell Antigen that you're done.
+        antigen apply
+        # }}}
+
         # Zim {{{
         # Define Zim location
-        : ${ZIM_HOME=${ZDOTDIR:-${HOME}}/.zim}
+        # : ${ZIM_HOME=${ZDOTDIR:-${HOME}}/.zim}
         # }}} End configuration added by Zim install
         # }}}
 
