@@ -15,15 +15,27 @@ alias v!='vim -u NONE'
 
 case "$(uname -s)" in
        
-       # macOS
+       ## macOS
        Darwin)
 
-        # Editor
-        ## Brew
+        # Brew
         alias cask='brew cask' # Shorthand
 
+        # Neovim
         # alias v?='vim -d'
         # alias nvim='nvim' # NeoVim
+
+        # iCloud
+        # NOTE Skip Local with iCloud > iCloud Drive > Desktop & Documents
+        alias v~='cd ~'
+        alias v~~='cd ~/Library/Mobile\ Documents/com~apple~CloudDocs/Documents'
+
+        # Yabai 
+        alias bry='brew services restart yabai'
+
+        # Skhd
+        alias brs='brew services restart skhd'
+
 
         ## Emacs
         alias e='emacsclient --c' #Emacs

@@ -86,8 +86,8 @@ sudo yabai --load-sa
 
 # global settings
 yabai -m config                                 \
-    mouse_follows_focus          off            \
-    focus_follows_mouse          on             \
+    mouse_follows_focus          on             \
+    focus_follows_mouse          autoraise      \
     window_origin_display        default        \
     window_placement             second_child   \
     window_topmost               off            \
@@ -124,5 +124,7 @@ yabai -m rule --add app="^System Preferences$" manage=off
 yabai -m rule --add app="^Music$" manage=off
 yabai -m rule --add app="^Spark$" manage=off
 yabai -m rule --add app="^Discord$" manage=off
+yabai -m rule --add app="^RememBear$" manage=off
+yabai -m rule --add app="^1Password$" manage=off
 
 echo "yabai configuration loaded.."
