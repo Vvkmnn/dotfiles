@@ -105,7 +105,7 @@ yabai -m config                                 \
     window_border_blur           off            \
     window_border_hidpi          on             \
     window_border                off            \
-    split_ratio                  0.50           \
+    split_ratio                  0.51           \
     split_type                   auto           \
     auto_balance                 off            \
     top_padding                  12             \
@@ -123,5 +123,6 @@ yabai -m config                                 \
 yabai -m rule --add app="^System Preferences$" manage=off
 yabai -m rule --add app="^Music$" manage=off
 yabai -m rule --add app="^Spark$" manage=off
+yabai -m rule --add app="^Discord$" manage=off
 
 echo "yabai configuration loaded.."
