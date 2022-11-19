@@ -32,13 +32,13 @@
 
 ## Pre Install
 
-### debian
+### Debian
 
 ```sh
 sudo apt get install git zsh curl vim python3-pip
 ```
 
-### macOS
+### MacOS
 [xcode](https://developer.apple.com/xcode/resources/)
 ```sh
 xcode-select --install
@@ -61,7 +61,7 @@ cat ~/.ssh/id_rsa.pub
 
 # github
 alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
-git clone --bare git@github.com:Vvkmnn/dotfiles.git --branch <device> $HOME/.dotfiles
+git clone --bare git@github.com:Vvkmnn/dotfiles.git --branch <os> $HOME/.dotfiles
 dotfiles stash
 dotfiles checkout
 
