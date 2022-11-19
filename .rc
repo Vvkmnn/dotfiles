@@ -29,7 +29,7 @@
 
 # Path
 # TODO .path - zsh only sources .zprofile on login, so symlink
-# [ -f ~/.profile ] && . ~/.profile
+[ -f ~/.profile ] && . ~/.profile
 
 # Aliases
 [ -f ~/.alias ] && . ~/.alias

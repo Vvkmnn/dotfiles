@@ -25,13 +25,17 @@ ctrl + cmd - return : open /Applications/Emacs.app/
 
 ### Browser {{{
 # Open Safari
-shift - return : open /Applications/Safari.app/
-
-# Open New Broser (Brave)
+# shift - return : open /Applications/Safari.app/
+shift - return : osascript -e 'tell application "Safari" to make new document with properties {URL:"https://www.google.com"}' -e 'activate' 
+#-e 'tell application "Safari" activate'
+#-e 'tell application "System Events" to tell process "Safari" perform action "AXRaise"'
+#activate' #-e 'tell application "Safari" activate'
+# -e 'tell application "System Events" to tell process "Safari" perform action "AXRaise" of the last window'
+# -e 'set index of window 1 to 0'
+# https://gist.github.com/stevoyoung/3214626
+# shift - return : osascript -e ' tell application "Safari" make new document activate end tell '
 # cmd + shift - return : open /Applications/Safari.app/
 
-# Open New Firefox
-# shift - space: open /Applications/Firefox.app/ -new-window
 
 # Open New Vivaldi 
 # cmd + shift - return : open /Applications/Vivaldi.app/ 
@@ -190,7 +194,7 @@ alt - x : yabai -m space --mirror x-axis
 alt - a : yabai -m space --toggle padding; yabai -m space --toggle gap
 
 # toggle window parent zoom
-alt - d : yabai -m window --toggle zoom-parent
+ctrl + shift - f : yabai -m window --toggle zoom-parent
 
 # toggle window fullscreen zoom
 ctrl - f : yabai -m window --toggle zoom-fullscreen
