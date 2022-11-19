@@ -39,7 +39,7 @@ sudo apt get install git zsh curl vim python3-pip
 ```
 
 ### macOS
-xcode
+[xcode](https://developer.apple.com/xcode/resources/)
 ```sh
 xcode-select --install
 ```
