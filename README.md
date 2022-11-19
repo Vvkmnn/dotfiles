@@ -32,9 +32,24 @@
 
 ## Pre Install
 
-``` sh
-# debian
+### debian
+
+```sh
 sudo apt get install git zsh curl vim python3-pip
+```
+
+### macOS
+xcode
+```sh
+xcode-select --install
+```
+
+[brew.sh](https://brew.sh)
+```sh
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+brew install yabai skhd git-open bottom
+brew install --cask protonvpn 1password
 ```
 
 ## Install
