@@ -46,6 +46,7 @@ xcode-select --install
 
 [brew.sh](https://brew.sh)
 ```sh
+## brew
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
 ## utils
