@@ -48,8 +48,19 @@ xcode-select --install
 ```sh
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
+## utils
 brew install yabai skhd git-open bottom
+
+## emcs
+brew install git ripgrep coreutils fd
+brew install emacs-mac-spacemacs-icon
+
+## proton
+brew install protonmail-bridge
+
+## casks
 brew install --cask protonvpn 1password
+brew install --cask karabiner-elements
 ```
 
 ## Install
