@@ -52,15 +52,13 @@ xcode-select --install
 ## utils
 brew install yabai skhd git-open bottom
 
-## emcs
+## emacs
 brew install git ripgrep coreutils fd
 brew install emacs-mac-spacemacs-icon
 
-## proton
-brew install protonmail-bridge
-
 ## casks
-brew install --cask protonvpn 1password
+brew install --cask protonmail-bridge protonvpn
+brew install --cask 1password adguard
 brew install --cask karabiner-elements
 ```
 
