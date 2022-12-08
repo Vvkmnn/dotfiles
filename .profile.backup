@@ -29,19 +29,22 @@
 
 ## Environment -------------------------------------
 
+# Params
 export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 export BROWSER=open
 export TERM=xterm-256color
 export ARCHEY_LOGO_FILE=$HOME/.logo
+
 # Editor
 export EDITOR='vim'           # $VISUAL is the default for most shells
 export EDITOR=$VISUAL         # $EDITOR in case
 export ALTERNATE_EDITOR='vim' # $EDITOR if all else fails
 
 # Prompt
-export RPROMPT='v@%M %(?,%F{green}[-_-]%f,%F{red}[ಠ_ಠ]%f)'
-export PROMPT=' ॐ  '
+# FIX Not global
+# export RPROMPT='v@%M %(?,%F{green}[-_-]%f,%F{red}[ಠ_ಠ]%f)'
+# export PROMPT=' ॐ  '
 
  #OS=$(uname -s)
 # case "$(uname -s)" in
@@ -136,19 +139,19 @@ export PROMPT=' ॐ  '
 # [ -f ~/.xprofile ] && . ~/.xprofile
 
 # GO
-export PATH="$HOME/go/bin:$PATH"
-export GOPATH=$HOME/go/bin
+# export PATH="$HOME/go/bin:$PATH"
+# export GOPATH=$HOME/go/bin
 
-# Python
-export PATH="$HOME/.local/bin:$PATH"
-export PYTHONPATH=$HOME/.local/bin
+# # Python
+# export PATH="$HOME/.local/bin:$PATH"
+# export PYTHONPATH=$HOME/.local/bin
 
-# NVM
-export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+# # NVM
+# export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+# [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
 
-# Emacs (Doom)
-export PATH="$HOME/.emacs.d/bin:$PATH"
+# # Emacs (Doom)
+# export PATH="$HOME/.emacs.d/bin:$PATH"
 
 # Load
 # echo '[¬_¬]...'
