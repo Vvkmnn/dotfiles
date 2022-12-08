@@ -40,3 +40,21 @@
 # Shell
 [ -f ~/.shell ] && . ~/.shell
 
+
+# TODO 
+# bounjourr safari
+
+# /* * #analogClock { margin-bottom: 1em } */
+# /* * #time #time-container { font-size: 1.1em } */
+# /* * #interface #time #date { font-size: 0.8em } */
+# /* * #interface #weather { font-size: 0.6em } */
+# /* * #widgets #quotes_container { font-size: 0.6em } */
+# 
+# /* * #clock { */
+# /* line-height: 1.1em */
+# /* } */
+# 
+# /* #interface { height: 80vh; padding-top: 10vh } */
+# /* #interface #time {justify-content: flex-end} */
+# /* #interface #main {justify-content: flex-start} */
+# /* #interface #widgets {justify-content: flex-start} */
