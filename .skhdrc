@@ -33,7 +33,7 @@ ctrl + cmd - return : open /Applications/Emacs.app/
 ### Browser {{{
 # Open Safari
 # shift - return : open /Applications/Safari.app/
-shift - return : osascript -e 'tell application "Safari" to make new document' 
+ctrl + shift - return : osascript -e 'tell application "Safari" to make new document' 
 #with properties {URL:"https://www.google.com"}' 
 #-e 'activate' 
 #-e 'tell application "Safari" activate'
