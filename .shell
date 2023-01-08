@@ -39,48 +39,87 @@ case "$(uname -s)" in
         ## Antigen {{{
 
         # If no file, curl
-        if [[ ! -f .antigen.zsh ]]; then
-          echo "curling antigen"
-          curl -L git.io/antigen > .antigen.zsh 
+        # if [[ ! -f ~/.antigen.zsh ]]; then
+        #   echo "curling antigen"
+        #   curl -L git.io/antigen > ~/.antigen.zsh 
+        # fi
+
+        # now, simply add these two lines in your ~/.zshrc
+
+        # source antidote
+        source ${ZDOTDIR:-~}/.antidote/antidote.zsh
+
+        # initialize plugins statically with ${ZDOTDIR:-~}/.zsh_plugins.txt
+        antidote load
+
+        # antidote bundle <~/.zsh_plugins.txt >~/.zsh_plugins.zsh
+        # source ~/.zsh_plugins.zsh
+
+        
+
+        # Powerlevel 10k
+        # If not in tmux, start tmux: reads and writes the TTY.
+        # if [[ -z ${TMUX+X}${ZSH_SCRIPT+X}${ZSH_EXECUTION_STRING+X} ]]; then
+        #   exec tmux
+        # fi
+
+        # Clone git repos that don't exist: prints and may take unpredictably long time to execute.
+        if [[ ! -e ~/zsh-autosuggestions ]]; then
+          print -r -- 'installing zsh-autosuggestions ...'
+          git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions.git ~/zsh-autosuggestions
         fi
+
+        # Prints.
+        print -Pr -- 'Hello, %n. Today is %D{%A}.'
+
+        # ... and so on
+        # Print the first prompt and redirect standard file descriptors.
+        if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+          source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+        fi
+
+         autoload -Uz compinit && compinit
+         source ~/zsh-autosuggestions/zsh-autosuggestions.zsh
+         # ... and so on
+         # https://github.com/romkatv/zsh-bench#instant-prompt
 
 
         # Essential
         # [ -f  .antigen.zsh ] && . .antigen.zsh
-        source .antigen.zsh
+        # source ~/.antigen.zsh
 
-        # Load the oh-my-zsh's library.
-        # antigen use oh-my-zsh
+        # # Load the oh-my-zsh's library.
+        # # antigen use oh-my-zsh
 
-        # Bundles from the default repo (robbyrussell's oh-my-zsh).
-        # antigen bundle git
-        # antigen bundle heroku
-        # antigen bundle pip
-        # antigen bundle lein
-        # antigen bundle command-not-found
-        # Use nvm from zsh
-        export NVM_LAZY_LOAD=true
-        antigen bundle lukechilds/zsh-nvm
+        # # Bundles from the default repo (robbyrussell's oh-my-zsh).
+        # # antigen bundle git
+        # # antigen bundle heroku
+        # # antigen bundle pip
+        # # antigen bundle lein
+        # # antigen bundle command-not-found
+        # # Use nvm from zsh
+        # export NVM_LAZY_LOAD=true
+        # antigen bundle lukechilds/zsh-nvm
 
-        # Syntax highlighting bundle.
-        # antigen bundle zsh-users/zsh-syntax-highlighting
-        antigen bundle agkozak/zsh-z
+        # # Syntax highlighting bundle.
+        # # antigen bundle zsh-users/zsh-syntax-highlighting
+        # antigen bundle agkozak/zsh-z
 
-        # Load the theme.
-        # antigen theme robbyrussell
-        antigen theme romkatv/powerlevel10k
+        # # Load the theme.
+        # # antigen theme robbyrussell
+        # antigen theme romkatv/powerlevel10k
 
-        # Tell Antigen that you're done.
-        antigen apply
-        # }}}
+        # # Tell Antigen that you're done.
+        # antigen apply
+        # # }}}
 
         # Powerlevel 10k {{{
         # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
         # Initialization code that may require console input (password prompts, [y/n]
         # confirmations, etc.) must go above this block; everything else may go below.
-        if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-          source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-        fi
+        # if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+        #   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+        # fi
 
 
         # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
