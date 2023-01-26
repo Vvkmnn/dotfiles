@@ -1,4 +1,3 @@
-/usr/local/anaconda3
-/usr/local/anaconda3/envs/AlphaZeroAI
-/usr/local/anaconda3/envs/zipline
-/usr/local/anaconda3/envs/balena
+/Users/v/miniconda3
+/opt/homebrew/Caskroom/miniconda/base
+/opt/homebrew/Caskroom/miniconda/base/envs/medusaAI

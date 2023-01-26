@@ -46,6 +46,9 @@ xcode-select --install
 
 [brew.sh](https://brew.sh)
 ```sh
+## zsh
+git clone --depth=1 https://github.com/mattmc3/antidote.git ${ZDOTDIR:-~}/.antidote
+
 ## brew
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 

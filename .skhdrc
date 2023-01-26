@@ -4,6 +4,9 @@
 # ctrl - return : open -na /Applications/Alacritty.app/ -v
 # ctrl - return : alacritty
 
+# restart yabai
+ctrl + cmd - 0: brew services stop yabai && brew services start yabai
+
 
 # Open regular terminal
 ctrl - return : open -a Terminal ~
@@ -21,7 +24,10 @@ ctrl + alt + cmd - return : osascript -e 'tell application "Notes" to tell accou
 
 ### GUI {{{
 # Open Doom Emacs
-ctrl + cmd - return : open /Applications/Emacs.app/
+ctrl + cmd - return : open /Applications/Emacs.app/ 
+
+# Open new Doom Emacs client
+ctrl + cmd + shift - return : emacsclient -c
 
 # Open Dash
 # cmd + shift - /: open /Applications/Dash.app/
@@ -191,7 +197,7 @@ ctrl + alt - k : yabai -m window --insert north
 ctrl + alt - l : yabai -m window --insert east
 
 # close focused window
-ctrl - e : osascript -e 'tell application "System Events" to perform action "AXPress" of (first button whose subrole is "AXCloseButton") of (first window whose subrole is "AXStandardWindow") of (first process whose frontmost is true)'
+ctrl + cmd - e : osascript -e 'tell application "System Events" to perform action "AXPress" of (first button whose subrole is "AXCloseButton") of (first window whose subrole is "AXStandardWindow") of (first process whose frontmost is true)'
 
 # rotate tree
 alt - r : yabai -m space --rotate 90
@@ -206,10 +212,10 @@ alt - x : yabai -m space --mirror x-axis
 alt - a : yabai -m space --toggle padding; yabai -m space --toggle gap
 
 # toggle window parent zoom
-ctrl + shift - f : yabai -m window --toggle zoom-parent
+ctrl + shift - d : yabai -m window --toggle zoom-parent
 
 # toggle window fullscreen zoom
-ctrl - f : yabai -m window --toggle zoom-fullscreen
+ctrl + cmd - f : yabai -m window --toggle zoom-fullscreen
 
 # toggle window native fullscreen
 shift + alt - f : yabai -m window --toggle native-fullscreen

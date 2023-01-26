@@ -103,7 +103,7 @@ export ALTERNATE_EDITOR='vim' # $EDITOR if all else fails
  	export CPATH=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include
  
  	# Go
- 	export GOROOT=/usr/local/Cellar/go/1.13.4/libexec
+	export GOROOT="$(brew --prefix golang)/libexec"
  	export GOPATH=$HOME/Documents/dev/go
  	export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
  

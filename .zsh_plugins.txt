@@ -23,7 +23,7 @@ belak/zsh-utils path:completion
 # prompts:
 #   with prompt plugins, remember to add this to your .zshrc:
 #   `autoload -Uz promptinit && promptinit && prompt pure`
-# sindresorhus/pure     kind:fpath
+sindresorhus/pure     kind:fpath
 romkatv/powerlevel10k kind:fpath
 
 # popular fish-like plugins
