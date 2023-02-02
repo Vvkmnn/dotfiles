@@ -46,6 +46,9 @@ Plug 'tpope/vim-sensible'
 " Language Support
 Plug 'sheerun/vim-polyglot'
 
+" Copilot
+Plug 'github/copilot.vim'
+
 " Vim tree navigation
 " Plug 'scrooloose/nerdtree'
 

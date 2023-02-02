@@ -119,13 +119,14 @@ yabai -m config                                 \
     mouse_action2                resize         \
     mouse_drop_action            swap
 
-# Eclusions
-yabai -m rule --add app="^System Preferences$" manage=off
+# Exclusions
+# yabai -m rule --add app="^System Preferences$" manage=off
+# yabai -m rule --add app="^quickhue$" manage=off
 # yabai -m rule --add app="^Music$" manage=off
 # yabai -m rule --add app="Music" manage=off
-yabai -m rule --add app="^Spark$" manage=off
+# yabai -m rule --add app="^Spark$" manage=off
 # yabai -m rule --add app="^Discord$" manage=off
-yabai -m rule --add app="^RememBear$" manage=off
+# yabai -m rule --add app="^RememBear$" manage=off
 # yabai -m rule --add app="^1Password$" manage=off
 
 echo "yabai configuration loaded.."

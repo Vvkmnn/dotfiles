@@ -34,3 +34,5 @@ git remote -v
 git pull upstream master
 
 # Conflicts may arise, review and merge as necessary
+# Quality of Life
+brew install git-open

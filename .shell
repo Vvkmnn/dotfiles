@@ -39,47 +39,139 @@ case "$(uname -s)" in
         ## Antigen {{{
 
         # If no file, curl
-        if [[ ! -f .antigen.zsh ]]; then
-          curl -L git.io/antigen > .antigen.zsh 
+        # if [[ ! -f ~/.antigen.zsh ]]; then
+        #   echo "curling antigen"
+        #   curl -L git.io/antigen > ~/.antigen.zsh 
+        # fi
+
+        # now, simply add these two lines in your ~/.zshrc
+
+        # # source antidote
+        # source ${ZDOTDIR:-~}/.antidote/antidote.zsh
+
+        # # initialize plugins statically with ${ZDOTDIR:-~}/.zsh_plugins.txt
+        # antidote load
+
+        # You can change the names/locations of these if you prefer.
+        antidote_dir=${ZDOTDIR:-~}/.antidote
+        plugins_txt=${ZDOTDIR:-~}/.zsh_plugins.txt
+        static_file=${ZDOTDIR:-~}/.zsh_plugins.zsh
+
+        # Clone antidote if necessary and generate a static plugin file.
+        if [[ ! $static_file -nt $plugins_txt ]]; then
+          [[ -e $antidote_dir ]] ||
+            git clone --depth=1 https://github.com/mattmc3/antidote.git $antidote_dir
+          (
+            source $antidote_dir/antidote.zsh
+            [[ -e $plugins_txt ]] || touch $plugins_txt
+            antidote bundle <$plugins_txt >$static_file
+          )
         fi
+
+        # Uncomment this if you want antidote commands like `antidote update` available
+        # in your interactive shell session:
+        autoload -Uz $antidote_dir/functions/antidote
+
+        # source the static plugins file
+        source $static_file
+
+        # cleanup
+        unset antidote_dir plugins_txt static_file
+
+        # antidote bundle <~/.zsh_plugins.txt >~/.zsh_plugins.zsh
+        # source ~/.zsh_plugins.zsh
+
+
+
+        # Powerlevel 10k
+        # If not in tmux, start tmux: reads and writes the TTY.
+        # if [[ -z ${TMUX+X}${ZSH_SCRIPT+X}${ZSH_EXECUTION_STRING+X} ]]; then
+        #   exec tmux
+        # fi
+
+        # Clone git repos that don't exist: prints and may take unpredictably long time to execute.
+        # if [[ ! -e ~/zsh-autosuggestions ]]; then
+        #   print -r -- 'installing zsh-autosuggestions ...'
+        #   git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions.git ~/zsh-autosuggestions
+        # fi
+
+        # Prints.
+        print -Pr -- 'Hello, %n. Today is %D{%A}.'
+
+        # ... and so on
+        # Print the first prompt and redirect standard file descriptors.
+        if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+          source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+        fi
+
+         autoload -Uz compinit && compinit
+         source ~/zsh-autosuggestions/zsh-autosuggestions.zsh
+         # ... and so on
+         # https://github.com/romkatv/zsh-bench#instant-prompt
 
 
         # Essential
         # [ -f  .antigen.zsh ] && . .antigen.zsh
-        source .antigen.zsh
+        # source ~/.antigen.zsh
 
-        # Load the oh-my-zsh's library.
-        # antigen use oh-my-zsh
+        # # Load the oh-my-zsh's library.
+        # # antigen use oh-my-zsh
 
-        # Bundles from the default repo (robbyrussell's oh-my-zsh).
-        # antigen bundle git
-        # antigen bundle heroku
-        # antigen bundle pip
-        # antigen bundle lein
-        # antigen bundle command-not-found
+        # # Bundles from the default repo (robbyrussell's oh-my-zsh).
+        # # antigen bundle git
+        # # antigen bundle heroku
+        # # antigen bundle pip
+        # # antigen bundle lein
+        # # antigen bundle command-not-found
+        # # Use nvm from zsh
+        # export NVM_LAZY_LOAD=true
+        # antigen bundle lukechilds/zsh-nvm
 
-        # Syntax highlighting bundle.
-        # antigen bundle zsh-users/zsh-syntax-highlighting
+        # # Syntax highlighting bundle.
+        # # antigen bundle zsh-users/zsh-syntax-highlighting
+        # antigen bundle agkozak/zsh-z
 
-        # Load the theme.
-        # antigen theme robbyrussell
-        antigen theme romkatv/powerlevel10k
+        # # Load the theme.
+        # # antigen theme robbyrussell
+        # antigen theme romkatv/powerlevel10k
 
-        # Tell Antigen that you're done.
-        antigen apply
-        # }}}
+        # # Tell Antigen that you're done.
+        # antigen apply
+        # # }}}
 
         # Powerlevel 10k {{{
         # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
         # Initialization code that may require console input (password prompts, [y/n]
         # confirmations, etc.) must go above this block; everything else may go below.
-        if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-          source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-        fi
+        # if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+        #   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+        # fi
 
 
         # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
         [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+        # }}}
+
+
+       # conda
+
+        # >>> conda initialize >>>
+        # !! Contents within this block are managed by 'conda init' !!
+        __conda_setup="$('/opt/homebrew/Caskroom/miniconda/base/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+        if [ $? -eq 0 ]; then
+            eval "$__conda_setup"
+        else
+            if [ -f "/opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh" ]; then
+                . "/opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh"
+            else
+                export PATH="/opt/homebrew/Caskroom/miniconda/base/bin:$PATH"
+            fi
+        fi
+        unset __conda_setup
+        # <<< conda initialize <<<
+
+        # z {{{
+        # ZSHZ_DATA=" $HOME/.vz "
         # }}}
 
         # Zim {{{
@@ -201,8 +293,10 @@ case "$(uname -s)" in
         # }}}
         
     ## nvm
-    export NVM_DIR="$HOME/.nvm"
-    [ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh" # This loads nvm
+  export NVM_DIR="$HOME/.nvm"
+  [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
+  # [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+
     # Bash
     
     elif [ -n "$BASH_VERSION" ]; then
@@ -318,6 +412,9 @@ case "$(uname -s)" in
        #     . /etc/bash_completion
        #   fi
        # fi
+
+
+
 
     # FiSH
     elif [ -n "$FISH_VERSION" ]; then

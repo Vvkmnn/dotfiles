@@ -4,6 +4,10 @@
 # ctrl - return : open -na /Applications/Alacritty.app/ -v
 # ctrl - return : alacritty
 
+# restart yabai
+ctrl + cmd - 0: brew services stop yabai && brew services start yabai
+
+
 # Open regular terminal
 ctrl - return : open -a Terminal ~
 
@@ -12,9 +16,18 @@ ctrl - return : open -a Terminal ~
 
 ### }}}
 
+# Notes
+# 
+ctrl + alt + cmd - return : osascript -e 'tell application "Notes" to tell account "iCloud" to tell folder "Quick" to make new note with properties {name:"TODO Replace", body:"#quick"} show ' 
+# -e 'set dateString to do shell script "date +'%Y-%m-%d %k.%M'"' 
+
+
 ### GUI {{{
 # Open Doom Emacs
-ctrl + cmd - return : open /Applications/Emacs.app/
+ctrl + cmd - return : open /Applications/Emacs.app/ 
+
+# Open new Doom Emacs client
+ctrl + cmd + shift - return : emacsclient -c
 
 # Open Dash
 # cmd + shift - /: open /Applications/Dash.app/
@@ -26,7 +39,9 @@ ctrl + cmd - return : open /Applications/Emacs.app/
 ### Browser {{{
 # Open Safari
 # shift - return : open /Applications/Safari.app/
-shift - return : osascript -e 'tell application "Safari" to make new document with properties {URL:"https://www.google.com"}' -e 'activate' 
+ctrl + shift - return : osascript -e 'tell application "Safari" to make new document' 
+#with properties {URL:"https://www.google.com"}' 
+#-e 'activate' 
 #-e 'tell application "Safari" activate'
 #-e 'tell application "System Events" to tell process "Safari" perform action "AXRaise"'
 #activate' #-e 'tell application "Safari" activate'
@@ -36,6 +51,9 @@ shift - return : osascript -e 'tell application "Safari" to make new document wi
 # shift - return : osascript -e ' tell application "Safari" make new document activate end tell '
 # cmd + shift - return : open /Applications/Safari.app/
 
+# Open Music # FIXME not working
+# shift - return : open /Applications/Music.app
+# cmd + ctrl - 0 : open /Applications/Music.app
 
 # Open New Vivaldi 
 # cmd + shift - return : open /Applications/Vivaldi.app/ 
@@ -179,7 +197,7 @@ ctrl + alt - k : yabai -m window --insert north
 ctrl + alt - l : yabai -m window --insert east
 
 # close focused window
-ctrl - e : osascript -e 'tell application "System Events" to perform action "AXPress" of (first button whose subrole is "AXCloseButton") of (first window whose subrole is "AXStandardWindow") of (first process whose frontmost is true)'
+ctrl + cmd - e : osascript -e 'tell application "System Events" to perform action "AXPress" of (first button whose subrole is "AXCloseButton") of (first window whose subrole is "AXStandardWindow") of (first process whose frontmost is true)'
 
 # rotate tree
 alt - r : yabai -m space --rotate 90
@@ -194,10 +212,10 @@ alt - x : yabai -m space --mirror x-axis
 alt - a : yabai -m space --toggle padding; yabai -m space --toggle gap
 
 # toggle window parent zoom
-ctrl + shift - f : yabai -m window --toggle zoom-parent
+ctrl + shift - d : yabai -m window --toggle zoom-parent
 
 # toggle window fullscreen zoom
-ctrl - f : yabai -m window --toggle zoom-fullscreen
+ctrl + cmd - f : yabai -m window --toggle zoom-fullscreen
 
 # toggle window native fullscreen
 shift + alt - f : yabai -m window --toggle native-fullscreen

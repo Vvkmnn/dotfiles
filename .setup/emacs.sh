@@ -52,6 +52,28 @@ sudo apt-get install build-essential xz-utils curl
    ;;
 Darwin)
 
+    # SErver client
+    # https://alexn.org/wiki/emacs/
+   # <?xml version="1.0" encoding="UTF-8"?>
+   # <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+   # <plist version="1.0">
+   #   <dict>
+   #     <key>KeepAlive</key>
+   #     <true/>
+   #     <key>Label</key>
+   #     <string>alex.Emacs</string>
+   #     <key>ProgramArguments</key>
+   #     <array>
+	 # <string>/usr/local/bin/emacs</string>
+	 # <string>--fg-daemon</string>
+   #     </array>
+   #     <key>RunAtLoad</key>
+   #     <true/>
+   #     <key>UserName</key>
+   #     <string>replace_me_with_mac_username</string>
+   #   </dict>
+   # </plist>
+
     # Install emacs with natural title bars
     # this one works with skhd & yabai on macOS
     brew tap railwaycat/emacsmacport

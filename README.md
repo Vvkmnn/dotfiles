@@ -32,13 +32,13 @@
 
 ## Pre Install
 
-### debian
+### Debian
 
 ```sh
 sudo apt get install git zsh curl vim python3-pip
 ```
 
-### macOS
+### MacOS
 [xcode](https://developer.apple.com/xcode/resources/)
 ```sh
 xcode-select --install
@@ -46,10 +46,23 @@ xcode-select --install
 
 [brew.sh](https://brew.sh)
 ```sh
+## zsh
+git clone --depth=1 https://github.com/mattmc3/antidote.git ${ZDOTDIR:-~}/.antidote
+
+## brew
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
+## utils
 brew install yabai skhd git-open bottom
-brew install --cask protonvpn 1password
+
+## emacs
+brew install git ripgrep coreutils fd
+brew install emacs-mac-spacemacs-icon
+
+## casks
+brew install --cask protonmail-bridge protonvpn
+brew install --cask 1password adguard
+brew install --cask karabiner-elements
 ```
 
 ## Install
@@ -61,7 +74,7 @@ cat ~/.ssh/id_rsa.pub
 
 # github
 alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
-git clone --bare git@github.com:Vvkmnn/dotfiles.git --branch <device> $HOME/.dotfiles
+git clone --bare git@github.com:Vvkmnn/dotfiles.git --branch <os> $HOME/.dotfiles
 dotfiles stash
 dotfiles checkout
 
