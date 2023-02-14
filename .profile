@@ -161,3 +161,4 @@ export ALTERNATE_EDITOR='vim' # $EDITOR if all else fails
 
 
 
+. "$HOME/.cargo/env"

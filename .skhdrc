@@ -7,7 +7,6 @@
 # restart yabai
 ctrl + cmd - 0: brew services stop yabai && brew services start yabai
 
-
 # Open regular terminal
 ctrl - return : open -a Terminal ~
 
@@ -17,10 +16,8 @@ ctrl - return : open -a Terminal ~
 ### }}}
 
 # Notes
-# 
 ctrl + alt + cmd - return : osascript -e 'tell application "Notes" to tell account "iCloud" to tell folder "Quick" to make new note with properties {name:"TODO Replace", body:"#quick"} show ' 
 # -e 'set dateString to do shell script "date +'%Y-%m-%d %k.%M'"' 
-
 
 ### GUI {{{
 # Open Doom Emacs
@@ -139,8 +136,8 @@ cmd + alt - x : yabai -m space --focus recent
 # cmd + alt - 0 : yabai -m space --focus 10
 
 # send window to desktop and follow focus
-cmd + ctrl - j : yabai -m window --space prev; yabai -m space --focus prev
-cmd + ctrl - k : yabai -m window --space next; yabai -m space --focus next
+# cmd + ctrl - j : yabai -m window --space prev; yabai -m space --focus prev
+# cmd + ctrl - k : yabai -m window --space next; yabai -m space --focus next
 
 shift + cmd - x : yabai -m window --space recent; yabai -m space --focus recent
 # shift + cmd - 1 : yabai -m window --space  1; yabai -m space --focus 1
@@ -164,8 +161,22 @@ ctrl + alt - 2  : yabai -m display --focus 2
 ctrl + alt - 3  : yabai -m display --focus 3
 
 # send window to monitor and follow focus
-ctrl + alt - h  : yabai -m window --display prev; yabai -m display --focus prev
-ctrl + alt - l  : yabai -m window --display next; yabai -m display --focus next
+ctrl + cmd - j  : cur_window=$(yabai -m query --windows --window | jq '.id') && \
+                      yabai -m window --display prev  || yabai -m window --display next && \
+                      yabai -m window --focus ${cur_window}
+
+ctrl + cmd - j : yabai -m window --display prev; yabai -m display --focus prev
+# ctrl + cmd - k  : cur_window=$(yabai -m query --windows --window | jq '.id') && \
+#                       yabai -m window --display next || yabai -m window --display prev && \
+#                       yabai -m window --focus ${cur_window}
+ctrl + cmd - k : yabai -m window --display next; yabai -m display --focus next
+#
+# ctrl + cmd - k  : cur_window=$(yabai -m query --windows --window | jq '.id') && \
+#                       yabai -m window --display next || yabai -m window --display prev && \
+#                       yabai -m window --focus ${cur_window}
+# ctrl + cmd - k  : yabai -m window --display next; yabai -m display --focus next
+# ctrl + alt - h  : yabai -m window --display prev; yabai -m display --focus prev
+# ctrl + alt - l  : yabai -m window --display next; yabai -m display --focus next
 
 ctrl + cmd - x  : yabai -m window --display recent; yabai -m display --focus recent
 ctrl + cmd - 1  : yabai -m window --display 1; yabai -m display --focus 1
