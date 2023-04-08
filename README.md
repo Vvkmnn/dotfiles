@@ -55,7 +55,7 @@ git clone --depth=1 https://github.com/mattmc3/antidote.git ${ZDOTDIR:-~}/.antid
 ## utils
 brew install yabai skhd 
 brew install git-open bottom
-brew install ngrok
+brew install ngrok tidy
 
 ## emacs
 brew install git ripgrep coreutils fd
