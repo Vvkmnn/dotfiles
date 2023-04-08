@@ -35,77 +35,141 @@ case "$(uname -s)" in
 
     # ZSH
     elif [ -n "$ZSH_VERSION" ]; then
+        ## Zcomet {{{
+        # Clone zcomet if necessary
+        if [[ ! -f ${ZDOTDIR:-${HOME}}/.zcomet/bin/zcomet.zsh ]]; then
+          command git clone https://github.com/agkozak/zcomet.git ${ZDOTDIR:-${HOME}}/.zcomet/bin
+        fi
+
+        source ${ZDOTDIR:-${HOME}}/.zcomet/bin/zcomet.zsh
+
+        # Load a prompt
+        # zcomet load agkozak/agkozak-zsh-prompt
+        zcomet load romkatv/powerlevel10k
+
+        # Load some plugins
+        zcomet load agkozak/zsh-z
+        zcomet load ohmyzsh plugins/gitfast
+
+        # Load a code snippet - no need to download an entire repo
+        zcomet snippet https://github.com/jreese/zsh-titles/blob/master/titles.plugin.zsh
+
+        # Lazy-load some plugins
+        zcomet trigger zhooks agkozak/zhooks
+        zcomet trigger zsh-prompt-benchmark romkatv/zsh-prompt-benchmark
+
+        # Lazy-load Prezto's archive module without downloading all of Prezto's
+        # submodules
+        zcomet trigger --no-submodules archive unarchive lsarchive \
+            sorin-ionescu/prezto modules/archive
+
+        # It is good to load these popular plugins last, and in this order:
+        zcomet load zsh-users/zsh-syntax-highlighting
+        zcomet load zsh-users/zsh-autosuggestions
+
+        # Run compinit and compile its cache
+        zcomet compinit
+        ##}}}
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/opt/homebrew/Caskroom/miniconda/base/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh" ]; then
+        . "/opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh"
+    else
+        export PATH="/opt/homebrew/Caskroom/miniconda/base/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+
+. "$HOME/.cargo/env"
+
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
         ## Antigen {{{
 
-        # If no file, curl
-        # if [[ ! -f ~/.antigen.zsh ]]; then
-        #   echo "curling antigen"
-        #   curl -L git.io/antigen > ~/.antigen.zsh 
-        # fi
+#         # If no file, curl
+#         # if [[ ! -f ~/.antigen.zsh ]]; then
+#         #   echo "curling antigen"
+#         #   curl -L git.io/antigen > ~/.antigen.zsh 
+#         # fi
 
-        # now, simply add these two lines in your ~/.zshrc
+#         # now, simply add these two lines in your ~/.zshrc
 
-        # # source antidote
-        # source ${ZDOTDIR:-~}/.antidote/antidote.zsh
+#         # # source antidote
+#         # source ${ZDOTDIR:-~}/.antidote/antidote.zsh
 
-        # # initialize plugins statically with ${ZDOTDIR:-~}/.zsh_plugins.txt
-        # antidote load
+#         # # initialize plugins statically with ${ZDOTDIR:-~}/.zsh_plugins.txt
+#         # antidote load
 
-        # You can change the names/locations of these if you prefer.
-        antidote_dir=${ZDOTDIR:-~}/.antidote
-        plugins_txt=${ZDOTDIR:-~}/.zsh_plugins.txt
-        static_file=${ZDOTDIR:-~}/.zsh_plugins.zsh
+#         # You can change the names/locations of these if you prefer.
+#         antidote_dir=${ZDOTDIR:-~}/.antidote
+#         plugins_txt=${ZDOTDIR:-~}/.zsh_plugins.txt
+#         static_file=${ZDOTDIR:-~}/.zsh_plugins.zsh
 
-        # Clone antidote if necessary and generate a static plugin file.
-        if [[ ! $static_file -nt $plugins_txt ]]; then
-          [[ -e $antidote_dir ]] ||
-            git clone --depth=1 https://github.com/mattmc3/antidote.git $antidote_dir
-          (
-            source $antidote_dir/antidote.zsh
-            [[ -e $plugins_txt ]] || touch $plugins_txt
-            antidote bundle <$plugins_txt >$static_file
-          )
-        fi
+#         # Clone antidote if necessary and generate a static plugin file.
+#         if [[ ! $static_file -nt $plugins_txt ]]; then
+#           [[ -e $antidote_dir ]] ||
+#             git clone --depth=1 https://github.com/mattmc3/antidote.git $antidote_dir
+#           (
+#             source $antidote_dir/antidote.zsh
+#             [[ -e $plugins_txt ]] || touch $plugins_txt
+#             antidote bundle <$plugins_txt >$static_file
+#           )
+#         fi
 
-        # Uncomment this if you want antidote commands like `antidote update` available
-        # in your interactive shell session:
-        autoload -Uz $antidote_dir/functions/antidote
+#         # Uncomment this if you want antidote commands like `antidote update` available
+#         # in your interactive shell session:
+#         autoload -Uz $antidote_dir/functions/antidote
 
-        # source the static plugins file
-        source $static_file
+#         # source the static plugins file
+#         source $static_file
 
-        # cleanup
-        unset antidote_dir plugins_txt static_file
+#         # cleanup
+#         unset antidote_dir plugins_txt static_file
 
-        # antidote bundle <~/.zsh_plugins.txt >~/.zsh_plugins.zsh
-        # source ~/.zsh_plugins.zsh
+#         # antidote bundle <~/.zsh_plugins.txt >~/.zsh_plugins.zsh
+#         # source ~/.zsh_plugins.zsh
 
 
 
-        # Powerlevel 10k
-        # If not in tmux, start tmux: reads and writes the TTY.
-        # if [[ -z ${TMUX+X}${ZSH_SCRIPT+X}${ZSH_EXECUTION_STRING+X} ]]; then
-        #   exec tmux
-        # fi
+#         # Powerlevel 10k
+#         # If not in tmux, start tmux: reads and writes the TTY.
+#         # if [[ -z ${TMUX+X}${ZSH_SCRIPT+X}${ZSH_EXECUTION_STRING+X} ]]; then
+#         #   exec tmux
+#         # fi
 
-        # Clone git repos that don't exist: prints and may take unpredictably long time to execute.
-        # if [[ ! -e ~/zsh-autosuggestions ]]; then
-        #   print -r -- 'installing zsh-autosuggestions ...'
-        #   git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions.git ~/zsh-autosuggestions
-        # fi
+#         # Clone git repos that don't exist: prints and may take unpredictably long time to execute.
+#         # if [[ ! -e ~/zsh-autosuggestions ]]; then
+#         #   print -r -- 'installing zsh-autosuggestions ...'
+#         #   git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions.git ~/zsh-autosuggestions
+#         # fi
 
         # Prints.
         print -Pr -- 'Hello, %n. Today is %D{%A}.'
 
         # ... and so on
         # Print the first prompt and redirect standard file descriptors.
-        if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-          source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-        fi
+        # if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+        #   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+        # fi
 
-         autoload -Uz compinit && compinit
-         source ~/zsh-autosuggestions/zsh-autosuggestions.zsh
+        # TODO Fix this, instant prompt from Powerlevel10k
+         # autoload -Uz compinit && compinit
+         # source ~/zsh-autosuggestions/zsh-autosuggestions.zsh
          # ... and so on
          # https://github.com/romkatv/zsh-bench#instant-prompt
 
