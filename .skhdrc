@@ -36,7 +36,10 @@ ctrl + cmd + shift - return : emacsclient -c
 # Open Mail
 # Use skhd --observe / -o to see hex codes for any key
 # TODO fix, not working
-ctrl - 0x27: open /Applications/Mail.app
+# ctrl - 0x27: /Applications/Mail.app
+
+# OpenChatGPT
+ctrl - 0x27: firefox "https://chat.openai.com/?model=gpt-4"
 
 ### Browser {{{
 # Open irefox
