@@ -33,10 +33,19 @@ ctrl + cmd + shift - return : emacsclient -c
 # ctrl + cmd - d : open /Applications/Discord.app/
 # }}}
 
+# Open Mail
+# Use skhd --observe / -o to see hex codes for any key
+# TODO fix, not working
+ctrl - 0x27: open /Applications/Mail.app
+
 ### Browser {{{
+# Open irefox
+cmd - return: open -n /Applications/Firefox.app
+# ctrl + cmd - 0x27 : open -n /Applications/Firefox.app
+# cmd + shift - return : open -n /Applications/Firefox.app
+
 # Open Safari
-# shift - return : open /Applications/Safari.app/
-ctrl + shift - return : osascript -e 'tell application "Safari" to make new document' 
+# ctrl + shift - return : osascript -e 'tell application "Safari" to make new document' 
 #with properties {URL:"https://www.google.com"}' 
 #-e 'activate' 
 #-e 'tell application "Safari" activate'
@@ -74,12 +83,39 @@ ctrl + shift - return : open /Applications/Google\ Chrome.app/
 cmd + shift - 4 -> : chunkc border::clear
 
 ## Window Manager 
+# toggle window zoom
+ctrl + cmd - d : yabai -m window --toggle zoom-parent
+ctrl + cmd - f : yabai -m window --toggle zoom-fullscreen
+
+# move window to display and follow focus 
+cmd + ctrl - j : yabai -m window --display west; yabai -m display --focus west
+cmd + ctrl - k : yabai -m window --display east; yabai -m display --focus east
+
+# move window to space and follow focus
+shift + cmd - space : cur_window=$(yabai -m query --windows --window | jq '.id') && \
+                      yabai -m window --display prev  || yabai -m window --display next && \
+                      yabai -m window --focus ${cur_window}
+
+# move window to another display and follow focus
+# TODO fancy but doesn't do much
+# shift + cmd - left : WIN_ID=$(yabai -m query --windows --window | jq '.id'); yabai -m window --swap west; [[ ! $? == 0 ]] && (yabai -m display --focus west; yabai -m window last --insert east; yabai -m window --focus $WIN_ID; yabai -m window --display prev; yabai -m window --focus $WIN_ID);
+# shift + cmd - right : WIN_ID=$(yabai -m query --windows --window | jq '.id'); yabai -m window --swap east; [[ ! $? == 0 ]] && (yabai -m display --focus east; yabai -m window first --insert west; yabai -m window --focus $WIN_ID; yabai -m window --display next; yabai -m window --focus $WIN_ID);
+
 
 # focus window
-alt - h : yabai -m window --focus west
-alt - j : yabai -m window --focus south
-alt - k : yabai -m window --focus north
-alt - l : yabai -m window --focus east
+# alt - h : yabai -m window --focus west
+# alt - j : yabai -m window --focus south
+# alt - k : yabai -m window --focus north
+# alt - l : yabai -m window --focus east
+
+# focus displays
+ctrl - j : yabai -m display --focus west
+ctrl - h : yabai -m display --focus east
+
+# move window to pre and next space
+# TODO fix this, acts weird
+# shift + cmd - j : yabai -m window --space prev; yabai -m space --focus prev
+# shift + cmd - j : yabai -m window --space next; yabai -m space --focus next
 
 # swap window
 shift + alt - h : yabai -m window --swap west
@@ -106,10 +142,10 @@ shift + alt - left   : yabai -m window --grid 1:2:0:0:1:1
 shift + alt - right  : yabai -m window --grid 1:2:1:0:1:1
 
 # create desktop, move window and follow focus
-shift + ctrl - n : yabai -m space --create;\
-                  id=$(yabai -m query --displays --display | grep "spaces");\
-                  yabai -m window --space $(echo ${id:10:${#id}-10});\
-                  yabai -m space --focus $(echo ${id:10:${#id}-10})
+shift + cmd - n : yabai -m space --create && \
+                   index="$(yabai -m query --spaces --display | jq 'map(select(."is-native-fullscreen" == false))[-1].index')" && \
+                   yabai -m window --space "${index}" && \
+                   yabai -m space --focus "${index}"
 
 # create desktop and follow focus
 cmd + ctrl - n : yabai -m space --create;\
@@ -226,7 +262,7 @@ alt - a : yabai -m space --toggle padding; yabai -m space --toggle gap
 ctrl + shift - d : yabai -m window --toggle zoom-parent
 
 # toggle window fullscreen zoom
-ctrl + cmd - f : yabai -m window --toggle zoom-fullscreen
+# ctrl + cmd - f : yabai -m window --toggle zoom-fullscreen
 
 # toggle window native fullscreen
 shift + alt - f : yabai -m window --toggle native-fullscreen
