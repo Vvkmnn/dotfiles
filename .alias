@@ -1,5 +1,10 @@
 #install ! /usr/bin/env bash
 
+  # NOTE Changed this
+  # Custom prefix.
+#  typeset -g POWERLEVEL9K_DIR_PREFIX=' ॐ  '
+
+
 # Dotfiles
 alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
 alias d="dotfiles"

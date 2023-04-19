@@ -200,5 +200,6 @@ typeset -g POWERLEVEL9K_CONFIG_FILE=${${(%):-%x}:a}
 
 
 function prompt_om() {
-  p10k segment -b 2 -f 214 -t 'ॐ '
+  # 214 is saffron
+  p10k segment -b 2 -f 7 -t 'ॐ '
 }

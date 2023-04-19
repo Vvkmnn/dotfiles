@@ -52,7 +52,7 @@ case "$(uname -s)" in
     Linux) ;;
 
     Darwin)
-        echo '[¬_¬] Loading macOS environment...'
+        # echo '[¬_¬] Loading macOS environment...'
         # Prompt
         export PURE_PROMPT_SYMBOL="ॐ "
 
