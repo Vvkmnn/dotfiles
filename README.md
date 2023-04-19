@@ -65,6 +65,7 @@ brew install emacs-mac-spacemacs-icon
 brew install --cask protonmail-bridge protonvpn
 brew install --cask 1password adguard
 brew install --cask karabiner-elements
+brew install --cask miniconda
 ```
 
 ## Install

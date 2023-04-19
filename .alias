@@ -3,6 +3,10 @@
 # Dotfiles
 alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
 alias d="dotfiles"
+alias ds="dotfiles status --untracked-files=no"
+# alias d+="dotfiles add"
+# alias d-="dotfiles remove"
+# alias d?="dotfiles commit"
 
 ## Debian
 alias u="sudo apt update && sudo apt upgrade && sudo apt autoremove"
@@ -46,11 +50,6 @@ case "$(uname -s)" in
         ## Emacs
         alias e='emacsclient --c' #Emacs
 
-        # alias d="dotfiles"
-        # alias ds="dotfiles status"
-        # alias d+="dotfiles add"
-        # alias d-="dotfiles remove"
-        # alias d?="dotfiles commit"
 
         # Game
         alias _game="brew services stop yabai && brew services stop skhd"
@@ -58,6 +57,7 @@ case "$(uname -s)" in
 
         # REPLs
         alias snek='python3'
+        alias python='/usr/bin/python3'
 
          ;;
 
