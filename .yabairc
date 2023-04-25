@@ -13,8 +13,8 @@
 
 # global settings
 yabai -m config                                 \
-    mouse_follows_focus          off            \
-    focus_follows_mouse          autofocus      \ # autoraise      \
+    mouse_follows_focus          on             \
+    focus_follows_mouse          autoraise      \
     window_origin_display        cursor         \
     window_placement             second_child   \
     window_topmost               off            \
@@ -59,8 +59,9 @@ yabai -m config                                 \
 # yabai -m rule --add app=Emacs manage=on
 # # yabai -m rule --add app=RememBear manage=on
 yabai -m rule --add app="^System­einstellungen$" sticky=on layer=above manage=off
-yabai -m rule --add app="^Mail$" sticky=on layer=above manage=on
+yabai -m rule --add app="^Mail$" sticky=on manage=on
 yabai -m rule --add app="^Music$" sticky=on layer=above manage=on
+yabai -m rule --add app="^1Password$" sticky=on layer=above manage=on
 # yabai -m rule --add app="^System Preferences$" manage=off
 # # yabai -m rule --add app=Steam manage=on
 # # yabai -m rule --add app=IMVU manage=off

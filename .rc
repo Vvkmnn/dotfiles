@@ -1,13 +1,4 @@
 #!/usr/bin/env sh
-
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
-
-#! /usr/bin/env bash 
 # Vivek Menon - vvkmnn.xyz
 
 # ##################################################
@@ -37,7 +28,6 @@ fi
 # ##################################################
 
 # Path
-# TODO .path - zsh only sources .zprofile on login, so symlink
 [ -f ~/.profile ] && . ~/.profile
 
 # Aliases
@@ -48,25 +38,3 @@ fi
 
 # Shell
 [ -f ~/.shell ] && . ~/.shell
-
-
-# TODO 
-# bounjourr safari
-
-# /* * #analogClock { margin-bottom: 1em } */
-# /* * #time #time-container { font-size: 1.1em } */
-# /* * #interface #time #date { font-size: 0.8em } */
-# /* * #interface #weather { font-size: 0.6em } */
-# /* * #widgets #quotes_container { font-size: 0.6em } */
-# 
-# /* * #clock { */
-# /* line-height: 1.1em */
-# /* } */
-# 
-# /* #interface { height: 80vh; padding-top: 10vh } */
-# /* #interface #time {justify-content: flex-end} */
-# /* #interface #main {justify-content: flex-start} */
-# /* #interface #widgets {justify-content: flex-start} */
-
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh

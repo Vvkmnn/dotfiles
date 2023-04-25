@@ -65,8 +65,9 @@ case "$(uname -s)" in
         export PKG_CONFIG_PATH="/usr/local/opt/openssl/lib/pkgconfig"
 
         # llvm
-        export LDFLAGS="-L/usr/local/opt/llvm/lib"
-        export CPPFLAGS="-I/usr/local/opt/llvm/include"
+        export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
+        export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
+        export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
 
         # emacs/pdf-tools
         # export PKG_CONFIG_PATH=/usr/local/Cellar/zlib/1.2.8/lib/pkgconfig:/usr/local/lib/pkgconfig:/opt/X11/lib/pkgconfig
