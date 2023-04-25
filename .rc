@@ -1,4 +1,4 @@
-#! /usr/bin/env bash 
+#!/usr/bin/env sh
 # Vivek Menon - vvkmnn.xyz
 
 # ##################################################
@@ -28,7 +28,6 @@
 # ##################################################
 
 # Path
-# TODO .path - zsh only sources .zprofile on login, so symlink
 [ -f ~/.profile ] && . ~/.profile
 
 # Aliases
@@ -39,38 +38,3 @@
 
 # Shell
 [ -f ~/.shell ] && . ~/.shell
-
-
-# TODO 
-# bounjourr safari
-
-# /* * #analogClock { margin-bottom: 1em } */
-# /* * #time #time-container { font-size: 1.1em } */
-# /* * #interface #time #date { font-size: 0.8em } */
-# /* * #interface #weather { font-size: 0.6em } */
-# /* * #widgets #quotes_container { font-size: 0.6em } */
-# 
-# /* * #clock { */
-# /* line-height: 1.1em */
-# /* } */
-# 
-# /* #interface { height: 80vh; padding-top: 10vh } */
-# /* #interface #time {justify-content: flex-end} */
-# /* #interface #main {justify-content: flex-start} */
-# /* #interface #widgets {justify-content: flex-start} */
-
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/opt/homebrew/Caskroom/miniconda/base/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "/opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh" ]; then
-        . "/opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh"
-    else
-        export PATH="/opt/homebrew/Caskroom/miniconda/base/bin:$PATH"
-    fi
-fi
-unset __conda_setup
-# <<< conda initialize <<<
-

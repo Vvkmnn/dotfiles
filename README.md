@@ -35,7 +35,7 @@
 ### Debian
 
 ```sh
-sudo apt get install git zsh curl vim python3-pip
+sudo apt get install git zsh curl vim python3-pip ngrok
 ```
 
 ### MacOS
@@ -53,7 +53,9 @@ git clone --depth=1 https://github.com/mattmc3/antidote.git ${ZDOTDIR:-~}/.antid
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
 ## utils
-brew install yabai skhd git-open bottom
+brew install yabai skhd 
+brew install git-open bottom
+brew install ngrok tidy
 
 ## emacs
 brew install git ripgrep coreutils fd
@@ -63,6 +65,7 @@ brew install emacs-mac-spacemacs-icon
 brew install --cask protonmail-bridge protonvpn
 brew install --cask 1password adguard
 brew install --cask karabiner-elements
+brew install --cask miniconda
 ```
 
 ## Install

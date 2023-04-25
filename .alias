@@ -1,89 +1,88 @@
-#install ! /usr/bin/env bash
+#! /usr/bin/env sh
+
+# NOTE Changed this
+# Custom prefix.
+#  typeset -g POWERLEVEL9K_DIR_PREFIX=' ॐ  '
 
 # Dotfiles
 alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
 alias d="dotfiles"
+alias ds="dotfiles status --untracked-files=no"
+# alias d+="dotfiles add"
+# alias d-="dotfiles remove"
+# alias d?="dotfiles commit"
 
 ## Debian
 alias u="sudo apt update && sudo apt upgrade && sudo apt autoremove"
 alias v="/mnt/c/Users/v"
 
 ## Vim
-alias v='vim' # Vim
+alias v='vim'               # Vim
 alias pvim="vim -u NONE -N" # Vanilla Vim
 alias v!='vim -u NONE'
 
 ## Time
-alias today=` date '+%F_%H:%M:%S'`
+alias today=$(date '+%F_%H:%M:%S')
 
 ## Git
-alias g='git' 
+alias g='git'
 
 case "$(uname -s)" in
-       
-       ## macOS
-       Darwin)
 
-        # Brew
-        alias cask='brew cask' # Shorthand
+        ## macOS
+        Darwin)
 
-        # Neovim
-        # alias v?='vim -d'
-        # alias nvim='nvim' # NeoVim
+                # Brew
+                alias cask='brew cask' # Shorthand
 
-        # iCloud
-        # NOTE Skip Local with iCloud > iCloud Drive > Desktop & Documents
-        alias v~='cd ~'
-        alias v~~='cd ~/Library/Mobile\ Documents/com~apple~CloudDocs/Documents'
+                # Neovim
+                # alias v?='vim -d'
+                # alias nvim='nvim' # NeoVim
 
-        # Yabai 
-        alias bry='brew services restart yabai'
+                # iCloud
+                # NOTE Skip Local with iCloud > iCloud Drive > Desktop & Documents
+                alias v~='cd ~'
+                alias v~~='cd ~/Library/Mobile\ Documents/com~apple~CloudDocs/Documents'
 
-        # Skhd
-        alias brs='brew services restart skhd'
+                # Yabai
+                alias bry='brew services restart yabai'
 
+                # Skhd
+                alias brs='brew services restart skhd'
 
-        ## Emacs
-        alias e='emacsclient --c' #Emacs
+                ## Emacs
+                alias e='emacsclient --c' #Emacs
 
-        # alias d="dotfiles"
-        # alias ds="dotfiles status"
-        # alias d+="dotfiles add"
-        # alias d-="dotfiles remove"
-        # alias d?="dotfiles commit"
+                # Game
+                alias _game="brew services stop yabai && brew services stop skhd"
+                alias _normal="brew services start yabai && brew services start skhd"
 
-        # Game
-        alias _game="brew services stop yabai && brew services stop skhd"
-        alias _normal="brew services start yabai && brew services start skhd"
+                # REPLs
+                alias snek='python3'
+                alias python='/usr/bin/python3'
 
-        # REPLs
-        alias snek='python3'
-
-         ;;
+                ;;
 
         # Debian
         Linux)
-        
-        # Nautilus
-        alias open='nautilus .'
 
-        # Python 3
-        alias python='/usr/bin/python3'
-        alias pip='/usr/bin/pip3'
+                # Nautilus
+                alias open='nautilus .'
 
-        ## Emacs
-        alias e='
+                # Python 3
+                alias python='/usr/bin/python3'
+                alias pip='/usr/bin/pip3'
+
+                ## Emacs
+                alias e='
         export DISPLAY=:0.0
         export LIBGL_ALWAYS_INDIRECT=1
         setxkbmap -layout us
         setsid emacs
         '
 
+                ;;
 
-         ;;
-
-        CYGWIN*|MINGW32*|MSYS*|MINGW*)
-         ;;
+        CYGWIN* | MINGW32* | MSYS* | MINGW*) ;;
 
 esac
-

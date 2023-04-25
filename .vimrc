@@ -24,7 +24,7 @@
 "                   `:+oyyhhhhyso/-`                
 "                                                    
 " © Vivek Menon
-" v@vvkmnn.xyz 
+" hiv@vvkmnn.xyz 
 
 " -----------------------------
 " Plugins 
@@ -47,12 +47,13 @@ Plug 'tpope/vim-sensible'
 Plug 'sheerun/vim-polyglot'
 
 " Copilot
-Plug 'github/copilot.vim'
+" Plug 'github/copilot.vim'
 
 " Vim tree navigation
 " Plug 'scrooloose/nerdtree'
 
-" Vim split navigation
+" TODO add these to jetpack
+" " Vim split navigation
 Plug 'tpope/vim-vinegar'
 
 " Vim Tiling Window Manager
@@ -105,14 +106,14 @@ Plug 'frazrepo/vim-rainbow'
 Plug 'tyru/open-browser.vim'
 
 " Vim Airline (Status Bar)
-Plug 'bling/vim-airline'
+" Plug 'bling/vim-airline'
 
 " Vim Airline Themes (for Dracula)
-Plug 'vim-airline/vim-airline-themes'
+" Plug 'vim-airline/vim-airline-themes'
 
 " Vim Lightline
-" Plug 'itchyny/lightline.vim'
- 
+Plug 'itchyny/lightline.vim'
+
 " Initialize/Install Plugin System
 call plug#end()
 
