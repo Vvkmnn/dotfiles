@@ -1,1 +1,1 @@
-.bashenv
+.rc
