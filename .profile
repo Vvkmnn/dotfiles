@@ -125,9 +125,9 @@ case "$(uname -s)" in
         export CPATH=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include
 
         # Go
-        export GOROOT="$(brew --prefix golang)/libexec"
-        export GOPATH=$HOME/Documents/dev/go
-        export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
+        # export GOROOT="$(brew --prefix golang)/libexec"
+        # export GOPATH=$HOME/Documents/dev/go
+        # export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
 
         # LLVM
         export PATH="/usr/local/opt/llvm/bin:$PATH"
