@@ -13,8 +13,8 @@
 
 # global settings
 yabai -m config                                 \
-    mouse_follows_focus          on             \
-    focus_follows_mouse          autoraise      \
+    mouse_follows_focus          off             \
+    focus_follows_mouse          autofocus      \
     window_origin_display        cursor         \
     window_placement             second_child   \
     window_topmost               off            \
