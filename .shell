@@ -36,6 +36,8 @@ case "$(uname -s)" in
 
         # ZSH
         elif [ -n "$ZSH_VERSION" ]; then
+            # Vi Mode
+            bindkey -v
 
             # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
             # Initialization code that may require console input (password prompts, [y/n]
@@ -44,8 +46,19 @@ case "$(uname -s)" in
             source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
             fi
 
-            # Vi Mode
-            bindkey -v
+            # Save in case
+            
+            # typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
+            #   ...
+            #   om                        # TODO fix, custom prompt
+            # )
+            #
+            # function prompt_om() {
+            #   # 214 is saffron
+            #   # 7 is grey
+            #   p10k segment -b 2 -f 214 -t 'ॐ '
+            # }
+            
 
             ## Zcomet {{{
             # Clone zcomet if necessary
@@ -79,6 +92,10 @@ case "$(uname -s)" in
             # It is good to load these popular plugins last, and in this order:
             zcomet load zsh-users/zsh-syntax-highlighting
             zcomet load zsh-users/zsh-autosuggestions
+
+            # Custom 
+            # zsh-autoenv
+            zcomet load Tarrasch/zsh-autoenv
 
             # Run compinit and compile its cache
             zcomet compinit
@@ -232,22 +249,20 @@ case "$(uname -s)" in
             # /* #interface #widgets {justify-content: flex-start} */
 
             # conda {{{
-
             # >>> conda initialize >>>
             # !! Contents within this block are managed by 'conda init' !!
-            # __conda_setup="$('/opt/homebrew/Caskroom/miniconda/base/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-            # if [ $? -eq 0 ]; then
-            #     eval "$__conda_setup"
-            # else
-            #     if [ -f "/opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh" ]; then
-            #         . "/opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh"
-            #     else
-            #         export PATH="/opt/homebrew/Caskroom/miniconda/base/bin:$PATH"
-            #     fi
-            # fi
-            # unset __conda_setup
+            __conda_setup="$('/Users/v/.miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+            if [ $? -eq 0 ]; then
+                eval "$__conda_setup"
+            else
+                if [ -f "/Users/v/.miniconda3/etc/profile.d/conda.sh" ]; then
+                    . "/Users/v/.miniconda3/etc/profile.d/conda.sh"
+                else
+                    export PATH="/Users/v/.miniconda3/bin:$PATH"
+                fi
+            fi
+            unset __conda_setup
             # <<< conda initialize <<<
-            # }}}
 
             # rust {{{
             # . "$HOME/.cargo/env"
@@ -376,8 +391,8 @@ case "$(uname -s)" in
 
             ## nvm
             export NVM_DIR="$HOME/.nvm"
-            [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh" # This loads nvm
-            # [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+            [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
+            [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
 
         # Bash
 
