@@ -94,9 +94,9 @@ case "$(uname -s)" in
             zcomet load zsh-users/zsh-autosuggestions
 
             # Custom 
-            # zsh-autoenv
             zcomet load Tarrasch/zsh-autoenv
-
+            zcomet load zsh-users/zsh-completions
+            
             # Run compinit and compile its cache
             zcomet compinit
             ##}}}

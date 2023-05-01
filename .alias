@@ -58,8 +58,8 @@ case "$(uname -s)" in
                 alias _normal="brew services start yabai && brew services start skhd"
 
                 # REPLs
-                alias snek='python3'
-                alias python='/usr/bin/python3'
+                # alias snek='python3'
+                # alias python='/usr/bin/python3'
 
                 ;;
 
@@ -70,8 +70,8 @@ case "$(uname -s)" in
                 alias open='nautilus .'
 
                 # Python 3
-                alias python='/usr/bin/python3'
-                alias pip='/usr/bin/pip3'
+                # alias python='/usr/bin/python3'
+                # alias pip='/usr/bin/pip3'
 
                 ## Emacs
                 alias e='

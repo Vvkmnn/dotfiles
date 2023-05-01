@@ -1,3 +1,2 @@
-/Users/v/miniconda3
-/opt/homebrew/Caskroom/miniconda/base
-/opt/homebrew/Caskroom/miniconda/base/envs/medusaAI
+/Users/v/.miniconda3
+/Users/v/.miniconda3/envs/textgen
