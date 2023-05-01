@@ -60,6 +60,10 @@ case "$(uname -s)" in
                 # REPLs
                 # alias snek='python3'
                 # alias python='/usr/bin/python3'
+                
+                # GCC
+                alias gcc="gcc-12"
+                alias g++="g++-12"
 
                 ;;
 
