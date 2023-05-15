@@ -73,7 +73,7 @@ xcode-select --install
 
 utils
 ```
-brew install yabai skhd         \
+brew install yabai skhd         
 ```
 ```sh
 brew install git-open bottom    \
