@@ -66,22 +66,49 @@ xcode-select --install
 
 [brew.sh](https://brew.sh)
 ```sh
-## brew
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" 
+```
 
-## utils
-brew install yabai skhd 
-brew install git-open bottom
-brew install ngrok tidy
+utils
+```
+brew install yabai skhd         \
+             git-open           \
+	     bottom             \
+```
+```sh
+brew install ngrok tidy 
+```
 
-## emacs
-brew install git ripgrep coreutils fd
-brew install emacs-mac-spacemacs-icon
+emacs
+```sh
+brew install git ripgrep        \
+            coreutils fd        \
+```
+```sh
+brew install emacs-mac          \ 
+   --with-dbus                  \
+   --with-starter               \
+   --with-rsvg                  \
+   --with-imagemagick           \
+   --with-no-title-bars         \
+   --with-spacemacs-icon        \ 
+   --with-native-comp           \
+   --with-mac-metal             \
+   --with-xwidgets
 
-## casks
+```
+
+casks
+```sh
 brew install --cask protonmail-bridge protonvpn
+```
+```sh
 brew install --cask 1password adguard
-brew install --cask karabiner-elements
+```
+```sh
+brew install --cask karabiner-elements          
+```
+```sh
 brew install --cask miniconda
 ```
 
