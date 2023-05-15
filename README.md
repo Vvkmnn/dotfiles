@@ -44,9 +44,8 @@ sudo apt install openssh-client \
 
 ```sh
 # qol
-sh -s /bin/zsh           # switch to zsh from bash
-cat .setup/capslock.ahk  # Capslock -> Esc + Ctrl on WSL 
-
+sh -s /bin/zsh                  # switch to zsh from bash
+cat .setup/capslock.ahk         # Capslock -> Esc + Ctrl on WSL 
 ```
 
 ### MacOS
