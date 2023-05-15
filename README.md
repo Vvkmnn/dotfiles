@@ -35,7 +35,18 @@
 ### Debian
 
 ```sh
-sudo apt get install git zsh curl vim python3-pip ngrok
+# setup
+sudo apt update &&              \
+sudo apt install openssh-client \
+                   git zsh curl \
+                   neovim tmux  \
+```
+
+```sh
+# qol
+sh -s /bin/zsh           # switch to zsh from bash
+cat .setup/capslock.ahk  # Capslock -> Esc + Ctrl on WSL 
+
 ```
 
 ### MacOS
