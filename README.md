@@ -34,8 +34,11 @@
 
 ### Debian
 
+#### [linux](https://www.debian.org/distrib/)
+
+[apt](https://wiki.debian.org/Apt)
 ```sh
-# setup
+## setup
 sudo apt update &&              \
 sudo apt install openssh-client \
                    git zsh curl \
@@ -43,12 +46,23 @@ sudo apt install openssh-client \
 ```
 
 ```sh
-# qol
+## defaults
 sh -s /bin/zsh                  # switch to zsh from bash
+```
+
+#### [windows](id://learn.microsoft.com/en-us/windows/wsl/install)
+
+[ahk](https://www.autohotkey.com/)
+```sh
+## setup
+winget install Debian.Debian    # Install Debian on W10 with WSL
+
+## utils
 cat .setup/capslock.ahk         # Capslock -> Esc + Ctrl on WSL 
 ```
 
 ### MacOS
+
 [xcode](https://developer.apple.com/xcode/resources/)
 ```sh
 xcode-select --install
@@ -56,9 +70,6 @@ xcode-select --install
 
 [brew.sh](https://brew.sh)
 ```sh
-## zsh
-git clone --depth=1 https://github.com/mattmc3/antidote.git ${ZDOTDIR:-~}/.antidote
-
 ## brew
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
@@ -99,7 +110,7 @@ dotfiles config status.showUntrackedFiles no
 
 ## Backup
 
-```
+```sh
 cd
 mkdir -p .backup && \
 dotfiles checkout 2>&1 | egrep "\s+\." | awk {'print $1'} | \
@@ -108,7 +119,7 @@ xargs -I{} mv {} .backup/{}
 
 ## Post Install
 
-```
+```sh
 # submodules
 dotfiles submodule init
 dotfiles submodule update
@@ -133,7 +144,7 @@ capslock.sh
 
 ## Update
 
-``` sh
+```sh
 # combined
 dotfiles submodule update --init --recursive
 
