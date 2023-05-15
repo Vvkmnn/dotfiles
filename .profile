@@ -107,7 +107,7 @@ case "$(uname -s)" in
         # <<< conda initialize <<<
 
         # Rust
-        . "$HOME/.cargo/env"
+        #. "$HOME/.cargo/env"
 
         # Ruby
         export PATH="/usr/local/opt/ruby/bin:$PATH"
@@ -178,4 +178,4 @@ esac
 # Load
 # echo '[¬_¬]...'
 
-. "$HOME/.cargo/env"
+# . "$HOME/.cargo/env"
