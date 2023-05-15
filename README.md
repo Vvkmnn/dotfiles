@@ -54,6 +54,8 @@ winget install Debian.Debian    # Install Debian on W10 with WSL
 [ahk](https://www.autohotkey.com/)
 ```sh
 cat .setup/capslock.ahk         # Capslock -> Esc + Ctrl on WSL 
+```
+```sh
 explorer.exe .setup             # Explorer open 
 ```
 
@@ -72,17 +74,16 @@ xcode-select --install
 utils
 ```
 brew install yabai skhd         \
-             git-open           \
-	     bottom             \
 ```
 ```sh
-brew install ngrok tidy 
+brew install git-open bottom    \
+             ngrok tidy 
 ```
 
 emacs
 ```sh
 brew install git ripgrep        \
-            coreutils fd        \
+            coreutils fd        
 ```
 ```sh
 brew install emacs-mac          \ 
