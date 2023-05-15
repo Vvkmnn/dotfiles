@@ -34,8 +34,6 @@
 
 ### Debian
 
-#### [linux](https://www.debian.org/distrib/)
-
 [apt](https://wiki.debian.org/Apt)
 ```sh
 ## setup
@@ -50,13 +48,14 @@ sudo apt install openssh-client \
 sh -s /bin/zsh                  # switch to zsh from bash
 ```
 
-#### [windows](id://learn.microsoft.com/en-us/windows/wsl/install)
-
-[ahk](https://www.autohotkey.com/)
+[wsl](https://learn.microsoft.com/en-us/windows/wsl/install)
 ```sh
 ## setup
 winget install Debian.Debian    # Install Debian on W10 with WSL
+```
 
+[ahk](https://www.autohotkey.com/)
+```sh
 ## utils
 cat .setup/capslock.ahk         # Capslock -> Esc + Ctrl on WSL 
 ```
