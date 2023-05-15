@@ -54,7 +54,7 @@ winget install Debian.Debian    # Install Debian on W10 with WSL
 [ahk](https://www.autohotkey.com/)
 ```sh
 cat .setup/capslock.ahk         # Capslock -> Esc + Ctrl on WSL 
-cd .setup && explorer.exe .     # Explorer open 
+explorer.exe .setup             # Explorer open 
 ```
 
 ### MacOS

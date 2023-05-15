@@ -24,7 +24,7 @@
 "                   `:+oyyhhhhyso/-`                
 "                                                    
 " © Vivek Menon
-" hiv@vvkmnn.xyz 
+" hi@vvkmnn.xyz 
 
 " -----------------------------
 " Plugins 
