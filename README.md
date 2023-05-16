@@ -53,13 +53,23 @@ git clone --depth=1 https://github.com/mattmc3/antidote.git ${ZDOTDIR:-~}/.antid
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
 ## utils
-brew install yabai skhd 
-brew install git-open bottom
-brew install ngrok tidy
+brew install yabai skhd \
+             git-open bottom \
+             ngrok \
 
 ## emacs
 brew install git ripgrep coreutils fd
-brew install emacs-mac-spacemacs-icon
+brew install emacs-mac \
+   --with-dbus\
+   --with-starter\
+   --with-librsvg\
+   --with-imagemagick\
+   --with-xwidgets\ 
+   --with-ctags\
+   --with-native-comp\
+   --with-mac-metal\
+   --with-natural-title-bar\
+   --with-spacemacs-icon\
 
 ## casks
 brew install --cask protonmail-bridge protonvpn
