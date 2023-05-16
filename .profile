@@ -29,6 +29,9 @@
 
 ## Environment -------------------------------------
 
+# XDG
+export XDG_CONFIG_HOME="$HOME/.config"
+
 # Params
 export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
@@ -107,7 +110,7 @@ case "$(uname -s)" in
         # <<< conda initialize <<<
 
         # Rust
-        . "$HOME/.cargo/env"
+        #. "$HOME/.cargo/env"
 
         # Ruby
         export PATH="/usr/local/opt/ruby/bin:$PATH"
@@ -178,4 +181,4 @@ esac
 # Load
 # echo '[¬_¬]...'
 
-. "$HOME/.cargo/env"
+# . "$HOME/.cargo/env"

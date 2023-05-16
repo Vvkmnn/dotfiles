@@ -35,10 +35,32 @@
 ### Debian
 
 ```sh
-sudo apt get install git zsh curl vim python3-pip ngrok
+sudo apt update  &&             \
+sudo apt upgrade &&             \
+sudo apt install openssh-client \
+                 git zsh curl   \
+                 neovim tmux  
+```
+
+```sh
+chsh -s /bin/zsh                # switch to zsh from bash
+```
+
+[wsl](https://learn.microsoft.com/en-us/windows/wsl/install)
+```sh
+winget install Debian.Debian    # Install Debian on W10 with WSL
+```
+
+[ahk](https://www.autohotkey.com/)
+```sh
+cat .setup/capslock.ahk         # Capslock -> Esc + Ctrl on WSL 
+```
+```sh
+explorer.exe .setup             # Explorer open 
 ```
 
 ### MacOS
+
 [xcode](https://developer.apple.com/xcode/resources/)
 ```sh
 xcode-select --install
@@ -46,11 +68,17 @@ xcode-select --install
 
 [brew.sh](https://brew.sh)
 ```sh
-## zsh
-git clone --depth=1 https://github.com/mattmc3/antidote.git ${ZDOTDIR:-~}/.antidote
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" 
+```
 
-## brew
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+utils
+```
+brew install yabai skhd         
+```
+```sh
+brew install git-open bottom    \
+             ngrok tidy 
+```
 
 ## utils
 brew install yabai skhd \
@@ -71,10 +99,17 @@ brew install emacs-mac \
    --with-natural-title-bar\
    --with-spacemacs-icon\
 
-## casks
+casks
+```sh
 brew install --cask protonmail-bridge protonvpn
+```
+```sh
 brew install --cask 1password adguard
-brew install --cask karabiner-elements
+```
+```sh
+brew install --cask karabiner-elements          
+```
+```sh
 brew install --cask miniconda
 ```
 
@@ -99,7 +134,7 @@ dotfiles config status.showUntrackedFiles no
 
 ## Backup
 
-```
+```sh
 cd
 mkdir -p .backup && \
 dotfiles checkout 2>&1 | egrep "\s+\." | awk {'print $1'} | \
@@ -108,7 +143,7 @@ xargs -I{} mv {} .backup/{}
 
 ## Post Install
 
-```
+```sh
 # submodules
 dotfiles submodule init
 dotfiles submodule update
@@ -133,7 +168,7 @@ capslock.sh
 
 ## Update
 
-``` sh
+```sh
 # combined
 dotfiles submodule update --init --recursive
 
