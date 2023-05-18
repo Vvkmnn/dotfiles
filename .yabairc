@@ -13,7 +13,7 @@
 
 # global settings
 yabai -m config                                 \
-    mouse_follows_focus          off            \
+    mouse_follows_focus          on             \
     focus_follows_mouse          autoraise      \
     window_origin_display        cursor         \
     window_placement             second_child   \

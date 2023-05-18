@@ -5,7 +5,8 @@
 # ctrl - return : alacritty
 
 # restart yabai
-ctrl + cmd - 0: brew services stop yabai && brew services start yabai
+# ctrl + cmd - 0: brew services stop yabai && brew services start yabai
+ctrl + cmd - 0: yabai --restart-service && skhd --restart-service
 
 # Open regular terminal
 ctrl - return : open -a Terminal ~
@@ -21,7 +22,8 @@ ctrl - return : open -a Terminal ~
 
 ### GUI {{{
 # Open Doom Emacs
-ctrl + cmd - return : open /Applications/Emacs.app/ 
+# ctrl + cmd - return : open /Applications/Emacs.app/ 
+ctrl + cmd - return : emacs
 
 # TODO fix, find Emacs process kill and restart 
 # ctrl + cmd - = : emacsclient -e (kill-emacs)
@@ -189,8 +191,13 @@ cmd + alt - x : yabai -m space --focus recent
 # cmd + ctrl - j : yabai -m window --space prev; yabai -m space --focus prev
 # cmd + ctrl - k : yabai -m window --space next; yabai -m space --focus next
 
-shift + cmd - x : yabai -m window --space recent; yabai -m space --focus recent
-# shift + cmd - 1 : yabai -m window --space  1; yabai -m space --focus 1
+# shift + cmd - x : yabai -m window --space recent; yabai -m space --focus recent
+# cmd - 1 : yabai -m space --focus 1
+# cmd - 2 : yabai -m space --focus 2
+
+## focus space 3
+# cmd - 3 : index=3; eval "$(yabai -m query --spaces | jq --argjson index "${index}" -r '(.[] | select(.index == $index).windows[0]) as $wid | if $wid then "yabai -m window --focus \"" + ($wid | tostring) + "\"" else "skhd --key \"ctrl - " + (map(select(."native-fullscreen" == 0)) | index(map(select(.index == $index))) + 1 % 10 | tostring) + "\"" end')"
+
 # shift + cmd - 2 : yabai -m window --space  2; yabai -m space --focus 2
 # shift + cmd - 3 : yabai -m window --space  3; yabai -m space --focus 3
 # shift + cmd - 4 : yabai -m window --space  4; yabai -m space --focus 4
