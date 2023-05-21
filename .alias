@@ -17,8 +17,8 @@ alias u="sudo apt update && sudo apt upgrade && sudo apt autoremove"
 alias v="/mnt/c/Users/v"
 
 ## Vim
-alias v='nvim'                # (neo)Vim
-#alias v='vim'                # Vim
+# alias v='nvim'                # (neo)Vim
+alias v='vim'                # Vim
 alias pvim="vim -u NONE -N"   # Vanilla Vim
 alias v!='vim -u NONE'
 
