@@ -269,6 +269,7 @@ case "$(uname -s)" in
 
             # rust {{{
             # . "$HOME/.cargo/env"
+            [ -d "$HOME/.cargo" ] && . "$HOME/.cargo/env"
             # }}}
 
             # z {{{

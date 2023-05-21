@@ -63,6 +63,9 @@ contrib non-free
 sudo apt-get update && \
 sudo apt-get dist-upgrade 
 ```
+```sh
+chsh -s $(which zsh)            # switch to zsh from bash
+```
 
 [neovim](https://neovim.io/)
 ```sh
@@ -74,10 +77,6 @@ dotfiles submodule update --init --recursive \
 && sudo make install
 ```
 
-```sh
-chsh -s $(which zsh)            # switch to zsh from bash
-```
-
 [wsl](https://learn.microsoft.com/en-us/windows/wsl/install)
 ```sh
 winget install Debian.Debian    # Install Debian on W10 with WSL
@@ -86,8 +85,6 @@ winget install Debian.Debian    # Install Debian on W10 with WSL
 [ahk](https://www.autohotkey.com/)
 ```sh
 cat .setup/capslock.ahk         # Capslock -> Esc + Ctrl on WSL 
-```
-```sh
 explorer.exe .setup             # Explorer open 
 ```
 
@@ -110,6 +107,18 @@ brew install yabai skhd
 ```sh
 brew install git-open bottom    \
              ngrok tidy 
+```
+
+[alacritty](https://alacritty.org)
+```sh
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh # rustup
+```
+```sh
+dotfiles submodule update --init --recursive \
+&& cd .alacritty \
+&& make \
+&& cp -r target/release/osx/Alacritty.app \
+         /Applications/  
 ```
 
 emacs
