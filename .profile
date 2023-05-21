@@ -55,9 +55,12 @@ case "$(uname -s)" in
     Linux) ;;
 
     Darwin)
-        # echo '[¬_¬] Loading macOS environment...'
         # Prompt
-        export PURE_PROMPT_SYMBOL="ॐ "
+        # export PURE_PROMPT_SYMBOL="ॐ "
+
+        ## brew
+        export PATH="/usr/local/bin:$PATH"
+        export PATH="/usr/local/sbin:$PATH"
 
         # Brew
         export HOMEBREW_CASK_OPTS="--appdir=/Applications"
@@ -79,9 +82,6 @@ case "$(uname -s)" in
 
         export PATH="$HOME/Documents/bin:$PATH"
         # export PATH="$HOME/Documents/dev/github-jack:$PATH"
-
-        ## brew
-        export PATH="/usr/local/sbin:$PATH"
 
         ## openSSL
         export PATH="/usr/local/opt/openssl/bin:$PATH"
@@ -182,3 +182,4 @@ esac
 # echo '[¬_¬]...'
 
 # . "$HOME/.cargo/env"
+
