@@ -34,12 +34,44 @@
 
 ### Debian
 
+[testing](https://wiki.debian.org/LTS)
 ```sh
 sudo apt update  &&             \
 sudo apt upgrade &&             \
-sudo apt install openssh-client \
-                 git zsh curl   \
-                 neovim tmux  
+sudo apt install git zsh curl   \
+
+# openssh-client TODO needed?
+```
+```sh
+# /etc/apt/sources.list
+# Testing repository – main, contrib and non-free branches
+deb http://deb.debian.org/debian testing main non-free contrib
+deb-src http://deb.debian.org/debian testing main non-free contrib
+
+# Testing security updates repository
+deb http://security.debian.org/debian-security testing-security main contrib
+non-free
+deb-src http://security.debian.org/debian-security/ testing-security main
+contrib non-free
+
+# w !sudo tee %                # Vim Sudo (Emergencies)
+# sudo cp \
+#     /usr/share/doc/apt/examples/sources.list \
+#     /etc/apt/sources.list    # Default backup on Debian
+```
+```sh
+sudo apt-get update && \
+sudo apt-get dist-upgrade 
+```
+
+[neovim](https://neovim.io/)
+```sh
+dotfiles submodule update --init --recursive \
+&& cd .neovim \
+&& sudo apt-get update \
+&& sudo apt-get install ninja-build gettext cmake unzip curl \
+&& make CMAKE_BUILD_TYPE=RelWithDebInfo
+&& sudo make install
 ```
 
 ```sh
@@ -115,12 +147,14 @@ brew install --cask miniconda
 
 ## Install
 
+[ssh](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)
 ```sh
-# ssh
 ssh-keygen -t rsa -b 4096 -C "example@example.com"
 cat ~/.ssh/id_rsa.pub
+```
 
-# github
+[github](https://github.com/Vvkmnn/dotfiles)
+```
 alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 git clone --bare git@github.com:Vvkmnn/dotfiles.git --branch <os> $HOME/.dotfiles
 dotfiles stash
