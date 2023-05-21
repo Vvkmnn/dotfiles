@@ -112,12 +112,8 @@ brew install git-open bottom    \
              ngrok tidy 
 ```
 
-## utils
-brew install yabai skhd \
-             git-open bottom \
-             ngrok \
-
-## emacs
+emacs
+```sh
 brew install git ripgrep coreutils fd
 brew install emacs-mac \
    --with-dbus\
@@ -130,6 +126,7 @@ brew install emacs-mac \
    --with-mac-metal\
    --with-natural-title-bar\
    --with-spacemacs-icon\
+```
 
 casks
 ```sh
