@@ -43,7 +43,7 @@ sudo apt install openssh-client \
 ```
 
 ```sh
-chsh -s /bin/zsh                # switch to zsh from bash
+chsh -s $(which zsh)            # switch to zsh from bash
 ```
 
 [wsl](https://learn.microsoft.com/en-us/windows/wsl/install)

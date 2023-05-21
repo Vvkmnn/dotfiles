@@ -9,3 +9,6 @@
 [submodule ".zplug"]
     path = .zplug
     url = git@github.com:zplug/zplug.git
+[submodule ".neovim"]
+	path = .neovim
+	url = https://github.com/neovim/neovim
