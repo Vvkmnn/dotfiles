@@ -36,11 +36,10 @@
 
 [testing](https://wiki.debian.org/LTS)
 ```sh
-sudo apt update  &&             \
-sudo apt upgrade &&             \
-sudo apt install git zsh curl   \
-
-# openssh-client TODO needed?
+sudo apt-get update                    \
+&& sudo apt-get upgrade                \
+&& sudo apt-get install git zsh curl   \
+                    openssh-client \
 ```
 ```sh
 # /etc/apt/sources.list
