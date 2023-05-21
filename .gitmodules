@@ -6,9 +6,6 @@
     path = .config/doom
     url = git@github.com:Vvkmnn/v.doom.d.git
     branch = local
-[submodule ".zplug"]
-    path = .zplug
-    url = git@github.com:zplug/zplug.git
 [submodule ".neovim"]
 	path = .neovim
 	url = https://github.com/neovim/neovim
