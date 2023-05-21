@@ -44,15 +44,20 @@ sudo apt install git zsh curl   \
 ```
 ```sh
 # /etc/apt/sources.list
-# Testing repository – main, contrib and non-free branches
-deb http://deb.debian.org/debian testing main non-free contrib
-deb-src http://deb.debian.org/debian testing main non-free contrib
+deb http://deb.debian.org/debian bookworm main contrib non-free
+non-free-firmware
+deb-src http://deb.debian.org/debian bookworm main contrib non-free
+non-free-firmware
 
-# Testing security updates repository
-deb http://security.debian.org/debian-security testing-security main contrib
-non-free
-deb-src http://security.debian.org/debian-security/ testing-security main
-contrib non-free
+deb http://deb.debian.org/debian-security bookworm-security main contrib
+non-free non-free-firmware
+deb-src http://deb.debian.org/debian-security bookworm-security main contrib
+non-free non-free-firmware
+
+deb http://deb.debian.org/debian bookworm-updates main contrib non-free
+non-free-firmware
+deb-src http://deb.debian.org/debian bookworm-updates main contrib non-free
+non-free-firmware
 
 # w !sudo tee %                # Vim Sudo (Emergencies)
 # sudo cp \
@@ -60,8 +65,9 @@ contrib non-free
 #     /etc/apt/sources.list    # Default backup on Debian
 ```
 ```sh
-sudo apt-get update && \
-sudo apt-get dist-upgrade 
+sudo apt-get update \
+&& sudo apt-get dist-upgrade \
+&& sudo apt-get install --reinstall build-essential
 ```
 
 [neovim](https://neovim.io/)
