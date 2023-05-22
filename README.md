@@ -40,6 +40,7 @@ sudo apt-get update                      \
 && sudo apt-get upgrade                  \
 && sudo apt-get install git zsh curl vim \
                         openssh-client   \
+                        aptitude         \
 ```
 ```sh
 # /etc/apt/sources.list
@@ -64,9 +65,9 @@ non-free-firmware
 #     /etc/apt/sources.list    # Default backup on Debian
 ```
 ```sh
-sudo apt-get update \
-&& sudo apt-get dist-upgrade \
-&& sudo apt-get install --reinstall build-essential
+sudo aptitude update \
+&& sudo aptitude dist-upgrade \
+&& sudo aptitude install --reinstall build-essential
 ```
 
 [neovim](https://neovim.io/)
@@ -75,8 +76,8 @@ sudo apt-get update \
 
 dotfiles submodule update --init --recursive \
 && cd .neovim \
-&& sudo apt-get update \
-&& sudo apt-get install ninja-build gettext cmake unzip curl \
+&& sudo aptitude update \
+&& sudo aptitude install ninja-build gettext cmake unzip curl \
 && make CMAKE_BUILD_TYPE=RelWithDebInfo
 && sudo make install
 ```
