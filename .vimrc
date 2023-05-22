@@ -39,6 +39,13 @@
 "       call system(printf('curl -fsSLo %s --create-dirs %s', s:jetpackfile, s:jetpackurl))
 " endif
 
+" TODO does work, just wrong urls and path
+" let data_dir = has('nvim') ? stdpath('data') . '/site' : '~/.vim'
+" if empty(glob(data_dir . '/autoload/pack.vim'))
+"   silent execute '!curl -fLo '.data_dir.'/autoload/jetpack.vim --create-dirs  https://raw.githubusercontent.com/tani/vim-jetpack/master/autoload/jetpack.vim'
+"     autocmd VimEnter * JetpackSync | source $MYVIMRC
+" endif
+
 " Adjusting the packadd command
 packadd vim-jetpack
 
@@ -56,7 +63,7 @@ Jetpack 'ctrlpvim/ctrlp.vim'
 
 " Jetpack 'vlime/vlime', { 'rtp': 'vim' }
 
-" Jetpack 'dracula/vim', { 'as': 'dracula' }
+Jetpack 'dracula/vim', { 'as': 'dracula' }
 " Jetpack 'dracula/vim', { 'as': 'dracula' }
 
 " Jetpack 'tpope/vim-fireplace', { 'for': 'clojure' }
@@ -78,10 +85,10 @@ Jetpack 'sheerun/vim-polyglot'
 Jetpack 'tpope/vim-vinegar'
 
 " Vim Tiling Window Manager
-Jetpack 'spolu/dwm.vim'
+" Jetpack 'spolu/dwm.vim'
 
 " Golden Ratio
-" Plug 'roman/golden-ratio'
+" Jetpack 'roman/golden-ratio'
 
 " Vim Fuzzy Find
 " Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
@@ -130,10 +137,10 @@ Jetpack 'frazrepo/vim-rainbow'
 Jetpack 'tyru/open-browser.vim'
 
 " Vim Airline (Status Bar)
-" Plug 'bling/vim-airline'
+Jetpack 'bling/vim-airline'
 
 " Vim Airline Themes (for Dracula)
-" Plug 'vim-airline/vim-airline-themes'
+" Jetpack 'vim-airline/vim-airline-themes'
 
 " Vim Lightline
 " Jetpack 'itchyny/lightline.vim'
@@ -235,6 +242,32 @@ endfor
 
 " Initialize/Install Plugin System
 " call plug#end()
+
+" Statusline -----
+
+" TODO Slow as hell for some reason
+" function! GitBranch()
+"     return system("git rev-parse --abbrev-ref HEAD 2>/dev/null | tr -d '\n'")
+" endfunction
+" 
+" function! StatuslineGit()
+"   let l:branchname = GitBranch()
+"   return strlen(l:branchname) > 0?'  '.l:branchname.' ':''
+" endfunction
+" 
+" set laststatus=2
+" set statusline=
+" set statusline+=%#PmenuSel#
+" set statusline+=%{StatuslineGit()}
+" set statusline+=%#LineNr#
+" set statusline+=\ %f
+" set statusline+=%#CursorColumn#
+" set statusline+=\ %y
+" set statusline+=\ %{&fileencoding?&fileencoding:&encoding}
+" set statusline+=\[%{&fileformat}\]
+" set statusline+=\ %p%%
+" set statusline+=\ %l:%c
+" set statusline+=\
 
 " -----------------------------
 " Autoload
@@ -385,10 +418,10 @@ hi GitGutterChangeDelete ctermbg=235 ctermfg=245
 hi EndOfBuffer ctermfg=237 ctermbg=235
 
 " Statusline 
-set statusline=%=%P\ %f\ %m
-set fillchars=vert:\ ,stl:\ ,stlnc:\ 
-set laststatus=2
-set noshowmode
+" set statusline=%=%P\ %f\ %m
+" set fillchars=vert:\ ,stl:\ ,stlnc:\ 
+" set laststatus=2
+" set noshowmode
 
 " Syntastic
 let g:syntastic_always_populate_loc_list = 1
