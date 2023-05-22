@@ -36,10 +36,10 @@
 
 [testing](https://wiki.debian.org/LTS)
 ```sh
-sudo apt-get update                    \
-&& sudo apt-get upgrade                \
-&& sudo apt-get install git zsh curl   \
-                    openssh-client \
+sudo apt-get update                      \
+&& sudo apt-get upgrade                  \
+&& sudo apt-get install git zsh curl vim \
+                        openssh-client   \
 ```
 ```sh
 # /etc/apt/sources.list
@@ -59,7 +59,7 @@ deb-src http://deb.debian.org/debian bookworm-updates main contrib non-free
 non-free-firmware
 
 # w !sudo tee %                # Vim Sudo (Emergencies)
-# sudo cp \
+# sudo cp \ 
 #     /usr/share/doc/apt/examples/sources.list \
 #     /etc/apt/sources.list    # Default backup on Debian
 ```
@@ -71,6 +71,8 @@ sudo apt-get update \
 
 [neovim](https://neovim.io/)
 ```sh
+# optional, vim9 +huge default in Debian Testing
+
 dotfiles submodule update --init --recursive \
 && cd .neovim \
 && sudo apt-get update \

@@ -1,4 +1,4 @@
-"                      
+"
 "                       `......`                    
 "                 ./shmMMMMMMMMMNmho:`              
 "              :smMMMMMMMMMMMMMMMMMMMMms-           
@@ -30,6 +30,73 @@
 " Plugins 
 " -----------------------------
 
+" Normally this if-block is not needed, because `:set nocp` is done
+" automatically when .vimrc is found. However, this might be useful
+" when you execute `vim -u .vimrc` from the command line.
+if &compatible
+  " `:set nocp` has many side effects. Therefore this should be done
+  " only when 'compatible' is set.
+  set nocompatible
+endif
+
+" if exists('+packpath')
+"       set packpath^=$XDG_CONFIG_HOME/vim,$XDG_CACHE_HOME/vim
+" endif
+
+set packpath^=~/.vim
+" packadd minpac
+
+" call minpac#init()
+" 
+" " minpac must have {'type': 'opt'} so that it can be loaded with `packadd`.
+" call minpac#add('k-takata/minpac', {'type': 'opt'})
+" 
+" " Add other plugins here.
+" call minpac#add('vim-jp/syntax-vim-ex')
+
+
+function! PackInit() abort
+  packadd minpac
+
+  call minpac#init()
+  call minpac#add('k-takata/minpac', {'type': 'opt'})
+
+  " Additional plugins here.
+  " call minpac#add('vim-jp/syntax-vim-ex')
+  " call minpac#add('tyru/open-browser.vim')
+  call minpac#add('ctrlpvim/ctrlp.vim') " fzf built in vim
+  call minpac#add('tpope/vim-sensible') " Sensible Defaults
+  call minpac#add('sheerun/vim-polyglot') " Language Support
+  " call minpac#add('github/copilot.vim') " Copilot
+  call minpac#add('scrooloose/nerdtree') " Vim tree navigation
+  call minpac#add('tpope/vim-vinegar') " Vim split navigation
+  call minpac#add('spolu/dwm.vim') " Vim Tiling Window Manager
+  call minpac#add('roman/golden-ratio') " Golden Ratio
+  call minpac#add('christoomey/vim-tmux-navigator') " Tmux Navigator
+  call minpac#add('tpope/vim-commentary') " Commenting Operator gcc{motion}
+  call minpac#add('ervandew/supertab') " Completion with tab in insert
+  " call minpac#add('rizzatti/dash.vim') " Dash integration
+  call minpac#add('scrooloose/syntastic') " Syntax Highlighter
+  call minpac#add('tpope/vim-sleuth') " Tab magic?
+  call minpac#add('metakirby5/codi.vim') " Codi - interactive code scratchpads!
+  call minpac#add('tpope/vim-fugitive') " Git management!
+  call minpac#add('chiel92/vim-autoformat') " Autoformat for Vim
+  " call minpac#add('dracula/vim') " Dracula for Vim
+  call minpac#add('rakr/vim-one') " OneDark Vim
+  call minpac#add('kannokanno/previm') " Markdown Preview from Vi
+  call minpac#add('adelarsq/vim-matchit') " Matchit 
+  call minpac#add('frazrepo/vim-rainbow') " Vim Rainbow
+  call minpac#add('tyru/open-browser.vim') " Open Default Browser
+  call minpac#add('bling/vim-airline') " Vim Airline (Status Bar)
+  " call minpac#add('vim-airline/vim-airline-themes') " Vim Airline Themes (for Dracula)
+  " call minpac#add('itchyny/lightline.vim') " Vim Lightline
+
+endfunction
+
+command! PacUpdate source $MYVIMRC | call PackInit() | call minpac#update()
+command! PacClean  source $MYVIMRC | call PackInit() | call minpac#clean()
+command! PacStatus packadd minpac | call minpac#status()
+
 " Vim-Jetpack Autosetup
 " TODO Fix this, does nothing - added file to dotfiles
 " let s:jetpackdir = expand('<sfile>:p:h') .. '/pack/jetpack/opt/vim-jetpack'
@@ -47,112 +114,112 @@
 " endif
 
 " Adjusting the packadd command
-packadd vim-jetpack
-
-call jetpack#begin()
-Jetpack 'tani/vim-jetpack', {'opt': 1} "bootstrap
-
-Jetpack 'https://github.com/dense-analysis/ale'
-
-Jetpack 'ctrlpvim/ctrlp.vim'
-" Jetpack 'junegunn/fzf.vim'
-" Jetpack 'junegunn/fzf', { 'do': {-> fzf#install()} }
-
-" Jetpack 'neoclide/coc.nvim', { 'branch': 'release' }
-" Jetpack 'neoclide/coc.nvim', { 'branch': 'master', 'do': 'yarn install --frozen-lockfile' }
-
-" Jetpack 'vlime/vlime', { 'rtp': 'vim' }
-
-Jetpack 'dracula/vim', { 'as': 'dracula' }
+" packadd vim-jetpack
+" 
+" call jetpack#begin()
+" Jetpack 'tani/vim-jetpack', {'opt': 1} "bootstrap
+" 
+" Jetpack 'https://github.com/dense-analysis/ale'
+" 
+" Jetpack 'ctrlpvim/ctrlp.vim'
+" " Jetpack 'junegunn/fzf.vim'
+" " Jetpack 'junegunn/fzf', { 'do': {-> fzf#install()} }
+" 
+" " Jetpack 'neoclide/coc.nvim', { 'branch': 'release' }
+" " Jetpack 'neoclide/coc.nvim', { 'branch': 'master', 'do': 'yarn install --frozen-lockfile' }
+" 
+" " Jetpack 'vlime/vlime', { 'rtp': 'vim' }
+" 
 " Jetpack 'dracula/vim', { 'as': 'dracula' }
-
-" Jetpack 'tpope/vim-fireplace', { 'for': 'clojure' }
-" Jetpack 'tpope/vim-fireplace', { 'for': 'clojure' }
-
-" Sensible Defaults
-Jetpack 'tpope/vim-sensible'
-
-" Language Support
-Jetpack 'sheerun/vim-polyglot'
-
-" Copilot
-" Jetpack 'github/copilot.vim'
-
-" Vim tree navigation
-" Plug 'scrooloose/nerdtree'
-
-" " Vim split navigation
-Jetpack 'tpope/vim-vinegar'
-
-" Vim Tiling Window Manager
-" Jetpack 'spolu/dwm.vim'
-
-" Golden Ratio
-" Jetpack 'roman/golden-ratio'
-
-" Vim Fuzzy Find
-" Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-" Plug 'junegunn/fzf.vim'
-
-" Tmux Navigator
-" Plug 'christoomey/vim-tmux-navigator'
-
-" Commenting Operator gcc{motion}
-Jetpack 'tpope/vim-commentary'
-
-" Dash integration
-Jetpack 'rizzatti/dash.vim'
-
-" Syntax Highlighter
-" Plug 'scrooloose/syntastic'
-
-" Tab magic?
-Jetpack 'tpope/vim-sleuth'
-
-" Codi - interactive code scratchpads!
-" Plug 'metakirby5/codi.vim'
-
-" Git management!
-" Jetpack 'tpope/vim-fugitive'
-
-" Autoformat for Vim
-Jetpack 'chiel92/vim-autoformat'
-
-" Dracula for Vim
-" Plug 'dracula/vim'
-
-" OneDark Vim
-Jetpack 'rakr/vim-one'
-
-" Markdown Preview from Vi
-" Plug 'kannokanno/previm'
-
-" Matchit 
-Jetpack 'adelarsq/vim-matchit'
-
-" Vim Rainbow
-Jetpack 'frazrepo/vim-rainbow'
-
-" Open Default Browser
-Jetpack 'tyru/open-browser.vim'
-
-" Vim Airline (Status Bar)
-Jetpack 'bling/vim-airline'
-
-" Vim Airline Themes (for Dracula)
-" Jetpack 'vim-airline/vim-airline-themes'
-
-" Vim Lightline
-" Jetpack 'itchyny/lightline.vim'
-call jetpack#end()
-
-" Vim-Jetpack Autoinstall
-for name in jetpack#names()
-    if !jetpack#tap(name)
-          call jetpack#sync()
-          break
-    endif
-endfor
+" " Jetpack 'dracula/vim', { 'as': 'dracula' }
+" 
+" " Jetpack 'tpope/vim-fireplace', { 'for': 'clojure' }
+" " Jetpack 'tpope/vim-fireplace', { 'for': 'clojure' }
+" 
+" " Sensible Defaults
+" Jetpack 'tpope/vim-sensible'
+" 
+" " Language Support
+" Jetpack 'sheerun/vim-polyglot'
+" 
+" " Copilot
+" " Jetpack 'github/copilot.vim'
+" 
+" " Vim tree navigation
+" " Plug 'scrooloose/nerdtree'
+" 
+" " " Vim split navigation
+" Jetpack 'tpope/vim-vinegar'
+" 
+" " Vim Tiling Window Manager
+" " Jetpack 'spolu/dwm.vim'
+" 
+" " Golden Ratio
+" " Jetpack 'roman/golden-ratio'
+" 
+" " Vim Fuzzy Find
+" " Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+" " Plug 'junegunn/fzf.vim'
+" 
+" " Tmux Navigator
+" " Plug 'christoomey/vim-tmux-navigator'
+" 
+" " Commenting Operator gcc{motion}
+" Jetpack 'tpope/vim-commentary'
+" 
+" " Dash integration
+" Jetpack 'rizzatti/dash.vim'
+" 
+" " Syntax Highlighter
+" " Plug 'scrooloose/syntastic'
+" 
+" " Tab magic?
+" Jetpack 'tpope/vim-sleuth'
+" 
+" " Codi - interactive code scratchpads!
+" " Plug 'metakirby5/codi.vim'
+" 
+" " Git management!
+" " Jetpack 'tpope/vim-fugitive'
+" 
+" " Autoformat for Vim
+" Jetpack 'chiel92/vim-autoformat'
+" 
+" " Dracula for Vim
+" " Plug 'dracula/vim'
+" 
+" " OneDark Vim
+" Jetpack 'rakr/vim-one'
+" 
+" " Markdown Preview from Vi
+" " Plug 'kannokanno/previm'
+" 
+" " Matchit 
+" Jetpack 'adelarsq/vim-matchit'
+" 
+" " Vim Rainbow
+" Jetpack 'frazrepo/vim-rainbow'
+" 
+" " Open Default Browser
+" Jetpack 'tyru/open-browser.vim'
+" 
+" " Vim Airline (Status Bar)
+" Jetpack 'bling/vim-airline'
+" 
+" " Vim Airline Themes (for Dracula)
+" " Jetpack 'vim-airline/vim-airline-themes'
+" 
+" " Vim Lightline
+" " Jetpack 'itchyny/lightline.vim'
+" call jetpack#end()
+" 
+" " Vim-Jetpack Autoinstall
+" for name in jetpack#names()
+"     if !jetpack#tap(name)
+"           call jetpack#sync()
+"           break
+"     endif
+" endfor
 
 " Vim-Plug Setup
 " if empty(glob('~/.vim/autoload/plug.vim'))
@@ -272,6 +339,9 @@ endfor
 " -----------------------------
 " Autoload
 " -----------------------------
+
+" Minpac
+" autocmd VimEnter * PacUpdate 
 
 " VimPlug
 " autocmd VimEnter *

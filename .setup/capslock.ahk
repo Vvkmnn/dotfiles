@@ -19,7 +19,7 @@
 Return
 
 *CapsLock up::
-    If ((A_TickCount-cDown)<130)  ; Modify press time as needed (milliseconds)
+    If ((A_TickCount-cDown)<150)  ; Modify press time as needed (milliseconds)
             Send {Blind}{Ctrl Up}{Esc}
         Else
 	        Send {Blind}{Ctrl Up}
