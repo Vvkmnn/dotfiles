@@ -296,9 +296,15 @@ let mapleader=" "
 inoremap jj <ESC>
 
 " Ctrl+S to Save
-noremap <silent> <C-S>          :update!<CR>
+noremap <silent> <C-S>          :update<CR>
 vnoremap <silent> <C-S>         <C-C>:update<CR>
 inoremap <silent> <C-S>         <C-O>:update<CR>
+
+" Ctrl+Q to Save
+noremap <silent> <C-Q>          :exit<CR>
+vnoremap <silent> <C-Q>         <C-C>:exit<CR>
+inoremap <silent> <C-Q>         <C-O>:exit<CR>
+
 
 " Ctrl Arrow Buffer Navigation
 nnoremap <silent> <C-Right> <c-w>l
