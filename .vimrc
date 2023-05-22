@@ -394,6 +394,8 @@ nnoremap <C-L> <C-W><C-L>
 " Sort in Visual Mode
 vnoremap <Leader>s :sort<CR>
 
+" Fix for Vim on WSL
+nnoremap <esc>^[ <esc>^[
 
 " -----------------------------
 " Commands
