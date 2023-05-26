@@ -46,50 +46,54 @@ endif
 set packpath^=~/.vim
 " packadd minpac
 
-" call minpac#init()
-" 
-" " minpac must have {'type': 'opt'} so that it can be loaded with `packadd`.
-" call minpac#add('k-takata/minpac', {'type': 'opt'})
-" 
-" " Add other plugins here.
-" call minpac#add('vim-jp/syntax-vim-ex')
 
 
 function! PackInit() abort
   packadd minpac
 
-  call minpac#init()
+  call minpac#init() "{'verbose':3})
   call minpac#add('k-takata/minpac', {'type': 'opt'})
-
-  " Additional plugins here.
+  
   " call minpac#add('vim-jp/syntax-vim-ex')
   " call minpac#add('tyru/open-browser.vim')
   call minpac#add('ctrlpvim/ctrlp.vim') " fzf built in vim
+  call minpac#add('w0rp/ale') " Async Lint Engine
+
   call minpac#add('tpope/vim-sensible') " Sensible Defaults
   call minpac#add('sheerun/vim-polyglot') " Language Support
+  call minpac#add('puremourning/vimspector') " Graphical debugger for Vim
+  
   " call minpac#add('github/copilot.vim') " Copilot
-  call minpac#add('scrooloose/nerdtree') " Vim tree navigation
+  " call minpac#add('scrooloose/nerdtree') " Vim tree navigation
   call minpac#add('tpope/vim-vinegar') " Vim split navigation
-  call minpac#add('spolu/dwm.vim') " Vim Tiling Window Manager
-  call minpac#add('roman/golden-ratio') " Golden Ratio
-  call minpac#add('christoomey/vim-tmux-navigator') " Tmux Navigator
+  " call minpac#add('spolu/dwm.vim') " Vim Tiling Window Manager
+  " call minpac#add('roman/golden-ratio') " Golden Ratio
+  " call minpac#add('christoomey/vim-tmux-navigator') " Tmux Navigator
+
   call minpac#add('tpope/vim-commentary') " Commenting Operator gcc{motion}
   call minpac#add('ervandew/supertab') " Completion with tab in insert
+  call minpac#add('machakann/vim-highlightedyank') " Highlight yanked text
+  call minpac#add('machakann/vim-highlightedundo') " Highlight the undo
+  call minpac#add('markonm/traces.vim') " Preview Ex commands like substite
+
   " call minpac#add('rizzatti/dash.vim') " Dash integration
-  call minpac#add('scrooloose/syntastic') " Syntax Highlighter
-  call minpac#add('tpope/vim-sleuth') " Tab magic?
-  call minpac#add('metakirby5/codi.vim') " Codi - interactive code scratchpads!
-  call minpac#add('tpope/vim-fugitive') " Git management!
+  " call minpac#add('scrooloose/syntastic') " Syntax Highlighter
+  call minpac#add('tpope/vim-sleuth') " Adjusts spacing and tabs 
+  call minpac#add('tpope/vim-surround') " Swap surrounding with ease
+  call minpac#add('tpope/vim-repeat') " Make . even stronger
+  call minpac#add('tpope/vim-eunuch') " :Rename, :Delete, and more
+  " call minpac#add('metakirby5/codi.vim') " Codi - interactive code scratchpads!
+  " call minpac#add('tpope/vim-fugitive') " Git management!
   call minpac#add('chiel92/vim-autoformat') " Autoformat for Vim
   " call minpac#add('dracula/vim') " Dracula for Vim
   call minpac#add('rakr/vim-one') " OneDark Vim
-  call minpac#add('kannokanno/previm') " Markdown Preview from Vi
+  " call minpac#add('kannokanno/previm') " Markdown Preview from Vi
   call minpac#add('adelarsq/vim-matchit') " Matchit 
   call minpac#add('frazrepo/vim-rainbow') " Vim Rainbow
   call minpac#add('tyru/open-browser.vim') " Open Default Browser
-  call minpac#add('bling/vim-airline') " Vim Airline (Status Bar)
+  " call minpac#add('bling/vim-airline') " Vim Airline (Status Bar)
   " call minpac#add('vim-airline/vim-airline-themes') " Vim Airline Themes (for Dracula)
-  " call minpac#add('itchyny/lightline.vim') " Vim Lightline
+  call minpac#add('itchyny/lightline.vim') " Vim Lightline
 
 endfunction
 
@@ -312,6 +316,26 @@ command! PacStatus packadd minpac | call minpac#status()
 
 " Statusline -----
 
+" Show Status
+set laststatus=2
+
+" Lightline
+let g:lightline = {
+        \ 'component_function': {
+        \   'fileformat': 'LightlineFileformat',
+        \   'filetype': 'LightlineFiletype',
+        \   'colorscheme': 'one' 
+        \ },
+        \ }
+
+function! LightlineFileformat()
+    return winwidth(0) > 70 ? &fileformat : ''
+endfunction
+
+function! LightlineFiletype()
+    return winwidth(0) > 70 ? (&filetype !=# '' ? &filetype : 'no ft') : ''
+endfunction
+
 " TODO Slow as hell for some reason
 " function! GitBranch()
 "     return system("git rev-parse --abbrev-ref HEAD 2>/dev/null | tr -d '\n'")
@@ -322,7 +346,6 @@ command! PacStatus packadd minpac | call minpac#status()
 "   return strlen(l:branchname) > 0?'  '.l:branchname.' ':''
 " endfunction
 " 
-" set laststatus=2
 " set statusline=
 " set statusline+=%#PmenuSel#
 " set statusline+=%{StatuslineGit()}
@@ -375,6 +398,11 @@ noremap <silent> <C-Q>          :exit<CR>
 vnoremap <silent> <C-Q>         <C-C>:exit<CR>
 inoremap <silent> <C-Q>         <C-O>:exit<CR>
 
+" Ctrl+Q to Save
+noremap <silent> <C-Q>          :exit<CR>
+vnoremap <silent> <C-Q>         <C-C>:exit<CR>
+inoremap <silent> <C-Q>         <C-O>:exit<CR>
+
 
 " Ctrl Arrow Buffer Navigation
 nnoremap <silent> <C-Right> <c-w>l
@@ -395,6 +423,7 @@ nnoremap <C-L> <C-W><C-L>
 vnoremap <Leader>s :sort<CR>
 
 " Fix for Vim on WSL
+" https://stackoverflow.com/questions/51388353/vim-changes-into-replace-mode-on-startup
 nnoremap <esc>^[ <esc>^[
 
 " -----------------------------
@@ -536,7 +565,8 @@ set shiftwidth=4 softtabstop=4 expandtab
 " let g:airline_theme='dracula'
 
 " Vim Onedark
-let g:airline_theme='one'
+" let g:airline_theme='one'
+" let g:lightline = { 'colorscheme': 'one' }
 set background=dark " for the dark version
 colorscheme one
 " set background=light " for the light version
@@ -566,7 +596,7 @@ endif
 
 " Airline
 " Enable the list of buffers
-let g:airline#extensions#tabline#enabled = 1
+" let g:airline#extensions#tabline#enabled = 1
 
 " Show just the filename
-let g:airline#extensions#tabline#fnamemod = ':t'
+" let g:airline#extensions#tabline#fnamemod = ':t'

@@ -203,7 +203,7 @@ case "$(uname -s)" in
             # # antigen bundle lein
             # # antigen bundle command-not-found
             # # Use nvm from zsh
-            # export NVM_LAZY_LOAD=true
+            export NVM_LAZY_LOAD=true
             # antigen bundle lukechilds/zsh-nvm
 
             # # Syntax highlighting bundle.
@@ -389,11 +389,46 @@ case "$(uname -s)" in
             # zplug load
             # }}}
 
+
+            case "$(uname -s)" in
+              Linux )
+
+            ## nvm
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+            [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+
+            ## lazygit
+            if ! command -v lazygit &> /dev/null; then
+                LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
+                curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"
+                tar xf lazygit.tar.gz lazygit
+
+                # Check if /usr/local/bin is writable
+                if [ -w /usr/local/bin ]; then
+                    install lazygit /usr/local/bin
+                else
+                    echo "/usr/local/bin is not writable. Attempting to use sudo..."
+                    sudo install lazygit /usr/local/bin
+                fi
+
+                rm lazygit.tar.gz && rm -rf lazygit
+            fi
+
+            ;;
+              Darwin )
+ 
             ## nvm
             export NVM_DIR="$HOME/.nvm"
             [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
             [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
 
+            ;;
+
+            esac
+
+        
         # Bash
 
         elif [ -n "$BASH_VERSION" ]; then
