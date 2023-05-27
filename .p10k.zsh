@@ -62,7 +62,7 @@
     command_execution_time    # previous command duration
     virtualenv                # python virtual environment
     context                   # user@host
-    face
+    # face
     time                      # current time
   )
 
@@ -80,6 +80,8 @@
   # Magenta prompt symbol if the last command succeeded.
   # typeset -g POWERLEVEL9K_PROMPT_CHAR_OK_{VIINS,VICMD,VIVIS}_FOREGROUND='214'
   typeset -g POWERLEVEL9K_PROMPT_CHAR_OK_{VIINS,VICMD,VIVIS,VIOWR}_FOREGROUND=214
+  # typeset -g POWERLEVEL9K_PROMPT_CHAR_OK_{VIINS}_FOREGROUND=214
+  # typeset -g POWERLEVEL9K_PROMPT_CHAR_OK_{VICMD,VIVIS,VIOWR}_FOREGROUND=76
   # typeset -g POWERLEVEL9K_PROMPT_CHAR_OK_{VIINS,VICMD,VIVIS,VIOWR}_FOREGROUND=76
   # Red prompt symbol if the last command failed.
   # typeset -g POWERLEVEL9K_PROMPT_CHAR_ERROR_{VIINS,VICMD,VIVIS}_FOREGROUND=$red
