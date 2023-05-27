@@ -9,10 +9,10 @@
 ctrl + cmd - 0: yabai --restart-service && skhd --restart-service
 
 # Open regular terminal
-ctrl - return : open -a Terminal ~
+# ctrl - return : open -a Terminal ~
 
 # open kitty, the terminal
-# ctrl - return : /Applications/Kitty.app/Contents/MacOS/kitty --single-instance -d ~
+ctrl - return : /Applications/Kitty.app/Contents/MacOS/kitty --single-instance -d ~
 
 ### }}}
 
