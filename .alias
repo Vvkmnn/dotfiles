@@ -17,16 +17,22 @@ alias u="sudo apt update && sudo apt upgrade && sudo apt autoremove"
 alias v="/mnt/c/Users/v"
 
 ## Vim
-alias v='vim'                # Vim
-# alias v='nvim'                # (neo)Vim
-alias pvim="vim -u NONE -N"   # Vanilla Vim
-alias v!='vim -u NONE'
+# alias v='vim'                # Vim
+alias v='nvim'                # Vim
+
+alias ov='vim'                # (neo)Vim
+alias nv='nvim'                # (neo)Vim
+
+alias pvim="vim -u NONE -N"   # Pure Vim
+alias v!='vim -u NONE' # Vanilla Vim
+alias nv!='nvim -u NORC'                # Vanilla (neo)Vim
 
 ## Time
 alias today=$(date '+%F_%H:%M:%S')
 
 ## Git
 alias g='git'
+alias lg='lazygit'
 
 case "$(uname -s)" in
 

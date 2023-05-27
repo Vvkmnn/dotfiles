@@ -36,10 +36,11 @@
 
 [testing](https://wiki.debian.org/LTS)
 ```sh
-sudo apt-get update                    \
-&& sudo apt-get upgrade                \
-&& sudo apt-get install git zsh curl   \
-                    openssh-client \
+sudo apt-get update                      \
+&& sudo apt-get upgrade                  \
+&& sudo apt-get install git zsh curl vim \
+                        openssh-client   \
+                        aptitude         \
 ```
 ```sh
 # /etc/apt/sources.list
@@ -58,28 +59,30 @@ non-free-firmware
 deb-src http://deb.debian.org/debian bookworm-updates main contrib non-free
 non-free-firmware
 
-# w !sudo tee %                # Vim Sudo (Emergencies)
-# sudo cp \
+# w !sudo tee %                           # Vim Sudo (Emergencies)
+# sudo cp \ 
 #     /usr/share/doc/apt/examples/sources.list \
-#     /etc/apt/sources.list    # Default backup on Debian
+#     /etc/apt/sources.list               # Default backup on Debian
 ```
 ```sh
-sudo apt-get update \
-&& sudo apt-get dist-upgrade \
-&& sudo apt-get install --reinstall build-essential
-```
-```sh
-chsh -s $(which zsh)            # switch to zsh from bash
+sudo aptitude update                      \
+&& sudo aptitude dist-upgrade             \
+&& sudo aptitude install --reinstall build-essential
 ```
 
 [neovim](https://neovim.io/)
 ```sh
-dotfiles submodule update --init --recursive \
-&& cd .neovim \
-&& sudo apt-get update \
-&& sudo apt-get install ninja-build gettext cmake unzip curl \
-&& make CMAKE_BUILD_TYPE=RelWithDebInfo
-&& sudo make install
+# optional, vim9 +huge default in Debian Testing
+
+dotfiles submodule update --init         \
+                          --recursive    \
+&& cd .neovim                            \
+&& sudo aptitude update                  \
+&& sudo aptitude install ninja-build     \
+                         gettext cmake   \
+                         unzip curl      \
+&& make CMAKE_BUILD_TYPE=RelWithDebInfo  \
+&& make install                          \
 ```
 
 [wsl](https://learn.microsoft.com/en-us/windows/wsl/install)
@@ -105,41 +108,30 @@ xcode-select --install
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" 
 ```
 
-utils
-```
+```sh
 brew install yabai skhd         
 ```
 ```sh
-brew install git-open bottom    \
+brew install git-open bottom             \
              ngrok tidy 
 ```
 
-[alacritty](https://alacritty.org)
-```sh
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh # rustup
+## [emacs](https://github.com/doomemacs/doomemacs)
 ```
-```sh
-dotfiles submodule update --init --recursive \
-&& cd .alacritty \
-&& make \
-&& cp -r target/release/osx/Alacritty.app \
-         /Applications/  
-```
-
-emacs
-```sh
 brew install git ripgrep coreutils fd
-brew install emacs-mac \
-   --with-dbus\
-   --with-starter\
-   --with-librsvg\
-   --with-imagemagick\
-   --with-xwidgets\ 
-   --with-ctags\
-   --with-native-comp\
-   --with-mac-metal\
-   --with-natural-title-bar\
-   --with-spacemacs-icon\
+
+brew install emacs-mac                   \
+   --with-dbus                           \
+   --with-dbus                           \
+   --with-starter                        \
+   --with-librsvg                        \
+   --with-imagemagick                    \
+   --with-xwidgets                       \ 
+   --with-ctags                          \
+   --with-native-comp                    \
+   --with-mac-metal                      \
+   --with-natural-title-bar              \
+   --with-spacemacs-icon                 \
 ```
 
 casks

@@ -40,9 +40,9 @@ export TERM=xterm-256color
 export ARCHEY_LOGO_FILE=$HOME/.logo
 
 # Editor
-export EDITOR='vim'           # $VISUAL is the default for most shells
+export EDITOR='nvim'           # $VISUAL is the default for most shells
 export EDITOR=$VISUAL         # $EDITOR in case
-export ALTERNATE_EDITOR='vim' # $EDITOR if all else fails
+export ALTERNATE_EDITOR='nvim' # $EDITOR if all else fails
 
 # Prompt
 # FIX Not global
@@ -52,7 +52,7 @@ export ALTERNATE_EDITOR='vim' # $EDITOR if all else fails
 # OS=$(uname -s)
 
 case "$(uname -s)" in
-    Linux) ;;
+Linux) ;;
 
     Darwin)
         # Prompt
@@ -62,97 +62,105 @@ case "$(uname -s)" in
         export PATH="/usr/local/bin:$PATH"
         export PATH="/usr/local/sbin:$PATH"
 
-        # Brew
-        export HOMEBREW_CASK_OPTS="--appdir=/Applications"
+	# Brew
+	export HOMEBREW_CASK_OPTS="--appdir=/Applications"
 
-        # openSSL
-        export LDFLAGS="-L/usr/local/opt/openssl/lib"
-        export CPPFLAGS="-I/usr/local/opt/openssl/include"
-        export PKG_CONFIG_PATH="/usr/local/opt/openssl/lib/pkgconfig"
+	# openSSL
+	export LDFLAGS="-L/usr/local/opt/openssl/lib"
+	export CPPFLAGS="-I/usr/local/opt/openssl/include"
+	export PKG_CONFIG_PATH="/usr/local/opt/openssl/lib/pkgconfig"
 
-        # llvm
-        export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
-        export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
-        export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
+	# llvm
+	export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
+	export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
+	export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
 
-        # emacs/pdf-tools
-        # export PKG_CONFIG_PATH=/usr/local/Cellar/zlib/1.2.8/lib/pkgconfig:/usr/local/lib/pkgconfig:/opt/X11/lib/pkgconfig
+	# emacs/pdf-tools
+	# export PKG_CONFIG_PATH=/usr/local/Cellar/zlib/1.2.8/lib/pkgconfig:/usr/local/lib/pkgconfig:/opt/X11/lib/pkgconfig
 
-        ## Personal ----------------------------------------
+	## Personal ----------------------------------------
 
-        export PATH="$HOME/Documents/bin:$PATH"
-        # export PATH="$HOME/Documents/dev/github-jack:$PATH"
+	export PATH="$HOME/Documents/bin:$PATH"
+	# export PATH="$HOME/Documents/dev/github-jack:$PATH"
 
+<<<<<<< HEAD
         ## openSSL
         export PATH="/usr/local/opt/openssl/bin:$PATH"
+=======
+	## brew
+	export PATH="/usr/local/sbin:$PATH"
 
-        # Python
-        # export python="/usr/bin/python3"
-        # export PATH=/usr/local/share/python:$PATH
+	## openSSL
+	export PATH="/usr/local/opt/openssl/bin:$PATH"
+>>>>>>> v-debian
 
-        # Python (Anaconda)
-        export PATH="$HOME/.miniconda/bin:$PATH"
-        export PATH="/usr/local/anaconda3/bin:$PATH"
+	# Python
+	# export python="/usr/bin/python3"
+	# export PATH=/usr/local/share/python:$PATH
 
-        # >>> conda initialize >>>
-        # !! Contents within this block are managed by 'conda init' !!
-        __conda_setup="$('/opt/homebrew/Caskroom/miniconda/base/bin/conda' 'shell.zsh' 'hook' 2>/dev/null)"
-        if [ $? -eq 0 ]; then
-            eval "$__conda_setup"
-        else
-            if [ -f "/opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh" ]; then
-                . "/opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh"
-            else
-                export PATH="/opt/homebrew/Caskroom/miniconda/base/bin:$PATH"
-            fi
-        fi
-        unset __conda_setup
-        # <<< conda initialize <<<
+	# Python (Anaconda)
+	export PATH="$HOME/.miniconda/bin:$PATH"
+	export PATH="/usr/local/anaconda3/bin:$PATH"
 
-        # Rust
-        #. "$HOME/.cargo/env"
+	# >>> conda initialize >>>
+	# !! Contents within this block are managed by 'conda init' !!
+	__conda_setup="$('/opt/homebrew/Caskroom/miniconda/base/bin/conda' 'shell.zsh' 'hook' 2>/dev/null)"
+	if [ $? -eq 0 ]; then
+		eval "$__conda_setup"
+	else
+		if [ -f "/opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh" ]; then
+			. "/opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh"
+		else
+			export PATH="/opt/homebrew/Caskroom/miniconda/base/bin:$PATH"
+		fi
+	fi
+	unset __conda_setup
+	# <<< conda initialize <<<
 
-        # Ruby
-        export PATH="/usr/local/opt/ruby/bin:$PATH"
+	# Rust
+	#. "$HOME/.cargo/env"
 
-        # Node (NVM)
-        # export PATH="$HOME/.nvm/versions/node/v12.1.0/bin:$PATH"
+	# Ruby
+	export PATH="/usr/local/opt/ruby/bin:$PATH"
 
-        # LaTeX
-        export PATH="/Library/TeX/texbin:$PATH"
+	# Node (NVM)
+	# export PATH="$HOME/.nvm/versions/node/v12.1.0/bin:$PATH"
 
-        # Emacs (Doom)
-        export PATH="$HOME/.emacs.d/bin:$PATH"
+	# LaTeX
+	export PATH="/Library/TeX/texbin:$PATH"
 
-        # Clang
-        export CPATH=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include
+	# Emacs (Doom)
+	export PATH="$HOME/.emacs.d/bin:$PATH"
 
-        # Go
-        # export GOROOT="$(brew --prefix golang)/libexec"
-        # export GOPATH=$HOME/Documents/dev/go
-        # export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
+	# Clang
+	export CPATH=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include
 
-        # LLVM
-        export PATH="/usr/local/opt/llvm/bin:$PATH"
+	# Go
+	# export GOROOT="$(brew --prefix golang)/libexec"
+	# export GOPATH=$HOME/Documents/dev/go
+	# export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
 
-        # Go
-        export GOROOT=/usr/local/Cellar/go/1.13.4/libexec
-        export GOPATH=$HOME/Documents/dev/go
-        export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
+	# LLVM
+	export PATH="/usr/local/opt/llvm/bin:$PATH"
 
-        # MacOS (Brew) Emacs
-        # export PATH="/Applications/Emacs.app/Contents/MacOS/bin:$PATH"
+	# Go
+	export GOROOT=/usr/local/Cellar/go/1.13.4/libexec
+	export GOPATH=$HOME/Documents/dev/go
+	export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
 
-        ## Fun ---------------------------------------------
-        export PATH="/Applications/Alacritty.app/Contents/MacOS/:$PATH"
+	# MacOS (Brew) Emacs
+	# export PATH="/Applications/Emacs.app/Contents/MacOS/bin:$PATH"
 
-        ## Work --------------------------------------------
-        # PATH="$HOME/Documents/lake/lake-hydra/bin:$PATH"
-        ;;
+	## Fun ---------------------------------------------
+	export PATH="/Applications/Alacritty.app/Contents/MacOS/:$PATH"
 
-    CYGWIN* | MINGW32* | MSYS* | MINGW*)
-        echo '[¬_¬] Loading Windows environment...'
-        ;;
+	## Work --------------------------------------------
+	# PATH="$HOME/Documents/lake/lake-hydra/bin:$PATH"
+	;;
+
+CYGWIN* | MINGW32* | MSYS* | MINGW*)
+	echo '[¬_¬] Loading Windows environment...'
+	;;
 
 esac
 
@@ -170,10 +178,6 @@ esac
 # # Python
 # export PATH="$HOME/.local/bin:$PATH"
 # export PYTHONPATH=$HOME/.local/bin
-
-# # NVM
-# export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-# [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
 
 # # Emacs (Doom)
 # export PATH="$HOME/.emacs.d/bin:$PATH"

@@ -36,8 +36,8 @@ case "$(uname -s)" in
 
         # ZSH
         elif [ -n "$ZSH_VERSION" ]; then
-            # Vi Mode
-            bindkey -v
+            # zmodload zsh/zprof
+            # run `time  zsh -i -c exit | nvim` to profile into nvim
 
             # Brew
             eval "$(/opt/homebrew/bin/brew shellenv)"
@@ -48,9 +48,8 @@ case "$(uname -s)" in
             if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
             source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
             fi
-
-            # Save in case
             
+            # Save in case
             # typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
             #   ...
             #   om                        # TODO fix, custom prompt
@@ -62,6 +61,9 @@ case "$(uname -s)" in
             #   p10k segment -b 2 -f 214 -t 'ॐ '
             # }
             
+            ## PreInstall {{{
+            export NVM_LAZY_LOAD=true 
+            # }}}
 
             ## Zcomet {{{
             # Clone zcomet if necessary
@@ -78,6 +80,8 @@ case "$(uname -s)" in
             # Load some plugins
             zcomet load agkozak/zsh-z
             zcomet load ohmyzsh plugins/gitfast
+
+            # zcomet load lukechilds/zsh-nvm
             # zcomet load jeffreytse/zsh-vi-mode
 
             # Load a code snippet - no need to download an entire repo
@@ -95,6 +99,8 @@ case "$(uname -s)" in
             # It is good to load these popular plugins last, and in this order:
             zcomet load zsh-users/zsh-syntax-highlighting
             zcomet load zsh-users/zsh-autosuggestions
+            
+            
 
             # Custom 
             zcomet load Tarrasch/zsh-autoenv
@@ -103,6 +109,9 @@ case "$(uname -s)" in
             # Run compinit and compile its cache
             zcomet compinit
             ##}}}
+
+            # Vi Mode
+            bindkey -v
 
             # p10k {{{
 
@@ -206,9 +215,6 @@ case "$(uname -s)" in
             # # antigen bundle lein
             # # antigen bundle command-not-found
             # # Use nvm from zsh
-            # export NVM_LAZY_LOAD=true
-            # antigen bundle lukechilds/zsh-nvm
-
             # # Syntax highlighting bundle.
             # # antigen bundle zsh-users/zsh-syntax-highlighting
             # antigen bundle agkozak/zsh-z
@@ -395,11 +401,42 @@ case "$(uname -s)" in
 
             ## nvm
             export NVM_DIR="$HOME/.nvm"
-            [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
-            [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 
+            case "$(uname -s)" in
+              Linux )
+
+            ## lazygit
+            if ! command -v lazygit &> /dev/null; then
+                LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
+                curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"
+                tar xf lazygit.tar.gz lazygit
+
+                # Check if /usr/local/bin is writable
+                if [ -w /usr/local/bin ]; then
+                    install lazygit /usr/local/bin
+                else
+                    echo "/usr/local/bin is not writable. Attempting to use sudo..."
+                    sudo install lazygit /usr/local/bin
+                fi
+
+                rm lazygit.tar.gz && rm -rf lazygit
+            fi
+
+            ;;
+              Darwin )
+ 
+            ## nvm
+            # [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
+            # [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+            ;;
+
+            esac
+
+        
+        # zprof
+        
         # Bash
-
         elif [ -n "$BASH_VERSION" ]; then
 
             # ~/.bashrc: executed by bash(1) for non-login shells.
@@ -466,12 +503,12 @@ case "$(uname -s)" in
             unset color_prompt force_color_prompt
 
             # If this is an xterm set the title to user@host:dir
-            case "$TERM" in
-                xterm* | rxvt*)
-                    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-                    ;;
-                *) ;;
-            esac
+            # case "$TERM" in
+            #     xterm* | rxvt*)
+            #         PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+            #         ;;
+            #     *) ;;
+            # esac
 
             # enable color support of ls and also add handy aliases
             if [ -x /usr/bin/dircolors ]; then
