@@ -74,7 +74,7 @@ function! PackInit() abort
   call minpac#add('ervandew/supertab') " Completion with tab in insert
   call minpac#add('machakann/vim-highlightedyank') " Highlight yanked text
   call minpac#add('machakann/vim-highlightedundo') " Highlight the undo
-  call minpac#add('markonm/traces.vim') " Preview Ex commands like substite
+      call minpac#add('markonm/traces.vim') " Preview Ex commands like substite
 
   " call minpac#add('rizzatti/dash.vim') " Dash integration
   " call minpac#add('scrooloose/syntastic') " Syntax Highlighter

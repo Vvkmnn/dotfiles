@@ -32,6 +32,7 @@ alias today=$(date '+%F_%H:%M:%S')
 
 ## Git
 alias g='git'
+alias lg='lazygit'
 
 case "$(uname -s)" in
 
