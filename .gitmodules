@@ -1,12 +1,15 @@
 [submodule ".neovim"]
 	path = .neovim
 	url = https://github.com/neovim/neovim
+
 [submodule ".config/nvim"]
 	path = .config/nvim
 	url = https://github.com/Vvkmnn/v.nvim.git
+
 [submodule ".vim/pack/minpac/opt/minpac"]
 	path = .vim/pack/minpac/opt/minpac
 	url = https://github.com/k-takata/minpac.git
+
 # [submodule ".alacritty"]
 # 	path = .alacritty
 #   ;url = https://github.com/alacritty/alacritty.git

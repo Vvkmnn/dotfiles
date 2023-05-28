@@ -174,14 +174,12 @@ endif
 " endif
 
 set packpath^=~/.vim
-" packadd minpac
-
 
 
 function! PackInit() abort
   packadd minpac
 
-  call minpac#init() "{'verbose':3})
+  call minpac#init() " {'verbose':3})
   call minpac#add('k-takata/minpac', {'type': 'opt'})
   
   " call minpac#add('vim-jp/syntax-vim-ex')
@@ -191,7 +189,7 @@ function! PackInit() abort
 
   call minpac#add('tpope/vim-sensible') " Sensible Defaults
   call minpac#add('sheerun/vim-polyglot') " Language Support
-  call minpac#add('puremourning/vimspector') " Graphical debugger for Vim
+  " call minpac#add('puremourning/vimspector') " Graphical debugger for Vim
   
   " call minpac#add('github/copilot.vim') " Copilot
   " call minpac#add('scrooloose/nerdtree') " Vim tree navigation
