@@ -21,6 +21,17 @@
 # `p10k configure` and pick "Lean" style. This will give you slick minimalist prompt while taking
 # advantage of Powerlevel10k features that aren't present in Pure.
 
+# Custom
+function prompt_om() {
+  # 214 is saffron
+  # 7 is grey
+  p10k segment -b 2 -f 214 -t ' ॐ '
+}
+
+function prompt_face() {
+ p10k segment -t '%(?,%F{green}[-_-]%f,%F{red}[ಠ_ಠ]%f)'
+}
+
 # Temporarily change options.
 'builtin' 'local' '-a' 'p10k_config_opts'
 [[ ! -o 'aliases'         ]] || p10k_config_opts+=('aliases')
@@ -544,12 +555,3 @@ typeset -g POWERLEVEL9K_CONFIG_FILE=${${(%):-%x}:a}
 'builtin' 'unset' 'p10k_config_opts'
 
 
-function prompt_om() {
-  # 214 is saffron
-  # 7 is grey
-  p10k segment -b 2 -f 214 -t ' ॐ '
-}
-
-function prompt_face() {
- p10k segment -t '%(?,%F{green}[-_-]%f,%F{red}[ಠ_ಠ]%f)'
-}
