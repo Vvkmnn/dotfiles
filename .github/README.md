@@ -65,9 +65,12 @@ non-free-firmware
 #     /etc/apt/sources.list               # Default backup on Debian
 ```
 ```sh
-sudo aptitude update                      \
-&& sudo aptitude dist-upgrade             \
-&& sudo aptitude install --reinstall build-essential
+sudo apt-get update \
+&& sudo apt-get dist-upgrade \
+&& sudo apt-get install --reinstall build-essential
+```
+```sh
+chsh -s $(which zsh)            # switch to zsh from bash
 ```
 
 [neovim](https://neovim.io/)
