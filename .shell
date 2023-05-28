@@ -46,9 +46,6 @@ case "$(uname -s)" in
             # zmodload zsh/zprof
             # run `time  zsh -i -c exit | nvim` to profile into nvim
 
-            # Brew
-            # eval "$(/opt/homebrew/bin/brew shellenv)"
-
             # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
             # Initialization code that may require console input (password prompts, [y/n]
             # confirmations, etc.) must go above this block; everything else may go below.
@@ -428,7 +425,10 @@ case "$(uname -s)" in
 
             ;;
               Darwin )
- 
+
+            # Brew
+            eval "$(/opt/homebrew/bin/brew shellenv)"
+            
             ## nvm
             # [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
             # [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion

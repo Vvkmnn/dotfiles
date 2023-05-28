@@ -1,6 +1,8 @@
 lastupdatecheck: 0
 recentrepos:
-- /home/v/.config/nvim
+- /Users/v/Documents/site
 startuppopupversion: 5
-customcommandshistory: []
+customcommandshistory:
+- q!
+- qa!
 hidecommandlog: false
