@@ -8,13 +8,13 @@
 alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
 alias d="dotfiles"
 alias ds="dotfiles status --untracked-files=no"
-# alias d+="dotfiles add"
-# alias d-="dotfiles remove"
-# alias d?="dotfiles commit"
+alias da="dotfiles add"
+alias dr="dotfiles remove"
+alias dc="dotfiles commit -m"
 
 ## Debian
-alias u="sudo apt update && sudo apt upgrade && sudo apt autoremove"
-alias v="/mnt/c/Users/v"
+# alias u="sudo apt update && sudo apt upgrade && sudo apt autoremove"
+# alias v="/mnt/c/Users/v"
 
 ## Vim
 # alias v='vim'                # Vim

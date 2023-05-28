@@ -174,14 +174,12 @@ endif
 " endif
 
 set packpath^=~/.vim
-" packadd minpac
-
 
 
 function! PackInit() abort
   packadd minpac
 
-  call minpac#init() "{'verbose':3})
+  call minpac#init() " {'verbose':3})
   call minpac#add('k-takata/minpac', {'type': 'opt'})
   
   " call minpac#add('vim-jp/syntax-vim-ex')
@@ -191,7 +189,7 @@ function! PackInit() abort
 
   call minpac#add('tpope/vim-sensible') " Sensible Defaults
   call minpac#add('sheerun/vim-polyglot') " Language Support
-  call minpac#add('puremourning/vimspector') " Graphical debugger for Vim
+  " call minpac#add('puremourning/vimspector') " Graphical debugger for Vim
   
   " call minpac#add('github/copilot.vim') " Copilot
   " call minpac#add('scrooloose/nerdtree') " Vim tree navigation
@@ -248,208 +246,207 @@ command! PacStatus packadd minpac | call minpac#status()
 " endif
 
 " Adjusting the packadd command
-packadd vim-jetpack
-
-call jetpack#begin()
-Jetpack 'tani/vim-jetpack', {'opt': 1} "bootstrap
-
-" Commenting Operator gcc{motion
-Jetpack 'tpope/vim-commentary'
-" , {'opt': 1}
-
-Jetpack 'https://github.com/dense-analysis/ale'
-
-Jetpack 'ctrlpvim/ctrlp.vim'
-" Jetpack 'junegunn/fzf.vim'
-" Jetpack 'junegunn/fzf', { 'do': {-> fzf#install()} }
-
-" Jetpack 'neoclide/coc.nvim', { 'branch': 'release' }
-" Jetpack 'neoclide/coc.nvim', { 'branch': 'master', 'do': 'yarn install --frozen-lockfile' }
-
-" Jetpack 'vlime/vlime', { 'rtp': 'vim' }
-
-" Jetpack 'dracula/vim', { 'as': 'dracula' }
-" Jetpack 'dracula/vim', { 'as': 'dracula' }
-
-" Jetpack 'tpope/vim-fireplace', { 'for': 'clojure' }
-" Jetpack 'tpope/vim-fireplace', { 'for': 'clojure' }
-
-" Sensible Defaults
-Jetpack 'tpope/vim-sensible'
-
-" Language Support
-Jetpack 'sheerun/vim-polyglot'
-
-" Copilot
-" Jetpack 'github/copilot.vim'
-
-" Vim tree navigation
-" Plug 'scrooloose/nerdtree'
-
-" " Vim split navigation
-Jetpack 'tpope/vim-vinegar'
-
-" Vim Tiling Window Manager
-Jetpack 'spolu/dwm.vim'
-
-" Golden Ratio
-" Plug 'roman/golden-ratio'
-
-" Vim Fuzzy Find
-" Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-" Plug 'junegunn/fzf.vim'
-
-" Tmux Navigator
-" Plug 'christoomey/vim-tmux-navigator'
-
-
-" Current Context Commentstring
-" Jetpack 'suy/vim-context-commentstring'
-
-" Dash integration
-Jetpack 'rizzatti/dash.vim'
-
-" Syntax Highlighter
-Jetpack 'dense-analysis/ale'
-
-" Tab magic?
-Jetpack 'tpope/vim-sleuth'
-
-" Codi - interactive code scratchpads!
-Jetpack 'metakirby5/codi.vim'
-
-" Git management!
-Jetpack 'tpope/vim-fugitive'
-
-" Autoformat for Vim
-Jetpack 'chiel92/vim-autoformat'
-
-" Dracula for Vim
-" Plug 'dracula/vim'
-
-" OneDark Vim
-Jetpack 'rakr/vim-one'
-
-" Markdown Preview from Vi
-" Plug 'kannokanno/previm'
-
-" Matchit 
-Jetpack 'adelarsq/vim-matchit'
-
-" Vim Rainbow
-Jetpack 'frazrepo/vim-rainbow'
-
-" Open Default Browser
-Jetpack 'tyru/open-browser.vim'
-
-" Vim Airline (Status Bar)
-Jetpack 'bling/vim-airline'
-
-" Vim Airline Themes (for Dracula)
-" Plug 'vim-airline/vim-airline-themes'
-
-" Vim Lightline
-" Jetpack 'itchyny/lightline.vim'
-
-call jetpack#end()
-
-" Vim-Jetpack Autoinstall
-for name in jetpack#names()
-    if !jetpack#tap(name)
-          call jetpack#sync()
-          break
-    endif
-endfor
-
-" Vim-Plug Setup
-" if empty(glob('~/.vim/autoload/plug.vim'))
-"   silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-"     \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-"   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
-" endif
+" packadd vim-jetpack
 " 
-" " Vim Plugin Directory
-" call plug#begin('~/.vim/plugged')
+" call jetpack#begin()
+" Jetpack 'tani/vim-jetpack', {'opt': 1} "bootstrap
+" 
+" " Commenting Operator gcc{motion
+" Jetpack 'tpope/vim-commentary'
+" " , {'opt': 1}
+" 
+" Jetpack 'https://github.com/dense-analysis/ale'
+" 
+" Jetpack 'ctrlpvim/ctrlp.vim'
+" " Jetpack 'junegunn/fzf.vim'
+" " Jetpack 'junegunn/fzf', { 'do': {-> fzf#install()} }
+" 
+" " Jetpack 'neoclide/coc.nvim', { 'branch': 'release' }
+" " Jetpack 'neoclide/coc.nvim', { 'branch': 'master', 'do': 'yarn install --frozen-lockfile' }
+" 
+" " Jetpack 'vlime/vlime', { 'rtp': 'vim' }
+" 
+" " Jetpack 'dracula/vim', { 'as': 'dracula' }
+" " Jetpack 'dracula/vim', { 'as': 'dracula' }
+" 
+" " Jetpack 'tpope/vim-fireplace', { 'for': 'clojure' }
+" " Jetpack 'tpope/vim-fireplace', { 'for': 'clojure' }
 " 
 " " Sensible Defaults
-" Plug 'tpope/vim-sensible'
+" Jetpack 'tpope/vim-sensible'
 " 
 " " Language Support
-" Plug 'sheerun/vim-polyglot'
-"  
-" " " Copilot
-" " " Plug 'github/copilot.vim'
-" " 
-" " " Vim tree navigation
-" " " Plug 'scrooloose/nerdtree'
-" " 
-" " Vim split navigation
-" Plug 'tpope/vim-vinegar'
-"  
-" " " Vim Tiling Window Manager
-" " Plug 'spolu/dwm.vim'
-" " 
-" " " Golden Ratio
-" " " Plug 'roman/golden-ratio'
-" " 
-" " " Vim Fuzzy Find
-" " " Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-" " " Plug 'junegunn/fzf.vim'
-" " 
-" " " Tmux Navigator
-" " " Plug 'christoomey/vim-tmux-navigator'
-" " 
-" " Commenting Operator gcc{motion}
-" Plug 'tpope/vim-commentary'
-" " 
-" " " Dash integration
-" " Plug 'rizzatti/dash.vim'
-" " 
-" " Syntax Highlighter
-" Plug 'scrooloose/syntastic'
-" " 
-" " Tab magic?
-" Plug 'tpope/vim-sleuth'
-" " 
-" " " Codi - interactive code scratchpads!
-" " " Plug 'metakirby5/codi.vim'
-" " 
-" " " Git management!
-" " Plug 'tpope/vim-fugitive'
-" " 
-" " Autoformat for Vim
-" Plug 'chiel92/vim-autoformat'
-" " 
-" " " Dracula for Vim
-" " " Plug 'dracula/vim'
-" " 
-" " OneDark Vim
-" Plug 'rakr/vim-one'
-" " 
-" " " Markdown Preview from Vi
-" " " Plug 'kannokanno/previm'
-" " 
-" " Matchit 
-" Plug 'adelarsq/vim-matchit'
-"  
-" " Vim Rainbow
-" Plug 'frazrepo/vim-rainbow'
-" " 
-" " Open Default Browser
-" Plug 'tyru/open-browser.vim'
-" " 
-" " Vim Airline (Status Bar)
-" Plug 'bling/vim-airline'
-" " 
-" " " Vim Airline Themes (for Dracula)
-" " " Plug 'vim-airline/vim-airline-themes'
-" " 
-" " " Vim Lightline
-" " Plug 'itchyny/lightline.vim'
+" Jetpack 'sheerun/vim-polyglot'
 " 
-" " Initialize/Install Plugin System
-" call plug#end()
-<<<<<<< HEAD
+" " Copilot
+" " Jetpack 'github/copilot.vim'
+" 
+" " Vim tree navigation
+" " Plug 'scrooloose/nerdtree'
+" 
+" " " Vim split navigation
+" Jetpack 'tpope/vim-vinegar'
+" 
+" " Vim Tiling Window Manager
+" Jetpack 'spolu/dwm.vim'
+" 
+" " Golden Ratio
+" " Plug 'roman/golden-ratio'
+" 
+" " Vim Fuzzy Find
+" " Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+" " Plug 'junegunn/fzf.vim'
+" 
+" " Tmux Navigator
+" " Plug 'christoomey/vim-tmux-navigator'
+" 
+" 
+" " Current Context Commentstring
+" " Jetpack 'suy/vim-context-commentstring'
+" 
+" " Dash integration
+" Jetpack 'rizzatti/dash.vim'
+" 
+" " Syntax Highlighter
+" Jetpack 'dense-analysis/ale'
+" 
+" " Tab magic?
+" Jetpack 'tpope/vim-sleuth'
+" 
+" " Codi - interactive code scratchpads!
+" Jetpack 'metakirby5/codi.vim'
+" 
+" " Git management!
+" Jetpack 'tpope/vim-fugitive'
+" 
+" " Autoformat for Vim
+" Jetpack 'chiel92/vim-autoformat'
+" 
+" " Dracula for Vim
+" " Plug 'dracula/vim'
+" 
+" " OneDark Vim
+" Jetpack 'rakr/vim-one'
+" 
+" " Markdown Preview from Vi
+" " Plug 'kannokanno/previm'
+" 
+" " Matchit 
+" Jetpack 'adelarsq/vim-matchit'
+" 
+" " Vim Rainbow
+" Jetpack 'frazrepo/vim-rainbow'
+" 
+" " Open Default Browser
+" Jetpack 'tyru/open-browser.vim'
+" 
+" " Vim Airline (Status Bar)
+" Jetpack 'bling/vim-airline'
+" 
+" " Vim Airline Themes (for Dracula)
+" " Plug 'vim-airline/vim-airline-themes'
+" 
+" " Vim Lightline
+" " Jetpack 'itchyny/lightline.vim'
+" 
+" call jetpack#end()
+" 
+" " Vim-Jetpack Autoinstall
+" for name in jetpack#names()
+"     if !jetpack#tap(name)
+"           call jetpack#sync()
+"           break
+"     endif
+" endfor
+" 
+" " Vim-Plug Setup
+" " if empty(glob('~/.vim/autoload/plug.vim'))
+" "   silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+" "     \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+" "   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+" " endif
+" " 
+" " " Vim Plugin Directory
+" " call plug#begin('~/.vim/plugged')
+" " 
+" " " Sensible Defaults
+" " Plug 'tpope/vim-sensible'
+" " 
+" " " Language Support
+" " Plug 'sheerun/vim-polyglot'
+" "  
+" " " " Copilot
+" " " " Plug 'github/copilot.vim'
+" " " 
+" " " " Vim tree navigation
+" " " " Plug 'scrooloose/nerdtree'
+" " " 
+" " " Vim split navigation
+" " Plug 'tpope/vim-vinegar'
+" "  
+" " " " Vim Tiling Window Manager
+" " " Plug 'spolu/dwm.vim'
+" " " 
+" " " " Golden Ratio
+" " " " Plug 'roman/golden-ratio'
+" " " 
+" " " " Vim Fuzzy Find
+" " " " Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+" " " " Plug 'junegunn/fzf.vim'
+" " " 
+" " " " Tmux Navigator
+" " " " Plug 'christoomey/vim-tmux-navigator'
+" " " 
+" " " Commenting Operator gcc{motion}
+" " Plug 'tpope/vim-commentary'
+" " " 
+" " " " Dash integration
+" " " Plug 'rizzatti/dash.vim'
+" " " 
+" " " Syntax Highlighter
+" " Plug 'scrooloose/syntastic'
+" " " 
+" " " Tab magic?
+" " Plug 'tpope/vim-sleuth'
+" " " 
+" " " " Codi - interactive code scratchpads!
+" " " " Plug 'metakirby5/codi.vim'
+" " " 
+" " " " Git management!
+" " " Plug 'tpope/vim-fugitive'
+" " " 
+" " " Autoformat for Vim
+" " Plug 'chiel92/vim-autoformat'
+" " " 
+" " " " Dracula for Vim
+" " " " Plug 'dracula/vim'
+" " " 
+" " " OneDark Vim
+" " Plug 'rakr/vim-one'
+" " " 
+" " " " Markdown Preview from Vi
+" " " " Plug 'kannokanno/previm'
+" " " 
+" " " Matchit 
+" " Plug 'adelarsq/vim-matchit'
+" "  
+" " " Vim Rainbow
+" " Plug 'frazrepo/vim-rainbow'
+" " " 
+" " " Open Default Browser
+" " Plug 'tyru/open-browser.vim'
+" " " 
+" " " Vim Airline (Status Bar)
+" " Plug 'bling/vim-airline'
+" " " 
+" " " " Vim Airline Themes (for Dracula)
+" " " " Plug 'vim-airline/vim-airline-themes'
+" " " 
+" " " " Vim Lightline
+" " " Plug 'itchyny/lightline.vim'
+" " 
+" " " Initialize/Install Plugin System
+" " call plug#end()
 
 " Statusline -----
 
@@ -504,14 +501,12 @@ endfunction
 " autocmd VimEnter * PacUpdate 
 
 " VimPlug
-=======
 " 
 " " -----------------------------
 " " Autoload
 " " -----------------------------
 " 
 " " VimPlug
->>>>>>> v-macos
 " autocmd VimEnter *
 "   \  if len(filter(copy(g:plugs), '!isdirectory(v:val.dir)'))
 "   \|   PlugInstall --sync | q

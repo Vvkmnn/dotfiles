@@ -27,7 +27,14 @@
 # ##################################################
 # ##################################################
 
+## Defaults {{{
+export NVM_LAZY_LOAD=true 
+# }}}
+
 case "$(uname -s)" in
+
+
+
     Linux | Darwin)
 
         # Zsh
@@ -61,10 +68,6 @@ case "$(uname -s)" in
             #   p10k segment -b 2 -f 214 -t 'ॐ '
             # }
             
-            ## PreInstall {{{
-            export NVM_LAZY_LOAD=true 
-            # }}}
-
             ## Zcomet {{{
             # Clone zcomet if necessary
             if [[ ! -f ${ZDOTDIR:-${HOME}}/.zcomet/bin/zcomet.zsh ]]; then
