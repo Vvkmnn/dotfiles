@@ -15,9 +15,9 @@
 ; [submodule ".alacritty"]
 ; 	path = .alacritty
 ;   ;url = https://github.com/alacritty/alacritty.git
-; [submodule ".vim/pack/minpac/opt/minpac"]
-; 	path = .vim/pack/minpac/opt/minpac
-; 	url = https://github.com/k-takata/minpac.git
+[submodule ".vim/pack/minpac/opt/minpac"]
+	path = .vim/pack/minpac/opt/minpac
+	url = https://github.com/k-takata/minpac.git
 ; [submodule ".vim/src"]
 ; 	path = .vim/src
 ; 	url = https://github.com/vim/vim.git
