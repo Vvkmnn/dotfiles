@@ -167,7 +167,7 @@ dotfiles stash
 dotfiles checkout
 
 # optional
-git config --global credential.helper 'cache --timeout=77777777'
+git config --global credential.helper 'cache --timeout=7777777'
 dotfiles config status.showUntrackedFiles no
 
 ```
