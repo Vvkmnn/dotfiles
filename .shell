@@ -40,7 +40,7 @@ case "$(uname -s)" in
             # run `time  zsh -i -c exit | nvim` to profile into nvim
 
             # Brew
-            eval "$(/opt/homebrew/bin/brew shellenv)"
+            # eval "$(/opt/homebrew/bin/brew shellenv)"
 
             # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
             # Initialization code that may require console input (password prompts, [y/n]

@@ -83,16 +83,11 @@ Linux) ;;
 	export PATH="$HOME/Documents/bin:$PATH"
 	# export PATH="$HOME/Documents/dev/github-jack:$PATH"
 
-<<<<<<< HEAD
-        ## openSSL
-        export PATH="/usr/local/opt/openssl/bin:$PATH"
-=======
 	## brew
 	export PATH="/usr/local/sbin:$PATH"
 
 	## openSSL
 	export PATH="/usr/local/opt/openssl/bin:$PATH"
->>>>>>> v-debian
 
 	# Python
 	# export python="/usr/bin/python3"
