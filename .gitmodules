@@ -5,7 +5,7 @@
 [submodule ".config/nvim"]
 	path = .config/nvim
 	url = https://github.com/Vvkmnn/v.nvim.git
-    branch = master
+	branch = master
 
 [submodule ".vim/pack/minpac/opt/minpac"]
 	path = .vim/pack/minpac/opt/minpac
