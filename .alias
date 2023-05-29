@@ -11,6 +11,7 @@ alias ds="dotfiles status --untracked-files=no"
 alias da="dotfiles add"
 alias dr="dotfiles remove"
 alias dc="dotfiles commit -m"
+alias dpo="dotfiles push origin"
 
 ## Debian
 # alias u="sudo apt update && sudo apt upgrade && sudo apt autoremove"
