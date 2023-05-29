@@ -29,6 +29,7 @@
 
 ## Defaults {{{
 export NVM_LAZY_LOAD=true 
+export POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD=true
 # }}}
 
 case "$(uname -s)" in
