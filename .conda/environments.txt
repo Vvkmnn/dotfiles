@@ -1,2 +1,3 @@
 /Users/v/.miniconda3
 /Users/v/.miniconda3/envs/textgen
+/Users/v/.miniconda3/envs/gitfiti
