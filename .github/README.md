@@ -115,8 +115,7 @@ xcode-select --install
 brew install yabai skhd         
 ```
 ```sh
-brew install git-open bottom             \
-             ngrok tidy 
+brew install bottom ngrok tidy           
 ```
 
 ## [emacs](https://github.com/doomemacs/doomemacs)

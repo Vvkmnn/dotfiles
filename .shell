@@ -85,8 +85,6 @@ case "$(uname -s)" in
             # zcomet load lukechilds/zsh-nvm
             # zcomet load jeffreytse/zsh-vi-mode
             
-            zcomet load Tarrasch/zsh-autoenv
-
             # Load a code snippet - no need to download an entire repo
             zcomet snippet https://github.com/jreese/zsh-titles/blob/master/titles.plugin.zsh
 
@@ -108,6 +106,11 @@ case "$(uname -s)" in
             # Custom 
             zcomet load Tarrasch/zsh-autoenv
             zcomet load zsh-users/zsh-completions
+
+            # QOL
+            
+            # zcomet load paulirish/git-open
+
             
             # Run compinit and compile its cache
             zcomet compinit
