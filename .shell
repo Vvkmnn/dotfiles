@@ -67,6 +67,7 @@ case "$(uname -s)" in
             # }
             
             ## Zcomet {{{
+
             # Clone zcomet if necessary
             if [[ ! -f ${ZDOTDIR:-${HOME}}/.zcomet/bin/zcomet.zsh ]]; then
                 command git clone https://github.com/agkozak/zcomet.git ${ZDOTDIR:-${HOME}}/.zcomet/bin
@@ -108,8 +109,7 @@ case "$(uname -s)" in
             zcomet load zsh-users/zsh-completions
 
             # QOL
-            
-            # zcomet load paulirish/git-open
+            zcomet load paulirish/git-open
 
             
             # Run compinit and compile its cache
@@ -404,6 +404,11 @@ case "$(uname -s)" in
 
             # zplug load
             # }}}
+
+            ## ngrok
+          if command -v ngrok &>/dev/null; then
+            eval "$(ngrok completion)"
+          fi
 
             ## nvm
             export NVM_DIR="$HOME/.nvm"
