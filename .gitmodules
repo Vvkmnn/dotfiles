@@ -1,27 +1,4 @@
-[submodule ".neovim"]
-	path = .neovim
-	url = https://github.com/neovim/neovim
-
-[submodule ".config/nvim"]
-	path = .config/nvim
-	url = https://github.com/Vvkmnn/v.nvim.git
-	branch = master
-
-[submodule ".vim/pack/minpac/opt/minpac"]
-	path = .vim/pack/minpac/opt/minpac
-	url = https://github.com/k-takata/minpac.git
-
-# [submodule ".alacritty"]
-# 	path = .alacritty
-#   ;url = https://github.com/alacritty/alacritty.git
-# [submodule ".emacs.d"]
-#     path = .emacs.d
-#     url = https://github.com/hlissner/doom-emacs
-#     branch = develop
-# [submodule ".config/doom"]
-#     path = .config/doom
-#     url = git@github.com:Vvkmnn/v.doom.d.git
-#     branch = local
-# [submodule ".vim/src"]
-# 	path = .vim/src
-# 	url = https://github.com/vim/vim.git
+[submodule ".config/doom"]
+    path = .config/doom
+    url = git@github.com:Vvkmnn/v.doom.d.git
+    branch = local
