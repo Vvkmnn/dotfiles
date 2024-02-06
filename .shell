@@ -424,6 +424,17 @@ case "$(uname -s)" in
                 rm lazygit.tar.gz && rm -rf lazygit
             fi
 
+    ## pipx
+    # To activate completions for zsh you need to have bashcompinit enabled in zsh:
+    autoload -U bashcompinit
+    bashcompinit
+
+    # Afterwards you can enable completion for pipx:
+    eval "$(register-python-argcomplete pipx)"
+
+    ## brew
+    [ -d /home/linuxbrew/.linuxbrew ] && eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
+
             ;;
               Darwin )
 

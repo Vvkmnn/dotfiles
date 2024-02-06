@@ -39,9 +39,16 @@
 sudo apt-get update                      \
 && sudo apt-get upgrade                  \
 && sudo apt-get install git zsh curl vim \
+                        file nala        \
                         openssh-client   \
-                        aptitude         \
+                        aptitude         
+
+# optional
+sudo apt-get update \
+&& sudo apt-get dist-upgrade \
+&& sudo apt-get install --reinstall build-essential
 ```
+
 ```sh
 # /etc/apt/sources.list
 deb http://deb.debian.org/debian bookworm main contrib non-free
@@ -64,18 +71,34 @@ non-free-firmware
 #     /usr/share/doc/apt/examples/sources.list \
 #     /etc/apt/sources.list               # Default backup on Debian
 ```
+
+[zsh](https://www.zsh.org/)
 ```sh
-sudo apt-get update \
-&& sudo apt-get dist-upgrade \
-&& sudo apt-get install --reinstall build-essential
+# switch to zsh from bash
+chsh -s $(which zsh)            
 ```
+
+[brew](https://docs.brew.sh/Homebrew-on-Linux)
 ```sh
-chsh -s $(which zsh)            # switch to zsh from bash
+sudo apt install build-essential procps curl file git
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+# [ -d /home/linuxbrew/.linuxbrew ] && eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv) # already in .shell
+```
+
+[emacs](https://www.gnu.org/software/emacs/)
+```sh
+brew install emacs
+
+# Xming server on WSL1 Debian
+# https://sourceforge.net/projects/xming/
+
+emacs-gtk
 ```
 
 [neovim](https://neovim.io/)
 ```sh
 # optional, vim9 +huge default in Debian Testing
+# brew install neovim
 
 dotfiles submodule update --init         \
                           --recursive    \
@@ -88,6 +111,8 @@ dotfiles submodule update --init         \
 && make install                          \
 ```
 
+### Windows
+
 [wsl](https://learn.microsoft.com/en-us/windows/wsl/install)
 ```sh
 winget install Debian.Debian    # Install Debian on W10 with WSL
@@ -98,6 +123,7 @@ winget install Debian.Debian    # Install Debian on W10 with WSL
 cat .setup/capslock.ahk         # Capslock -> Esc + Ctrl on WSL 
 explorer.exe .setup             # Explorer open 
 ```
+
 
 ### MacOS
 
@@ -113,10 +139,8 @@ xcode-select --install
 
 ```sh
 brew install yabai skhd         
-```
-```sh
-brew install git-open bottom             \
-             ngrok tidy 
+	&& git-open bottom \
+	&& ngrok tidy 
 ```
 
 ## [emacs](https://github.com/doomemacs/doomemacs)
@@ -205,6 +229,7 @@ emacs.sh # IDE
 debian.sh
 capslock.sh
 ```
+
 
 ## Update
 

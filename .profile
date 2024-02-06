@@ -52,8 +52,12 @@ export ALTERNATE_EDITOR='nvim' # $EDITOR if all else fails
 # OS=$(uname -s)
 
 case "$(uname -s)" in
-Linux) ;;
+     Linux) 
+	# Emacs (Doom)
+	# export PATH="$HOME/.emacs.d/bin:$PATH"
+	export PATH="$HOME/.config/emacs/bin:$PATH"
 
+	;;
     Darwin)
         # Prompt
         # export PURE_PROMPT_SYMBOL="ॐ "
@@ -125,7 +129,8 @@ Linux) ;;
 	export PATH="/Library/TeX/texbin:$PATH"
 
 	# Emacs (Doom)
-	export PATH="$HOME/.emacs.d/bin:$PATH"
+	# export PATH="$HOME/.emacs.d/bin:$PATH"
+	export PATH="$HOME/.config/emacs/bin:$PATH"
 
 	# Clang
 	export CPATH=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include
@@ -182,3 +187,6 @@ esac
 
 # . "$HOME/.cargo/env"
 
+
+# Created by `pipx` on 2024-02-05 16:01:08
+export PATH="$PATH:/home/v/.local/bin"
