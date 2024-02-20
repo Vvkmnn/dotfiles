@@ -111,11 +111,31 @@ xcode-select --install
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" 
 ```
 
-```sh
-brew install yabai skhd         
+apps
+```zsh
+# window = keyboard manager
+brew install koekeishiya/formulae/skhd koekeishiya/formulae/yabai
+skhd --start-service && yabai --start-service
+
+# apps
+brew install neovim karabiner-elements    \
+  alacritty 1password mullvadvpn alfred   \
+  adguard  bottom ngrok obsidian           
 ```
-```sh
-brew install bottom ngrok tidy           
+
+
+defaults
+```zsh
+# iCloud Files
+defaults write NSGlobalDomain "NSDocumentSaveNewDocumentsToCloud" -bool "false" 
+
+# Dock
+defaults write com.apple.dock orientation right #my preference for main machine
+defaults write com.apple.dock tilesize -int 27
+
+# Finder
+defaults write com.apple.Finder AppleShowAllFiles true
+defaults write com.apple.finder CreateDesktop false
 ```
 
 ## [emacs](https://github.com/doomemacs/doomemacs)

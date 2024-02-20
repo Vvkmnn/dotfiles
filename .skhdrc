@@ -11,7 +11,9 @@ ctrl + cmd - 0: yabai --restart-service && skhd --restart-service
 # ctrl - return : open -a Terminal ~
 
 # open kitty, the terminal
-ctrl - return : /Applications/Kitty.app/Contents/MacOS/kitty --single-instance -d ~
+# ctrl - return : /Applications/Kitty.app/Contents/MacOS/kitty --single-instance -d ~
+ctrl - return : open -na /Applications/Alacritty.app
+# alacritty
 
 ### }}}
 
