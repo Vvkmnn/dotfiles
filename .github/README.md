@@ -202,6 +202,13 @@ xargs -I{} mv {} .backup/{}
 
 ## Post Install
 
+[subtrees](https://www.atlassian.com/git/tutorials/git-subtree)
+```zsh
+git fetch v.nvim
+git subtree pull --prefix .config/nvim v.nvim master --squash
+
+```
+
 ```sh
 # submodules
 dotfiles submodule init
