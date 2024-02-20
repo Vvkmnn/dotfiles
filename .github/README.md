@@ -204,8 +204,8 @@ xargs -I{} mv {} .backup/{}
 
 [subtrees](https://www.atlassian.com/git/tutorials/git-subtree)
 ```zsh
-git fetch v.nvim
-git subtree pull --prefix .config/nvim v.nvim master --squash
+dotfiles fetch v.nvim
+dotfiles subtree pull --prefix .config/nvim v.nvim master --squash
 
 ```
 

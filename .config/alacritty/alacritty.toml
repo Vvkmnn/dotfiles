@@ -319,7 +319,7 @@ alphabet = "jfkdls;ahgurieowpq"  # Default: "jfkdls;ahgurieowpq"
 # # Define keyboard bindings here
 # # Example placeholder (actual bindings need to be defined based on user preference)
 bindings = [
-    { key = "V", mods = "Control", action = "ToggleViMode" },
+    { key = "V", mods = "Control|Shift", action = "ToggleViMode" },
     # { key = "Escape", mods = "Option|Command", action = "ToggleViMode" },
     # { key = "Key", mods = "Modifiers", action = "Action" },
     # { key = "Key", mods = "Modifiers", chars = "Characters to send" },
