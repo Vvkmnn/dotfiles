@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+# https://github.com/koekeishiya/yabai/wiki/Commands
+
 #
 # for this to work you must configure sudo such that
 # it will be able to run the command without password
@@ -7,8 +9,8 @@
 # see this wiki page for information:
 #  - https://github.com/koekeishiya/yabai/wiki/Installing-yabai-(latest-release)#configure-scripting-addition
 #
-# yabai -m signal --add event=dock_did_restart action="sudo yabai --load-sa"
-# sudo yabai --load-sa
+yabai -m signal --add event=dock_did_restart action="sudo yabai --load-sa"
+sudo yabai --load-sa
 #
 
 # ffm (# autoraise | autofocus      )
@@ -66,9 +68,21 @@ yabai -m rule --add app="^Mail$" sticky=on manage=on
 yabai -m rule --add app="^Music$" sticky=on layer=above manage=on
 yabai -m rule --add app="^1Password$" sticky=on layer=above manage=on
 yabai -m rule --add app="Terminal" sticky=on layer=above manage=on
+yabai -m rule --add app="App Store" sticky=on layer=above manage=on
 # yabai -m rule --add app="^System Preferences$" manage=off
 # # yabai -m rule --add app=Steam manage=on
 # # yabai -m rule --add app=IMVU manage=off
+
+# ignore floating windows if possible
+# TODO seems to do nothing
+# https://github.com/koekeishiya/yabai/issues/1317
+yabai -m signal --add event=window_created action='
+  yabai -m query --windows --window $YABAI_WINDOW_ID | jq -er ".\"can-resize\" or .\"is-floating\"" || \
+  yabai -m window $YABAI_WINDOW_ID --toggle float && \
+  yabai -m window $YABAI_WINDOW_ID --layer above && \
+  yabai -m window $YABAI_WINDOW_ID --grid 3:3:1:1:1:1
+'
+yabai -m signal --add event=window_created action='yabai -m query --windows --window $YABAI_WINDOW_ID | jq -er ".\"can-resize\" or .\"is-floating\"" || yabai -m window $YABAI_WINDOW_ID --toggle float'
 
 # https://d12frosted.io/posts/2022-04-23-yabai-spaces.html
 # setup spaces

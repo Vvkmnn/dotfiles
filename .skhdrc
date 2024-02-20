@@ -1,3 +1,5 @@
+# https://github.com/koekeishiya/skhd/issues/1
+
 ### CLI {{{
 # open alacritty
 # ctrl - return : open -na /Applications/Alacritty.app/ -v
@@ -21,16 +23,21 @@ ctrl - return : open -na /Applications/Alacritty.app
 # ctrl + alt + cmd - return : osascript -e 'tell application "Notes" to tell account "iCloud" to tell folder "Quick" to make new note with properties {name:"TODO Replace", body:"#quick"} show ' 
 # -e 'set dateString to do shell script "date +'%Y-%m-%d %k.%M'"' 
 
+# Obsidian 
+# ctrl + cmd - return : open /Applications/Obsidian.app/
+ctrl + cmd - return : open /Applications/Obsidian.app/
+# shift - return : /Applications/Obsidian.app/
+
 ### GUI {{{
 # Open Doom Emacs
 # ctrl + cmd - return : open /Applications/Emacs.app/ 
-ctrl + cmd - return : emacs
+# ctrl + cmd - return : emacs
 
 # TODO fix, find Emacs process kill and restart 
 # ctrl + cmd - = : emacsclient -e (kill-emacs)
 
 # Open new Doom Emacs client
-ctrl + cmd - space: emacsclient -c
+# ctrl + cmd - space: emacsclient -c
 # ctrl + cmd - space: emacsclient -t
 # ctrl + cmd + shift - return : emacsclient -c
 
@@ -48,7 +55,10 @@ ctrl + cmd - space: emacsclient -c
 # pen ChatGPT
 # Use skhd --observe / -o to see hex codes for any key
 # Create new area
-ctrl - 0x27: osascript -e 'tell application "Safari" to make new document with properties {URL:"https://chat.openai.com/?model=gpt-4"}' 
+# ctrl - 0x27: osascript -e 'tell application "Safari" to make new document with properties {URL:"https://chat.openai.com/?model=gpt-4"}' 
+alt - return: osascript -e 'tell application "Safari" to make new document with properties {URL:"https://chat.openai.com/?model=gpt-4"}' -e 'tell application "Safari" to activate'
+ctrl - 0x27: osascript -e 'tell application "Safari" to make new document with properties {URL:"https://chat.openai.com/?model=gpt-4"}' -e 'tell application "Safari" to activate'
+
 # ctrl - 0x27: firefox "https://chat.openai.com/?model=gpt-4"
 
 # Opens current tab
@@ -62,6 +72,7 @@ ctrl - 0x27: osascript -e 'tell application "Safari" to make new document with p
 # cmd + shift - return : open -n /Applications/Firefox.app
 
 # Open Safari
+cmd - return : open -n /Applications/Safari.app/
 # cmd - return : osascript -e 'tell application "Safari" to make new document' 
 #with properties {URL:"https://www.google.com"}' 
 #-e 'activate' 
@@ -73,7 +84,6 @@ ctrl - 0x27: osascript -e 'tell application "Safari" to make new document with p
 # https://gist.github.com/stevoyoung/3214626
 # shift - return : osascript -e ' tell application "Safari" make new document activate end tell '
 # shift - return : osascript -e ' tell application "Safari" make new document activate end tell '
-cmd - return : open -n /Applications/Safari.app/
 
 # Open Music # FIXME not working
 # shift - return : open /Applications/Music.app
@@ -106,13 +116,8 @@ ctrl + cmd - d : yabai -m window --toggle zoom-parent
 ctrl + cmd - f : yabai -m window --toggle zoom-fullscreen
 
 # move window to display and follow focus 
-cmd + ctrl - j : yabai -m window --display west; yabai -m display --focus west
-cmd + ctrl - k : yabai -m window --display east; yabai -m display --focus east
-
-# move window to space and follow focus
-shift + cmd - space : cur_window=$(yabai -m query --windows --window | jq '.id') && \
-                      yabai -m window --display prev  || yabai -m window --display next && \
-                      yabai -m window --focus ${cur_window}
+alt + ctrl - j : yabai -m window --display west; yabai -m display --focus west
+alt + ctrl - k : yabai -m window --display east; yabai -m display --focus east
 
 # move window to another display and follow focus
 # TODO fancy but doesn't do much
@@ -121,14 +126,30 @@ shift + cmd - space : cur_window=$(yabai -m query --windows --window | jq '.id')
 
 
 # focus window
-# alt - h : yabai -m window --focus west
-# alt - j : yabai -m window --focus south
-# alt - k : yabai -m window --focus north
-# alt - l : yabai -m window --focus east
+ctrl - h : yabai -m window --focus west
+ctrl - j : yabai -m window --focus south
+ctrl - k : yabai -m window --focus north
+ctrl - l : yabai -m window --focus east
 
 # focus displays
-ctrl - j : yabai -m display --focus west
-ctrl - h : yabai -m display --focus east
+shift + ctrl - j : yabai -m display --focus west
+shift + ctrl - h : yabai -m display --focus east
+
+# move window to space and follow focus
+shift + cmd - space : cur_window=$(yabai -m query --windows --window | jq '.id') && \
+                      yabai -m window --display prev  || yabai -m window --display next && \
+                      yabai -m window --focus ${cur_window}
+
+
+# select next space
+# shift + ctrl - j : yabai -m space --focus prev
+cmd + ctrl - j : yabai -m space --focus next || yabai -m space --focus first
+cmd + ctrl - k : yabai -m space --focus prev || yabai -m space --focus last
+
+# move window to next space
+cmd + ctrl - h : yabai -m window --space prev --focus || yabai -m window --space last --focus
+cmd + ctrl - l : yabai -m window --space next --focus || yabai -m window --space first --focus
+
 
 # move window to pre and next space
 # TODO fix this, acts weird
@@ -174,8 +195,8 @@ cmd + ctrl - n : yabai -m space --create;\
 cmd + ctrl - w : yabai -m space --destroy
 
 # fast focus desktop
-cmd + ctrl - h : yabai -m space --focus prev
-cmd + ctrl - l : yabai -m space --focus next
+# cmd + ctrl - h : yabai -m space --focus prev
+# cmd + ctrl - l : yabai -m space --focus next
 
 cmd + alt - x : yabai -m space --focus recent
 # cmd + alt - 1 : yabai -m space --focus 1

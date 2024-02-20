@@ -40,8 +40,8 @@ export TERM=xterm-256color
 export ARCHEY_LOGO_FILE=$HOME/.logo
 
 # Editor
-export EDITOR='nvim'           # $VISUAL is the default for most shells
-export EDITOR=$VISUAL         # $EDITOR in case
+export EDITOR='nvim'           # $EDITOR is the default for most shells
+export VISUAL=$EDITOR          # $VISUAL in case
 export ALTERNATE_EDITOR='nvim' # $EDITOR if all else fails
 
 # Prompt

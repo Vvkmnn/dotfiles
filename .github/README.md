@@ -99,7 +99,7 @@ cat .setup/capslock.ahk         # Capslock -> Esc + Ctrl on WSL
 explorer.exe .setup             # Explorer open 
 ```
 
-### MacOS
+### macOS
 
 [xcode](https://developer.apple.com/xcode/resources/)
 ```sh
@@ -111,16 +111,36 @@ xcode-select --install
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" 
 ```
 
+fonts
+```zsh
+brew tap homebrew/cask-fonts && brew install --cask font-jetbrains-mono-nerd-font
+```
+
 apps
 ```zsh
 # window = keyboard manager
 brew install koekeishiya/formulae/skhd koekeishiya/formulae/yabai
 skhd --start-service && yabai --start-service
 
-# apps
+
+# qol
 brew install neovim karabiner-elements    \
   alacritty 1password mullvadvpn alfred   \
-  adguard  bottom ngrok obsidian           
+  adguard  bottom ngrok obsidian gh jq
+```
+
+flavor
+```
+# svim 
+brew install FelixKratz/formulae/svim && brew services start svim
+
+# yabai scripting 
+# https://github.com/koekeishiya/yabai/wiki/Installing-yabai-(latest-release)#configure-scripting-addition
+echo "$(whoami) ALL=(root) NOPASSWD: sha256:$(shasum -a 256 $(which yabai) \
+| cut -d " " -f 1) $(which yabai) --load-sa" \
+| sudo tee /private/etc/sudoers.d/yabai
+# https://github.com/koekeishiya/yabai/issues/1333#issuecomment-1193128981
+# sudo nvram boot-args=-arm64e_preview_abi 
 ```
 
 
@@ -136,6 +156,9 @@ defaults write com.apple.dock tilesize -int 27
 # Finder
 defaults write com.apple.Finder AppleShowAllFiles true
 defaults write com.apple.finder CreateDesktop false
+
+# Highlight Color (svim)
+defaults write NSGlobalDomain AppleHighlightColor -string "0.800000 0.200000 0.200000"
 ```
 
 ## [emacs](https://github.com/doomemacs/doomemacs)
