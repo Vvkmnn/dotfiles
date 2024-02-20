@@ -1,0 +1,9 @@
+-- Augroup to center cursor
+-- Removed for editor/vim-scripts/scrollfix
+-- vim.cmd([[
+-- augroup VCenterCursor
+--   au!
+--   " au BufEnter,WinEnter,WinNew,VimResized * lua vim.wo.scrolloff = math.floor(vim.api.nvim_win_get_height(0) / 2)
+--   au BufEnter,VimResized * lua vim.wo.scrolloff = math.floor(vim.api.nvim_win_get_height(0) / 2)
+-- augroup END
+-- ]])
