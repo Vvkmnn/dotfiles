@@ -1,21 +1,22 @@
 # https://github.com/koekeishiya/skhd/issues/1
 
 ### CLI {{{
-# open alacritty
-# ctrl - return : open -na /Applications/Alacritty.app/ -v
-# ctrl - return : alacritty
 
 # restart yabai
 # ctrl + cmd - 0: brew services stop yabai && brew services start yabai
 ctrl + cmd - 0: yabai --restart-service && skhd --restart-service
 
-# Open regular terminal
+# Terminal.app
 # ctrl - return : open -a Terminal ~
 
-# open kitty, the terminal
+# kitty
 # ctrl - return : /Applications/Kitty.app/Contents/MacOS/kitty --single-instance -d ~
-ctrl - return : open -na /Applications/Alacritty.app
-# alacritty
+
+# Alacritty
+# ctrl - return : open -na /Applications/Alacritty.app
+
+# Wezterm
+ctrl - return : open -na /Applications/Wezterm.app
 
 ### }}}
 
@@ -126,10 +127,14 @@ alt + ctrl - k : yabai -m window --display east; yabai -m display --focus east
 
 
 # focus window
-ctrl - h : yabai -m window --focus west
-ctrl - j : yabai -m window --focus south
-ctrl - k : yabai -m window --focus north
-ctrl - l : yabai -m window --focus east
+cmd - h : yabai -m window --focus west
+cmd - j : yabai -m window --focus south
+cmd - k : yabai -m window --focus north
+cmd - l : yabai -m window --focus east
+# ctrl - h : yabai -m window --focus west
+# ctrl - j : yabai -m window --focus south
+# ctrl - k : yabai -m window --focus north
+# ctrl - l : yabai -m window --focus east
 
 # focus displays
 shift + ctrl - j : yabai -m display --focus west
@@ -290,7 +295,17 @@ ctrl + alt - k : yabai -m window --insert north
 ctrl + alt - l : yabai -m window --insert east
 
 # close focused window
-ctrl + cmd - e : osascript -e 'tell application "System Events" to perform action "AXPress" of (first button whose subrole is "AXCloseButton") of (first window whose subrole is "AXStandardWindow") of (first process whose frontmost is true)'
+ctrl + cmd - e : yabai -m window --close 
+# ctrl + cmd - e : osascript -e 'tell application "System Events" to perform action "AXPress" of (first button whose subrole is "AXCloseButton") of (first window whose subrole is "AXStandardWindow") of (first process whose frontmost is true)'
+# ctrl + cmd - e : osascript -e 'tell application "System Events" to perform action "AXPress" of (first button whose subrole is "AXCloseButton") of (first window whose subrole is "AXStandardWindow") of (first process whose frontmost is true); tell application "System Events" to keystroke tab using {command down}'
+# ctrl + cmd - e : osascript -e 'tell application "System Events" to perform action "AXPress" of (first button whose subrole is "AXCloseButton") of (first window whose subrole is "AXStandardWindow") of (first process whose frontmost is true); tell application "System Events" to key code 48 using command down'
+# ctrl + cmd - e : osascript -e 'tell application "System Events" to perform action "AXPress" of (first button whose subrole is "AXCloseButton") of (first window whose subrole is "AXStandardWindow") of (first process whose frontmost is true); delay 0.1; tell application "System Events" to keystroke tab using command down'
+# ctrl + cmd - e : osascript -e 'tell application "System Events" to perform action "AXPress" of (first button whose subrole is "AXCloseButton") of (first window whose subrole is "AXStandardWindow") of (first process whose frontmost is true); delay 0.5; tell application "System Events" to key down command; tell application "System Events" to key code 48; tell application "System Events" to key up command'
+# ctrl + cmd - e : osascript -e 'tell application "System Events" to perform action "AXPress" of (first button whose subrole is "AXCloseButton") of (first window whose subrole is "AXStandardWindow") of (first process whose frontmost is true); delay 0.5; tell application "System Events" to key code 48 using command down'
+
+
+# ctrl + cmd - e : osascript -e 'tell application "System Events" to tell application "System Events" to tell (first process whose frontmost is true) to set frontmost to true; tell application "System Events" to perform action "AXPress" of (first button whose subrole is "AXCloseButton") of (first window whose subrole is "AXStandardWindow") of (first process whose frontmost is true); 
+
 
 # rotate tree
 alt - r : yabai -m space --rotate 90

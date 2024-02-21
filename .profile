@@ -36,6 +36,7 @@ export XDG_CONFIG_HOME="$HOME/.config"
 export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 export BROWSER=open
+# export TERM=xterm
 export TERM=xterm-256color
 export ARCHEY_LOGO_FILE=$HOME/.logo
 
@@ -64,6 +65,9 @@ Linux) ;;
 
 	# Brew
 	export HOMEBREW_CASK_OPTS="--appdir=/Applications"
+
+	# tmux
+	export PATH="/opt/homebrew/bin:$PATH"
 
 	# openSSL
 	export LDFLAGS="-L/usr/local/opt/openssl/lib"

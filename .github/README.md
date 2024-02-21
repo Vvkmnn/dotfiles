@@ -125,14 +125,15 @@ skhd --start-service && yabai --start-service
 
 # qol
 brew install neovim karabiner-elements    \
-  alacritty 1password mullvadvpn alfred   \
-  adguard  bottom ngrok obsidian gh jq
+  wezterm 1password mullvadvpn alfred npm \
+  adguard ngrok obsidian gh jq tmux fzf   \
+  btop rg
 ```
 
 flavor
 ```
-# svim 
-brew install FelixKratz/formulae/svim && brew services start svim
+# borders
+brew install FelixKratz/formulae/borders 
 
 # yabai scripting 
 # https://github.com/koekeishiya/yabai/wiki/Installing-yabai-(latest-release)#configure-scripting-addition
@@ -141,6 +142,10 @@ echo "$(whoami) ALL=(root) NOPASSWD: sha256:$(shasum -a 256 $(which yabai) \
 | sudo tee /private/etc/sudoers.d/yabai
 # https://github.com/koekeishiya/yabai/issues/1333#issuecomment-1193128981
 # sudo nvram boot-args=-arm64e_preview_abi 
+
+# svim 
+brew install FelixKratz/formulae/svim && brew services start svim
+
 ```
 
 
