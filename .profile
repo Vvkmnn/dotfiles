@@ -38,6 +38,7 @@ export LC_ALL=en_US.UTF-8
 export BROWSER=open
 export TERM=xterm-256color
 export ARCHEY_LOGO_FILE=$HOME/.logo
+export DISPLAY=:0
 
 # Editor
 export EDITOR='nvim'           # $VISUAL is the default for most shells

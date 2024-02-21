@@ -72,6 +72,7 @@ non-free-firmware
 #     /etc/apt/sources.list               # Default backup on Debian
 ```
 
+
 [zsh](https://www.zsh.org/)
 ```sh
 # switch to zsh from bash
@@ -92,7 +93,7 @@ brew install emacs
 # Xming server on WSL1 Debian
 # https://sourceforge.net/projects/xming/
 
-emacs-gtk
+# emacs-gtk
 ```
 
 [neovim](https://neovim.io/)
@@ -114,14 +115,36 @@ dotfiles submodule update --init         \
 ### Windows
 
 [wsl](https://learn.microsoft.com/en-us/windows/wsl/install)
-```sh
-winget install Debian.Debian    # Install Debian on W10 with WSL
+```bat
+:: Install Debian on W10 with WSL
+winget install Debian.Debian               \
+& winget install Microsoft.WindowsTerminal \
+
+```
+```shell
+sudo apt install gnupg2 apt-transport-https wget
+wget -O - https://pkg.wslutiliti.es/public.key | sudo tee -a /etc/apt/trusted.gpg.d/wslu.asc
+
+# Debian 12 (typically)
+# https://wslutiliti.es/wslu/install.html
+echo "deb https://pkg.wslutiliti.es/debian bookworm main" | sudo tee -a /etc/apt/sources.list
+
+# provides wslview
+sudo apt update && sudo apt install wslu 
+```
+[wezterm]()
+```bat
+winget install wez.wezterm 
+
+:: windows shortcut
+:: "C:\Program Files\WezTerm\wezterm-gui.exe" --config-file="\\wsl.localhost\Debian\home\v\.config\wezterm\wezterm.lua" start -- wsl -d Debian
 ```
 
 [ahk](https://www.autohotkey.com/)
 ```sh
 cat .setup/capslock.ahk         # Capslock -> Esc + Ctrl on WSL 
 explorer.exe .setup             # Explorer open 
+wslview .setup/capslock.ahk      # If wslu installed
 ```
 
 
