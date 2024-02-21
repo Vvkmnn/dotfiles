@@ -121,6 +121,8 @@ winget install Debian.Debian               \
 & winget install Microsoft.WindowsTerminal \
 
 ```
+
+[wslu](https://wslutiliti.es/wslu/)
 ```shell
 sudo apt install gnupg2 apt-transport-https wget
 wget -O - https://pkg.wslutiliti.es/public.key | sudo tee -a /etc/apt/trusted.gpg.d/wslu.asc
@@ -129,7 +131,7 @@ wget -O - https://pkg.wslutiliti.es/public.key | sudo tee -a /etc/apt/trusted.gp
 # https://wslutiliti.es/wslu/install.html
 echo "deb https://pkg.wslutiliti.es/debian bookworm main" | sudo tee -a /etc/apt/sources.list
 
-# provides wslview
+# provides wslview and other utils
 sudo apt update && sudo apt install wslu 
 ```
 [wezterm]()
@@ -144,9 +146,8 @@ winget install wez.wezterm
 ```sh
 cat .setup/capslock.ahk         # Capslock -> Esc + Ctrl on WSL 
 explorer.exe .setup             # Explorer open 
-wslview .setup/capslock.ahk      # If wslu installed
+wslview ~/.setup/capslock.ahk   # If wslu installed
 ```
-
 
 ### MacOS
 
