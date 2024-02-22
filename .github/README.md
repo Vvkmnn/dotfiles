@@ -122,12 +122,19 @@ apps
 brew install koekeishiya/formulae/skhd koekeishiya/formulae/yabai
 skhd --start-service && yabai --start-service
 
-
 # qol
 brew install neovim karabiner-elements    \
-  wezterm 1password mullvadvpn alfred npm \
-  adguard ngrok obsidian gh jq tmux fzf   \
-  btop rg
+  wezterm 1password mullvadvpn alfred nvm \
+  adguard ngrok obsidian gh jq fzf op     \
+  btop coreutils 
+
+# maybe
+brew install emacs-mac-spacemacs-icon tmux
+```
+
+post
+```sh
+nvm install node                           # installs system node via brew nvm
 ```
 
 flavor
@@ -168,20 +175,23 @@ defaults write NSGlobalDomain AppleHighlightColor -string "0.800000 0.200000 0.2
 
 ## [emacs](https://github.com/doomemacs/doomemacs)
 ```
-brew install git ripgrep coreutils fd
-
-brew install emacs-mac                   \
-   --with-dbus                           \
-   --with-dbus                           \
-   --with-starter                        \
-   --with-librsvg                        \
-   --with-imagemagick                    \
-   --with-xwidgets                       \ 
-   --with-ctags                          \
-   --with-native-comp                    \
-   --with-mac-metal                      \
-   --with-natural-title-bar              \
-   --with-spacemacs-icon                 \
+# emacs29
+brew install git ripgrep coreutils fd      \
+&& brew install railwaycat/emacsmacport/emacs-mac-spacemacs-icon
+     
+# deprecated
+# brew install emacs-mac                   \
+#    --with-dbus                           \
+#    --with-dbus                           \
+#    --with-starter                        \
+#    --with-librsvg                        \
+#    --with-imagemagick                    \
+#    --with-xwidgets                       \ 
+#    --with-ctags                          \
+#    --with-native-comp                    \
+#    --with-mac-metal                      \
+#    --with-natural-title-bar              \
+#    --with-spacemacs-icon                 \
 ```
 
 casks

@@ -36,6 +36,33 @@ case "$(uname -s)" in
         # Bash
         if [ -n "$BASH_VERSION" ]; then
         # [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+            # no audio bell
+            # https://superuser.com/questions/163994/how-can-i-get-the-mac-terminal-to-not-beep
+            set bell-style visible
+ 
+            # adaptive width
+            export COLUMNS=200
+            shopt -s checkwinsize
+
+
+            # starship 
+            # https://starship.rs/guide/#🚀-installation
+            # eval "$(starship init bash)"
+
+            om="ॐ"
+            morbidtime=$(date '+%-j/365 %-g/61 %a %d-%m-%y %T')
+            # cols=$(tput cols)
+
+            # PS1=$(printf "%*s\r%s\n$om " "$(tput cols)" 'righty tighty' 'lefty loosey')
+            # PS1=$(printf "%*s\r%s " "$(($cols - 25))" '$morbidtime' '$om')
+            # PS1=$(printf "%*s\r%s " "$(($(tput cols) - 35))" '$(date '+%-j/365 %-g/61 %a %d-%m-%y %T')' '$om')
+            PS1="\$(printf '%*s\r%s ' \$((\$(tput cols) - 35)) \"\$(date '+%-j/365 %-g/61 %a %d-%m-%y %T')\" \"\$om\")"
+            # PS1="\$(printf \"%*s\r%s \" \"\$(($(tput cols) - $(echo '$(date '+%-j/365 %-g/61 %a %d-%m-%y %T')' | wc -c)))\" \"\$(date '+%-j/365 %-g/61 %a %d-%m-%y %T')\" \"\$om\")"
+            # PS1="\$(printf \"%*s\r%s \" \"\$(($(tput cols) - 20)))\" \"\$(date '+%-j/365 %-g/61 %a %d-%m-%y %T')\" \"\$om\")"
+
+
+
+
             true
 
         # ZSH
@@ -45,9 +72,9 @@ case "$(uname -s)" in
             # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
             # Initialization code that may require console input (password prompts, [y/n]
             # confirmations, etc.) must go above this block; everything else may go below.
-            # if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-            #   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-            # fi
+            if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+              source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+            fi
 
             # zmodload zsh/zprof
             # run `time  zsh -i -c exit | nvim` to profile into nvim
@@ -82,7 +109,7 @@ case "$(uname -s)" in
             zcomet load ohmyzsh plugins/gitfast
 
             
-            # zcomet load lukechilds/zsh-nvm
+            zcomet load lukechilds/zsh-nvm
             # zcomet load jeffreytse/zsh-vi-mode
             
             # Load a code snippet - no need to download an entire repo
@@ -103,7 +130,7 @@ case "$(uname -s)" in
             
 
             # tmux
-            zcomet load ohmyzsh plugins/tmux
+            # zcomet load ohmyzsh plugins/tmux
             
             # QOL
             zcomet load paulirish/git-open
@@ -121,19 +148,26 @@ case "$(uname -s)" in
             # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
             # Initialization code that may require console input (password prompts, [y/n]
             # confirmations, etc.) must go above this block; everything else may go below.
-            if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-                source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-            fi
+            # if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+            #     source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+            # fi
 
             # Vi Mode
             bindkey -v
 
             # p10k {{{
-
-            # [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
+            [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
             # }}}
 
+            # zsh-nvm {{{
+            export NVM_LAZY_LOAD=true
+            export NVM_COMPLETION=true
+            export NVM_AUTO_USE=true
+            export NVM_LAZY_LOAD_EXTRA_COMMANDS=('vim','nvim')
+            # }}}
+
+            
+            # }}}
             
             # if [ -z "$TMUX" ]; then
             #   exec tmux new-session -A -s workspace
@@ -248,9 +282,11 @@ case "$(uname -s)" in
             # # }}}
             
 
+            # p10k
+            # NOTE Instant Prompt used above - unrelated to this config
             # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
             [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-            export POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD=true
+            # export POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD=true
             # }}}
 
             # TODO
@@ -275,8 +311,9 @@ case "$(uname -s)" in
             # /* #interface #widgets {justify-content: flex-start} */
 
             # tmux
-            ZSH_TMUX_AUTOSTART=true
-            ZSH_TMUX_AUTOCONNECT=false
+            # NOTE conflicts with instant prompt, turn that off for tmux to have time
+            # ZSH_TMUX_AUTOSTART=true
+            # ZSH_TMUX_AUTOCONNECT=false
             # ZSH_TMUX_AUTOQUIT=false
 
             # conda {{{
@@ -435,8 +472,9 @@ case "$(uname -s)" in
             # [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
             # export NVM_DIR="$HOME/.nvm"
             #
-            # [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
-            # [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+
+            [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
+            [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
 
             # if [ -z "$TMUX" ]; then
             #   exec tmux new-session -A -s workspace
