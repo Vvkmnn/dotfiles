@@ -36,21 +36,44 @@
 alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
 alias d="dotfiles"
 alias ds="dotfiles status --untracked-files=no"
-alias dr='v ~/.github/README.md'
+
+# Quickedit
+alias ,r='v ~/.github/README.md'
+alias ,v='v ~/.config/nvim/lua/'
+alias ,k='v ~/.config/nvim/lua/config/keymaps.lua'
+alias ,c='v ~/.config/nvim/lua/plugins/custom.lua'
+alias ,m='v ~/.config/nvim/lua/config/modify.lua'
+alias ,d='v ~/.config/nvim/lua/plugins/disable.lua'
+alias ,o='v ~/.config/nvim/lua/config/options.lua'
+alias ,s='v ~/.shell'
+alias ,a='v ~/.alias'
+alias ,t='v ~/.config/tmux/tmux.conf'
+alias ,w='v ~/.config/wezterm/wezterm.lua'
+alias ,y='v ~/.yabairc'
+alias ,sk='v ~/.yabairc'
+
 # TODO remove config file, but first check where this second one points, using NVIM?
-alias dg='lazygit --use-config-file "$HOME/.config/yadm/lazygit.yml,$HOME/Library/Application Support/lazygit/config.yml" --work-tree ~ --git-dir=$HOME/.dotfiles/'
+alias dg='lazygit --work-tree ~ --git-dir=$HOME/.dotfiles/'
+# alias dg='lazygit --use-config-file "$HOME/.config/yadm/lazygit.yml,$HOME/Library/Application Support/lazygit/config.yml" --work-tree ~ --git-dir=$HOME/.dotfiles/'
 # alias yl='lazygit --use-config-file "$HOME/.config/yadm/lazygit.yml,$HOME/Library/Application Support/lazygit/config.yml" --work-tree ~ --git-dir=$HOME/.dotfiles/'
 # alias da="dotfiles add"
 # alias dc="dotfiles commit -m"
 # alias dpo="dotfiles push origin"
 
-## Debian
+## Machine
+# debian
 # alias u="sudo apt update && sudo apt upgrade && sudo apt autoremove"
 # alias v="/mnt/c/Users/v"
+# macOS
+alias rr='sudo reboot'
+
+## Zsh
+alias zz='exec zsh -l'
 
 ## Vim
 # alias v='vim'                # Vim
 alias v='nvim'                # Vim
+alias v!='nvim --noplugin'                # Vim
 alias ov='vim'                # (neo)Vim
 # alias nv='nvim'                # (neo)Vim
 
@@ -69,6 +92,9 @@ case "$(uname -s)" in
 
         ## macOS
         Darwin)
+
+                # Bash
+                alias hbash='/opt/homebrew/bin/bash'
 
                 # Brew
                 alias cask='brew cask' # Shorthand
