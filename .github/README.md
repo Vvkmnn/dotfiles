@@ -126,10 +126,11 @@ skhd --start-service && yabai --start-service
 brew install neovim karabiner-elements    \
   wezterm 1password mullvadvpn alfred nvm \
   adguard ngrok obsidian gh jq fzf op     \
-  btop coreutils 
+  btop coreutils sqlite3 mas 
 
 # maybe
 brew install emacs-mac-spacemacs-icon tmux
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 ```
 
 post

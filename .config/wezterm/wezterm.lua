@@ -23,12 +23,13 @@ local config = wezterm.config_builder()
 -- Custom {{{
 -- Fancy
 config.hide_tab_bar_if_only_one_tab = true
-adjust_window_size_when_changing_font_size = false
+-- config.adjust_window_size_when_changing_font_size = false
 
 -- opacity
 -- config.window_background_opacity = 0.88
--- config.window_background_opacity = 0.97 + math.random() / 100
-config.window_background_opacity = 0.99
+-- config.window_background_opacity = 0.91 + math.random() / 100
+-- config.window_background_opacity = 0.95 + math.random() / 100
+config.window_background_opacity = 0.977
 
 -- config.inactive_pane_hsb = {
 --  saturation = 0.8
@@ -36,7 +37,8 @@ config.window_background_opacity = 0.99
 -- }
 --
 -- config.color_scheme = 'Hardcore'
-config.font = wezterm.font("JetBrainsMono Nerd Font")
+-- config.font = wezterm.font("JetBrainsMono Nerd Font")
+config.font = wezterm.font("JetBrains Mono")
 config.font_size = 14
 config.line_height = 1.2
 config.use_dead_keys = false
@@ -59,9 +61,37 @@ config.colors.cursor_border = "#FFFFFF"
 -- config.colors.cursor_fg = "white"
 -- config.colors.cursor_border = "white"
 
+-- config.background = {
+-- 	-- This is the deepest/back-most layer. It will be rendered first
+-- 	{
+-- 		source = { Gradient = { preset = "Warm" } },
 --
+-- 		-- The texture tiles vertically but not horizontally.
+-- 		-- When we repeat it, mirror it so that it appears "more seamless".
+-- 		-- An alternative to this is to set `width = "100%"` and have
+-- 		-- it stretch across the display
+-- 		repeat_x = "Mirror",
+-- 		hsb = dimmer,
+-- 		-- When the viewport scrolls, move this layer 10% of the number of
+-- 		-- pixels moved by the main viewport. This makes it appear to be
+-- 		-- further behind the text.
+-- 		attachment = { Parallax = 0.1 },
+-- 	},
+-- 	{
+-- 		source = { Gradient = { preset = "Plasma" } },
 --
--- }}}
+-- 		-- The texture tiles vertically but not horizontally.
+-- 		-- When we repeat it, mirror it so that it appears "more seamless".
+-- 		-- An alternative to this is to set `width = "100%"` and have
+-- 		-- it stretch across the display
+-- 		repeat_x = "Mirror",
+-- 		hsb = dimmer,
+-- 		-- When the viewport scrolls, move this layer 10% of the number of
+-- 		-- pixels moved by the main viewport. This makes it appear to be
+-- 		-- further behind the text.
+-- 		attachment = { Parallax = 0.2 },
+-- 	},
+-- }
 
 config.window_background_gradient = {
 	-- 	-- colors = { "#EEBD89", "#D13ABD" },
@@ -94,14 +124,15 @@ config.window_background_gradient = {
 
 	colors = (function()
 		local colors1 = { "#191919", "#0f0c29", "#24243e" }
-		local colors2 = { "#141E30", "#24243e", "#302b63" }
+		local colors2 = { "#141E30", "#24243e" }
 		-- { "#191919", "#0f0c29", "#000000", "#191919", "#24243e", "#0f0c29" },
 		-- { "#191919", "#0f0c29", "#000000", "#191919", "#24243e", "#0f0c29" },
 		-- { "#EEBD89", "#D13ABD", "#0f0c29", "#24243e", "#000000", "#434343", "#0f0c29", "#141E30", "#243B55" }
 		-- { "#0f0c29", "#24243e", "#000000", "#0f0c29", "#141E30" }
-		-- math.randomseed(os.time()) -- Initialize the random seed
 
-		math.randomseed(os.time()) -- Initialize the random seed
+		math.randomseed()
+
+		-- math.randomseed(os.time()) -- Initialize the random seed
 		-- Return two randomly selected colors
 		return { colors1[math.random(#colors1)], colors2[math.random(#colors2)] }
 	end)(), -- Immediately invoke the anonymous function
@@ -116,7 +147,7 @@ config.window_background_gradient = {
 }
 
 -- config.window_background_gradient = {
--- 	-- colors = { "deeppink", "gold" },
+-- -- colors = { "deeppink", "gold" },
 -- 	-- colors = { "black", "gray" },
 -- 	-- colors = { "deeppink", "gold" },
 -- 	-- colors = { "#000000", "#141E30", "#243B55", "#0f0c29", "#24243e" },

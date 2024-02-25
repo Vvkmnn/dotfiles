@@ -17,6 +17,7 @@ ctrl + cmd - 0: yabai --restart-service && skhd --restart-service
 
 # Wezterm
 ctrl - return : open -na /Applications/Wezterm.app
+# shift - return : open -na /Applications/Alacritty.app/ 
 
 ### }}}
 
@@ -27,7 +28,6 @@ ctrl - return : open -na /Applications/Wezterm.app
 # Obsidian 
 # ctrl + cmd - return : open /Applications/Obsidian.app/
 ctrl + cmd - return : open /Applications/Obsidian.app/
-# shift - return : /Applications/Obsidian.app/
 
 ### GUI {{{
 # Open Doom Emacs
@@ -57,7 +57,6 @@ ctrl + cmd - return : open /Applications/Obsidian.app/
 # Use skhd --observe / -o to see hex codes for any key
 # Create new area
 # ctrl - 0x27: osascript -e 'tell application "Safari" to make new document with properties {URL:"https://chat.openai.com/?model=gpt-4"}' 
-alt - return: osascript -e 'tell application "Safari" to make new document with properties {URL:"https://chat.openai.com/?model=gpt-4"}' -e 'tell application "Safari" to activate'
 ctrl - 0x27: osascript -e 'tell application "Safari" to make new document with properties {URL:"https://chat.openai.com/?model=gpt-4"}' -e 'tell application "Safari" to activate'
 
 # ctrl - 0x27: firefox "https://chat.openai.com/?model=gpt-4"
@@ -71,6 +70,9 @@ ctrl - 0x27: osascript -e 'tell application "Safari" to make new document with p
 # open -n /Applications/Firefox.app
 # ctrl + cmd - 0x27 : open -n /Applications/Firefox.app
 # cmd + shift - return : open -n /Applications/Firefox.app
+
+# Open Chrome
+alt - return: osascript -e 'tell application "Safari" to make new document with properties {URL:"https://chat.openai.com/?model=gpt-4"}' -e 'tell application "Safari" to activate'
 
 # Open Safari
 cmd - return : open -n /Applications/Safari.app/
@@ -116,6 +118,12 @@ cmd + shift - 4 -> : chunkc border::clear
 ctrl + cmd - d : yabai -m window --toggle zoom-parent
 ctrl + cmd - f : yabai -m window --toggle zoom-fullscreen
 
+# shift + cmd - d : yabai -m window --toggle zoom-parent
+# shift + cmd - f : yabai -m window --toggle zoom-fullscreen
+
+# space - f : yabai -m window --toggle zoom-fullscreen
+# cmd + space - f : yabai -m window --toggle zoom-fullscreen
+
 # move window to display and follow focus 
 alt + ctrl - j : yabai -m window --display west; yabai -m display --focus west
 alt + ctrl - k : yabai -m window --display east; yabai -m display --focus east
@@ -148,8 +156,8 @@ shift + cmd - space : cur_window=$(yabai -m query --windows --window | jq '.id')
 
 # select next space
 # shift + ctrl - j : yabai -m space --focus prev
-cmd + ctrl - j : yabai -m space --focus next || yabai -m space --focus first
-cmd + ctrl - k : yabai -m space --focus prev || yabai -m space --focus last
+cmd + ctrl - k : yabai -m space --focus next || yabai -m space --focus first
+cmd + ctrl - j : yabai -m space --focus prev || yabai -m space --focus last
 
 # move window to next space
 cmd + ctrl - h : yabai -m window --space prev --focus || yabai -m window --space last --focus

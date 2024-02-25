@@ -1,8 +1,10 @@
 lastupdatecheck: 0
 recentrepos:
+- /Users/v
 - /Users/v/Documents/site
 startuppopupversion: 5
 customcommandshistory:
-- q!
 - qa!
+- q!
 hidecommandlog: false
+ignorewhitespaceindiffview: true

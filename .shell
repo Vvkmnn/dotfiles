@@ -27,12 +27,11 @@
 ##################################################
 ##################################################
 
-
-case "$(uname -s)" in
-    
-    Linux | Darwin)
+#
+# case "$(uname -s)" in
+#     
+#     Linux | Darwin)
         
-
         # Bash
         if [ -n "$BASH_VERSION" ]; then
         # [ -f ~/.fzf.bash ] && source ~/.fzf.bash
@@ -72,9 +71,9 @@ case "$(uname -s)" in
             # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
             # Initialization code that may require console input (password prompts, [y/n]
             # confirmations, etc.) must go above this block; everything else may go below.
-            if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-              source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-            fi
+            # if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+            #   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+            # fi
 
             # zmodload zsh/zprof
             # run `time  zsh -i -c exit | nvim` to profile into nvim
@@ -130,7 +129,7 @@ case "$(uname -s)" in
             
 
             # tmux
-            # zcomet load ohmyzsh plugins/tmux
+            zcomet load ohmyzsh plugins/tmux
             
             # QOL
             zcomet load paulirish/git-open
@@ -148,9 +147,9 @@ case "$(uname -s)" in
             # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
             # Initialization code that may require console input (password prompts, [y/n]
             # confirmations, etc.) must go above this block; everything else may go below.
-            # if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-            #     source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-            # fi
+            if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+                source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+            fi
 
             # Vi Mode
             bindkey -v
@@ -310,12 +309,13 @@ case "$(uname -s)" in
             # /* #interface #main {justify-content: flex-start} */
             # /* #interface #widgets {justify-content: flex-start} */
 
-            # tmux
+            # ohmyzsh/tmux {{{
             # NOTE conflicts with instant prompt, turn that off for tmux to have time
-            # ZSH_TMUX_AUTOSTART=true
-            # ZSH_TMUX_AUTOCONNECT=false
-            # ZSH_TMUX_AUTOQUIT=false
-
+            ZSH_TMUX_AUTOSTART=true
+            ZSH_TMUX_AUTOCONNECT=false
+            ZSH_TMUX_AUTOQUIT=true
+            # }}}
+            
             # conda {{{
             # >>> conda initialize >>>
             # !! Contents within this block are managed by 'conda init' !!
@@ -648,7 +648,6 @@ case "$(uname -s)" in
         #   # asume something else
         fi
 
-        ;;
         # Darwin)
         # echo '[¬_¬] Loading Darwin shell...'
     # autoenv
@@ -718,9 +717,9 @@ case "$(uname -s)" in
     # Linux)
     #  echo '[¬_¬] Loading Linux shell...'
     #  ;;
-
-    CYGWIN* | MINGW32* | MSYS* | MINGW*)
-        echo '[¬_¬] TODO DOS shell'
-        ;;
-
-esac
+#
+#     CYGWIN* | MINGW32* | MSYS* | MINGW*)
+#         echo '[¬_¬] TODO DOS shell'
+#         ;;
+#
+# esac
