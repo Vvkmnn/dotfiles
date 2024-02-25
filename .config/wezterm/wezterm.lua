@@ -30,6 +30,7 @@ config.hide_tab_bar_if_only_one_tab = true
 -- config.window_background_opacity = 0.91 + math.random() / 100
 -- config.window_background_opacity = 0.95 + math.random() / 100
 config.window_background_opacity = 0.977
+-- config.window_background_opacity = 0.961
 
 -- config.inactive_pane_hsb = {
 --  saturation = 0.8
@@ -93,58 +94,66 @@ config.colors.cursor_border = "#FFFFFF"
 -- 	},
 -- }
 
-config.window_background_gradient = {
-	-- 	-- colors = { "#EEBD89", "#D13ABD" },
-	-- 	-- colors = { "#0f0c29", "#24243e" },
-	-- 	colors = { "#000000", "##434343" },
-	-- -- Combine all the colors into a single table
-	-- local allColors = { "#EEBD89", "#D13ABD", "#0f0c29", "#24243e", "#000000", "#434343", "#0f0c29", "#141E30", "#243B55" },
-	--
-	-- -- Randomly select two colors from the table (allowing duplicate selections)
-	-- math.randomseed(os.time()),
-	-- colors = { allColors[math.random(#allColors)],
-	-- 	allColors[math.random(#allColors)] },
-	--
-	-- -- Example usage: print the selected colors
-	-- -- print(
-	--
-	-- colors = { selectedColors[1], selectedColors[2] },
+-- Function to generate a random window background gradient
+-- local function generate_random_gradient()
+--   -- Define color lists for variety
+--   local colors1 = { "#191919", "#0f0c29", "#24243e", "#000000", "#141E30", "#243B55" }
+--   local colors2 = { "#EEBD89", "#D13ABD", "#434343", "#24243e", "#0f0c29" }
+--
+--   -- Initialize the random seed
+--   math.randomseed(os.time())
+--
+--   -- Randomly select one color from each list
+--   local color_from_list1 = colors1[math.random(#colors1)]
+--   local color_from_list2 = colors2[math.random(#colors2)]
+--
+--   -- Configure the gradient with randomly selected colors and linear orientation
+--   return {
+--     colors = { color_from_list1, color_from_list2 },
+-- orientation = { Linear = { angle = math.random() * 360 } },
+--   }
+-- end
 
-	-- Combine all the colors into a single table
-	-- local allColors = { "#EEBD89", "#D13ABD", "#0f0c29", "#24243e", "#000000", "#434343", "#0f0c29", "#141E30", "#243B55" }
-	--
-	-- -- Initialize the random seed
-	-- math.randomseed(os.time())
-	--
-	-- -- Randomly select two colors from the table (allowing duplicate selections)
-	-- local colors = { allColors[math.random(#allColors)], allColors[math.random(#allColors)] }
-	--
-	-- -- Example usage: print the selected colors
-	-- print(colors[1], colors[2])
+-- Apply the generated gradient to the window background
+-- config.window_background_gradient = generate_random_gradient(),
 
-	colors = (function()
-		local colors1 = { "#191919", "#0f0c29", "#24243e" }
-		local colors2 = { "#141E30", "#24243e" }
-		-- { "#191919", "#0f0c29", "#000000", "#191919", "#24243e", "#0f0c29" },
-		-- { "#191919", "#0f0c29", "#000000", "#191919", "#24243e", "#0f0c29" },
-		-- { "#EEBD89", "#D13ABD", "#0f0c29", "#24243e", "#000000", "#434343", "#0f0c29", "#141E30", "#243B55" }
-		-- { "#0f0c29", "#24243e", "#000000", "#0f0c29", "#141E30" }
+wezterm.on("window-focus-changed", function(window, pane)
+	-- wezterm.on("window-resized", function(window, pane)
+	-- wezterm.on("window-resized", function(window, pane)
+	-- Define two separate color lists for variety
+	-- local colors1 = { "#191919", "#0f0c29", "#24243e", "#000000", "#141E30", "#243B55" }
+	-- local colors2 = { "#EEBD89", "#D13ABD", "#434343", "#24243e", "#0f0c29" }
+	local colors1 = { "#24243e", "#000000", "#191919" }
+	colors2 = { "#243B55", "#141E30", "#0f0c29" }
 
-		math.randomseed()
+	-- Initialize the random seed based on the current time
+	math.randomseed()
 
-		-- math.randomseed(os.time()) -- Initialize the random seed
-		-- Return two randomly selected colors
-		return { colors1[math.random(#colors1)], colors2[math.random(#colors2)] }
-	end)(), -- Immediately invoke the anonymous function
+	-- Select one color from each list randomly
+	local color_from_list1 = colors1[math.random(#colors1)]
+	local color_from_list2 = colors2[math.random(#colors2)]
 
-	-- colors = { "#0f0c29", "#000000" },
-	-- colors = { "#191919", "#000000" },
-	-- colors = { "#191919", "#0f0c29" },
-	-- colors = { "#24243e", "#0f0c29" },
-	-- colors = { "#24243e", "#0f0c29" },
-	-- Specifices a Linear gradient starting in the top left corner.
-	orientation = { Linear = { angle = -(math.random() * 100) } },
-}
+	-- Set the window background gradient with the randomly selected colors
+	window:set_config_overrides({
+		window_background_gradient = {
+			colors = { color_from_list1, color_from_list2 },
+			orientation = { Linear = { angle = math.random() * 360 } },
+		},
+	})
+end)
+
+-- config.window_background_gradient = {
+--
+-- 	colors = (function()
+-- 		local colors1 = { "#191919", "#0f0c29", "#24243e" }
+-- 		local colors2 = { "#141E30", "#24243e" }
+--
+-- 		math.randomseed()
+--
+-- 		return { colors1[math.random(#colors1)], colors2[math.random(#colors2)] }
+-- 	end)(), -- Immediately invoke the anonymous function
+-- 	orientation = { Linear = { angle = -(math.random() * 100) } },
+-- }
 
 -- config.window_background_gradient = {
 -- -- colors = { "deeppink", "gold" },
