@@ -1,4 +1,0 @@
-[submodule ".config/doom"]
-    path = .config/doom
-    url = git@github.com:Vvkmnn/v.doom.d.git
-    branch = local
