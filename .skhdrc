@@ -1,4 +1,3 @@
-
 ### CLI {{{
 # open alacritty
 # ctrl - return : open -na /Applications/Alacritty.app/ -v
@@ -55,13 +54,13 @@ ctrl - 0x27: osascript -e 'tell application "Safari" to make new document with p
 
 ### Browser {{{
 # Open irefox
-cmd - return: firefox
+# cmd - return: firefox
 # open -n /Applications/Firefox.app
 # ctrl + cmd - 0x27 : open -n /Applications/Firefox.app
 # cmd + shift - return : open -n /Applications/Firefox.app
 
 # Open Safari
-# ctrl + shift - return : osascript -e 'tell application "Safari" to make new document' 
+# cmd - return : osascript -e 'tell application "Safari" to make new document' 
 #with properties {URL:"https://www.google.com"}' 
 #-e 'activate' 
 #-e 'tell application "Safari" activate'
@@ -71,7 +70,8 @@ cmd - return: firefox
 # -e 'set index of window 1 to 0'
 # https://gist.github.com/stevoyoung/3214626
 # shift - return : osascript -e ' tell application "Safari" make new document activate end tell '
-# cmd + shift - return : open /Applications/Safari.app/
+# shift - return : osascript -e ' tell application "Safari" make new document activate end tell '
+cmd - return : open -n /Applications/Safari.app/
 
 # Open Music # FIXME not working
 # shift - return : open /Applications/Music.app
@@ -158,10 +158,10 @@ shift + alt - left   : yabai -m window --grid 1:2:0:0:1:1
 shift + alt - right  : yabai -m window --grid 1:2:1:0:1:1
 
 # create desktop, move window and follow focus
-shift + cmd - n : yabai -m space --create && \
-                   index="$(yabai -m query --spaces --display | jq 'map(select(."is-native-fullscreen" == false))[-1].index')" && \
-                   yabai -m window --space "${index}" && \
-                   yabai -m space --focus "${index}"
+# shift + cmd - n : yabai -m space --create && \
+#                    index="$(yabai -m query --spaces --display | jq 'map(select(."is-native-fullscreen" == false))[-1].index')" && \
+#                    yabai -m window --space "${index}" && \
+#                    yabai -m space --focus "${index}"
 
 # create desktop and follow focus
 cmd + ctrl - n : yabai -m space --create;\
@@ -218,15 +218,17 @@ ctrl + alt - 2  : yabai -m display --focus 2
 ctrl + alt - 3  : yabai -m display --focus 3
 
 # send window to monitor and follow focus
-ctrl + cmd - j  : cur_window=$(yabai -m query --windows --window | jq '.id') && \
-                      yabai -m window --display prev  || yabai -m window --display next && \
-                      yabai -m window --focus ${cur_window}
-
-ctrl + cmd - j : yabai -m window --display prev; yabai -m display --focus prev
+# ctrl + cmd - j  : cur_window=$(yabai -m query --windows --window | jq '.id') && \
+#                       yabai -m window --display prev  || yabai -m window --display next && \
+#                       yabai -m window --focus ${cur_window}
 # ctrl + cmd - k  : cur_window=$(yabai -m query --windows --window | jq '.id') && \
 #                       yabai -m window --display next || yabai -m window --display prev && \
 #                       yabai -m window --focus ${cur_window}
+
+# send window to next display
+ctrl + cmd - j : yabai -m window --display prev; yabai -m display --focus prev
 ctrl + cmd - k : yabai -m window --display next; yabai -m display --focus next
+
 #
 # ctrl + cmd - k  : cur_window=$(yabai -m query --windows --window | jq '.id') && \
 #                       yabai -m window --display next || yabai -m window --display prev && \

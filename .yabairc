@@ -11,15 +11,18 @@
 # sudo yabai --load-sa
 #
 
+# ffm (# autoraise | autofocus      )
+
 # global settings
 yabai -m config                                 \
     mouse_follows_focus          on             \
-    focus_follows_mouse          autoraise      \
-    window_origin_display        cursor         \
+    focus_follows_mouse          off            \
+    window_origin_display        default        \
     window_placement             second_child   \
     window_topmost               off            \
     window_shadow                off            \
     window_animation_duration    0.0            \
+    window_animation_frame_rate  120            \
     window_opacity_duration      0.0            \
     active_window_opacity        1.0            \
     normal_window_opacity        0.90           \
