@@ -29,7 +29,20 @@ function prompt_om() {
 }
 
 function prompt_face() {
- p10k segment -t '%(?,%F{green}[-_-]%f,%F{red}[ಠ_ಠ]%f)'
+ # p10k segment -t '%(?,%F{#8700af}[-_-]%f,%F{#ff87af}[ಠ_ಠ]%f)'
+ # p10k segment -t '%(?,%F{#37E57B}[-_-]%f,%F{#ff87af}[ಠ_ಠ]%f)'
+ # p10k segment -t '%(?,%F{#DAD6D5}[-_-]%f,%F{#ff87af}[ಠ_ಠ]%f)'
+ p10k segment -t '%(?,%F{#37E57B}[-_-]%f,%F{#CF494C}[ಠ_ಠ]%f)'
+ # p10k segment -t '%(?,%F{green}[-_-]%f,%F{#ff87af}[ಠ_ಠ]%f)'
+}
+
+function prompt_morbidtime() {
+  # brew install coreutils
+  morbidtime=$(gdate '+%-j/365 %-g/61 %a %d-%m-%y %T.%3N')
+  # echo "$morbidtime"
+  p10k segment -f "#565554" -t "${morbidtime}"
+  # p10k segment -f white -t "${morbidtime}"
+  # p10k segment -t "%F{blue}%*%f"
 }
 
 # Temporarily change options.
@@ -71,7 +84,8 @@ function prompt_face() {
     command_execution_time    # previous command duration
     virtualenv                # python virtual environment
     context                   # user@host
-    # face                      # CUSTOM 
+    # morbidtime 
+    # face                      
     time                      # current time
   )
 
