@@ -338,7 +338,8 @@
 
             # rust {{{
             # . "$HOME/.cargo/env"
-            [ -d "$HOME/.cargo" ] && . "$HOME/.cargo/env"
+                [ -d "$HOME/.cargo" ] && . "$HOME/.cargo/env"
+            # . "$HOME/.cargo/env"
             # }}}
 
             # z {{{
