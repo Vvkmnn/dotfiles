@@ -126,8 +126,11 @@ ctrl + cmd - f : yabai -m window --toggle zoom-fullscreen
 # cmd + space - f : yabai -m window --toggle zoom-fullscreen
 
 # move window to display and follow focus 
-alt + ctrl - j : yabai -m window --display west; yabai -m display --focus west
-alt + ctrl - k : yabai -m window --display east; yabai -m display --focus east
+
+alt + ctrl - h : yabai -m window --display prev || yabai -m window --display last; yabai -m display --focus prev || yabai -m display --focus prev 
+alt + ctrl - j : yabai -m display --focus prev || yabai -m display --focus last
+alt + ctrl - k : yabai -m display --focus next || yabai -m display --focus first
+alt + ctrl - l : yabai -m window --display next || yabai -m window --display first; yabai -m display --focus next || yabai -m display --focus first
 
 # move window to another display and follow focus
 # TODO fancy but doesn't do much
@@ -146,8 +149,8 @@ cmd - l : yabai -m window --focus east
 # ctrl - l : yabai -m window --focus east
 
 # focus displays
-shift + ctrl - j : yabai -m display --focus west
-shift + ctrl - h : yabai -m display --focus east
+# shift + ctrl - j : yabai -m display --focus west
+# shift + ctrl - h : yabai -m display --focus east
 
 # move window to space and follow focus
 shift + cmd - space : cur_window=$(yabai -m query --windows --window | jq '.id') && \
