@@ -25,11 +25,18 @@ local config = wezterm.config_builder()
 config.hide_tab_bar_if_only_one_tab = true
 -- config.adjust_window_size_when_changing_font_size = false
 
+-- Close
+config.window_close_confirmation = "NeverPrompt"
+
 -- opacity
 -- config.window_background_opacity = 0.88
 -- config.window_background_opacity = 0.91 + math.random() / 100
 -- config.window_background_opacity = 0.95 + math.random() / 100
-config.window_background_opacity = 0.977
+-- config.window_background_opacity = 0.977
+config.window_background_opacity = 0.93
+-- config.macos_window_background_blur = 20
+config.macos_window_background_blur = 77
+config.win32_system_backdrop = "Acrylic"
 -- config.window_background_opacity = 0.961
 
 -- config.inactive_pane_hsb = {
@@ -40,7 +47,7 @@ config.window_background_opacity = 0.977
 -- config.color_scheme = 'Hardcore'
 -- config.font = wezterm.font("JetBrainsMono Nerd Font")
 config.font = wezterm.font("JetBrains Mono")
-config.font_size = 14
+config.font_size = 13
 config.line_height = 1.2
 config.use_dead_keys = false
 config.scrollback_lines = 6666
@@ -61,6 +68,26 @@ config.colors.cursor_border = "#FFFFFF"
 -- config.cursor_bg = "#000000"
 -- config.colors.cursor_fg = "white"
 -- config.colors.cursor_border = "white"
+
+-- hyperlink
+-- Use the defaults as a base
+config.hyperlink_rules = wezterm.default_hyperlink_rules()
+
+-- make task numbers clickable
+-- the first matched regex group is captured in $1.
+table.insert(config.hyperlink_rules, {
+	regex = [[\b[tt](\d+)\b]],
+	format = "https://example.com/tasks/?t=$1",
+})
+
+-- make username/project paths clickable. this implies paths like the following are for github.
+-- ( "nvim-treesitter/nvim-treesitter" | wbthomason/packer.nvim | wez/wezterm | "wez/wezterm.git" )
+-- as long as a full url hyperlink regex exists above this it should not match a full url to
+-- github or gitlab / bitbucket (i.e. https://gitlab.com/user/project.git is still a whole clickable url)
+table.insert(config.hyperlink_rules, {
+	regex = [[["]?([\w\d]{1}[-\w\d]+)(/){1}([-\w\d\.]+)["]?]],
+	format = "https://www.github.com/$1/$3",
+})
 
 -- config.background = {
 -- 	-- This is the deepest/back-most layer. It will be rendered first
@@ -121,10 +148,10 @@ wezterm.on("window-focus-changed", function(window, pane)
 	-- wezterm.on("window-resized", function(window, pane)
 	-- wezterm.on("window-resized", function(window, pane)
 	-- Define two separate color lists for variety
-	-- local colors1 = { "#191919", "#0f0c29", "#24243e", "#000000", "#141E30", "#243B55" }
-	-- local colors2 = { "#EEBD89", "#D13ABD", "#434343", "#24243e", "#0f0c29" }
-	local colors1 = { "#24243e", "#000000", "#191919" }
-	colors2 = { "#243B55", "#141E30", "#0f0c29" }
+	-- local colors1 = { "#191919", "#0f0c29", "#24243e", "#141E30",  "#243B55", "#2E3440" }
+	-- local colors2 = { "#EEBD89", "#D13ABD", "#434343", "#24243e", "#0f0c29", "#81A1C1" }
+	local colors1 = { "#000000", "#191919", "#1a1823", "#24273a" }
+	local colors2 = { "#141E30", "#0f0c29", "#131020", "#24273A" }
 
 	-- Initialize the random seed based on the current time
 	math.randomseed()
@@ -137,8 +164,10 @@ wezterm.on("window-focus-changed", function(window, pane)
 	window:set_config_overrides({
 		window_background_gradient = {
 			colors = { color_from_list1, color_from_list2 },
-			orientation = { Linear = { angle = math.random() * 360 } },
+			orientation = { Linear = { angle = -(math.random() * 100) } },
 		},
+		-- window_background_opacity = 0.97 + math.random() / 100,
+		-- window_background_opacity = 1,
 	})
 end)
 

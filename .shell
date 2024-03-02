@@ -165,6 +165,10 @@
             export NVM_LAZY_LOAD_EXTRA_COMMANDS=('vim','nvim')
             # }}}
 
+            # open-ai
+            # NOTE 1password prompts everytime...
+            # export oi_api_key=$(op read "op://Personal/mhgs4auyjijxtrytbsqw3hucty/Other Fields/credential")
+            # export oi_api_key="op://Personal/mhgs4auyjijxtrytbsqw3hucty/Other Fields/credential"
             
             # }}}
             

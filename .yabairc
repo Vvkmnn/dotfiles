@@ -23,7 +23,7 @@ yabai -m signal --add event=application_terminated action="yabai -m query --wind
 # global settings
 yabai -m config \
 	mouse_follows_focus on \
-	focus_follows_mouse on \
+	focus_follows_mouse autofocus \
 	window_origin_display default \
 	window_placement second_child \
 	window_topmost off \
@@ -144,5 +144,6 @@ echo "yabai configuration loaded.."
 # Window highlight
 # borders "${options[@]}"
 # borders active_color=0xffe1e3e4 inactive_color=0xff494d64 width=5.0 &
-borders active_color=0xffe1e3e4 inactive_color=0xff494d64 width=1 blur_radius=1.0 hidipi=on &
+# blur_radius=100.0
+borders active_color=0xffe1e3e4 inactive_color=0xff494d64 width=1 blur_radius=10.0 hidipi=on style=round &
 # borders &

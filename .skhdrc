@@ -28,6 +28,7 @@ ctrl - return : open -na /Applications/Wezterm.app
 # Obsidian 
 # ctrl + cmd - return : open /Applications/Obsidian.app/
 ctrl + cmd - return : open /Applications/Obsidian.app/
+# ctrl - space: open /Applications/Obsidian.app/
 
 ### GUI {{{
 # Open Doom Emacs
@@ -331,7 +332,7 @@ alt - a : yabai -m space --toggle padding; yabai -m space --toggle gap
 ctrl + shift - d : yabai -m window --toggle zoom-parent
 
 # toggle window fullscreen zoom
-# ctrl + cmd - f : yabai -m window --toggle zoom-fullscreen
+ctrl + cmd - f : yabai -m window --toggle zoom-fullscreen
 
 # toggle window native fullscreen
 shift + alt - f : yabai -m window --toggle native-fullscreen

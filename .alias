@@ -54,6 +54,9 @@ alias ,w='v ~/.config/wezterm/wezterm.lua'
 alias ,y='v ~/.yabairc'
 alias ,sk='v ~/.skhdrc'
 
+# OpenAI
+alias ai='chatblade --open-api-key ~/.openai -c 4t -e'
+
 
 
 # alias dg='lazygit --use-config-file "$HOME/Library/Application Support/lazygit/config.yml" --work-tree ~ --git-dir=$HOME/.dotfiles/'
