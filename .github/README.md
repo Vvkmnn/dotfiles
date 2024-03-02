@@ -149,7 +149,7 @@ explorer.exe .setup             # Explorer open
 wslview ~/.setup/capslock.ahk   # If wslu installed
 ```
 
-### MacOS
+### macOS
 
 [xcode](https://developer.apple.com/xcode/resources/)
 ```sh
@@ -161,28 +161,87 @@ xcode-select --install
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" 
 ```
 
+fonts
+```zsh
+brew tap homebrew/cask-fonts && brew install --cask font-jetbrains-mono-nerd-font
+```
+
+apps
+```zsh
+# window = keyboard manager
+brew install koekeishiya/formulae/skhd koekeishiya/formulae/yabai
+skhd --start-service && yabai --start-service
+
+# qol
+brew install neovim karabiner-elements    \
+  wezterm 1password mullvadvpn alfred nvm \
+  adguard ngrok obsidian gh jq fzf op     \
+  btop coreutils 
+
+# maybe
+brew install emacs-mac-spacemacs-icon tmux
+```
+
+post
 ```sh
-brew install yabai skhd         
-	&& git-open bottom \
-	&& ngrok tidy 
+nvm install node                           # installs system node via brew nvm
+```
+
+flavor
+```
+# borders
+brew install FelixKratz/formulae/borders 
+
+# yabai scripting 
+# https://github.com/koekeishiya/yabai/wiki/Installing-yabai-(latest-release)#configure-scripting-addition
+echo "$(whoami) ALL=(root) NOPASSWD: sha256:$(shasum -a 256 $(which yabai) \
+| cut -d " " -f 1) $(which yabai) --load-sa" \
+| sudo tee /private/etc/sudoers.d/yabai
+# https://github.com/koekeishiya/yabai/issues/1333#issuecomment-1193128981
+# sudo nvram boot-args=-arm64e_preview_abi 
+
+# svim 
+brew install FelixKratz/formulae/svim && brew services start svim
+
+```
+
+
+defaults
+```zsh
+# iCloud Files
+defaults write NSGlobalDomain "NSDocumentSaveNewDocumentsToCloud" -bool "false" 
+
+# Dock
+defaults write com.apple.dock orientation right #my preference for main machine
+defaults write com.apple.dock tilesize -int 27
+
+# Finder
+defaults write com.apple.Finder AppleShowAllFiles true
+defaults write com.apple.finder CreateDesktop false
+
+# Highlight Color (svim)
+defaults write NSGlobalDomain AppleHighlightColor -string "0.800000 0.200000 0.200000"
 ```
 
 ## [emacs](https://github.com/doomemacs/doomemacs)
 ```
-brew install git ripgrep coreutils fd
-
-brew install emacs-mac                   \
-   --with-dbus                           \
-   --with-dbus                           \
-   --with-starter                        \
-   --with-librsvg                        \
-   --with-imagemagick                    \
-   --with-xwidgets                       \ 
-   --with-ctags                          \
-   --with-native-comp                    \
-   --with-mac-metal                      \
-   --with-natural-title-bar              \
-   --with-spacemacs-icon                 \
+# emacs29
+brew install git ripgrep coreutils fd      \
+&& brew install railwaycat/emacsmacport/emacs-mac-spacemacs-icon
+     
+# deprecated
+# brew install emacs-mac                   \
+#    --with-dbus                           \
+#    --with-dbus                           \
+#    --with-starter                        \
+#    --with-librsvg                        \
+#    --with-imagemagick                    \
+#    --with-xwidgets                       \ 
+#    --with-ctags                          \
+#    --with-native-comp                    \
+#    --with-mac-metal                      \
+#    --with-natural-title-bar              \
+#    --with-spacemacs-icon                 \
 ```
 
 casks
@@ -230,6 +289,13 @@ xargs -I{} mv {} .backup/{}
 ```
 
 ## Post Install
+
+[subtrees](https://www.atlassian.com/git/tutorials/git-subtree)
+```zsh
+dotfiles fetch v.nvim
+dotfiles subtree pull --prefix .config/nvim v.nvim master --squash
+
+```
 
 ```sh
 # submodules

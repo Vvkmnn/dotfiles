@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+# https://github.com/koekeishiya/yabai/wiki/Commands
+
 #
 # for this to work you must configure sudo such that
 # it will be able to run the command without password
@@ -7,9 +9,14 @@
 # see this wiki page for information:
 #  - https://github.com/koekeishiya/yabai/wiki/Installing-yabai-(latest-release)#configure-scripting-addition
 #
-# yabai -m signal --add event=dock_did_restart action="sudo yabai --load-sa"
-# sudo yabai --load-sa
+yabai -m signal --add event=dock_did_restart action="sudo yabai --load-sa"
+sudo yabai --load-sa
 #
+
+# softer window closing
+# https://github.com/koekeishiya/yabai/issues/1012
+yabai -m signal --add event=window_destroyed action="yabai -m query --windows --window &> /dev/null || yabai -m window --focus recent || yabai -m window --focus first"
+yabai -m signal --add event=application_terminated action="yabai -m query --windows --window &> /dev/null || yabai -m window --focus recent || yabai -m window --focus first"
 
 # ffm (# autoraise | autofocus      )
 
@@ -66,9 +73,21 @@ yabai -m rule --add app="^Mail$" sticky=on manage=on
 yabai -m rule --add app="^Music$" sticky=on layer=above manage=on
 yabai -m rule --add app="^1Password$" sticky=on layer=above manage=on
 yabai -m rule --add app="Terminal" sticky=on layer=above manage=on
+yabai -m rule --add app="App Store" sticky=on layer=above manage=on
 # yabai -m rule --add app="^System Preferences$" manage=off
 # # yabai -m rule --add app=Steam manage=on
 # # yabai -m rule --add app=IMVU manage=off
+
+# ignore floating windows if possible
+# TODO seems to do nothing
+# https://github.com/koekeishiya/yabai/issues/1317
+# yabai -m signal --add event=window_created action='
+#   yabai -m query --windows --window $YABAI_WINDOW_ID | jq -er ".\"can-resize\" or .\"is-floating\"" || \
+#   yabai -m window $YABAI_WINDOW_ID --toggle float && \
+#   yabai -m window $YABAI_WINDOW_ID --layer above && \
+#   yabai -m window $YABAI_WINDOW_ID --grid 3:3:1:1:1:1
+# '
+# yabai -m signal --add event=window_created action='yabai -m query --windows --window $YABAI_WINDOW_ID | jq -er ".\"can-resize\" or .\"is-floating\"" || yabai -m window $YABAI_WINDOW_ID --toggle float'
 
 # https://d12frosted.io/posts/2022-04-23-yabai-spaces.html
 # setup spaces
@@ -107,4 +126,19 @@ yabai -m rule --add app="Terminal" sticky=on layer=above manage=on
 
 echo "yabai configuration loaded.."
 
+# borders
+# https://github.com/FelixKratz/JankyBorders 
+#!/bin/bash
 
+# options=(
+# 	style=round
+# 	width=6.0
+# 	hidpi=off
+# 	active_color=0xffe2e2e3
+# 	inactive_color=0xff414550
+# )
+#
+# borders "${options[@]}" 
+# borders active_color=0xffe1e3e4 inactive_color=0xff494d64 width=5.0 & 
+borders active_color=0xffe1e3e4 inactive_color=0xff494d64 width=3 blur_radius=3.0 hidipi=on &
+# borders &

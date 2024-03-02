@@ -36,10 +36,13 @@
 alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
 alias d="dotfiles"
 alias ds="dotfiles status --untracked-files=no"
-alias da="dotfiles add"
-alias dr="dotfiles remove"
-alias dc="dotfiles commit -m"
-alias dpo="dotfiles push origin"
+alias dr='v ~/.github/README.md'
+# TODO remove config file, but first check where this second one points, using NVIM?
+alias dg='lazygit --use-config-file "$HOME/.config/yadm/lazygit.yml,$HOME/Library/Application Support/lazygit/config.yml" --work-tree ~ --git-dir=$HOME/.dotfiles/'
+# alias yl='lazygit --use-config-file "$HOME/.config/yadm/lazygit.yml,$HOME/Library/Application Support/lazygit/config.yml" --work-tree ~ --git-dir=$HOME/.dotfiles/'
+# alias da="dotfiles add"
+# alias dc="dotfiles commit -m"
+# alias dpo="dotfiles push origin"
 
 ## Debian
 # alias u="sudo apt update && sudo apt upgrade && sudo apt autoremove"
