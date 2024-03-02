@@ -193,10 +193,3 @@ esac
 # echo '[¬_¬]...'
 
 # . "$HOME/.cargo/env"
-<<<<<<< HEAD
-
-
-# Created by `pipx` on 2024-02-05 16:01:08
-export PATH="$PATH:/home/v/.local/bin"
-=======
->>>>>>> origin/v-macos-macbook
