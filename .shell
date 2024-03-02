@@ -337,6 +337,10 @@ case "$(uname -s)" in
             [ -d "$HOME/.cargo" ] && . "$HOME/.cargo/env"
             # }}}
 
+            ## nvm
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+
             # z {{{
             # ZSHZ_DATA=" $HOME/.vz "
             # }}}
