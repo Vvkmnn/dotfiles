@@ -36,12 +36,14 @@ export XDG_CONFIG_HOME="$HOME/.config"
 export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 export BROWSER=open
+# export TERM=xterm
 export TERM=xterm-256color
 export ARCHEY_LOGO_FILE=$HOME/.logo
+export DISPLAY=:0
 
 # Editor
-export EDITOR='nvim'           # $VISUAL is the default for most shells
-export EDITOR=$VISUAL         # $EDITOR in case
+export EDITOR='nvim'           # $EDITOR is the default for most shells
+export VISUAL=$EDITOR          # $VISUAL in case
 export ALTERNATE_EDITOR='nvim' # $EDITOR if all else fails
 
 # Prompt
@@ -52,8 +54,12 @@ export ALTERNATE_EDITOR='nvim' # $EDITOR if all else fails
 # OS=$(uname -s)
 
 case "$(uname -s)" in
-Linux) ;;
+     Linux) 
+	# Emacs (Doom)
+	# export PATH="$HOME/.emacs.d/bin:$PATH"
+	export PATH="$HOME/.config/emacs/bin:$PATH"
 
+	;;
     Darwin)
         # Prompt
         # export PURE_PROMPT_SYMBOL="ॐ "
@@ -64,6 +70,9 @@ Linux) ;;
 
 	# Brew
 	export HOMEBREW_CASK_OPTS="--appdir=/Applications"
+
+	# tmux
+	export PATH="/opt/homebrew/bin:$PATH"
 
 	# openSSL
 	export LDFLAGS="-L/usr/local/opt/openssl/lib"
@@ -92,6 +101,9 @@ Linux) ;;
 	# Python
 	# export python="/usr/bin/python3"
 	# export PATH=/usr/local/share/python:$PATH
+
+        # pipx
+        export PATH="$PATH:/home/v/.local/bin"
 
 	# Python (Anaconda)
 	export PATH="$HOME/.miniconda/bin:$PATH"
@@ -125,7 +137,8 @@ Linux) ;;
 	export PATH="/Library/TeX/texbin:$PATH"
 
 	# Emacs (Doom)
-	export PATH="$HOME/.emacs.d/bin:$PATH"
+	# export PATH="$HOME/.emacs.d/bin:$PATH"
+	export PATH="$HOME/.config/emacs/bin:$PATH"
 
 	# Clang
 	export CPATH=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include
@@ -182,3 +195,6 @@ esac
 
 # . "$HOME/.cargo/env"
 
+
+# Created by `pipx` on 2024-02-05 16:01:08
+export PATH="$PATH:/home/v/.local/bin"

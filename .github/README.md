@@ -39,9 +39,16 @@
 sudo apt-get update                      \
 && sudo apt-get upgrade                  \
 && sudo apt-get install git zsh curl vim \
+                        file nala        \
                         openssh-client   \
-                        aptitude         \
+                        aptitude         
+
+# optional
+sudo apt-get update \
+&& sudo apt-get dist-upgrade \
+&& sudo apt-get install --reinstall build-essential
 ```
+
 ```sh
 # /etc/apt/sources.list
 deb http://deb.debian.org/debian bookworm main contrib non-free
@@ -64,18 +71,35 @@ non-free-firmware
 #     /usr/share/doc/apt/examples/sources.list \
 #     /etc/apt/sources.list               # Default backup on Debian
 ```
+
+
+[zsh](https://www.zsh.org/)
 ```sh
-sudo apt-get update \
-&& sudo apt-get dist-upgrade \
-&& sudo apt-get install --reinstall build-essential
+# switch to zsh from bash
+chsh -s $(which zsh)            
 ```
+
+[brew](https://docs.brew.sh/Homebrew-on-Linux)
 ```sh
-chsh -s $(which zsh)            # switch to zsh from bash
+sudo apt install build-essential procps curl file git
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+# [ -d /home/linuxbrew/.linuxbrew ] && eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv) # already in .shell
+```
+
+[emacs](https://www.gnu.org/software/emacs/)
+```sh
+brew install emacs
+
+# Xming server on WSL1 Debian
+# https://sourceforge.net/projects/xming/
+
+# emacs-gtk
 ```
 
 [neovim](https://neovim.io/)
 ```sh
 # optional, vim9 +huge default in Debian Testing
+# brew install neovim
 
 dotfiles submodule update --init         \
                           --recursive    \
@@ -88,18 +112,44 @@ dotfiles submodule update --init         \
 && make install                          \
 ```
 
+### Windows
+
 [wsl](https://learn.microsoft.com/en-us/windows/wsl/install)
-```sh
-winget install Debian.Debian    # Install Debian on W10 with WSL
+```bat
+:: Install Debian on W10 with WSL
+winget install Debian.Debian               \
+& winget install Microsoft.WindowsTerminal \
+
+```
+
+[wslu](https://wslutiliti.es/wslu/)
+```shell
+sudo apt install gnupg2 apt-transport-https wget
+wget -O - https://pkg.wslutiliti.es/public.key | sudo tee -a /etc/apt/trusted.gpg.d/wslu.asc
+
+# Debian 12 (typically)
+# https://wslutiliti.es/wslu/install.html
+echo "deb https://pkg.wslutiliti.es/debian bookworm main" | sudo tee -a /etc/apt/sources.list
+
+# provides wslview and other utils
+sudo apt update && sudo apt install wslu 
+```
+[wezterm]()
+```bat
+winget install wez.wezterm 
+
+:: windows shortcut
+:: "C:\Program Files\WezTerm\wezterm-gui.exe" --config-file="\\wsl.localhost\Debian\home\v\.config\wezterm\wezterm.lua" start -- wsl -d Debian
 ```
 
 [ahk](https://www.autohotkey.com/)
 ```sh
 cat .setup/capslock.ahk         # Capslock -> Esc + Ctrl on WSL 
 explorer.exe .setup             # Explorer open 
+wslview ~/.setup/capslock.ahk   # If wslu installed
 ```
 
-### MacOS
+### macOS
 
 [xcode](https://developer.apple.com/xcode/resources/)
 ```sh
@@ -111,29 +161,87 @@ xcode-select --install
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" 
 ```
 
-```sh
-brew install yabai skhd         
+fonts
+```zsh
+brew tap homebrew/cask-fonts && brew install --cask font-jetbrains-mono-nerd-font
 ```
+
+apps
+```zsh
+# window = keyboard manager
+brew install koekeishiya/formulae/skhd koekeishiya/formulae/yabai
+skhd --start-service && yabai --start-service
+
+# qol
+brew install neovim karabiner-elements    \
+  wezterm 1password mullvadvpn alfred nvm \
+  adguard ngrok obsidian gh jq fzf op     \
+  btop coreutils 
+
+# maybe
+brew install emacs-mac-spacemacs-icon tmux
+```
+
+post
 ```sh
-brew install bottom ngrok tidy           
+nvm install node                           # installs system node via brew nvm
+```
+
+flavor
+```
+# borders
+brew install FelixKratz/formulae/borders 
+
+# yabai scripting 
+# https://github.com/koekeishiya/yabai/wiki/Installing-yabai-(latest-release)#configure-scripting-addition
+echo "$(whoami) ALL=(root) NOPASSWD: sha256:$(shasum -a 256 $(which yabai) \
+| cut -d " " -f 1) $(which yabai) --load-sa" \
+| sudo tee /private/etc/sudoers.d/yabai
+# https://github.com/koekeishiya/yabai/issues/1333#issuecomment-1193128981
+# sudo nvram boot-args=-arm64e_preview_abi 
+
+# svim 
+brew install FelixKratz/formulae/svim && brew services start svim
+
+```
+
+
+defaults
+```zsh
+# iCloud Files
+defaults write NSGlobalDomain "NSDocumentSaveNewDocumentsToCloud" -bool "false" 
+
+# Dock
+defaults write com.apple.dock orientation right #my preference for main machine
+defaults write com.apple.dock tilesize -int 27
+
+# Finder
+defaults write com.apple.Finder AppleShowAllFiles true
+defaults write com.apple.finder CreateDesktop false
+
+# Highlight Color (svim)
+defaults write NSGlobalDomain AppleHighlightColor -string "0.800000 0.200000 0.200000"
 ```
 
 ## [emacs](https://github.com/doomemacs/doomemacs)
 ```
-brew install git ripgrep coreutils fd
-
-brew install emacs-mac                   \
-   --with-dbus                           \
-   --with-dbus                           \
-   --with-starter                        \
-   --with-librsvg                        \
-   --with-imagemagick                    \
-   --with-xwidgets                       \ 
-   --with-ctags                          \
-   --with-native-comp                    \
-   --with-mac-metal                      \
-   --with-natural-title-bar              \
-   --with-spacemacs-icon                 \
+# emacs29
+brew install git ripgrep coreutils fd      \
+&& brew install railwaycat/emacsmacport/emacs-mac-spacemacs-icon
+     
+# deprecated
+# brew install emacs-mac                   \
+#    --with-dbus                           \
+#    --with-dbus                           \
+#    --with-starter                        \
+#    --with-librsvg                        \
+#    --with-imagemagick                    \
+#    --with-xwidgets                       \ 
+#    --with-ctags                          \
+#    --with-native-comp                    \
+#    --with-mac-metal                      \
+#    --with-natural-title-bar              \
+#    --with-spacemacs-icon                 \
 ```
 
 casks
@@ -166,7 +274,9 @@ dotfiles stash
 dotfiles checkout
 
 # optional
-git config --global credential.helper 'cache --timeout=7777777'
+<<<<<<< HEAD
+git config --global credential.helper 'cache --timeout=7777'          
+git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*" # use in .dotfiles to make git fetch --all work again
 dotfiles config status.showUntrackedFiles no
 
 ```
@@ -181,6 +291,13 @@ xargs -I{} mv {} .backup/{}
 ```
 
 ## Post Install
+
+[subtrees](https://www.atlassian.com/git/tutorials/git-subtree)
+```zsh
+dotfiles fetch v.nvim
+dotfiles subtree pull --prefix .config/nvim v.nvim master --squash
+
+```
 
 ```sh
 # submodules
@@ -204,6 +321,7 @@ emacs.sh # IDE
 debian.sh
 capslock.sh
 ```
+
 
 ## Update
 
