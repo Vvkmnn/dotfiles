@@ -255,7 +255,12 @@ dotfiles stash
 dotfiles checkout
 
 # optional
+<<<<<<< HEAD
 git config --global credential.helper 'cache --timeout=7777777'
+=======
+git config --global credential.helper 'cache --timeout=7777'          
+git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*" # use in .dotfiles to make git fetch --all work again
+>>>>>>> master
 dotfiles config status.showUntrackedFiles no
 
 ```
