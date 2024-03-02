@@ -112,6 +112,10 @@ sudo aptitude update                     \
                          unzip curl      \
 && make CMAKE_BUILD_TYPE=RelWithDebInfo  \
 && make install                          \
+
+
+# clear stash
+rm -rf ~/.local/share/nvim
 ```
 
 trees
@@ -204,6 +208,11 @@ brew install discord ffmpeg lua sqlite3   \
 # maybe
 brew install emacs-mac-spacemacs-icon tmux
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+```
+
+tmux
+```
+<Prefix> + I # install tpm, included as subtree by default
 ```
 
 post

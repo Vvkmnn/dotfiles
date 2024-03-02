@@ -53,6 +53,7 @@ alias ,t='v ~/.config/tmux/tmux.conf'
 alias ,w='v ~/.config/wezterm/wezterm.lua'
 alias ,y='v ~/.yabairc'
 alias ,sk='v ~/.skhdrc'
+alias ,t='v ~/.config/tmux/tmux.conf'
 
 # OpenAI
 alias ai='chatblade --open-api-key ~/.openai -c 4t -e'
