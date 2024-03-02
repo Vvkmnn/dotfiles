@@ -1,3 +1,7 @@
+; [core]
+; 	bare = false
+; 	worktree = /home/v
+
 [alias]
 
     # View abbreviated SHA, description, and history graph of the latest 20 commits
@@ -187,10 +191,6 @@
 
 [core]
     excludesfile = ~/.globalgitignore
-
-[submodule]
-    recurse = true
-
 [filter "lfs"]
     clean = git-lfs clean -- %f
     smudge = git-lfs smudge -- %f

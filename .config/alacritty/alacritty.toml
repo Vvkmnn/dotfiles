@@ -5,9 +5,38 @@
 ###########
 
 # Import additional configuration files
-import = [
-    "~/.config/alacritty/themes/theme.toml"
-]
+# import = [
+#     "~/.config/alacritty/themes/theme.toml"
+# ]
+
+# Colours (Monokai Charcoal)
+
+# Default Colours
+[colors.primary]
+background = '#000000'
+foreground = '#FFFFFF'
+
+# Normal Colours
+[colors.normal]
+black   = '#1a1a1a'
+red     = '#f4005f'
+green   = '#98e024'
+yellow  = '#fa8419'
+blue    = '#9d65ff'
+magenta = '#f4005f'
+cyan    = '#58d1eb'
+white   = '#c4c5b5'
+
+# Bright Colours
+[colors.bright]
+black   = '#625e4c'
+red     = '#f4005f'
+green   = '#98e024'
+yellow  = '#e0d561'
+blue    = '#9d65ff'
+magenta = '#f4005f'
+cyan    = '#58d1eb'
+white   = '#f6f6ef'
 
 # Shell program and its arguments
 # Default for Linux/BSD/macOS is $SHELL or user's login shell
@@ -87,7 +116,7 @@ option_as_alt = "None"  # Default: "None"
 [scrolling]
 
 # Maximum number of lines in the scrollback buffer
-history = 10000  # Default: 10000
+history = 7777 # Default: 10000
 
 # Number of lines scrolled for every input scroll increment
 multiplier = 3  # Default: 3

@@ -33,7 +33,7 @@
 export XDG_CONFIG_HOME="$HOME/.config"
 
 # Params
-export LANG=en_US.UTF-8
+export LANG=en_US.iso88591
 export LC_ALL=en_US.UTF-8
 export BROWSER=open
 # export TERM=xterm
@@ -64,9 +64,9 @@ case "$(uname -s)" in
         # Prompt
         # export PURE_PROMPT_SYMBOL="ॐ "
 
-        ## brew
-        export PATH="/usr/local/bin:$PATH"
-        export PATH="/usr/local/sbin:$PATH"
+	## brew
+	export PATH="/usr/local/bin:$PATH"
+	export PATH="/usr/local/sbin:$PATH"
 
 	# Brew
 	export HOMEBREW_CASK_OPTS="--appdir=/Applications"
@@ -90,7 +90,6 @@ case "$(uname -s)" in
 	## Personal ----------------------------------------
 
 	export PATH="$HOME/Documents/bin:$PATH"
-	# export PATH="$HOME/Documents/dev/github-jack:$PATH"
 
 	## brew
 	export PATH="/usr/local/sbin:$PATH"
@@ -194,7 +193,10 @@ esac
 # echo '[¬_¬]...'
 
 # . "$HOME/.cargo/env"
+<<<<<<< HEAD
 
 
 # Created by `pipx` on 2024-02-05 16:01:08
 export PATH="$PATH:/home/v/.local/bin"
+=======
+>>>>>>> origin/v-macos-macbook
