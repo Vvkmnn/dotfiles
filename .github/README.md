@@ -102,15 +102,28 @@ brew install emacs
 # optional, vim9 +huge default in Debian Testing
 # brew install neovim
 
-dotfiles submodule update --init         \
-                          --recursive    \
-&& cd .neovim                            \
-&& sudo aptitude update                  \
+# vvkmnn/v.nvim
+cd $HOME/.config/neovim                  \
+&& git pull origin 
+
+sudo aptitude update                     \
 && sudo aptitude install ninja-build     \
                          gettext cmake   \
                          unzip curl      \
 && make CMAKE_BUILD_TYPE=RelWithDebInfo  \
 && make install                          \
+```
+
+trees
+```
+# TODO nvim
+dotfiles subtree pull --prefix .tmux/plugins/tpm tpm master --squash
+```
+
+submodules
+```
+dotfiles submodule update --init         \
+                          --recursive    \
 ```
 
 ### Windows
