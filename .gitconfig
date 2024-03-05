@@ -197,4 +197,7 @@
     process = git-lfs filter-process
     required = true
 [pull]
-	rebase = true
+    rebase = true
+
+[diff]
+    tool = nvimdiff
