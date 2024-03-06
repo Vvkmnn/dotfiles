@@ -53,10 +53,16 @@ alias ,t='v ~/.config/tmux/tmux.conf'
 alias ,w='v ~/.config/wezterm/wezterm.lua'
 alias ,y='v ~/.yabairc'
 alias ,sk='v ~/.skhdrc'
+# alias ,h='history | nvim -'
 
 # OpenAI
 alias ai='chatblade --open-api-key ~/.openai -c 4t -e'
 
+# NeoVim
+alias vclear='rm -rf ~/.local/share/nvim/ && rm -rf ~/.local/state/nvim/ && rm -rf ~/.cache/nvim/'
+
+# util
+alias ptop='sudo powermetrics --show-process-energy'
 
 
 # alias dg='lazygit --use-config-file "$HOME/Library/Application Support/lazygit/config.yml" --work-tree ~ --git-dir=$HOME/.dotfiles/'

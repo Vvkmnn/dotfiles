@@ -1,10 +1,12 @@
 lastupdatecheck: 0
 recentrepos:
-- /Users/v
+- /Users/v/.config/nvim
 - /Users/v/Documents/site
 startuppopupversion: 5
 customcommandshistory:
-- qa!
+- exit
 - q!
+- qa!
+- q
 hidecommandlog: false
-ignorewhitespaceindiffview: true
+ignorewhitespaceindiffview: false

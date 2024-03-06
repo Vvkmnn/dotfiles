@@ -33,9 +33,9 @@ config.window_close_confirmation = "NeverPrompt"
 -- config.window_background_opacity = 0.91 + math.random() / 100
 -- config.window_background_opacity = 0.95 + math.random() / 100
 -- config.window_background_opacity = 0.977
-config.window_background_opacity = 0.93
+config.window_background_opacity = 0.95
 -- config.macos_window_background_blur = 20
-config.macos_window_background_blur = 77
+config.macos_window_background_blur = 95
 config.win32_system_backdrop = "Acrylic"
 -- config.window_background_opacity = 0.961
 
@@ -46,7 +46,7 @@ config.win32_system_backdrop = "Acrylic"
 --
 -- config.color_scheme = 'Hardcore'
 -- config.font = wezterm.font("JetBrainsMono Nerd Font")
-config.font = wezterm.font("JetBrains Mono")
+config.font = wezterm.font_with_fallback({ "JetBrainsMono Nerd Font", "JetBrains Mono" })
 config.font_size = 14
 config.line_height = 1.2
 config.use_dead_keys = false
@@ -71,31 +71,66 @@ config.colors.cursor_border = "#FFFFFF"
 
 -- hyperlink
 -- Use the defaults as a base
-config.hyperlink_rules = wezterm.default_hyperlink_rules()
+-- config.hyperlink_rules = wezterm.default_hyperlink_rules()
 
 -- make task numbers clickable
 -- the first matched regex group is captured in $1.
-table.insert(config.hyperlink_rules, {
-	regex = [[\b[tt](\d+)\b]],
-	format = "https://example.com/tasks/?t=$1",
-})
+-- table.insert(config.hyperlink_rules, {
+-- 	regex = [[\b[tt](\d+)\b]],
+-- 	format = "https://example.com/tasks/?t=$1",
+-- })
 
 -- make username/project paths clickable. this implies paths like the following are for github.
 -- ( "nvim-treesitter/nvim-treesitter" | wbthomason/packer.nvim | wez/wezterm | "wez/wezterm.git" )
 -- as long as a full url hyperlink regex exists above this it should not match a full url to
 -- github or gitlab / bitbucket (i.e. https://gitlab.com/user/project.git is still a whole clickable url)
-table.insert(config.hyperlink_rules, {
-	regex = [[["]?([\w\d]{1}[-\w\d]+)(/){1}([-\w\d\.]+)["]?]],
-	format = "https://www.github.com/$1/$3",
-})
+-- table.insert(config.hyperlink_rules, {
+-- 	regex = [[["]?([\w\d]{1}[-\w\d]+)(/){1}([-\w\d\.]+)["]?]],
+-- 	format = "https://www.github.com/$1/$3",
+-- })
 
+-- config.mouse_bindings = {
+-- 	-- Ctrl-click will open the link under the mouse cursor
+-- 	{
+-- 		event = { Up = { streak = 1, button = "Left" } },
+-- 		mods = "CTRL",
+-- 		action = wezterm.action.OpenLinkAtMouseCursor,
+-- 	},
+-- }
+
+-- mouse_
+config.mouse_bindings = {
+	-- Change the default click behavior so that it only selects
+	-- text and doesn't open hyperlinks
+	{
+		event = { Up = { streak = 1, button = "Left" } },
+		mods = "NONE",
+		action = wezterm.action.CompleteSelection("PrimarySelection"),
+	},
+
+	-- and make CTRL-Click open hyperlinks
+	{
+		event = { Up = { streak = 1, button = "Left" } },
+		mods = "CTRL",
+		action = wezterm.action.OpenLinkAtMouseCursor,
+	},
+
+	-- Disable the 'Down' event of CTRL-Click to avoid weird program behaviors
+	{
+		event = { Down = { streak = 1, button = "Left" } },
+		mods = "CTRL",
+		action = wezterm.action.Nop,
+	},
+}
+
+--
 -- config.background = {
 -- 	-- This is the deepest/back-most layer. It will be rendered first
 -- 	{
 -- 		source = { Gradient = { preset = "Warm" } },
 --
 -- 		-- The texture tiles vertically but not horizontally.
--- 		-- When we repeat it, mirror it so that it appears "more seamless".
+-- 		-- When we aepeat it, mirror it so that it appears "more seamless".
 -- 		-- An alternative to this is to set `width = "100%"` and have
 -- 		-- it stretch across the display
 -- 		repeat_x = "Mirror",
@@ -120,7 +155,6 @@ table.insert(config.hyperlink_rules, {
 -- 		attachment = { Parallax = 0.2 },
 -- 	},
 -- }
-
 -- Function to generate a random window background gradient
 -- local function generate_random_gradient()
 --   -- Define color lists for variety
@@ -137,28 +171,86 @@ table.insert(config.hyperlink_rules, {
 --   -- Configure the gradient with randomly selected colors and linear orientation
 --   return {
 --     colors = { color_from_list1, color_from_list2 },
--- orientation = { Linear = { angle = math.random() * 360 } },
+-- orientation = { Linear = { angle = math.random() * 360 } },""
 --   }
 -- end
-
 -- Apply the generated gradient to the window background
 -- config.window_background_gradient = generate_random_gradient(),
 
 wezterm.on("window-focus-changed", function(window, pane)
-	-- wezterm.on("window-resized", function(window, pane)
-	-- wezterm.on("window-resized", function(window, pane)
-	-- Define two separate color lists for variety
-	-- local colors1 = { "#191919", "#0f0c29", "#24243e", "#141E30",  "#243B55", "#2E3440" }
-	-- local colors2 = { "#EEBD89", "#D13ABD", "#434343", "#24243e", "#0f0c29", "#81A1C1" }
-	local colors1 = { "#000000", "#191919", "#1a1823", "#24273a" }
-	local colors2 = { "#141E30", "#0f0c29", "#131020", "#24273A" }
+	-- local all_colors = {
+	-- "#EEBD89",
+	-- "#D13ABD",
+	-- "#434343",
+	-- "#24243e",
+	-- "#0f0c29",
+	-- "#81A1C1",
+	-- "#191919",
+	-- "#0f0c29",
+	-- "#24243e",
+	-- "#141E30",
+	-- "#243B55",
+	-- "#2E3440",
+	-- "#000000",
+	-- "#6272a4",
+	-- "#141E30",
+	-- "#000000",
+	-- "#010111",
+	-- "#000111",
+	-- "#753a88",
+	-- "#cc2b5e",
+	-- "#42275a",
+	-- "#2c3e50",
+	-- "#48b1bf",
+	-- "#516395",
+	-- "#614385",
+	-- "#240b36",
+	-- "#000046",
+	-- "#000C40",
+	-- "#00223E",
+	-- "#360033",
+	-- "#0b8793",
+	-- "#182848",
+	-- "#480048",
+	-- }
+
+	local colors = {
+		"#001010",
+		"#0f0c29",
+		"#141E30",
+		"#000428",
+		"#03001e",
+		"#000003",
+		"#000007",
+		"#000016",
+		"#010116",
+		"#030333",
+		"#000000",
+		"#000001",
+	}
 
 	-- Initialize the random seed based on the current time
 	math.randomseed()
 
 	-- Select one color from each list randomly
-	local color_from_list1 = colors1[math.random(#colors1)]
-	local color_from_list2 = colors2[math.random(#colors2)]
+	-- local color_from_list1 = colors[math.random(#colors)]
+	-- local color_from_list2 = colors[math.random(#colors)]
+
+	-- Select the first random color
+	local color_from_list1 = colors[math.random(#colors)]
+
+	-- Remove the first selected color from the colors table
+	local color_index1
+	for i, color in ipairs(colors) do
+		if color == color_from_list1 then
+			color_index1 = i
+			break
+		end
+	end
+	table.remove(colors, color_index1)
+
+	-- Select the second random color from the remaining colors
+	local color_from_list2 = colors[math.random(#colors)]
 
 	-- Set the window background gradient with the randomly selected colors
 	window:set_config_overrides({
@@ -185,11 +277,15 @@ end)
 -- }
 
 -- config.window_background_gradient = {
--- -- colors = { "deeppink", "gold" },
+-- 	-- colors = { "deeppink", "gold" },
 -- 	-- colors = { "black", "gray" },
 -- 	-- colors = { "deeppink", "gold" },
 -- 	-- colors = { "#000000", "#141E30", "#243B55", "#0f0c29", "#24243e" },
--- 	colors = { "#000000", "#0f0c29" },
+-- 	-- colors_old = { "#000000", "#0f0c29" },
+--
+-- 	-- colors = { "#191919", "#0f0c29", "#24243e", "#141E30", "#243B55", "#2E3440" }
+-- 	colors = { "deeppink", "gold" },
+--
 -- 	orientation = {
 -- 		Radial = {
 -- 			-- Specifies the x coordinate of the center of the circle,

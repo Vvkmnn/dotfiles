@@ -141,7 +141,12 @@ brew install neovim karabiner-elements    \
 
 # extra
 brew install discord ffmpeg lua sqlite3   \
-             mas mactex font-fontawesome
+             mas mactex font-fontawesome  \
+             firefox
+
+# mas
+mas lucky xcode 1password vimari adguard \
+          stopthemadness
 
 # maybe
 brew install emacs-mac-spacemacs-icon tmux
