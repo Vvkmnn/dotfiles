@@ -1,5 +1,6 @@
 ## Custom
 .emacs.d/.local/*
+tmux/plugins/*
 
 ## From https://github.com/github/gitignore
 
