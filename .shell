@@ -430,7 +430,7 @@ case "$(uname -s)" in
     bashcompinit
 
     # Afterwards you can enable completion for pipx:
-    eval "$(register-python-argcomplete pipx)"
+    # eval "$(register-python-argcomplete pipx)"
 
     ## brew
     [ -d /home/linuxbrew/.linuxbrew ] && eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
