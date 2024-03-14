@@ -1,4 +1,32 @@
-#! /usr/bin/env sh
+#!/usr/bin/env sh
+# Vivek Menon - vvkmnn.xyz
+
+##################################################
+##################################################
+######################        ####################
+################                    ##############
+#############                #######   ###########
+###########                #########     #########
+#########                 ########         #######
+########                  ######            ######
+#######                   ######             #####
+######            ####### ######              ####
+#####           ######### ######               ###
+#####           #######   ######               ###
+#####            ######    #####               ###
+#####             ######    ####               ###
+#####              ######    ###               ###
+#####               ######    #                ###
+######               ######                   ####
+#######               #####                  #####
+########               #####                ######
+##########              #####             ########
+############             #####          ##########
+##############            #####       ############
+##################                ################
+##################################################
+##################################################
+
 
 # NOTE Changed this
 # Custom prefix.
@@ -8,18 +36,56 @@
 alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
 alias d="dotfiles"
 alias ds="dotfiles status --untracked-files=no"
-alias da="dotfiles add"
-alias dr="dotfiles remove"
-alias dc="dotfiles commit -m"
-alias dpo="dotfiles push origin"
+# alias dg='nvim -c ":lua OpenDotfilesInNeogit()"'
+alias dg='lazygit --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 
-## Debian
+# Quickedit
+alias ,r='v ~/.github/README.md'
+alias ,v='v ~/.config/nvim/lua/'
+alias ,k='v ~/.config/nvim/lua/config/keymaps.lua'
+alias ,c='v ~/.config/nvim/lua/plugins/custom.lua'
+alias ,m='v ~/.config/nvim/lua/plugins/modify.lua'
+alias ,d='v ~/.config/nvim/lua/plugins/disable.lua'
+alias ,o='v ~/.config/nvim/lua/config/options.lua'
+alias ,s='v ~/.shell'
+alias ,a='v ~/.alias'
+alias ,t='v ~/.config/tmux/tmux.conf'
+alias ,w='v ~/.config/wezterm/wezterm.lua'
+alias ,y='v ~/.yabairc'
+alias ,sk='v ~/.skhdrc'
+# alias ,h='history | nvim -'
+
+# OpenAI
+alias ai='chatblade --open-api-key ~/.openai -c 4t -e'
+
+# NeoVim
+alias vclear='rm -rf ~/.local/share/nvim/ && rm -rf ~/.local/state/nvim/ && rm -rf ~/.cache/nvim/'
+
+# util
+alias ptop='sudo powermetrics --show-process-energy'
+
+
+# alias dg='lazygit --use-config-file "$HOME/Library/Application Support/lazygit/config.yml" --work-tree ~ --git-dir=$HOME/.dotfiles/'
+# alias dg='lazygit --use-config-file "$HOME/.config/yadm/lazygit.yml,$HOME/Library/Application Support/lazygit/config.yml" --work-tree ~ --git-dir=$HOME/.dotfiles/'
+# alias yl='lazygit --use-config-file "$HOME/.config/yadm/lazygit.yml,$HOME/Library/Application Support/lazygit/config.yml" --work-tree ~ --git-dir=$HOME/.dotfiles/'
+# alias da="dotfiles add"
+# alias dc="dotfiles commit -m"
+# alias dpo="dotfiles push origin"
+
+## Machine
+# debian
 # alias u="sudo apt update && sudo apt upgrade && sudo apt autoremove"
 # alias v="/mnt/c/Users/v"
+# macOS
+alias rr='sudo reboot'
+
+## Zsh
+alias zz='exec zsh -l'
 
 ## Vim
 # alias v='vim'                # Vim
 alias v='nvim'                # Vim
+alias v!='nvim --noplugin'                # Vim
 alias ov='vim'                # (neo)Vim
 # alias nv='nvim'                # (neo)Vim
 
@@ -38,6 +104,9 @@ case "$(uname -s)" in
 
         ## macOS
         Darwin)
+
+                # Bash
+                alias hbash='/opt/homebrew/bin/bash'
 
                 # Brew
                 alias cask='brew cask' # Shorthand
