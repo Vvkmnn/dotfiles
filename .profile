@@ -58,6 +58,7 @@ case "$(uname -s)" in
 	# Emacs (Doom)
 	# export PATH="$HOME/.emacs.d/bin:$PATH"
 	export PATH="$HOME/.config/emacs/bin:$PATH"
+	;;
 
 Darwin)
 	# Prompt

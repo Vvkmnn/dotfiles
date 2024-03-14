@@ -45,8 +45,8 @@ config.win32_system_backdrop = "Acrylic"
 -- }
 --
 -- config.color_scheme = 'Hardcore'
--- config.font = wezterm.font("JetBrainsMono Nerd Font")
-config.font = wezterm.font_with_fallback({ "JetBrainsMono Nerd Font", "JetBrains Mono" })
+config.font = wezterm.font("JetBrains Mono")
+-- config.font = wezterm.font_with_fallback({ "JetBrainsMono Nerd Font", "JetBrains Mono" })
 config.font_size = 14
 config.line_height = 1.2
 config.use_dead_keys = false
