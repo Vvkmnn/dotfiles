@@ -555,6 +555,11 @@
     ## brew
     [ -d /home/linuxbrew/.linuxbrew ] && eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
 
+if [ -z "$HOMEBREW_PREFIX" ]; then
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv | egrep -v '\bPATH=')"
+    export PATH="$PATH:${HOMEBREW_PREFIX}/bin:${HOMEBREW_PREFIX}/sbin"
+fi
+
             ;;
               Darwin )
 

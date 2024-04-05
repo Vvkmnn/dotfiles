@@ -146,8 +146,8 @@ winget install wez.wezterm
 [ahk](https://www.autohotkey.com/)
 
 ```sh
-cat .setup/capslock.ahk         # Capslock -> Esc + Ctrl on WSL 
-explorer.exe .setup             # Explorer open 
+# cat .setup/capslock.ahk         # Capslock -> Esc + Ctrl on WSL 
+# explorer.exe .setup             # Explorer open 
 wslview ~/.setup/capslock.ahk   # If wslu installed
 ```
 
