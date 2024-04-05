@@ -93,6 +93,12 @@ alias v!='nvim -u NONE' # Vanilla Vim
 alias ov!="vim -u NONE -N"   # Pure Vim
 # alias nv!='nvim -u NORC'                # Vanilla (neo)Vim
 
+## wezterm
+alias wz='wezterm'
+alias wz!='wezterm start -- bash --norc'
+alias wz!!='wezterm -n start -- bash --norc'
+
+
 ## Time
 alias today=$(date '+%F_%H:%M:%S')
 

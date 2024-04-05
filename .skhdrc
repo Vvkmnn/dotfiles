@@ -17,7 +17,7 @@ ctrl + cmd - 0: yabai --restart-service && skhd --restart-service
 
 # Wezterm
 ctrl - return : open -na /Applications/Wezterm.app
-# shift - return : open -na /Applications/Alacritty.app/ 
+ctrl - space : open -na /Applications/Alacritty.app/
 
 ### }}}
 
@@ -73,7 +73,8 @@ ctrl - 0x27: osascript -e 'tell application "Safari" to make new document with p
 # cmd + shift - return : open -n /Applications/Firefox.app
 
 # Open Chrome
-alt - return: osascript -e 'tell application "Safari" to make new document with properties {URL:"https://chat.openai.com/?model=gpt-4"}' -e 'tell application "Safari" to activate'
+# NOTE makes Wezterm fullscreen
+# alt - return: osascript -e 'tell application "Safari" to make new document with properties {URL:"https://chat.openai.com/?model=gpt-4"}' -e 'tell application "Safari" to activate'
 
 # Open Safari
 cmd - return : open -n /Applications/Safari.app/
@@ -116,11 +117,11 @@ cmd + shift - 4 -> : chunkc border::clear
 
 ## Window Manager 
 # toggle window zoom
-ctrl + cmd - d : yabai -m window --toggle zoom-parent
-ctrl + cmd - f : yabai -m window --toggle zoom-fullscreen
+# ctrl + cmd - d : yabai -m window --toggle zoom-parent
+# ctrl + cmd - f : yabai -m window --toggle zoom-fullscreen
 
-# shift + cmd - d : yabai -m window --toggle zoom-parent
-# shift + cmd - f : yabai -m window --toggle zoom-fullscreen
+alt + ctrl - return : yabai -m window --toggle zoom-parent
+alt - return : yabai -m window --toggle zoom-fullscreen
 
 # space - f : yabai -m window --toggle zoom-fullscreen
 # cmd + space - f : yabai -m window --toggle zoom-fullscreen
