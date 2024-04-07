@@ -37,12 +37,13 @@
 [testing](https://wiki.debian.org/LTS)
 
 ```sh
-sudo apt-get update                      \
-&& sudo apt-get upgrade                  \
-&& sudo apt-get install git zsh curl vim \
-                        file nala        \
-                        openssh-client   \
-                        aptitude         
+sudo apt-get update                     &&
+sudo apt-get upgrade                    && 
+sudo apt-get install git zsh curl vim    \
+                     file openssh-client   
+
+# extra
+# nala aptitude
 
 # optional
 sudo apt-get update \
