@@ -25,6 +25,7 @@
 function prompt_om() {
   # 214 is saffron
   # 7 is grey
+  # p10k segment -b 2 -f 214 -t ' ॐ '
   p10k segment -b 2 -f 214 -t ' ॐ '
 }
 
@@ -85,7 +86,7 @@ function prompt_morbidtime() {
     virtualenv                # python virtual environment
     context                   # user@host
     # morbidtime 
-    # face                      
+    face
     time                      # current time
   )
 

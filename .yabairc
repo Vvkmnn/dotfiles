@@ -20,10 +20,13 @@ yabai -m signal --add event=application_terminated action="yabai -m query --wind
 
 # ffm (# autoraise | autofocus      )
 
+# NOTE
+# autoraise works better than autofocus
+
 # global settings
 yabai -m config \
 	mouse_follows_focus on \
-	focus_follows_mouse autofocus \
+	focus_follows_mouse autoraise \
 	window_origin_display default \
 	window_placement second_child \
 	window_topmost off \
@@ -82,12 +85,12 @@ yabai -m config \
 # ignore floating windows if possible
 # TODO seems to do nothing
 # https://github.com/koekeishiya/yabai/issues/1317
-# yabai -m signal --add event=window_created action='
-#   yabai -m query --windows --window $YABAI_WINDOW_ID | jq -er ".\"can-resize\" or .\"is-floating\"" || \
-#   yabai -m window $YABAI_WINDOW_ID --toggle float && \
-#   yabai -m window $YABAI_WINDOW_ID --layer above && \
-#   yabai -m window $YABAI_WINDOW_ID --grid 3:3:1:1:1:1
-# '
+yabai -m signal --add event=window_created action='
+  yabai -m query --windows --window $YABAI_WINDOW_ID | jq -er ".\"can-resize\" or .\"is-floating\"" || \
+  yabai -m window $YABAI_WINDOW_ID --toggle float && \
+  yabai -m window $YABAI_WINDOW_ID --layer above && \
+  yabai -m window $YABAI_WINDOW_ID --grid 3:3:1:1:1:1
+'
 
 yabai -m signal --add event=window_created action='yabai -m query --windows --window $YABAI_WINDOW_ID | jq -er ".\"can-resize\" or .\"is-floating\"" || yabai -m window $YABAI_WINDOW_ID --toggle float'
 
@@ -145,5 +148,6 @@ echo "yabai configuration loaded.."
 # borders "${options[@]}"
 # borders active_color=0xffe1e3e4 inactive_color=0xff494d64 width=5.0 &
 # blur_radius=100.0
-borders active_color=0xffe1e3e4 inactive_color=0xff494d64 width=3 blur_radius=3.0 hidipi=on style=round &
+# borders active_color=0xffe1e3e4 inactive_color=0xff494d64 width=3 blur_radius=3.0 hidipi=on style=round &
+borders active_color=0xffe1e3e4 width=3 blur_radius=3.0 style=round &
 # borders &

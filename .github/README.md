@@ -169,7 +169,8 @@ xcode-select --install
 fonts
 
 ```zsh
-brew tap homebrew/cask-fonts && brew install --cask font-jetbrains-mono-nerd-font
+# brew homebrew/cask-fonts && brew install --cask font-jetbrains-mono-nerd-font
+brew homebrew/cask-fonts/font-hack-nerd-font
 ```
 
 apps
@@ -183,16 +184,20 @@ skhd --start-service && yabai --start-service
 brew install neovim karabiner-elements    \
   wezterm 1password mullvadvpn alfred nvm \
   adguard ngrok obsidian gh jq fzf btop   \
-  coreutils 1password-cli
+  coreutils 1password-cli bat
 
 # extra
 brew install discord ffmpeg lua sqlite3   \
              mas mactex font-fontawesome  \
-             firefox
+             firefox git-lfs hg wget sox  \
+             spaceid docker
+
+# git
+git install lfs
 
 # mas
 mas lucky xcode 1password vimari adguard \
-          stopthemadness
+          stopthemadness canary docker
 
 # maybe
 brew install emacs-mac-spacemacs-icon tmux
@@ -237,6 +242,8 @@ defaults write com.apple.dock tilesize -int 27
 # Finder
 defaults write com.apple.Finder AppleShowAllFiles true
 defaults write com.apple.finder CreateDesktop false
+
+defaults write com.apple.loginwindow TALLogoutSavesState -bool false # Don't reopen applications on reboot
 
 # Highlight Color (svim)
 defaults write NSGlobalDomain AppleHighlightColor -string "0.800000 0.200000 0.200000"

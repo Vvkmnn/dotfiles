@@ -71,7 +71,7 @@
             set bell-style visible
  
             # adaptive width
-            export COLUMNS=200
+                    export COLUMNS=200
             shopt -s checkwinsize
 
 
@@ -80,7 +80,7 @@
             # eval "$(starship init bash)"
 
             om="ॐ"
-            morbidtime=$(date '+%-j/365 %-g/61 %a %d-%m-%y %T')
+                morbidtime=$(date '+%-j/365 %-g/61 %a %d-%m-%y %T')
             # cols=$(tput cols)
 
             # PS1=$(printf "%*s\r%s\n$om " "$(tput cols)" 'righty tighty' 'lefty loosey')
@@ -115,7 +115,7 @@
             #   om                        # TODO fix, custom prompt
             # )
             #
-            # function prompt_om() {
+                # function prompt_om() {
             #   # 214 is saffron
             #   # 7 is grey
             #   p10k segment -b 2 -f 214 -t 'ॐ '
@@ -190,6 +190,7 @@
             # }}}
 
             # zsh-nvm {{{
+            # NOTE don't need any other flags or checks, lazy load flags takes care of it all
             export NVM_LAZY_LOAD=true
             export NVM_COMPLETION=true
             export NVM_AUTO_USE=true
@@ -326,7 +327,6 @@
             # TODO
             # bounjourr safari
 
-            # NVM_LAZY_LOAD=true 
             # export ZSH_TMUX_AUTOQUIT=false
 
             # /* * #analogClock { margin-bottom: 1em } */
@@ -348,9 +348,8 @@
             # NOTE conflicts with instant prompt, turn that off for tmux to have time
             ZSH_TMUX_AUTOSTART=true
             ZSH_TMUX_AUTOCONNECT=false
-            # ZSH_TMUX_AUTOCONNECT=true
             ZSH_TMUX_AUTOQUIT=true
-            ZSH_TMUX_DETACHED=true
+            # ZSH_TMUX_DETACHED=true
             # }}}
             
             # conda {{{
@@ -506,13 +505,99 @@
 
 
             ## nvm
+            
+# Add default node to path
+# export PATH=~/.nvm/versions/node/*/bin:$PATH
+
+# Load NVM
+# export NVM_DIR=~/.nvm
+# [[ -s "$NVM_DIR/nvm.sh" ]] && source "$NVM_DIR/nvm.sh" --no-use
+#
+
+# # lazy_load_nvm() {
+# export NVM_LAZY_LOAD=true
+#   # unset -f node
+#   export NVM_DIR=~/.nvm
+#   [[ -s "$NVM_DIR/nvm.sh" ]] && source "$NVM_DIR/nvm.sh"
+# # }
+#
+# # Conditional appending of Node.js bin path to the system $PATH
+# # This will add the path for the default Node.js version to your $PATH, which relies on nvm having set that up.
+# # The 'default' alias is assumed to exist and has been set to the version you want in the path.
+# # If NVM has been initialized successfully, it will work. Otherwise, the path alteration won't take effect.
+# # Replace 'default' with your desired Node.js version if you have a specific version requirement.
+# if [[ -d "$NVM_DIR/versions/node" ]] && command -v nvm >/dev/null; then
+#     NODE_VERSION_PATH=$(nvm which default 2>/dev/null)
+#     if [[ -n "$NODE_VERSION_PATH" ]]; then
+#         NODE_BIN_PATH=$(dirname "$NODE_VERSION_PATH")
+#         export PATH="$NODE_BIN_PATH:$PATH"
+#     else
+#         echo "NVM is installed but the default node version is not set. Run 'nvm alias default <version>' to fix this."
+#     fi
+# fi
+
+# lazy nvm
+# Lazy loader function for nvm and Node.js commands
+# _lazy_nvm() {
+#     unset -f nvm node npm npx # Remove the stubs
+#     export NVM_DIR="${HOME}/.nvm"
+#
+#     # Source nvm script if it exists
+#     if [[ -s "${NVM_DIR}/nvm.sh" ]]; then
+#         source "${NVM_DIR}/nvm.sh"
+#     else
+#         echo "[-_-] NVM script not found"
+#         return
+#     fi
+#
+#     # Trigger nvm use default, this will change the PATH
+#     if ! nvm use default >/dev/null 2>&1; then
+#         echo "[-_-] NVM is installed but the default node version is not set. Run 'nvm alias default <version>' to fix this."
+#         return
+#     fi
+#
+#     # After `nvm use default`, the correct version of Node.js should be active
+#     # Re-invoke the original command that triggered this function
+#     "$@"
+# }
+#
+# # Stubbing common Node.js related binaries with the lazy loader
+# nvm() {
+#     _lazy_nvm nvm "$@"
+# }
+#
+# node() {
+#     _lazy_nvm node "$@"
+# }
+#
+# npm() {
+#     _lazy_nvm npm "$@"
+# }
+#
+# npx() {
+#     _lazy_nvm npx "$@"
+# }
+
+
+# lazy_load_nvm() {
+# export NVM_LAZY_LOAD=true
+#   unset -f node
+#   export NVM_DIR=~/.nvm
+#   [[ -s "$NVM_DIR/nvm.sh" ]] && source "$NVM_DIR/nvm.sh"
+# }
+#
+# node() {
+#   lazy_load_nvm
+#   node $@
+# }
             # export NVM_DIR="$HOME/.nvm"
+            #
             # [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
             # export NVM_DIR="$HOME/.nvm"
             #
 
-            [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
-            [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+            # [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
+            # [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
 
             # if [ -z "$TMUX" ]; then
             #   exec tmux new-session -A -s workspace
@@ -537,7 +622,7 @@
                 if [ -w /usr/local/bin ]; then
                     install lazygit /usr/local/bin
                 else
-                    echo "/usr/local/bin is not writable. Attempting to use sudo..."
+                    echo "[-_-] /usr/local/bin is not writable. Attempting to use sudo..."
                     sudo install lazygit /usr/local/bin
                 fi
 
@@ -715,8 +800,8 @@ fi
     # . /usr/local/etc/profile.d/z.sh
 
     ## nvm
-    # export NVM_DIR="$HOME/.nvm"
-    # [ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
 
     # conda
     # !! Contents within this block are managed by 'conda init' !!
