@@ -1,0 +1,58 @@
+#!/bin/bash
+
+case "$1" in
+day_of_week)
+	echo "$(date +%-u)|7"
+	;;
+
+day_of_month)
+	# Current day of the month
+	day=$(date +%-d)
+
+	# Try to detect if we're using GNU date (Linux) or BSD date (macOS).
+	if date --version >/dev/null 2>&1; then
+		# GNU date command; likely a Linux system
+		last_day=$(date -d "$(date +'%Y-%m-01') +1 month -1 day" +%d)
+	else
+		# BSD date command; likely a macOS system
+		last_day=$(date -v+1m -v1d -v-1d +%d)
+	fi
+
+	echo "$day|$last_day"
+	;;
+
+day_of_year)
+	# Day of the year
+	day=$(date +%-j)
+	# Total days in the current year, accounting for leap years
+	if (($(date +%Y) % 400 == 0)); then
+		leap="true"
+	elif (($(date +%Y) % 100 == 0)); then
+		leap="false"
+	elif (($(date +%Y) % 4 == 0)); then
+		leap="true"
+	else
+		leap="false"
+	fi
+	total_days=$((leap ? 366 : 365))
+	echo "$day/$total_days"
+	;;
+
+week_of_year)
+	echo "$(date +%V)/52"
+	;;
+current_month)
+	echo "$(date +%-m)/12"
+	;;
+year_week_based)
+	# Assuming 61 here still reflects some custom notion of 'weeks in a year' you have
+	echo "$(date +%g)/61"
+	;;
+time)
+	echo "$(date +%T)"
+	;;
+*)
+	echo "Invalid argument: $1"
+	exit 2
+	;;
+esac
