@@ -2,6 +2,8 @@
 .emacs.d/.local/*
 .config/tmux/plugins/*
 */tmux/plugins/*
+.cargo/bin/*
+*/bin/*
 
 ## From https://github.com/github/gitignore
 
