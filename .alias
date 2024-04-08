@@ -82,12 +82,14 @@ alias rr='sudo reboot'
 ## Zsh
 alias zz='exec zsh -l'
 
-## Vim
-# alias v='vim'                # Vim
-alias v='nvim'                # Vim
-alias v!='nvim --noplugin'                # Vim
-alias ov='vim'                # (neo)Vim
-# alias nv='nvim'                # (neo)Vim
+## nVim
+alias v='nvim'                  # nVim default
+alias v!='nvim --noplugin'      # nVim basic
+
+# Vim
+alias V='vim'                   # vim default
+alias V!="vim -u NONE -N"       # vim basic
+# alias nv='nvim'               # (neo)Vim
 
 alias v!='nvim -u NONE' # Vanilla Vim
 alias ov!="vim -u NONE -N"   # Pure Vim
