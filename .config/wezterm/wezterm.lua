@@ -49,8 +49,8 @@ config.win32_system_backdrop = "Acrylic"
 -- config.font = wezterm.font_with_fallback({ "JetBrainsMono Nerd Font", "JetBrains Mono" })
 -- config.font = wezterm.font("JetBrainsMono Nerd Font")
 -- config.font_locator = "ConfigDirsOnly"
-config.font = wezterm.font_with_fallback({ "Hack Nerd Font", "JetBrains Mono" })
--- config.font = wezterm.font("JetBrains Mono")
+-- config.font = wezterm.font_with_fallback({ "Hack Nerd Font", "JetBrains Mono" })
+config.font = wezterm.font("JetBrains Mono")
 -- config.font = wezterm.font("Hack Nerd Font")
 
 -- wezterm.font_with_fallback({
@@ -72,8 +72,8 @@ config.scrollback_lines = 6666
 
 -- TITLE bar
 -- window_decorations = "TITLE | RESIZE"
--- config.window_decorations = "RESIZE|MACOS_FORCE_ENABLE_SHADOW"
-config.window_decorations = "RESIZE" --"|MACOS_FORCE_ENABLE_SHADOW"
+config.window_decorations = "TITLE|RESIZE|MACOS_FORCE_ENABLE_SHADOW"
+-- config.window_decorations = "RESIZE" --"|MACOS_FORCE_ENABLE_SHADOW"
 
 -- padding
 config.window_padding = {

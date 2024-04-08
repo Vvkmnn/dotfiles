@@ -44,6 +44,7 @@ sudo apt-get install git zsh curl vim    \
 
 # extra
 # nala aptitude
+# brew install tmux neovim
 
 # optional
 sudo apt-get update \
