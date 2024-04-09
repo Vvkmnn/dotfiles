@@ -5,15 +5,17 @@ set_random_emoji() {
 # Define the emojis list only if it's not already defined
 if [ -z "$EMOJIS_DEFINED" ]; then
     EMOJIS=(
-       "🐕" "🐩" "🐈" "🐎" "🦬" "🐄" "🐖" "🐑" "🐐" "🐪" 
+       "🐕" "🐈" "🐎" "🦬" "🐄" "🐖" "🐑" "🐐" "🐪" 
        "🐫" "🦙" "🦒" "🐘" "🦣" "🦏" "🦛" "🐇" "🦔" "🦇" 
        "🦘" "🦡" "🦃" "🐓" "🦢" "🦉" "🦤" "🦚" "🦜" "🐊" 
        "🐢" "🦎" "🐍" "🐉" "🦕" "🦖" "🐋" "🐬" "🦭" "🐟" 
-       "🐠" "🐡" "🦈" "🐙" "🦀" "🦞" "🦑" "🐌" "🦋" "🐜" 
-       "🐝" "🪲" "🐞" "🦗" "🕷️" "🦂"
+       "🐠" "🐡" "🦈" "🐙" "🦀" "🦞" "🦑" "🐌" "🦋" 
+       "🐝" "🪲" "🐞" "🦗" "🦂"
     )
     export EMOJIS_DEFINED=yes
 fi
+
+# "🐜" "🕷️" "🐩" 
 
 # Use RANDOM and modulo to select a random emoji
 RANDOM_EMOJI=${EMOJIS[$RANDOM % ${#EMOJIS[@]}]}
