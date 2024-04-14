@@ -1,36 +1,77 @@
 #!/bin/bash
 
-# Function to determine the zodiac sign based on the current date
+# zodiac_sign() {
+#     # Today's month and day in MMDD format with leading zeros
+#     today=$(date +%m%d)
+#
+#     # Check the date against zodiac sign ranges
+#     if [[ "$today" < "0120" ]] || [[ "$today" >= "1222" ]]; then
+#         echo "♑️" # Capricorn
+#     elif [[ "$today" < "0219" ]]; then
+#         echo "♒️" # Aquarius
+#     elif [[ "$today" < "0321" ]]; then
+#         echo "♓️" # Pisces
+#     elif [[ "$today" < "0420" ]]; then
+#         echo "♈️" # Aries
+#     elif [[ "$today" < "0521" ]]; then
+#         echo "♉️" # Taurus
+#     elif [[ "$today" < "0621" ]]; then
+#         echo "♊️" # Gemini
+#     elif [[ "$today" < "0723" ]]; then
+#         echo "♋️" # Cancer
+#     elif [[ "$today" < "0823" ]]; then
+#         echo "♌️" # Leo
+#     elif [[ "$today" < "0923" ]]; then
+#         echo "♍️" # Virgo
+#     elif [[ "$today" < "1023" ]]; then
+#         echo "♎️" # Libra
+#     elif [[ "$today" < "1122" ]]; then
+#         echo "♏️" # Scorpio
+#     elif [[ "$today" < "1222" ]]; then
+#         echo "♐️" # Sagittarius
+#     else
+#         # Default to Capricorn if none of the above conditions are true,
+#         # but this case should be covered by the first condition.
+#         # default !
+#         echo "!" # Capricorn
+#     fi
+# }
+
 zodiac_sign() {
-	# Define the start dates for all zodiac signs
-	declare -A start_dates=(
-		[Aquarius]=120 [Pisces]=219 [Aries]=321 [Taurus]=420 [Gemini]=521 [Cancer]=621
-		[Leo]=723 [Virgo]=823 [Libra]=923 [Scorpio]=1023 [Sagittarius]=1122 [Capricorn]=1222
-	)
+	# Today's month and day in MMDD format with leading zeros
+	today=$(date +%m%d)
 
-	# Zodiac signs emojis
-	declare -A zodiac_emojis=(
-		[Aquarius]="♒️" [Pisces]="♓️" [Aries]="♈️" [Taurus]="♉️" [Gemini]="♊️" [Cancer]="♋️"
-		[Leo]="♌️" [Virgo]="♍️" [Libra]="♎️" [Scorpio]="♏️" [Sagittarius]="♐️" [Capricorn]="♑️"
-	)
+	# Convert today's date from MMDD format to a numeric value for comparison
+	today_numeric=$(echo $today | sed 's/^0*//') # Remove leading zeros
 
-	# Today's month and day in MMDD format
-	today=$(date +%-m%-d)
-	today=${today#0} # Remove leading zero if any
-
-	# Determine the zodiac sign
-	for sign in "${!start_dates[@]}"; do
-		if ((today >= start_dates[$sign])); then
-			current_sign=$sign
-		fi
-	done
-
-	# Special case for Capricorn before January 20
-	if ((today < 120)); then
-		current_sign="Capricorn"
+	# Check the date against zodiac sign ranges using numeric comparison
+	if [[ "$today_numeric" -lt 120 ]] || [[ "$today_numeric" -ge 1222 ]]; then
+		echo "♑️" # Capricorn
+	elif [[ "$today_numeric" -lt 219 ]]; then
+		echo "♒️" # Aquarius
+	elif [[ "$today_numeric" -lt 321 ]]; then
+		echo "♓️" # Pisces
+	elif [[ "$today_numeric" -lt 420 ]]; then
+		echo "♈️" # Aries
+	elif [[ "$today_numeric" -lt 521 ]]; then
+		echo "♉️" # Taurus
+	elif [[ "$today_numeric" -lt 621 ]]; then
+		echo "♊️" # Gemini
+	elif [[ "$today_numeric" -lt 723 ]]; then
+		echo "♋️" # Cancer
+	elif [[ "$today_numeric" -lt 823 ]]; then
+		echo "♌️" # Leo
+	elif [[ "$today_numeric" -lt 923 ]]; then
+		echo "♍️" # Virgo
+	elif [[ "$today_numeric" -lt 1023 ]]; then
+		echo "♎️" # Libra
+	elif [[ "$today_numeric" -lt 1122 ]]; then
+		echo "♏️" # Scorpio
+	elif [[ "$today_numeric" -lt 1222 ]]; then
+		echo "♐️" # Sagittarius
+	else
+		echo "♑️" # Default to Capricorn if none of the above conditions are true
 	fi
-
-	echo "${zodiac_emojis[$current_sign]}"
 }
 
 case "$1" in
@@ -79,8 +120,9 @@ current_month)
 	echo "$(date +%-m)|12"
 	;;
 year_week_based)
-	# 72
-	echo "$(date +%g)|63"
+	# 63 == 2054
+	# 72 == 2063
+	echo "$(date +%g)|54"
 	;;
 time)
 	echo "$(date +%T)"

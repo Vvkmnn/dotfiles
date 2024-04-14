@@ -10,12 +10,12 @@ if [ -z "$EMOJIS_DEFINED" ]; then
        "🦘" "🦡" "🦃" "🐓" "🦢" "🦉" "🦤" "🦚" "🦜" "🐊" 
        "🐢" "🦎" "🐍" "🐉" "🦕" "🦖" "🐋" "🐬" "🦭" "🐟" 
        "🐠" "🐡" "🦈" "🐙" "🦀" "🦞" "🦑" "🐌" "🦋" 
-       "🐝" "🪲" "🐞" "🦗" "🦂"
+       "🐝" "🪲" "🐞" "🦗" "🦂" "🐜" "🕷️" "🐩" 
     )
     export EMOJIS_DEFINED=yes
 fi
 
-# "🐜" "🕷️" "🐩" 
+# 
 
 # Use RANDOM and modulo to select a random emoji
 RANDOM_EMOJI=${EMOJIS[$RANDOM % ${#EMOJIS[@]}]}
