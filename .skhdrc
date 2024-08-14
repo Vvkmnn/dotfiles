@@ -120,8 +120,11 @@ cmd + shift - 4 -> : chunkc border::clear
 # ctrl + cmd - d : yabai -m window --toggle zoom-parent
 # ctrl + cmd - f : yabai -m window --toggle zoom-fullscreen
 
-alt + ctrl - return : yabai -m window --toggle zoom-parent
-alt - return : yabai -m window --toggle zoom-fullscreen
+ctrl + shift - d : yabai -m window --toggle zoom-parent
+ctrl + shift - f : yabai -m window --toggle zoom-fullscreen
+
+# alt + ctrl - return : yabai -m window --toggle zoom-parent
+# alt - return : yabai -m window --toggle zoom-fullscreen
 
 # space - f : yabai -m window --toggle zoom-fullscreen
 # cmd + space - f : yabai -m window --toggle zoom-fullscreen
@@ -158,12 +161,14 @@ shift + cmd - space : cur_window=$(yabai -m query --windows --window | jq '.id')
 
 # select next space
 # shift + ctrl - j : yabai -m space --focus prev
-cmd + ctrl - k : yabai -m space --focus next || yabai -m space --focus first
-cmd + ctrl - j : yabai -m space --focus prev || yabai -m space --focus last
+# cmd + ctrl - k : yabai -m space --focus next || yabai -m space --focus first
+# cmd + ctrl - j : yabai -m space --focus prev || yabai -m space --focus last
+# NOTE Doesn't work without scripting addon, which blows up after restarting?
+
 
 # move window to next space
-cmd + ctrl - h : yabai -m window --space prev --focus || yabai -m window --space last --focus
-cmd + ctrl - l : yabai -m window --space next --focus || yabai -m window --space first --focus
+cmd + ctrl - j : yabai -m window --space prev --focus || yabai -m window --space last --focus
+cmd + ctrl - k : yabai -m window --space next --focus || yabai -m window --space first --focus
 
 
 # move window to pre and next space
@@ -304,8 +309,9 @@ ctrl + alt - j : yabai -m window --insert south
 ctrl + alt - k : yabai -m window --insert north
 ctrl + alt - l : yabai -m window --insert east
 
-# close focused window
-ctrl + cmd - e : yabai -m window --close 
+# close focused window / quit / exit
+ctrl + shift - e : yabai -m window --close 
+
 # ctrl + cmd - e : osascript -e 'tell application "System Events" to perform action "AXPress" of (first button whose subrole is "AXCloseButton") of (first window whose subrole is "AXStandardWindow") of (first process whose frontmost is true)'
 # ctrl + cmd - e : osascript -e 'tell application "System Events" to perform action "AXPress" of (first button whose subrole is "AXCloseButton") of (first window whose subrole is "AXStandardWindow") of (first process whose frontmost is true); tell application "System Events" to keystroke tab using {command down}'
 # ctrl + cmd - e : osascript -e 'tell application "System Events" to perform action "AXPress" of (first button whose subrole is "AXCloseButton") of (first window whose subrole is "AXStandardWindow") of (first process whose frontmost is true); tell application "System Events" to key code 48 using command down'
