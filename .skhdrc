@@ -127,6 +127,7 @@ ctrl + cmd - f : yabai -m window --toggle zoom-fullscreen
 
 # move window to display and follow focus 
 
+# TODO switch to ctrl + cmd, more comfortable, but compare to space switching? Display used more often
 alt + ctrl - h : yabai -m window --display prev || yabai -m window --display last; yabai -m display --focus prev || yabai -m display --focus prev 
 alt + ctrl - j : yabai -m display --focus prev || yabai -m display --focus last
 alt + ctrl - k : yabai -m display --focus next || yabai -m display --focus first
