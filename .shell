@@ -28,36 +28,6 @@
 ##################################################
 
 
-          # "############################",
-          # "#########          #########",
-          # "#######        ####  #######",
-          # "#####         ###      #####",
-          # "####          ###       ####",
-          # "###      #### ###        ###",
-          # "###       ###  ##        ###",
-          # "###        ###  #        ###",
-          # "####        ##          ####",
-          # "#####        ##        #####",
-          # "#######       ##     #######",
-          # "##########        ##########",
-          # "############################",
-
-
-        
-          #                              ",
-          # "               ####         ",
-          # "              ###           ",
-          # "              ###           ",
-          # "         #### ###           ",
-          # "          ###  ##           ",
-          # "           ###  #           ",
-          # "            ##              ",
-          # "             ##             ",
-          # "              ##            ",
-          # "                            ",
-          # "                            ",
-
-
 #
 # case "$(uname -s)" in
 #     
@@ -86,7 +56,10 @@
             # PS1=$(printf "%*s\r%s\n$om " "$(tput cols)" 'righty tighty' 'lefty loosey')
             # PS1=$(printf "%*s\r%s " "$(($cols - 25))" '$morbidtime' '$om')
             # PS1=$(printf "%*s\r%s " "$(($(tput cols) - 35))" '$(date '+%-j/365 %-g/61 %a %d-%m-%y %T')' '$om')
-            PS1="\$(printf '%*s\r%s ' \$((\$(tput cols) - 35)) \"\$(date '+%-j/365 %-g/61 %a %d-%m-%y %T')\" \"\$om\")"
+            PS1="' \$(printf '%*s\r%s ' \$((\$(tput cols) - 35)) \"\$(date '+%-j/365 %-g/61 %a %d-%m-%y %T')\" \"\$om\")"
+
+            # PS1="\$(printf '%*s\r%s ' \$((\$(tput cols) - 35)) \"\$(date '+%-j/365 %-g/61 %a %d-%m-%y %T')\" \"\$om\")"
+            
             # PS1="\$(printf \"%*s\r%s \" \"\$(($(tput cols) - $(echo '$(date '+%-j/365 %-g/61 %a %d-%m-%y %T')' | wc -c)))\" \"\$(date '+%-j/365 %-g/61 %a %d-%m-%y %T')\" \"\$om\")"
             # PS1="\$(printf \"%*s\r%s \" \"\$(($(tput cols) - 20)))\" \"\$(date '+%-j/365 %-g/61 %a %d-%m-%y %T')\" \"\$om\")"
 
@@ -97,6 +70,11 @@
 
         # ZSH
         elif [ -n "$ZSH_VERSION" ]; then
+
+
+            # Scroll region
+            # https://askubuntu.com/questions/1226840/is-there-a-way-to-prevent-the-cursor-from-reaching-the-bottom-of-the-terminal
+            trap 'tput csr 1 $((LINES-3))' WINCH ; kill -s WINCH $$
 
             # NOTE Marginal change in performance, but less buggy when below zcomet
             # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
@@ -346,10 +324,14 @@
 
             # ohmyzsh/tmux {{{
             # NOTE conflicts with instant prompt, turn that off for tmux to have time
-            ZSH_TMUX_AUTOSTART=true
-            ZSH_TMUX_AUTOCONNECT=false
-            ZSH_TMUX_AUTOQUIT=true
-            # ZSH_TMUX_DETACHED=true
+            # NOTE turns off and on the tmux datae integration
+            # Run TMUX settings only in WezTerm (skip when in VSCode)
+            if [ "$TERM_PROGRAM" != "vscode" ]; then
+                ZSH_TMUX_AUTOSTART=true
+                ZSH_TMUX_AUTOCONNECT=false
+                ZSH_TMUX_AUTOQUIT=true
+                ZSH_TMUX_DETACHED=true
+            fi
             # }}}
             
             # conda {{{
@@ -365,6 +347,7 @@
                     export PATH="/Users/v/.miniconda3/bin:$PATH"
                 fi
             fi
+
             unset __conda_setup
             # <<< conda initialize <<<
 
@@ -500,6 +483,8 @@
             eval "$(ngrok completion)"
           fi
 
+
+
     ## fzf
     [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
@@ -628,6 +613,8 @@
 
                 rm lazygit.tar.gz && rm -rf lazygit
             fi
+
+
 
             ;;
               Darwin )
