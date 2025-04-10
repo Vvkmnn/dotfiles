@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+# https://github.com/modelcontextprotocol/servers/issues/64
+
+NODE_VERSIONS_DIR="$HOME/.nvm/versions/node"
+LATEST_NODE_VERSION=$(ls -v "$NODE_VERSIONS_DIR" | grep "^v" | sort -V | tail -n 1)
+export PATH="$NODE_VERSIONS_DIR/$LATEST_NODE_VERSION/bin:$PATH"
+exec npx "$@"
