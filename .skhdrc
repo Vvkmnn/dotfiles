@@ -1,4 +1,41 @@
 # https://github.com/koekeishiya/skhd/issues/1
+# https://github.com/JoshuaManuel/Karabiner-Elements-Key-List
+
+### SA
+# sudo yabai --load-sa
+# yabai -m signal --add event=dock_did_restart action="sudo yabai --load-sa"
+
+## Favorite Apps {{{
+ctrl + cmd - m: open -na /System/Applications/Mail.app
+ctrl + cmd - o: open -na /Applications/Obsidian.app/
+ctrl + cmd - d: obsidian-cli daily # create "{note-name}" 
+
+# NOTE deprecated, fn is awkward and doesn't work with enough stuff
+# fn + ~,v to get vim or home
+# fn - v: wezterm cli spawn --cwd . --new-window nvim ~/.scratch
+# fn - c: wezterm cli spawn --cwd . --new-window nvim ~
+
+#}}}
+
+
+### IDE {{{
+
+
+# fn - \: open cusror 
+# fn - 0x2A: cursor 
+# fn - return: cursor 
+# fn - return: wezterm cli spawn --cwd . --new-window nvim ~
+# ctrl - space: wezterm cli spawn --cwd . --new-window cursor
+
+# ctrl + cmd - return: cursor -n
+ctrl + cmd - return: windsurf -n
+# ctrl - space: cursor
+# ctrl - return: wezterm cli spawn --cwd . --new-window nvim ~
+# fn - 0x1E: cursor ~
+# fn - 0x2A: cursor . # TODO opens root dir somehow
+# fn - \\: open -na /Applications/Cursor.app
+
+### }}}
 
 ### CLI {{{
 
@@ -16,8 +53,24 @@ ctrl + cmd - 0: yabai --restart-service && skhd --restart-service
 # ctrl - return : open -na /Applications/Alacritty.app
 
 # Wezterm
-ctrl - return : open -na /Applications/Wezterm.app
-ctrl - space : open -na /Applications/Alacritty.app/
+
+ctrl + cmd - space: open -na /Applications/Wezterm.app  # TODO Ctrl doesn't work?
+
+# fn - return: open -na /Applications/Wezterm.app  # Does not work
+
+# fn - return: open -na /Applications/Wezterm.app  # Does not work
+# fn - 0x24: open -na /Applications/Wezterm.app  # NOTE works! Issue was in Karabiner, there was a lefet shift modifier in the Caps script? 
+
+# fn - space : open -na /Applications/Wezterm.app  # NOTE works! Issue was in Karabiner, there was a lefet shift modifier in the Caps script? 
+
+# ctrl - space : open -na /Applications/Wezterm.app  # NOTE works! Issue was in Karabiner, there was a lefet shift modifier in the Caps script? 
+
+# ctrl - space : open -na /Applications/Wezterm.app  # NOTE works! Issue was in Karabiner, there was a lefet shift modifier in the Caps script? 
+
+# ctrl - return : open -na /Applications/Wezterm.app  # TODO Ctrl doesn't work?
+# ctrl - return : open -na /Applications/Wezterm.app  # TODO Ctrl doesn't work?
+# cmd - return : open -na /Applications/Wezterm.app
+# ctrl - space : open -na /Applications/Alacritty.app/
 
 ### }}}
 
@@ -27,7 +80,7 @@ ctrl - space : open -na /Applications/Alacritty.app/
 
 # Obsidian 
 # ctrl + cmd - return : open /Applications/Obsidian.app/
-ctrl + cmd - return : open /Applications/Obsidian.app/
+# ctrl + cmd - return : open /Applications/Obsidian.app/
 # ctrl - space: open /Applications/Obsidian.app/
 
 ### GUI {{{
@@ -58,10 +111,13 @@ ctrl + cmd - return : open /Applications/Obsidian.app/
 # Use skhd --observe / -o to see hex codes for any key
 # Create new area
 # ctrl - 0x27: osascript -e 'tell application "Safari" to make new document with properties {URL:"https://chat.openai.com/?model=gpt-4"}' 
-ctrl - 0x27: osascript -e 'tell application "Safari" to make new document with properties {URL:"https://chat.openai.com/?model=gpt-4"}' -e 'tell application "Safari" to activate'
 
+# fn - /: Opens GPT
+fn - 0x2C: osascript -e 'tell application "Safari" to make new document with properties {URL:"https://chat.openai.com/?model=gpt-4"}' -e 'tell application "Safari" to activate'
+#
+# ctrl - 0x27: osascript -e 'tell application "Safari" to make new document with properties {URL:"https://chat.openai.com/?model=gpt-4"}' -e 'tell application "Safari" to activate'
+# ctrl - 0x27: osascript -e 'tell application "Safari" to make new document with properties {URL:"https://chat.openai.com/?model=gpt-4"}' -e 'tell application "Safari" to activate'
 # ctrl - 0x27: firefox "https://chat.openai.com/?model=gpt-4"
-
 # Opens current tab
 # ctrl - 0x27: open -a /Applications/Safari.app "https://chat.openai.com/?model=gpt-4" 
 
@@ -77,7 +133,22 @@ ctrl - 0x27: osascript -e 'tell application "Safari" to make new document with p
 # alt - return: osascript -e 'tell application "Safari" to make new document with properties {URL:"https://chat.openai.com/?model=gpt-4"}' -e 'tell application "Safari" to activate'
 
 # Open Safari
-cmd - return : open -n /Applications/Safari.app/
+
+
+# fn - '  opens ZenBrowsekhd 
+# fn - 0x27: open -n /Applications/Safari.app/
+
+# ctrl + cmd - '  opens ZenBrowsekhd 
+# fn - ;  opens Safari
+ctrl + cmd - 0x27: open -na /Applications/Safari.app/
+ctrl + cmd - 0x29:  osascript -e 'tell application "Safari" to activate tell application "System Events" tell process "Safari" click menu item "New Private Window" of menu "File" of menu bar 1 end tell end tell' # NOTE:  Doesn't work
+
+
+# ctrl + cmd - ;  opens Zen Browser
+ctrl + cmd - z: open -n /Applications/Zen\ Browser.app/
+
+# cmd - return : open -n /Applications/Safari.app/
+
 # cmd - return : osascript -e 'tell application "Safari" to make new document' 
 #with properties {URL:"https://www.google.com"}' 
 #-e 'activate' 
@@ -101,7 +172,7 @@ cmd - return : open -n /Applications/Safari.app/
 # shift - return : open -n /Applications/Brave\ Browser.app/ 
 
 # Open New Broser (Brave)
-ctrl + shift - return : open /Applications/Google\ Chrome.app/
+# ctrl + shift - return : open /Applications/Google\ Chrome.app/
 
 # Open Nearby Chromium
 # shift - return : open /Applications/Chromium.app/
@@ -120,43 +191,42 @@ cmd + shift - 4 -> : chunkc border::clear
 # ctrl + cmd - d : yabai -m window --toggle zoom-parent
 # ctrl + cmd - f : yabai -m window --toggle zoom-fullscreen
 
-ctrl + shift - d : yabai -m window --toggle zoom-parent
-ctrl + shift - f : yabai -m window --toggle zoom-fullscreen
+# ctrl + shift - d : yabai -m window --toggle zoom-parent
+# ctrl + shift - f : yabai -m window --toggle zoom-fullscreen
+
+cmd + ctrl - f: yabai -m window --toggle zoom-fullscreen
+# fn - f : yabai -m window --toggle zoom-fullscreen
 
 # alt + ctrl - return : yabai -m window --toggle zoom-parent
 # alt - return : yabai -m window --toggle zoom-fullscreen
 
 # space - f : yabai -m window --toggle zoom-fullscreen
-# cmd + space - f : yabai -m window --toggle zoom-fullscreen
+#d asd d dd d dddddasdddddddijadofihasdoifhasdio df
+# cmd + space - f : yabai -m window --toggle zoom-fullscreen       d
 
 # move window to display and follow focus 
-alt + ctrl - j : yabai -m window --display west; yabai -m display --focus west
-alt + ctrl - k : yabai -m window --display east; yabai -m display --focus east
+fn - j : yabai -m window --display west; yabai -m display --focus west
+fn - k : yabai -m window --display east; yabai -m display --focus east
+
+# alt + ctrl - j : yabai -m window --display west; yabai -m display --focus west
+# alt + ctrl - k : yabai -m window --display east; yabai -m display --focus east
 
 # move window to another display and follow focus
 # TODO fancy but doesn't do much
 # shift + cmd - left : WIN_ID=$(yabai -m query --windows --window | jq '.id'); yabai -m window --swap west; [[ ! $? == 0 ]] && (yabai -m display --focus west; yabai -m window last --insert east; yabai -m window --focus $WIN_ID; yabai -m window --display prev; yabai -m window --focus $WIN_ID);
-# shift + cmd - right : WIN_ID=$(yabai -m query --windows --window | jq '.id'); yabai -m window --swap east; [[ ! $? == 0 ]] && (yabai -m display --focus east; yabai -m window first --insert west; yabai -m window --focus $WIN_ID; yabai -m window --display next; yabai -m window --focus $WIN_ID);
+# shift + cmd - right : WIN_ID=$(yabai -m query --windows --windifhasdfhaow | jq '.id'); yabai -m window --swap east; [[ ! $? == 0 ]] && (yabai -m display --focus east; yabai -m window first --insert west; yabai -m window --focus $WIN_ID; yabai -m window --display next; yabai -m window --focus $WIN_ID);
 
 
 # focus window
-cmd - h : yabai -m window --focus west
-cmd - j : yabai -m window --focus south
-cmd - k : yabai -m window --focus north
-cmd - l : yabai -m window --focus east
+# cmd - h : yabai -m window --focus west
+# cmd - j : yabai -m window --focus south
+# cmd - k : yabai -m window --focus north
+# cmd - l : yabai -m window --focus east
 # ctrl - h : yabai -m window --focus west
 # ctrl - j : yabai -m window --focus south
 # ctrl - k : yabai -m window --focus north
 # ctrl - l : yabai -m window --focus east
 
-# focus displays
-shift + ctrl - j : yabai -m display --focus west
-shift + ctrl - h : yabai -m display --focus east
-
-# move window to space and follow focus
-shift + cmd - space : cur_window=$(yabai -m query --windows --window | jq '.id') && \
-                      yabai -m window --display prev  || yabai -m window --display next && \
-                      yabai -m window --focus ${cur_window}
 
 
 # select next space
@@ -166,9 +236,50 @@ shift + cmd - space : cur_window=$(yabai -m query --windows --window | jq '.id')
 # NOTE Doesn't work without scripting addon, which blows up after restarting?
 
 
+####################################################################
+## Moving + Closing + Switching Windows between Spaces + Desktops ## 
+####################################################################
+
+# close focused window / quit / exit
+# alt + space + e : yabai -m window --close 
+
+# ctrl + cmd - 0x33: yabai -m window --close 
+# ctrl + cmd - delete: yabai -m window --close 
+
+# fn - delete: yabai -m window --close 
+# ctrl + alt - e : yabai -m window --close 
+
+# ctrl + shift - e : yabai -m window --close 
+# ctrl + shift - e : yabai -m window --close 
+
+# ctrl + cmd - e: osascript -e 'tell application "System Events" to perform action "AXPress" of (first button whose subrole is "AXCloseButton") of (first window whose subrole is "AXStandardWindow") of (first process whose frontmost is true)'
+
+# ctrl + cmd - delete: quit
+# https://github.com/koekeishiya/skhd/issues/63#issuecomment-4660633
+ctrl + cmd - 0x33: osascript -e "tell application \"Finder\" to set p to item 1 of (get file of (processes whose frontmost = true)) as text" -e "tell application p to quit"
+
+# ctrl + cmd - e : osascript -e 'tell application "System Events" to perform action "AXPress" of (first button whose subrole is "AXCloseButton") of (first window whose subrole is "AXStandardWindow") of (first process whose frontmost is true)'
+# ctrl + cmd - e : osascript -e 'tell application "System Events" to perform action "AXPress" of (first button whose subrole is "AXCloseButton") of (first window whose subrole is "AXStandardWindow") of (first process whose frontmost is true); tell application "System Events" to keystroke tab using {command down}'
+# ctrl + cmd - e : osascript -e 'tell application "System Events" to perform action "AXPress" of (first button whose subrole is "AXCloseButton") of (first window whose subrole is "AXStandardWindow") of (first process whose frontmost is true); tell application "System Events" to key code 48 using command down'
+# ctrl + cmd - e : osascript -e 'tell application "System Events" to perform action "AXPress" of (first button whose subrole is "AXCloseButton") of (first window whose subrole is "AXStandardWindow") of (first process whose frontmost is true); delay 0.1; tell application "System Events" to keystroke tab using command down'
+# ctrl + cmd - e : osascript -e 'tell application "System Events" to perform action "AXPress" of (first button whose subrole is "AXCloseButton") of (first window whose subrole is "AXStandardWindow") of (first process whose frontmost is true); delay 0.5; tell application "System Events" to key down command; tell application "System Events" to key code 48; tell application "System Events" to key up command'
+# ctrl + cmd - e : osascript -e 'tell application "System Events" to perform action "AXPress" of (first button whose subrole is "AXCloseButton") of (first window whose subrole is "AXStandardWindow") of (first process whose frontmost is true); delay 0.5; tell application "System Events" to key code 48 using command down'
+
+
+# ctrl + cmd - e : osascript -e 'tell application "System Events" to tell application "System Events" to tell (first process whose frontmost is true) to set frontmost to true; tell application "System Events" to perform action "AXPress" of (first button whose subrole is "AXCloseButton") of (first window whose subrole is "AXStandardWindow") of (first process whose frontmost is true); 
+
+# move window to space and follow focus
+# shift + cmd - space : cur_window=$(yabai -m query --windows --window | jq '.id') && \
+#                       yabai -m window --display prev  || yabai -m window --display next && \
+#                       yabai -m window --focus ${cur_window}
+
+# focus displays
+shift + ctrl - j : yabai -m display --focus west
+shift + ctrl - h : yabai -m display --focus east
+
 # move window to next space
-cmd + ctrl - j : yabai -m window --space prev --focus || yabai -m window --space last --focus
-cmd + ctrl - k : yabai -m window --space next --focus || yabai -m window --space first --focus
+# ctrl + alt - j : yabai -m window --space prev --focus || yabai -m window --space last --focus
+# ctrl + alt - k : yabai -m window --space next --focus || yabai -m window --space first --focus
 
 
 # move window to pre and next space
@@ -188,8 +299,14 @@ shift + cmd - j : yabai -m window --warp south
 shift + cmd - k : yabai -m window --warp north
 shift + cmd - l : yabai -m window --warp east
 
+
+# NOTE works? 
+# send window to desktop and follow focus
+# cmd + ctrl - j : yabai -m window --space prev; yabai -m space --focus prev
+# cmd + ctrl - k : yabai -m window --space next; yabai -m space --focus next
+
 # balance size of windows
-shift + alt - 0 : yabai -m space --balance
+# shift + alt - 0 : yabai -m space --balance
 
 # make floating window fill screen
 shift + alt - up     : yabai -m window --grid 1:1:0:0:1:1
@@ -207,18 +324,19 @@ shift + alt - right  : yabai -m window --grid 1:2:1:0:1:1
 #                    yabai -m space --focus "${index}"
 
 # create desktop and follow focus
-cmd + ctrl - n : yabai -m space --create;\
-                id=$(yabai -m query --displays --display | grep "spaces");\
-                yabai -m space --focus $(echo ${id:10:${#id}-10})
+# cmd + ctrl - n : yabai -m space --create;\
+#                 id=$(yabai -m query --displays --display | grep "spaces");\
+#                 yabai -m space --focus $(echo ${id:10:${#id}-10})
 
 # destroy desktop
-cmd + ctrl - w : yabai -m space --destroy
+# cmd + ctrl - w : yabai -m space --destroy
 
 # fast focus desktop
 # cmd + ctrl - h : yabai -m space --focus prev
 # cmd + ctrl - l : yabai -m space --focus next
 
-cmd + alt - x : yabai -m space --focus recent
+# ctrl + alt - x : yabai -m space --focus recent
+# cmd + alt - x : yabai -m space --focus recent
 # cmd + alt - 1 : yabai -m space --focus 1
 # cmd + alt - 2 : yabai -m space --focus 2
 # cmd + alt - 3 : yabai -m space --focus 3
@@ -230,9 +348,6 @@ cmd + alt - x : yabai -m space --focus recent
 # cmd + alt - 9 : yabai -m space --focus 9
 # cmd + alt - 0 : yabai -m space --focus 10
 
-# send window to desktop and follow focus
-# cmd + ctrl - j : yabai -m window --space prev; yabai -m space --focus prev
-# cmd + ctrl - k : yabai -m window --space next; yabai -m space --focus next
 
 # shift + cmd - x : yabai -m window --space recent; yabai -m space --focus recent
 # cmd - 1 : yabai -m space --focus 1
@@ -269,6 +384,9 @@ ctrl + alt - 3  : yabai -m display --focus 3
 #                       yabai -m window --focus ${cur_window}
 
 # send window to next display
+ctrl + alt - j : yabai -m window --display prev; yabai -m display --focus prev
+ctrl + alt - k : yabai -m window --display next; yabai -m display --focus next
+
 ctrl + cmd - j : yabai -m window --display prev; yabai -m display --focus prev
 ctrl + cmd - k : yabai -m window --display next; yabai -m display --focus next
 
@@ -304,23 +422,10 @@ shift + cmd - w : yabai -m window --resize top:0:20
 shift + cmd - d : yabai -m window --resize right:-20:0
 
 # set insertion point in focused container
-ctrl + alt - h : yabai -m window --insert west
-ctrl + alt - j : yabai -m window --insert south
-ctrl + alt - k : yabai -m window --insert north
-ctrl + alt - l : yabai -m window --insert east
-
-# close focused window / quit / exit
-ctrl + shift - e : yabai -m window --close 
-
-# ctrl + cmd - e : osascript -e 'tell application "System Events" to perform action "AXPress" of (first button whose subrole is "AXCloseButton") of (first window whose subrole is "AXStandardWindow") of (first process whose frontmost is true)'
-# ctrl + cmd - e : osascript -e 'tell application "System Events" to perform action "AXPress" of (first button whose subrole is "AXCloseButton") of (first window whose subrole is "AXStandardWindow") of (first process whose frontmost is true); tell application "System Events" to keystroke tab using {command down}'
-# ctrl + cmd - e : osascript -e 'tell application "System Events" to perform action "AXPress" of (first button whose subrole is "AXCloseButton") of (first window whose subrole is "AXStandardWindow") of (first process whose frontmost is true); tell application "System Events" to key code 48 using command down'
-# ctrl + cmd - e : osascript -e 'tell application "System Events" to perform action "AXPress" of (first button whose subrole is "AXCloseButton") of (first window whose subrole is "AXStandardWindow") of (first process whose frontmost is true); delay 0.1; tell application "System Events" to keystroke tab using command down'
-# ctrl + cmd - e : osascript -e 'tell application "System Events" to perform action "AXPress" of (first button whose subrole is "AXCloseButton") of (first window whose subrole is "AXStandardWindow") of (first process whose frontmost is true); delay 0.5; tell application "System Events" to key down command; tell application "System Events" to key code 48; tell application "System Events" to key up command'
-# ctrl + cmd - e : osascript -e 'tell application "System Events" to perform action "AXPress" of (first button whose subrole is "AXCloseButton") of (first window whose subrole is "AXStandardWindow") of (first process whose frontmost is true); delay 0.5; tell application "System Events" to key code 48 using command down'
-
-
-# ctrl + cmd - e : osascript -e 'tell application "System Events" to tell application "System Events" to tell (first process whose frontmost is true) to set frontmost to true; tell application "System Events" to perform action "AXPress" of (first button whose subrole is "AXCloseButton") of (first window whose subrole is "AXStandardWindow") of (first process whose frontmost is true); 
+# ctrl + alt - h : yabai -m window --insert west
+# ctrl + alt - j : yabai -m window --insert south
+# ctrl + alt - k : yabai -m window --insert north
+# ctrl + alt - l : yabai -m window --insert east
 
 
 # rotate tree
@@ -339,7 +444,7 @@ alt - a : yabai -m space --toggle padding; yabai -m space --toggle gap
 ctrl + shift - d : yabai -m window --toggle zoom-parent
 
 # toggle window fullscreen zoom
-ctrl + cmd - f : yabai -m window --toggle zoom-fullscreen
+ctrl + alt - f : yabai -m window --toggle zoom-fullscreen
 
 # toggle window native fullscreen
 shift + alt - f : yabai -m window --toggle native-fullscreen

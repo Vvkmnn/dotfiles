@@ -27,10 +27,12 @@
 ##################################################
 ##################################################
 
-
 # NOTE Changed this
 # Custom prefix.
 #  typeset -g POWERLEVEL9K_DIR_PREFIX=' ॐ  '
+
+# Import
+source ~/.functions
 
 # Dotfiles
 alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
@@ -40,13 +42,13 @@ alias ds="dotfiles status --untracked-files=no"
 alias dg='lazygit --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 
 # Quickedit
-alias ,r='v ~/.github/README.md'
 alias ,v='v ~/.config/nvim/lua/'
-alias ,k='v ~/.config/nvim/lua/config/keymaps.lua'
-alias ,c='v ~/.config/nvim/lua/plugins/custom.lua'
-alias ,m='v ~/.config/nvim/lua/plugins/modify.lua'
-alias ,d='v ~/.config/nvim/lua/plugins/disable.lua'
-alias ,o='v ~/.config/nvim/lua/config/options.lua'
+alias ,vc='v ~/.config/nvim'
+alias ,nk='v ~/.config/nvim/lua/config/keymaps.lua'
+alias ,vc='v ~/.config/nvim/lua/plugins/custom.lua'
+alias ,nm='v ~/.config/nvim/lua/plugins/modify.lua'
+alias ,nd='v ~/.config/nvim/lua/plugins/disable.lua'
+alias ,no='v ~/.config/nvim/lua/config/options.lua'
 alias ,s='v ~/.shell'
 alias ,a='v ~/.alias'
 alias ,t='v ~/.config/tmux/tmux.conf'
@@ -54,16 +56,30 @@ alias ,w='v ~/.config/wezterm/wezterm.lua'
 alias ,y='v ~/.yabairc'
 alias ,sk='v ~/.skhdrc'
 # alias ,h='history | nvim -'
+alias ,ys='yabai --restart-service && skhd --restart-service'
+
+## cursor
+# c = cursor --no-plugins
+# c = cursor --no-plugins
+alias ,mcp-chrome-debug=debugger_chrome
+# alias ,cursor-browser-mcp-server='npx @agentdeskai/browser-tools-server@1.2.0'
+alias ,mcp-browser-server='npx @agentdeskai/browser-tools-server@1.2.0'
+
+## git
+alias ,git-undo='git clean -fd && git reset --hard'
+
+# update
+alias ,u=update_all
 
 # OpenAI
-alias ai='chatblade --open-api-key ~/.openai -c 4t -e'
+alias ai=call_chatblade_ai
 
 # NeoVim
 alias vclear='rm -rf ~/.local/share/nvim/ && rm -rf ~/.local/state/nvim/ && rm -rf ~/.cache/nvim/'
+## cursor vclear
 
 # util
 alias ptop='sudo powermetrics --show-process-energy'
-
 
 # alias dg='lazygit --use-config-file "$HOME/Library/Application Support/lazygit/config.yml" --work-tree ~ --git-dir=$HOME/.dotfiles/'
 # alias dg='lazygit --use-config-file "$HOME/.config/yadm/lazygit.yml,$HOME/Library/Application Support/lazygit/config.yml" --work-tree ~ --git-dir=$HOME/.dotfiles/'
@@ -82,22 +98,25 @@ alias rr='sudo reboot'
 ## Zsh
 alias zz='exec zsh -l'
 
+## cursor
+alias c='cursor'
+alias c!='cursor --disable-extensions' # TODO fix
+
 ## Vim
 # alias v='vim'                # Vim
-alias v='nvim'                # Vim
-alias v!='nvim --noplugin'                # Vim
-alias ov='vim'                # (neo)Vim
+alias v='nvim'             # Vim
+alias v!='nvim --noplugin' # Vim
+alias ov='vim'             # (neo)Vim
 # alias nv='nvim'                # (neo)Vim
 
-alias v!='nvim -u NONE' # Vanilla Vim
-alias ov!="vim -u NONE -N"   # Pure Vim
+alias v!='nvim -u NONE'    # Vanilla Vim
+alias ov!="vim -u NONE -N" # Pure Vim
 # alias nv!='nvim -u NORC'                # Vanilla (neo)Vim
 
 ## wezterm
 alias wz='wezterm'
 alias wz!='wezterm start -- bash --norc'
 alias wz!!='wezterm -n start -- bash --norc'
-
 
 ## Time
 alias today=$(date '+%F_%H:%M:%S')
@@ -108,67 +127,73 @@ alias lg='lazygit'
 
 case "$(uname -s)" in
 
-        ## macOS
-        Darwin)
+## macOS
+Darwin)
 
-                # Bash
-                alias hbash='/opt/homebrew/bin/bash'
+	# Bash
+	alias hbash='/opt/homebrew/bin/bash'
 
-                # Brew
-                alias cask='brew cask' # Shorthand
+	# Brew
+	alias cask='brew cask' # Shorthand
 
-                # Neovim
-                # alias v?='vim -d'
-                # alias nvim='nvim' # NeoVim
+	# Neovim
+	# alias v?='vim -d'
+	# alias nvim='nvim' # NeoVim
 
-                # iCloud
-                # NOTE Skip Local with iCloud > iCloud Drive > Desktop & Documents
-                alias v~='cd ~'
-                alias v~~='cd ~/Library/Mobile\ Documents/com~apple~CloudDocs/Documents'
+	# iCloud
+	# NOTE Skip Local with iCloud > iCloud Drive > Desktop & Documents
+	alias v~='cd ~'
+	alias v~~='cd ~/Library/Mobile\ Documents/com~apple~CloudDocs/Documents'
 
-                # Yabai
-                alias bry='brew services restart yabai'
+	# Yabai
+	alias bry='brew services restart yabai'
+	alias ,ystop='yabai --stop-service'
+	alias ,ystart='yabai --start-service'
 
-                # Skhd
-                alias brs='brew services restart skhd'
+	# Skhd
+	alias brs='brew services restart skhd'
 
-                ## Emacs
-                alias e='emacsclient --c' #Emacs
+	## Emacs
+	alias e='emacsclient --c' #Emacs
 
-                # Game
-                alias _game="brew services stop yabai && brew services stop skhd"
-                alias _normal="brew services start yabai && brew services start skhd"
+	# Game
+	alias _game="brew services stop yabai && brew services stop skhd"
+	alias _normal="brew services start yabai && brew services start skhd"
 
-                # REPLs
-                # alias snek='python3'
-                # alias python='/usr/bin/python3'
-                
-                # GCC
-                alias gcc="gcc-12"
-                alias g++="g++-12"
+	# REPLs
+	# alias snek='python3'
+	# alias python='/usr/bin/python3'
 
-                ;;
+	# GCC
+	alias gcc="gcc-12"
+	alias g++="g++-12"
 
-        # Debian
-        Linux)
+	# Python 3
+	alias py3=python3
+	alias pi3=pip3
 
-                # Nautilus
-                alias open='nautilus .'
+	;;
 
-                # Python 3
-                # alias python='/usr/bin/python3'
-                # alias pip='/usr/bin/pip3'
+# Debian
+Linux)
 
-                ## Emacs
-                alias e='
+	# Nautilus
+	alias open='nautilus .'
+
+	# Python 3
+	alias python='/usr/bin/python3'
+	alias pip='/usr/bin/pip3'
+
+	## Emacs
+	alias e='
         export DISPLAY=:0.0
         export LIBGL_ALWAYS_INDIRECT=1
         setxkbmap -layout us
         setsid emacs
         '
 
-                ;;
+	;;
 
-        CYGWIN* | MINGW32* | MSYS* | MINGW*) ;;
+CYGWIN* | MINGW32* | MSYS* | MINGW*) ;;
 
 esac

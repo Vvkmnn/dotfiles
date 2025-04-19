@@ -4,14 +4,97 @@ set_random_emoji() {
 
 # Define the emojis list only if it's not already defined
 if [ -z "$EMOJIS_DEFINED" ]; then
-    EMOJIS=(
-       "🐕" "🐈" "🐎" "🦬" "🐄" "🐖" "🐑" "🐐" "🐪" 
-       "🐫" "🦙" "🦒" "🐘" "🦣" "🦏" "🦛" "🐇" "🦔" "🦇" 
-       "🦘" "🦡" "🦃" "🐓" "🦢" "🦉" "🦤" "🦚" "🦜" "🐊" 
-       "🐢" "🦎" "🐍" "🐉" "🦕" "🦖" "🐋" "🐬" "🦭" "🐟" 
-       "🐠" "🐡" "🦈" "🐙" "🦀" "🦞" "🦑" "🐌" "🦋" 
-       "🐝" "🪲" "🐞" "🦗" "🦂" "🐜" "🕷️" "🐩" 
-    )
+    # EMOJIS=(
+    #    "🐕" "🐈" "🐎" "🦬" "🐄" "🐖" "🐑" "🐐" "🐪" 
+    #    "🐫" "🦙" "🦒" "🐘" "🦣" "🦏" "🦛" "🐇" "🦔" "🦇" 
+    #    "🦘" "🦡" "🦃" "🐓" "🦢" "🦉" "🦤" "🦚" "🦜" "🐊" 
+    #    "🐢" "🦎" "🐍" "🐉" "🦕" "🦖" "🐋" "🐬" "🦭" "🐟" 
+    #    "🐠" "🐡" "🦈" "🐙" "🦀" "🦞" "🦑" "🐌" "🦋" 
+    #    "🐝" "🪲" "🐞" "🦗" "🦂" "🐜" "🕷️" "🐩" 
+    # )
+
+EMOJIS=(
+    "🐕"  # Dog
+    "🐈"  # Cat
+    "🐎"  # Horse
+    "🦬"  # Bison
+    "🐄"  # Cow
+    "🐖"  # Pig
+    "🐑"  # Sheep
+    "🐐"  # Goat
+    "🐪"  # Camel with one hump
+    "🐫"  # Camel with two humps
+    "🦙"  # Llama
+    "🦒"  # Giraffe
+    "🐘"  # Elephant
+    "🦣"  # Mammoth
+    "🦏"  # Rhinoceros
+    "🦛"  # Hippopotamus
+    "🐇"  # Rabbit
+    "🦔"  # Hedgehog
+    "🦇"  # Bat
+    "🦘"  # Kangaroo
+    "🦡"  # Badger
+    "🦃"  # Turkey
+    "🐓"  # Rooster
+    "🦢"  # Swan
+    "🦉"  # Owl
+    "🦤"  # Dodo
+    "🦚"  # Peacock
+    "🦜"  # Parrot
+    "🐊"  # Crocodile
+    "🐢"  # Turtle
+    "🦎"  # Lizard
+    "🐍"  # Snake
+    "🐉"  # Dragon
+    "🦕"  # Sauropod
+    "🦖"  # T-Rex
+    "🐋"  # Whale
+    "🐬"  # Dolphin
+    "🦭"  # Seal
+    "🐟"  # Fish
+    "🐠"  # Tropical Fish
+    "🐡"  # Blowfish
+    "🦈"  # Shark
+    "🐙"  # Octopus
+    "🦀"  # Crab
+    "🦞"  # Lobster
+    "🦑"  # Squid
+    "🐌"  # Snail
+    "🦋"  # Butterfly
+    "🐝"  # Bee
+    "🪲"  # Beetle
+    "🐞"  # Ladybug
+    "🦗"  # Cricket
+    "🦂"  # Scorpion
+    "🐜"  # Ant
+    "🕷️"  # Spider
+    "🐩"  # Poodle
+    "🦥"  # Sloth
+    "🦦"  # Otter
+    "🦨"  # Skunk
+    "🦩"  # Flamingo
+    "🦫"  # Beaver
+    "🐧"  # Penguin
+    "🦅"  # Eagle
+    "🐦"  # Bird
+    "🐥"  # Chick
+    "🦆"  # Duck
+    "🦢"  # Swan
+    "🦉"  # Owl
+    "🦩"  # Flamingo
+    "🐕"  # Service Dog
+    "🐈"  # Black Cat
+    "🐿️"  # Squirrel
+)
+
+    # "🦄"  # Unicorn
+    # "🦝"  # Raccoon
+    # "🐸"  # Frog
+    # "🐺"  # Wolf
+    # "🦊"  # Fox
+    # "🐗"  # Wild Boar
+
     export EMOJIS_DEFINED=yes
 fi
 

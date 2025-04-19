@@ -60,6 +60,11 @@ yabai -m config \
 	mouse_drop_action swap
 
 # Exclusions
+
+# Floating Windows
+yabai -m rule --add app=".*" sub-layer=normal
+
+# Applications
 # yabai -m rule --add app="^System Preferences$" manage=off
 # yabai -m rule --add app="^quickhue$" manage=off
 # yabai -m rule --add app="^Music$" manage=off

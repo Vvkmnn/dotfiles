@@ -22,7 +22,7 @@
     "editor.acceptSuggestionOnEnter": "off",
     "workbench.colorTheme": "Dracula",
     "window.zoomLevel": 0,
-    "editor.autoIndent": true,
+    "editor.autoIndent": "full",
     // Git
     "diffEditor.renderSideBySide": false,
     "git.confirmSync": false,

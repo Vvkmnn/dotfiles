@@ -45,6 +45,9 @@ export EDITOR='nvim'           # $EDITOR is the default for most shells
 export VISUAL=$EDITOR          # $VISUAL in case
 export ALTERNATE_EDITOR='nvim' # $EDITOR if all else fails
 
+# AI
+export OPENAI_API_KEY=$(cat ~/.openai)
+
 # Prompt
 # FIX Not global
 # export RPROMPT='v@%M %(?,%F{green}[-_-]%f,%F{red}[ಠ_ಠ]%f)'
@@ -184,3 +187,5 @@ esac
 # echo '[¬_¬]...'
 
 # . "$HOME/.cargo/env"
+
+. "$HOME/.grit/bin/env"

@@ -42,3 +42,5 @@ unset __conda_setup
 # <<< conda initialize <<<
 
 . "$HOME/.cargo/env"
+
+. "$HOME/.grit/bin/env"

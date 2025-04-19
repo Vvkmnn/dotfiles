@@ -113,7 +113,7 @@ function prompt_morbidtime() {
   
   # Default prompt symbol.
   # typeset -g POWERLEVEL9K_PROMPT_CHAR='ॐ'
-  typeset -g POWERLEVEL9K_PROMPT_CHAR_{OK,ERROR}_VIINS_CONTENT_EXPANSION='ॐ '
+  typeset -g POWERLEVEL9K_PROMPT_CHAR_{OK,ERROR}_VIINS_CONTENT_EXPANSION=' ॐ '
   # typeset -g POWERLEVEL9K_PROMPT_CHAR_{OK,ERROR}_VIINS_CONTENT_EXPANSION='❯'
   # typeset -g POWERLEVEL9K_PROMPT_CHAR_{OK,ERROR}_VIINS_CONTENT_EXPANSION='ॐ'
   # Prompt symbol in command vi mode.

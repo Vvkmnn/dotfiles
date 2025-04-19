@@ -77,6 +77,9 @@ zodiac_sign() {
 case "$1" in
 day_of_week)
 	echo "$(date +%-u)|7"
+	# echo "$(date +%-u)⋮7"
+	# echo "$(date +%-u)/7"
+	# echo "$(date +%-u)"
 	;;
 
 day_of_month)
@@ -94,6 +97,8 @@ day_of_month)
 
 	# echo "$day/$last_day"
 	echo "$day|$last_day"
+	# echo "$day⋮$last_day"
+	# echo "$day"
 	;;
 
 day_of_year)
@@ -110,19 +115,32 @@ day_of_year)
 		leap="false"
 	fi
 	total_days=$((leap ? 366 : 365))
+	# echo "$day/$total_days"
 	echo "$day|$total_days"
+	# echo "$day⋮$total_days"
+	# echo "$day"
 	;;
 
 week_of_year)
+	# echo "$(date +%V)/52"
 	echo "$(date +%V)|52"
+	# echo "$(date +%V)⋮52"
+	# ⫶
+	# echo "$(date +%V)"
 	;;
 current_month)
+	# echo "$(date +%-m)/12"
 	echo "$(date +%-m)|12"
+	# echo "$(date +%-m)⋮12"
+	# echo "$(date +%-m)"
 	;;
 year_week_based)
 	# 63 == 2054
 	# 72 == 2063
+	# echo "$(date +%g)/54"
 	echo "$(date +%g)|54"
+	# echo "$(date +%g)54"
+	# echo "$(date +%g)"
 	;;
 time)
 	echo "$(date +%T)"

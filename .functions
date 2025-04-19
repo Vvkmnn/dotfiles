@@ -1,37 +1,272 @@
 #!/usr/bin/env bash
 
-# Keys
-#VB6P-RVRL-NSHE-LJ9C-LFD6-N68C-D5QM#
+#
+#
+# {{{
 
+debugger_chrome() {
+	# macOS
+	open -n -a "Google Chrome" --args --remote-debugging-port=9222 --user-data-dir=/tmp/chrome-debug-profile
+
+	# Windows
+	# "C:\Program Files\Google\Chrome\Application\chrome.exe" --remote-debugging-port=9222 --user-data-dir=%TEMP%\chrome-debug-profile
+
+	# Linux
+	# google-chrome --remote-debugging-port=9222 --user-data-dir=/tmp/chrome-debug-profile
+}
+
+# Helper: Returns the fixed face [¬_¬] with a random ANSI color (red–cyan)
+get_colored_face() {
+	local face="[¬_¬]"
+	local color=$(((RANDOM % 6) + 31))
+	echo -e "\033[${color}m${face}\033[0m"
+}
+
+update_all() {
+	local bold="\033[1m"
+	local reset="\033[0m"
+
+	# For Linux systems that use sudo (Debian-based), prompt early.
+	if [[ "$(uname -s)" == "Linux" && -f /etc/debian_version ]]; then
+		read -r -p "This update process will make system changes using sudo. Do you want to continue? [Y/n] " answer
+		answer=${answer:-Y}
+		if [[ ! "$answer" =~ ^[Yy] ]]; then
+			echo "Aborting update."
+			return 1
+		fi
+		# Prompt for sudo password now so it caches the credentials.
+		sudo -v
+	fi
+
+	if [[ "$OSTYPE" == darwin* ]]; then
+		# Mac App Store (MAS)
+
+		# Check for outdated MAS apps
+		local ts=$(date +%s)
+		local colored_face
+		colored_face=$(get_colored_face)
+		local bold_ts="${bold}${ts}${reset}"
+		echo -ne "${colored_face} ${bold_ts} Checking Mac App Store via \`mas outdated\` ... "
+		local outdated_mas
+		outdated_mas=$(mas outdated)
+		if [ -z "$outdated_mas" ]; then
+			echo "no updates found."
+		else
+			echo ""
+			echo "$outdated_mas"
+		fi
+
+		# Upgrade MAS apps
+		ts=$(date +%s)
+		colored_face=$(get_colored_face)
+		bold_ts="${bold}${ts}${reset}"
+		echo -e "${colored_face} ${bold_ts} Upgrading Mac App Store via \`mas upgrade\` ..."
+		mas upgrade
+
+		# Homebrew
+
+		# Check for outdated Homebrew packages
+		ts=$(date +%s)
+		colored_face=$(get_colored_face)
+		bold_ts="${bold}${ts}${reset}"
+		echo -ne "${colored_face} ${bold_ts} Checking Homebrew via \`brew outdated\` ... "
+		local outdated_brew
+		outdated_brew=$(brew outdated)
+		if [ -z "$outdated_brew" ]; then
+			echo "no updates found."
+		else
+			echo ""
+			echo "$outdated_brew"
+		fi
+
+		# Update Homebrew (verbose)
+		ts=$(date +%s)
+		colored_face=$(get_colored_face)
+		bold_ts="${bold}${ts}${reset}"
+		echo -e "${colored_face} ${bold_ts} Updating Homebrew via \`brew update --verbose\` ..."
+		brew update --verbose
+
+		# Upgrade Homebrew packages (verbose)
+		ts=$(date +%s)
+		colored_face=$(get_colored_face)
+		bold_ts="${bold}${ts}${reset}"
+		echo -e "${colored_face} ${bold_ts} Upgrading Homebrew via \`brew upgrade --verbose\` ..."
+		brew upgrade --verbose
+
+		# Upgrade Homebrew casks (greedy, verbose)
+		ts=$(date +%s)
+		colored_face=$(get_colored_face)
+		bold_ts="${bold}${ts}${reset}"
+		echo -e "${colored_face} ${bold_ts} Upgrading Homebrew Casks via \`brew upgrade --cask --greedy --verbose\` ..."
+		brew upgrade --cask --greedy --verbose
+
+		# Cleanup Homebrew
+		ts=$(date +%s)
+		colored_face=$(get_colored_face)
+		bold_ts="${bold}${ts}${reset}"
+		echo -e "${colored_face} ${bold_ts} Cleaning up Homebrew via \`brew cleanup\` ..."
+		brew cleanup
+
+		# Run Homebrew doctor
+		ts=$(date +%s)
+		colored_face=$(get_colored_face)
+		bold_ts="${bold}${ts}${reset}"
+		echo -e "${colored_face} ${bold_ts} Running Homebrew doctor via \`brew doctor\` ..."
+		brew doctor
+
+	elif [[ "$(uname -s)" == "Linux" && -f /etc/debian_version ]]; then
+		# APT (Debian-based)
+
+		# Check for outdated APT packages
+		local ts=$(date +%s)
+		local colored_face
+		colored_face=$(get_colored_face)
+		local bold_ts="${bold}${ts}${reset}"
+		echo -ne "${colored_face} ${bold_ts} Checking APT via \`apt list --upgradable\` ... "
+		local outdated_apt
+		outdated_apt=$(apt list --upgradable 2>/dev/null | tail -n +2)
+		if [ -z "$outdated_apt" ]; then
+			echo "no updates found."
+		else
+			echo ""
+			echo "$outdated_apt"
+		fi
+
+		# Update APT (verbose, greedy)
+		ts=$(date +%s)
+		colored_face=$(get_colored_face)
+		bold_ts="${bold}${ts}${reset}"
+		echo -e "${colored_face} ${bold_ts} Updating APT via \`sudo apt update -o Debug::Acquire::http=true\` ..."
+		sudo apt update -o Debug::Acquire::http=true
+
+		ts=$(date +%s)
+		colored_face=$(get_colored_face)
+		bold_ts="${bold}${ts}${reset}"
+		echo -e "${colored_face} ${bold_ts} Upgrading APT via \`sudo apt upgrade -y -V\` ..."
+		sudo apt upgrade -y -V
+
+		ts=$(date +%s)
+		colored_face=$(get_colored_face)
+		bold_ts="${bold}${ts}${reset}"
+		echo -e "${colored_face} ${bold_ts} Removing unused packages via \`sudo apt autoremove -y\` ..."
+		sudo apt autoremove -y
+
+		ts=$(date +%s)
+		colored_face=$(get_colored_face)
+		bold_ts="${bold}${ts}${reset}"
+		echo -e "${colored_face} ${bold_ts} Cleaning up via \`sudo apt autoclean\` ..."
+		sudo apt autoclean
+	fi
+}
+
+# }}}
 
 # Vim {{{
 # Vim Diff
-vd()
-{
-vim -d -- "$1" "$2"
+vd() {
+	vim -d -- "$1" "$2"
 }
 
 # }}}
 
 # Hydra {{{
 
-cloud_hydra() {
-	# Connects to cloud hydras. For private use only.
+call_chatblade_ai() {
+	local force_expensive=false
+	local cb_args=()
 
-	if [ $# -gt 0 ]; then
-		case $1 in
-		"1")
-			gcloud compute --project "lake-hydra" ssh --zone "us-central1-c" "gcloud-hydra-96"
+	# Process wrapper flags:
+	while [[ $# -gt 0 ]]; do
+		case "$1" in
+		-ex | --expensive)
+			force_expensive=true
 			;;
-		"2")
-			gcloud compute --project "lake-hydra" ssh --zone "us-central1-c" "gcloud-hydra-96-2"
+		-ch | --cheap)
+			# ignore: default is cheap
+			;;
+		-t | --tokens)
+			# ignore, token estimation always runs
 			;;
 		*)
-			echo "[lake/gcloud-hdyra] unrecognized arg $1. Specify server."
+			cb_args+=("$1")
 			;;
 		esac
+		shift
+	done
+
+	# Set model: default to cheap mode (o1-mini), unless forced expensive.
+	local model
+	local model_label
+	if $force_expensive; then
+		model="o1"
+		model_label="o1 (expensive)"
 	else
-		echo "[lake/gcloud-hdyra] no arg supplied. Which server?"
+		model="o1-mini"
+		model_label="o1-mini (cheap)"
+	fi
+
+	# Append piped input (if any) to the query.
+	if [ ! -t 0 ]; then
+		local input
+		input=$(cat)
+		[ -n "$input" ] && cb_args+=("$input")
+	fi
+
+	# Ensure the "-e" flag (execution mode) is present.
+	local has_e=false
+	for arg in "${cb_args[@]}"; do
+		if [ "$arg" = "-e" ]; then
+			has_e=true
+			break
+		fi
+	done
+	if [ "$has_e" = "false" ]; then
+		cb_args+=("-e")
+	fi
+
+	# Remove any user-provided temperature parameters.
+	local filtered_args=()
+	local i=0
+	while [ $i -lt "${#cb_args[@]}" ]; do
+		if [ "${cb_args[$i]}" = "--temperature" ]; then
+			i=$((i + 2))
+			continue
+		else
+			filtered_args+=("${cb_args[$i]}")
+		fi
+		i=$((i + 1))
+	done
+
+	# Build a query string for logging.
+	local query
+	query=$(printf "%s " "${filtered_args[@]}")
+
+	# Read API key from file.
+	local api_key
+	api_key=$(cat ~/.openai)
+
+	# Bold timestamp (e.g., **1740119698**)
+	local timestamp
+	timestamp=$(printf "\033[1m%s\033[0m" "$(date +%s)")
+
+	# --- TOKEN ESTIMATION ---
+	echo "$(get_colored_face) $timestamp Calling ${model_label} to estimate tokens using \`chatblade --openai-api-key <API_KEY> -c $model -s -i -t --temperature 1 -- ${filtered_args[@]}\`"
+	chatblade --openai-api-key "$api_key" -c "$model" -s -i -t --temperature "1" -- "${filtered_args[@]}"
+	local token_status=$?
+	if [ $token_status -ne 0 ]; then
+		timestamp=$(printf "\033[1m%s\033[0m" "$(date +%s)")
+		echo "$(get_colored_face) $timestamp ERROR: Token estimation call failed with exit code $token_status."
+		return $token_status
+	fi
+
+	# --- FINAL CALL ---
+	timestamp=$(printf "\033[1m%s\033[0m" "$(date +%s)")
+	echo "$(get_colored_face) $timestamp Calling ${model_label} to answer \`chatblade --openai-api-key <API_KEY> -c $model -s -i --temperature 1 -- ${filtered_args[@]}\`"
+	chatblade --openai-api-key "$api_key" -c "$model" -s -i --temperature "1" -- "${filtered_args[@]}"
+	local final_status=$?
+	if [ $final_status -ne 0 ]; then
+		timestamp=$(printf "\033[1m%s\033[0m" "$(date +%s)")
+		echo "$(get_colored_face) $timestamp ERROR: Final Chatblade call failed with exit code $final_status."
+		return $final_status
 	fi
 }
-# }}}

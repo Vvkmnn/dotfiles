@@ -166,162 +166,166 @@ wezterm.on("toggle-ligature", function(window, pane)
 	window:set_config_overrides(overrides)
 end)
 
-config.keys =
+config.keys = {
 	{
-		{
-			key = "E",
-			mods = "CTRL",
-			action = wezterm.action.EmitEvent("toggle-ligature"),
-		},
+		key = "E",
+		mods = "CTRL",
+		action = wezterm.action.EmitEvent("toggle-ligature"),
 	},
-	--
-	-- config.background = {
-	-- 	-- This is the deepest/back-most layer. It will be rendered first
-	-- 	{
-	-- 		source = { Gradient = { preset = "Warm" } },
-	--
-	-- 		-- The texture tiles vertically but not horizontally.
-	-- 		-- When we aepeat it, mirror it so that it appears "more seamless".
-	-- 		-- An alternative to this is to set `width = "100%"` and have
-	-- 		-- it stretch across the display
-	-- 		repeat_x = "Mirror",
-	-- 		hsb = dimmer,
-	-- 		-- When the viewport scrolls, move this layer 10% of the number of
-	-- 		-- pixels moved by the main viewport. This makes it appear to be
-	-- 		-- further behind the text.
-	-- 		attachment = { Parallax = 0.1 },
-	-- 	},
-	-- 	{
-	-- 		source = { Gradient = { preset = "Plasma" } },
-	--
-	-- 		-- The texture tiles vertically but not horizontally.
-	-- 		-- When we repeat it, mirror it so that it appears "more seamless".
-	-- 		-- An alternative to this is to set `width = "100%"` and have
-	-- 		-- it stretch across the display
-	-- 		repeat_x = "Mirror",
-	-- 		hsb = dimmer,
-	-- 		-- When the viewport scrolls, move this layer 10% of the number of
-	-- 		-- pixels moved by the main viewport. This makes it appear to be
-	-- 		-- further behind the text.
-	-- 		attachment = { Parallax = 0.2 },
-	-- 	},
+	{
+		key = "Enter",
+		mods = "ALT",
+		action = wezterm.action.DisableDefaultAssignment,
+	},
+}
+--
+-- config.background = {
+-- 	-- This is the deepest/back-most layer. It will be rendered first
+-- 	{
+-- 		source = { Gradient = { preset = "Warm" } },
+--
+-- 		-- The texture tiles vertically but not horizontally.
+-- 		-- When we aepeat it, mirror it so that it appears "more seamless".
+-- 		-- An alternative to this is to set `width = "100%"` and have
+-- 		-- it stretch across the display
+-- 		repeat_x = "Mirror",
+-- 		hsb = dimmer,
+-- 		-- When the viewport scrolls, move this layer 10% of the number of
+-- 		-- pixels moved by the main viewport. This makes it appear to be
+-- 		-- further behind the text.
+-- 		attachment = { Parallax = 0.1 },
+-- 	},
+-- 	{
+-- 		source = { Gradient = { preset = "Plasma" } },
+--
+-- 		-- The texture tiles vertically but not horizontally.
+-- 		-- When we repeat it, mirror it so that it appears "more seamless".
+-- 		-- An alternative to this is to set `width = "100%"` and have
+-- 		-- it stretch across the display
+-- 		repeat_x = "Mirror",
+-- 		hsb = dimmer,
+-- 		-- When the viewport scrolls, move this layer 10% of the number of
+-- 		-- pixels moved by the main viewport. This makes it appear to be
+-- 		-- further behind the text.
+-- 		attachment = { Parallax = 0.2 },
+-- 	},
+-- }
+-- Function to generate a random window background gradient
+-- local function generate_random_gradient()
+--   -- Define color lists for variety
+--   local colors1 = { "#191919", "#0f0c29", "#24243e", "#000000", "#141E30", "#243B55" }
+--   local colors2 = { "#EEBD89", "#D13ABD", "#434343", "#24243e", "#0f0c29" }
+--
+--   -- Initialize the random seed
+--   math.randomseed(os.time())
+--
+--   -- Randomly select one color from each list
+--   local color_from_list1 = colors1[math.random(#colors1)]
+--   local color_from_list2 = colors2[math.random(#colors2)]
+--
+--   -- Configure the gradient with randomly selected colors and linear orientation
+--   return {
+--     colors = { color_from_list1, color_from_list2 },
+-- orientation = { Linear = { angle = math.random() * 360 } },""
+--   }
+-- end
+-- Apply the generated gradient to the window background
+-- config.window_background_gradient = generate_random_gradient(),
+--
+--
+wezterm.on("window-focus-changed", function(window, pane)
+	local colors = {
+		"#001010",
+		"#0f0c29",
+		-- "#141E30",
+		"#000428",
+		"#03001e",
+		-- "#000003",
+		-- "#000007",
+		-- "#000016",
+		-- "#010116",
+		-- "#030333",
+		-- "#000000",
+		-- "#000001",
+	}
+
+	-- local all_colors = {
+	-- "#EEBD89",
+	-- "#D13ABD",
+	-- "#434343",
+	-- "#24243e",
+	-- "#0f0c29",
+	-- "#81A1C1",
+	-- "#191919",
+	-- "#0f0c29",
+	-- "#24243e",
+	-- "#141E30",
+	-- "#243B55",
+	-- "#2E3440",
+	-- "#000000",
+	-- "#6272a4",
+	-- "#141E30",
+	-- "#000000",
+	-- "#010111",
+	-- "#000111",
+	-- "#753a88",
+	-- "#cc2b5e",
+	-- "#42275a",
+	-- "#2c3e50",
+	-- "#48b1bf",
+	-- "#516395",
+	-- "#614385",
+	-- "#240b36",
+	-- "#000046",
+	-- "#000C40",
+	-- "#00223E",
+	-- "#360033",
+	-- "#0b8793",
+	-- "#182848",
+	-- "#480048",
 	-- }
-	-- Function to generate a random window background gradient
-	-- local function generate_random_gradient()
-	--   -- Define color lists for variety
-	--   local colors1 = { "#191919", "#0f0c29", "#24243e", "#000000", "#141E30", "#243B55" }
-	--   local colors2 = { "#EEBD89", "#D13ABD", "#434343", "#24243e", "#0f0c29" }
-	--
-	--   -- Initialize the random seed
-	--   math.randomseed(os.time())
-	--
-	--   -- Randomly select one color from each list
-	--   local color_from_list1 = colors1[math.random(#colors1)]
-	--   local color_from_list2 = colors2[math.random(#colors2)]
-	--
-	--   -- Configure the gradient with randomly selected colors and linear orientation
-	--   return {
-	--     colors = { color_from_list1, color_from_list2 },
-	-- orientation = { Linear = { angle = math.random() * 360 } },""
-	--   }
-	-- end
-	-- Apply the generated gradient to the window background
-	-- config.window_background_gradient = generate_random_gradient(),
-	--
-	--
-	wezterm.on("window-focus-changed", function(window, pane)
-		local colors = {
-			"#001010",
-			"#0f0c29",
-			-- "#141E30",
-			"#000428",
-			"#03001e",
-			-- "#000003",
-			-- "#000007",
-			-- "#000016",
-			-- "#010116",
-			-- "#030333",
-			-- "#000000",
-			-- "#000001",
-		}
 
-		-- local all_colors = {
-		-- "#EEBD89",
-		-- "#D13ABD",
-		-- "#434343",
-		-- "#24243e",
-		-- "#0f0c29",
-		-- "#81A1C1",
-		-- "#191919",
-		-- "#0f0c29",
-		-- "#24243e",
-		-- "#141E30",
-		-- "#243B55",
-		-- "#2E3440",
-		-- "#000000",
-		-- "#6272a4",
-		-- "#141E30",
-		-- "#000000",
-		-- "#010111",
-		-- "#000111",
-		-- "#753a88",
-		-- "#cc2b5e",
-		-- "#42275a",
-		-- "#2c3e50",
-		-- "#48b1bf",
-		-- "#516395",
-		-- "#614385",
-		-- "#240b36",
-		-- "#000046",
-		-- "#000C40",
-		-- "#00223E",
-		-- "#360033",
-		-- "#0b8793",
-		-- "#182848",
-		-- "#480048",
-		-- }
+	-- Initialize the random seed based on the current time
+	math.randomseed()
 
-		-- Initialize the random seed based on the current time
-		math.randomseed()
+	-- Select one color from each list randomly
+	-- local color_from_list1 = colors[math.random(#colors)]
+	-- local color_from_list2 = colors[math.random(#colors)]
 
-		-- Select one color from each list randomly
-		-- local color_from_list1 = colors[math.random(#colors)]
-		-- local color_from_list2 = colors[math.random(#colors)]
+	-- Select the first random color
+	local color_from_list1 = colors[math.random(#colors)]
 
-		-- Select the first random color
-		local color_from_list1 = colors[math.random(#colors)]
-
-		-- Remove the first selected color from the colors table
-		local color_index1
-		for i, color in ipairs(colors) do
-			if color == color_from_list1 then
-				color_index1 = i
-				break
-			end
+	-- Remove the first selected color from the colors table
+	local color_index1
+	for i, color in ipairs(colors) do
+		if color == color_from_list1 then
+			color_index1 = i
+			break
 		end
-		table.remove(colors, color_index1)
+	end
+	table.remove(colors, color_index1)
 
-		-- Select the second random color from the remaining colors
-		local color_from_list2 = colors[math.random(#colors)]
+	-- Select the second random color from the remaining colors
+	local color_from_list2 = colors[math.random(#colors)]
 
-		-- Set the window background gradient with the randomly selected colors
-		window:set_config_overrides({
-			window_background_gradient = {
-				colors = { color_from_list1, color_from_list2 },
-				orientation = { Linear = { angle = -(math.random() * 100) } },
-			},
+	-- Set the window background gradient with the randomly selected colors
+	window:set_config_overrides({
+		window_background_gradient = {
+			colors = { color_from_list1, color_from_list2 },
+			orientation = { Linear = { angle = -(math.random() * 100) } },
+		},
 
-			window_background_opacity = 0.91, -- + (math.random() / 100),
-			-- macos_window_background_blur = 91 + (math.random() * 10),
+		window_background_opacity = 0.91, -- + (math.random() / 100),
+		-- macos_window_background_blur = 91 + (math.random() * 10),
 
-			--
-			-- config.window_background_opacity = 0.95
-			-- config.macos_window_background_blur = 20
-			-- config.macos_window_background_blur = 93
-			--
-			-- window_background_opacity = 1,
-		})
-	end)
+		--
+		-- config.window_background_opacity = 0.95
+		-- config.macos_window_background_blur = 20
+		-- config.macos_window_background_blur = 93
+		--
+		-- window_background_opacity = 1,
+	})
+end)
 
 -- config.window_background_gradient = {
 --

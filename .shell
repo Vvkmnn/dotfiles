@@ -117,6 +117,8 @@
             zcomet load ohmyzsh plugins/gitfast
 
             
+            # TODO modified NVM because does not work with MCP and NPX:
+            # https://github.com/modelcontextprotocol/servers/issues/64
             zcomet load lukechilds/zsh-nvm
             # zcomet load jeffreytse/zsh-vi-mode
             
@@ -167,12 +169,17 @@
             [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
             # }}}
 
+            # grit (for openai?)
+            # curl -fsSL https://docs.grit.io/install | bash
+            # source $HOME/.grit/bin/env (sh, bash, zsh)
+            # source $HOME/.grit/bin/env.fish (fish)
+
             # zsh-nvm {{{
             # NOTE don't need any other flags or checks, lazy load flags takes care of it all
             export NVM_LAZY_LOAD=true
             export NVM_COMPLETION=true
             export NVM_AUTO_USE=true
-            export NVM_LAZY_LOAD_EXTRA_COMMANDS=('vim','nvim')
+            export NVM_LAZY_LOAD_EXTRA_COMMANDS=('vim','nvim', 'windsurf')
             # }}}
 
             # open-ai
@@ -351,6 +358,11 @@
             unset __conda_setup
             # <<< conda initialize <<<
 
+            # go {{{
+            export GOPATH=/opt/homebrew/bin/go
+            export GOROOT=/opt/homebrew/bin/go
+            # }}}
+
             # rust {{{
             # . "$HOME/.cargo/env"
                 [ -d "$HOME/.cargo" ] && . "$HOME/.cargo/env"
@@ -495,8 +507,8 @@
 # export PATH=~/.nvm/versions/node/*/bin:$PATH
 
 # Load NVM
-# export NVM_DIR=~/.nvm
-# [[ -s "$NVM_DIR/nvm.sh" ]] && source "$NVM_DIR/nvm.sh" --no-use
+export NVM_DIR=~/.nvm
+[[ -s "$NVM_DIR/nvm.sh" ]] && source "$NVM_DIR/nvm.sh" --no-use
 #
 
 # # lazy_load_nvm() {
@@ -771,8 +783,8 @@
     # . /usr/local/etc/profile.d/z.sh
 
     ## nvm
-    export NVM_DIR="$HOME/.nvm"
-    [ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
+    # export NVM_DIR="$HOME/.nvm"
+    # [ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
 
     # conda
     # !! Contents within this block are managed by 'conda init' !!

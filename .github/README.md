@@ -156,6 +156,10 @@ mas lucky xcode 1password vimari adguard \
 # maybe
 brew install emacs-mac-spacemacs-icon tmux
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+
+# obsidian
+brew tap yakitrak/yakitrak
+brew install yakitrak/yakitrak/obsidian-cli
 ```
 
 post
@@ -186,6 +190,9 @@ brew install FelixKratz/formulae/svim && brew services start svim
 defaults
 
 ```zsh
+# Dock only shows active Files
+defaults write com.apple.dock static-only -bool true #; killall Dock
+
 # iCloud Files
 defaults write NSGlobalDomain "NSDocumentSaveNewDocumentsToCloud" -bool "false"
 
@@ -232,6 +239,10 @@ brew install git ripgrep coreutils fd      \
 ```
 
 casks
+
+```sh
+brew install --cask chatgpt
+```
 
 ```sh
 brew install --cask protonmail-bridge protonvpn

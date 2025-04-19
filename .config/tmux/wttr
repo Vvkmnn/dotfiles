@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+if [[ -z "$WTTR_PARAMS" ]]; then
+	if [[ -t 1 ]] && [[ "$(tput cols)" -lt 125 ]]; then
+		WTTR_PARAMS+='n'
+	fi 2>/dev/null
+	for _token in $(locale LC_MEASUREMENT); do
+		case $_token in
+		1) WTTR_PARAMS+='m' ;;
+		2) WTTR_PARAMS+='u' ;;
+		esac
+	done 2>/dev/null
+	echo "WTTR_PARAMS set to: $WTTR_PARAMS"
+	export WTTR_PARAMS
+fi
+
+wttr() {
+	local location="${1// /+}"
+	if [ -z "$location" ]; then
+		location=$(CoreLocationCLI -format "%latitude,%longitude")
+		echo "Fetched location: $location"
+		if [ -z "$location" ]; then
+			echo "Could not find the current location."
+			return 1
+		fi
+	fi
+
+	command shift
+	local args=""
+	for p in $WTTR_PARAMS "$@"; do
+		args+=" --data-urlencode $p "
+	done
+	echo "Calling wttr.in with URL: 'wttr.in/${location}' and args: $args"
+	curl -fGsS -H "Accept-Language: ${LANG%_*}" $args --compressed "wttr.in/${location}"
+}
+
+wttr "$@"
