@@ -138,13 +138,14 @@ skhd --start-service && yabai --start-service
 brew install neovim karabiner-elements    \
   wezterm 1password mullvadvpn alfred nvm \
   adguard ngrok obsidian gh jq fzf btop   \
-  coreutils 1password-cli bat
+  coreutils 1password-cli bat batfi
+
 
 # extra
 brew install discord ffmpeg lua sqlite3   \
              mas mactex font-fontawesome  \
              firefox git-lfs hg wget sox  \
-             spaceid docker
+             spaceid docker contexts
 
 # git
 git install lfs
@@ -160,6 +161,10 @@ git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 # obsidian
 brew tap yakitrak/yakitrak
 brew install yakitrak/yakitrak/obsidian-cli
+
+
+# alfred
+## alfred-workflows/window-navigator # option+tab for wa
 ```
 
 post
