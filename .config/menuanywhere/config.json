@@ -1,0 +1,6 @@
+// config is located in ~/.config/menuanywhere/config.json
+// config provided is the default
+{
+  "key": "m",
+  "modifiers": ["control"]
+}

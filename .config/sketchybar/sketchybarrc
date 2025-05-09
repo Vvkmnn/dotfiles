@@ -1,91 +1,243 @@
-# This is a demo config to showcase some of the most important commands.
-# It is meant to be changed and configured, as it is intentionally kept sparse.
-# For a (much) more advanced configuration example see my dotfiles:
-# https://github.com/FelixKratz/dotfiles
+#!/bin/bash
 
-PLUGIN_DIR="$CONFIG_DIR/plugins"
+# --- Load Environment Variables --- #
+PLUGIN_DIR="${PLUGIN_DIR:-$HOME/.config/sketchybar/plugins}"
+FONT="Hack Nerd Font"
 
-##### Bar Appearance #####
-# Configuring the general appearance of the bar.
-# These are only some of the options available. For all options see:
-# https://felixkratz.github.io/SketchyBar/config/bar
-# If you are looking for other colors, see the color picker:
-# https://felixkratz.github.io/SketchyBar/config/tricks#color-picker
+# Source Icons
+source "$HOME/.config/sketchybar/icons.sh"
 
-sketchybar --bar position=top height=40 blur_radius=30 color=0x40000000
+# --- Kanagawa Color Palette --- #
+export FUJI_WHITE=0xffDCD7BA
+export OLD_WHITE=0xffC8C093
+export SUMI_INK1=0xff16161D
+export SUMI_INK2=0xff181820
+export SUMI_INK3=0xff1F1F28
+export SUMI_INK4=0xff2A2A37
+export SUMI_INK5=0xff363646
+export SUMI_INK6=0xff54546D
+export WAVE_BLUE1=0xff223249
+export WAVE_BLUE2=0xff2D4F67
+export CARP_RED=0xffE46876
+export PEACH_RED=0xffFF5D62
+export SURIMI_ORANGE=0xffFFA066
+export CARP_YELLOW=0xffE6C384
+export WAVE_AQUA1=0xff6A9589
+export WAVE_AQUA2=0xff7AA89F
+export SPRING_GREEN=0xff98BB6C
+export BOAT_BLUE1=0xff7FB4CA
+export BOAT_BLUE2=0xffA3D4D5
+export RONIN_VIOLET=0xff766B9E
+export ONI_VIOLET=0xff957FB8
+export CRYSTAL_BLUE=0xff5FBDBA
+export SPRING_BLUE=0xff87A987
+export KATANA_GRAVEL=0xff717171
+export BLACK=0xff000000
 
-##### Changing Defaults #####
-# We now change some default values, which are applied to all further items.
-# For a full list of all available item properties see:
-# https://felixkratz.github.io/SketchyBar/config/items
+# --- Theme Alias --- #
+export BAR_COLOR=$BLACK
+export BAR_BORDER_COLOR=$SUMI_INK3 
+export PRIMARY_TEXT_COLOR=$FUJI_WHITE
+export SECONDARY_TEXT_COLOR=$OLD_WHITE
+export ACCENT_COLOR=$CARP_YELLOW
+export ICON_COLOR=$PRIMARY_TEXT_COLOR
 
-default=(
-  padding_left=5
-  padding_right=5
-  icon.font="Hack Nerd Font:Bold:17.0"
-  label.font="Hack Nerd Font:Bold:14.0"
-  icon.color=0xffffffff
-  label.color=0xffffffff
-  icon.padding_left=4
-  icon.padding_right=4
-  label.padding_left=4
-  label.padding_right=4
-)
-sketchybar --default "${default[@]}"
+# --- Register Custom Events --- #
+sketchybar --add event window_focus \
+           --add event windows_on_spaces \
+           --add event space_change \
+           --add event hide_stats \
+           --add event show_stats \
+           --add event toggle_stats
 
-##### Adding Mission Control Space Indicators #####
-# Let's add some mission control spaces:
-# https://felixkratz.github.io/SketchyBar/config/components#space----associate-mission-control-spaces-with-an-item
-# to indicate active and available mission control spaces.
+# --- Bar Settings --- #
+sketchybar --bar height=28 \
+                 color=$BAR_COLOR \
+                 padding_left=7 \
+                 padding_right=7 \
+                 font_smoothing=on \
+                 blur_radius=0
 
-SPACE_ICONS=("1" "2" "3" "4" "5" "6" "7" "8" "9" "10")
+# --- Default Item Settings --- #
+sketchybar --default \
+    updates=when_shown \
+    icon.font="$FONT:Bold:15.0" \
+    icon.color=$ICON_COLOR \
+    label.font="$FONT:Regular:13.0" \
+    label.color=$PRIMARY_TEXT_COLOR \
+    background.height=26 \
+    background.padding_left=5 \
+    background.padding_right=5 \
+    background.color=0x00000000 \
+    background.corner_radius=0
+
+# --- Space Indicators (Roman Numerals) --- #
+SPACE_ICONS=("I" "II" "III" "IV" "V" "VI" "VII" "VIII" "IX" "X")
 for i in "${!SPACE_ICONS[@]}"
 do
-  sid="$(($i+1))"
-  space=(
-    space="$sid"
-    icon="${SPACE_ICONS[i]}"
-    icon.padding_left=7
-    icon.padding_right=7
-    background.color=0x40ffffff
-    background.corner_radius=5
-    background.height=25
-    label.drawing=off
-    script="$PLUGIN_DIR/space.sh"
-    click_script="yabai -m space --focus $sid"
-  )
-  sketchybar --add space space."$sid" left --set space."$sid" "${space[@]}"
+  sid=$(($i+1))
+  sketchybar --add space space.$sid left \
+             --set space.$sid associated_space=$sid \
+                              icon=${SPACE_ICONS[i]} \
+                              icon.padding_left=10 \
+                              icon.padding_right=10 \
+                              label.drawing=off \
+                              script="$PLUGIN_DIR/yabai_mode.sh" \
+                              click_script="yabai -m space --focus $sid" \
+                              icon.highlight_color=$ACCENT_COLOR
 done
 
-##### Adding Left Items #####
-# We add some regular items to the left side of the bar, where
-# only the properties deviating from the current defaults need to be set
+sketchybar --add item yabai left \
+           --set yabai script="$PLUGIN_DIR/yabai_mode.sh" \
+                       drawing=off \
+           --subscribe yabai window_focus \
+                             windows_on_spaces \
+                             space_change
 
-sketchybar --add item chevron left \
-           --set chevron icon= label.drawing=off \
-           --add item front_app left \
-           --set front_app icon.drawing=off script="$PLUGIN_DIR/front_app.sh" \
+# --- Front App --- #
+sketchybar --add item front_app left \
+           --set front_app       script="$PLUGIN_DIR/front_app.sh" \
+                                 icon.drawing=off \
+                                 label.font="$FONT:Regular:13.0" \
+                                 label.color=$PRIMARY_TEXT_COLOR \
            --subscribe front_app front_app_switched
 
-##### Adding Right Items #####
-# In the same way as the left items we can add items to the right side.
-# Additional position (e.g. center) are available, see:
-# https://felixkratz.github.io/SketchyBar/config/items#adding-items-to-sketchybar
+# --- Right Items --- #
 
-# Some items refresh on a fixed cycle, e.g. the clock runs its script once
-# every 10s. Other items respond to events they subscribe to, e.g. the
-# volume.sh script is only executed once an actual change in system audio
-# volume is registered. More info about the event system can be found here:
-# https://felixkratz.github.io/SketchyBar/config/events
+# Animator for Stats Toggle
+sketchybar --add item animator right \
+           --set animator drawing=off \
+                          updates=on \
+                          script="$PLUGIN_DIR/toggle_stats.sh" \
+           --subscribe animator hide_stats show_stats toggle_stats
 
+# --- Collapsible Stats Section --- #
+
+# CPU Percentage (New)
+sketchybar --add item cpu.percent right \
+           --set cpu.percent label.font="$FONT:Heavy:12" \
+                             label="CPU%" \
+                             label.color=$PRIMARY_TEXT_COLOR \
+                             label.drawing=on \
+                             label.padding_left=3 \
+                             label.padding_right=5 \
+                             icon="$ICON_CPU" \
+                             icon.color=$CRYSTAL_BLUE \
+                             icon.padding_left=5 \
+                             icon.padding_right=3 \
+                             update_freq=2 \
+                             mach_helper=true
+
+# Memory (New)
+sketchybar --add item memory right \
+           --set memory label.font="$FONT:Heavy:12" \
+                        label.color=$PRIMARY_TEXT_COLOR \
+                        label.padding_left=3 \
+                        label.padding_right=5 \
+                        icon="$ICON_RAM" \
+                        icon.font="$FONT:Bold:16.0" \
+                        icon.color=$SPRING_GREEN \
+                        icon.padding_left=5 \
+                        icon.padding_right=3 \
+                        update_freq=15 \
+                        script="$PLUGIN_DIR/stats/scripts/ram.sh"
+
+# Disk (New)
+sketchybar --add item disk right \
+           --set disk label.font="$FONT:Heavy:12" \
+                      label.color=$PRIMARY_TEXT_COLOR \
+                      label.padding_left=3 \
+                      label.padding_right=5 \
+                      icon="$ICON_DISK" \
+                      icon.color=$CARP_RED \
+                      icon.padding_left=5 \
+                      icon.padding_right=3 \
+                      update_freq=60 \
+                      script="$PLUGIN_DIR/stats/scripts/disk.sh"
+
+# Network Down (New)
+sketchybar --add item network.down right \
+           --set network.down y_offset=-7 \
+                              label.font="$FONT:Heavy:10" \
+                              label.color=$PRIMARY_TEXT_COLOR \
+                              icon="$ICON_NETWORK_DOWN" \
+                              icon.font="$FONT:Bold:16.0" \
+                              icon.color=$SPRING_GREEN \
+                              icon.highlight_color=$CRYSTAL_BLUE \
+                              update_freq=3
+
+# Network Up (New)
+sketchybar --add item network.up right \
+           --set network.up background.padding_right=-70 \
+                            y_offset=7 \
+                            label.font="$FONT:Heavy:10" \
+                            label.color=$PRIMARY_TEXT_COLOR \
+                            icon="$ICON_NETWORK_UP" \
+                            icon.font="$FONT:Bold:16.0" \
+                            icon.color=$SPRING_GREEN \
+                            icon.highlight_color=$CRYSTAL_BLUE \
+                            update_freq=3 \
+                            script="$PLUGIN_DIR/stats/scripts/network.sh"
+
+# Wi-Fi Plugin (New)
+sketchybar --add item wifi right \
+           --set wifi script="$PLUGIN_DIR/wifi.sh" \
+                      update_freq=10 \
+                      icon.font="$FONT:Bold:16.0" \
+                      icon.color=$WAVE_AQUA2 \
+                      label.font="$FONT:Regular:12.0" \
+                      label.color=$PRIMARY_TEXT_COLOR \
+           --subscribe wifi system_woke
+
+# Separator and Toggle for Stats (New)
+sketchybar --add item separator_right right \
+           --set separator_right icon= \
+                                 icon.font="$FONT:Regular:16.0" \
+                                 background.padding_left=10 \
+                                 background.padding_right=15 \
+                                 label.drawing=off \
+                                 click_script='sketchybar --trigger toggle_stats' \
+                                 icon.color=$PRIMARY_TEXT_COLOR
+
+# --- Original Right Items (To be potentially replaced or re-integrated) --- #
+
+# CPU Plugin (Old - Commented Out)
+# sketchybar --add item cpu right \
+#            --set cpu icon="$ICON_CPU" \
+#                      icon.color=$CRYSTAL_BLUE \
+#                      update_freq=2 \
+#                      mach_helper=true
+
+# Memory Plugin (Old - Commented Out)
+# sketchybar --add item ram right \
+#            --set ram label.font="$FONT:Bold:12" \
+#                      label.color=$PRIMARY_TEXT_COLOR \
+#                      icon="$ICON_RAM" \
+#                      icon.color=$SPRING_GREEN \
+#                      update_freq=15 \
+#                      script="$PLUGIN_DIR/ram.sh"
+
+# Clock
 sketchybar --add item clock right \
-           --set clock update_freq=10 icon=  script="$PLUGIN_DIR/clock.sh" \
-           --add item volume right \
-           --set volume script="$PLUGIN_DIR/volume.sh" \
-           --subscribe volume volume_change \
-           --add item battery right \
-           --set battery update_freq=120 script="$PLUGIN_DIR/battery.sh" \
+           --set clock   update_freq=10 \
+                         icon="$ICON_CLOCK" \
+                         icon.color=$CARP_YELLOW \
+                         label.font="$FONT:Regular:13.0" \
+                         label.color=$PRIMARY_TEXT_COLOR \
+                         script="$PLUGIN_DIR/time.sh"
+
+# Battery
+sketchybar --add item battery right \
+           --set battery update_freq=60 \
+                         icon="$ICON_BATTERY" \
+                         icon.color=$SPRING_GREEN \
+                         label.font="$FONT:Regular:13.0" \
+                         label.color=$PRIMARY_TEXT_COLOR \
+                         script="$PLUGIN_DIR/battery.sh" \
            --subscribe battery system_woke power_source_change
 
-##### Force all scripts to run the first time (never do this in a script) #####
-sketchybar --update
+# Menuanywhere
+# https://github.com/FelixKratz/SketchyBar/discussions/12?sort=new#discussioncomment-12809693
+swift plugins/menuanywhere.swift
+
+echo "Sketchybar configuration loaded with Kanagawa colors and plugins."
