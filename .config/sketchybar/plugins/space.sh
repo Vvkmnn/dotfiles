@@ -1,19 +1,48 @@
 #!/usr/bin/env sh
 
-YABAI_SPACES=$(yabai -m query --spaces)
-SPACE=$(echo $YABAI_SPACES | jq -r ".[] | select(.id == $SID)")
-YABAI_WINDOW_COUNT=$(echo $SPACE | jq '.windows | length')
-YABAI_IS_ACTIVE=$(echo $SPACE | jq '."has-focus"')
+# Modern space indicator - yellow highlight for active space
+SPACE_ICONS=("1" "2" "3" "4" "5" "6" "7")
 
-if [[ $YABAI_IS_ACTIVE == "true" ]]; then
-  sketchybar --set $NAME background.color=0xff81a1c1 icon.highlight=on
-else
-  sketchybar --set $NAME background.color=0x803c3e4f icon.highlight=off
-fi
+# Modern colors
+YELLOW=0xffDDB670        # Kanagawa yellow for active space
+LIGHT_GRAY=0xffE0E0E0    # Light gray for spaces with windows
+MID_GRAY=0xffA0A0A0      # Medium gray for normal
+DIM_GRAY=0xff606060      # Dim gray for empty
 
-# Show window count indicator if there are windows
-if [[ $YABAI_WINDOW_COUNT -gt 0 ]]; then
-  sketchybar --set $NAME icon.color=0xffffffff
-else
-  sketchybar --set $NAME icon.color=0xaa999999
-fi
+# Get space info
+SPACES_INFO=$(/opt/homebrew/bin/yabai -m query --spaces)
+CURRENT=$(echo "$SPACES_INFO" | jq -r '.[] | select(.["has-focus"] == true) | .index')
+
+# Update all spaces
+for i in {1..7}; do
+  WINDOWS=$(echo "$SPACES_INFO" | jq -r --arg space "$i" '.[] | select(.index == ($space | tonumber)) | .windows | length // 0')
+  
+  if [ "$i" = "$CURRENT" ]; then
+    # Active space - yellow text
+    sketchybar --set space.$i \
+      icon="${SPACE_ICONS[$i-1]}" \
+      icon.color=$YELLOW \
+      icon.font="SF Pro:Medium:13.0" \
+      label.drawing=off \
+      background.drawing=off \
+      width=28
+  elif [ "$WINDOWS" -gt "0" ]; then
+    # Space with windows - light text
+    sketchybar --set space.$i \
+      icon="${SPACE_ICONS[$i-1]}" \
+      icon.color=$LIGHT_GRAY \
+      icon.font="SF Pro:Medium:13.0" \
+      label.drawing=off \
+      background.drawing=off \
+      width=28
+  else
+    # Empty space - dimmed
+    sketchybar --set space.$i \
+      icon="${SPACE_ICONS[$i-1]}" \
+      icon.color=$DIM_GRAY \
+      icon.font="SF Pro:Regular:13.0" \
+      label.drawing=off \
+      background.drawing=off \
+      width=28
+  fi
+done

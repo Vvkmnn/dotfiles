@@ -1,44 +1,34 @@
 #!/usr/bin/env sh
 
-BATTERY_PERCENTAGE=$(pmset -g batt | grep -Eo '\d+%' | cut -d% -f1)
+# Battery display - improved charging icon
+PERCENTAGE=$(pmset -g batt | grep -Eo "\d+%" | cut -d% -f1)
 CHARGING=$(pmset -g batt | grep 'AC Power')
 
-if [[ $CHARGING != "" ]]; then
-  case $BATTERY_PERCENTAGE in
-    100) ICON= ;;
-    9[0-9]) ICON= ;;
-    8[0-9]) ICON= ;;
-    7[0-9]) ICON= ;;
-    6[0-9]) ICON= ;;
-    5[0-9]) ICON= ;;
-    4[0-9]) ICON= ;;
-    3[0-9]) ICON= ;;
-    2[0-9]) ICON= ;;
-    1[0-9]) ICON= ;;
-    *) ICON= ;;
-  esac
-  sketchybar --set $NAME icon=$ICON label="${BATTERY_PERCENTAGE}%" icon.color=0xffa3be8c
+if [ -n "$CHARGING" ]; then
+	# Plugged in - use + symbol for charging
+	ICON="[+ -]"
+	COLOR=0xffDDB670 # Yellow when charging
 else
-  case $BATTERY_PERCENTAGE in
-    100) ICON= ;;
-    9[0-9]) ICON= ;;
-    8[0-9]) ICON= ;;
-    7[0-9]) ICON= ;;
-    6[0-9]) ICON= ;;
-    5[0-9]) ICON= ;;
-    4[0-9]) ICON= ;;
-    3[0-9]) ICON= ;;
-    2[0-9]) ICON= ;;
-    1[0-9]) ICON= ;;
-    *) ICON= ;;
-  esac
-  
-  # Color based on battery percentage when not charging
-  if [[ $BATTERY_PERCENTAGE -lt 20 ]]; then
-    sketchybar --set $NAME icon=$ICON label="${BATTERY_PERCENTAGE}%" icon.color=0xffbf616a label.color=0xffbf616a
-  elif [[ $BATTERY_PERCENTAGE -lt 40 ]]; then
-    sketchybar --set $NAME icon=$ICON label="${BATTERY_PERCENTAGE}%" icon.color=0xffebcb8b label.color=0xffebcb8b
-  else
-    sketchybar --set $NAME icon=$ICON label="${BATTERY_PERCENTAGE}%" icon.color=0xffa3be8c
-  fi
+	# On battery - use bracket notation with fill level
+	if [ $PERCENTAGE -gt 80 ]; then
+		ICON="[|||]"     # Full
+		COLOR=0xff606060 # Dim gray (normal)
+	elif [ $PERCENTAGE -gt 60 ]; then
+		ICON="[|| ]"     # 75%
+		COLOR=0xff606060 # Dim gray (normal)
+	elif [ $PERCENTAGE -gt 40 ]; then
+		ICON="[|| ]"     # 50%
+		COLOR=0xffFFFFFF # White (notable)
+	elif [ $PERCENTAGE -gt 20 ]; then
+		ICON="[|  ]"     # 25%
+		COLOR=0xffDDB670 # Yellow (warning)
+	else
+		ICON="[   ]"     # Empty
+		COLOR=0xffE74C3C # Red (critical)
+	fi
 fi
+
+sketchybar --set battery icon="$ICON" \
+	icon.color=$COLOR \
+	label="${PERCENTAGE}%" \
+	label.color=$COLOR

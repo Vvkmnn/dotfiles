@@ -1,15 +1,24 @@
 #!/usr/bin/env sh
 
-CPU=$(top -l 1 | grep -E "^CPU" | grep -Eo '[^[:space:]]+%' | head -1 | sed 's/\%//')
+# CPU usage - accurate and responsive
+TOP_OUTPUT=$(top -l 2 -n 0 -s 0 | grep "CPU usage" | tail -1)
+USER=$(echo "$TOP_OUTPUT" | awk '{print $3}' | sed 's/%//')
+SYS=$(echo "$TOP_OUTPUT" | awk '{print $5}' | sed 's/%//')
 
-# Update the CPU usage bar
-sketchybar --set $NAME label="${CPU}%"
+# Calculate total CPU usage
+CPU_TOTAL=$(awk "BEGIN {printf \"%.0f\", $USER + $SYS}")
 
-# Color code based on usage
-if [[ $CPU -gt 70 ]]; then
-  sketchybar --set $NAME label.color=0xffbf616a
-elif [[ $CPU -gt 40 ]]; then
-  sketchybar --set $NAME label.color=0xffebcb8b
+# Color scheme: dim gray -> white -> yellow -> red
+if [ $CPU_TOTAL -lt 30 ]; then
+    COLOR=0xff606060  # Dim gray (normal)
+elif [ $CPU_TOTAL -lt 60 ]; then
+    COLOR=0xffFFFFFF  # White (notable)
+elif [ $CPU_TOTAL -lt 80 ]; then
+    COLOR=0xffDDB670  # Yellow (warning)
 else
-  sketchybar --set $NAME label.color=0xffa3be8c
+    COLOR=0xffE74C3C  # Red (critical)
 fi
+
+sketchybar --set cpu label="${CPU_TOTAL}%" \
+                    label.color=$COLOR \
+                    icon.color=$COLOR
