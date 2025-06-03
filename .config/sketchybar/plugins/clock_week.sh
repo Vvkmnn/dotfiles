@@ -1,7 +1,6 @@
 #!/usr/bin/env sh
 
-# Clock week/dow part - dimmed
+# Week of year
 WEEK=$(date '+%V')
-DOW=$(date '+%u')
 
-sketchybar --set clock_week label="$WEEK $DOW"
+sketchybar --set clock_week label="$WEEK"

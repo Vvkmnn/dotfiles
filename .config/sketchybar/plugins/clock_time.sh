@@ -1,16 +1,11 @@
 #!/usr/bin/env sh
 
-# Clock time part - white with kanagawa flash
+# Clock time part - always white
 TIME=$(date '+%H:%M:%S')
 MILLIS=$(perl -MTime::HiRes=time -e 'printf "%.3f", time' | cut -d. -f2)
-SECONDS=$(date '+%S')
 
-# Flash Kanagawa color for 1 second at the start of each minute
-if [ "$SECONDS" = "00" ]; then
-    COLOR=0xffDDB670  # Kanagawa off-white flash
-else
-    COLOR=0xffFFFFFF  # White normally
-fi
+# Always white color for time
+COLOR=0xffFFFFFF
 
 sketchybar --set clock_time label="$TIME.$MILLIS" \
                             label.color=$COLOR

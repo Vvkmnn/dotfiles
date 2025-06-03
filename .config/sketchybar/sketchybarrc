@@ -88,22 +88,32 @@ done
 # IP Address
 sketchybar --add item ip left \
 	--set ip script="$PLUGIN_DIR/ip.sh" \
-	update_freq=2 \
+	update_freq=1 \
 	icon="􀤆" \
 	icon.font="SF Symbols:Regular:13.0" \
+	icon.color=0xffFFFFFF \
 	label.font="SF Pro:Regular:13.0" \
 	padding_right=6 \
 	--subscribe ip wifi_change
 
-# Network Stats
-sketchybar --add item network_stats left \
-	--set network_stats icon.drawing=off \
-	label.font="SF Mono:Regular:12.0" \
-	label="↓  0K ↑  0K" \
+# Network Stats - Separate items for independent coloring
+sketchybar --add item network_down left \
+	--set network_down icon.drawing=off \
+	label.font="SF Pro:Regular:13.0" \
+	label="↓ 0" \
+	label.color=0xffF8F0E0 \
 	padding_left=0 \
-	padding_right=10 \
+	padding_right=2 \
 	update_freq=2 \
 	script="$PLUGIN_DIR/network_stats.sh"
+
+sketchybar --add item network_up left \
+	--set network_up icon.drawing=off \
+	label.font="SF Pro:Regular:13.0" \
+	label="↑ 0" \
+	label.color=0xffF8F0E0 \
+	padding_left=0 \
+	padding_right=8
 
 # --- CENTER ITEMS --- #
 
@@ -120,37 +130,102 @@ sketchybar --add item network_stats left \
 
 # --- RIGHT SIDE ITEMS (minimal spacing) --- #
 
-# Clock - Last item on right
-# Clock time part (white, flashes kanagawa) - rightmost
-sketchybar --add item clock_time right \
-	--set clock_time update_freq=1 \
+# Clock - 9 elements with gradient from kanagawa yellow to white
+# Order: year week month day dow hour :min :sec .ms
+
+# Milliseconds (white) - rightmost
+sketchybar --add item clock_ms right \
+	--set clock_ms update_freq=10 \
 	icon.drawing=off \
 	label.font="SF Pro:Regular:13.0" \
+	label.color=0xffFFFFFF \
 	padding_left=0 \
 	padding_right=6 \
-	script="$PLUGIN_DIR/clock_time.sh"
+	script="$PLUGIN_DIR/clock_ms.sh"
 
-# Clock week/dow part (kanagawa off-white) - middle
-sketchybar --add item clock_week right \
-	--set clock_week update_freq=1 \
+# Seconds with colon (very light)
+sketchybar --add item clock_sec right \
+	--set clock_sec update_freq=1 \
 	icon.drawing=off \
 	label.font="SF Pro:Regular:13.0" \
-	label.color=$YELLOW \
+	label.color=0xffFFF8F0 \
+	padding_left=0 \
+	padding_right=0 \
+	script="$PLUGIN_DIR/clock_sec.sh"
+
+# Minutes with colon (light gradient)
+sketchybar --add item clock_min right \
+	--set clock_min update_freq=1 \
+	icon.drawing=off \
+	label.font="SF Pro:Regular:13.0" \
+	label.color=0xffF8F0E0 \
+	padding_left=0 \
+	padding_right=0 \
+	script="$PLUGIN_DIR/clock_min.sh"
+
+# Hour (lighter gradient)
+sketchybar --add item clock_hour right \
+	--set clock_hour update_freq=60 \
+	icon.drawing=off \
+	label.font="SF Pro:Regular:13.0" \
+	label.color=0xffF0E8D0 \
+	padding_left=0 \
+	padding_right=3 \
+	script="$PLUGIN_DIR/clock_hour.sh"
+
+# Day of week (middle gradient)
+sketchybar --add item clock_dow right \
+	--set clock_dow update_freq=60 \
+	icon.drawing=off \
+	label.font="SF Pro:Regular:13.0" \
+	label.color=0xffE8E0C0 \
+	padding_left=0 \
+	padding_right=3 \
+	script="$PLUGIN_DIR/clock_dow.sh"
+
+# Day (darker gradient)
+sketchybar --add item clock_day right \
+	--set clock_day update_freq=60 \
+	icon.drawing=off \
+	label.font="SF Pro:Regular:13.0" \
+	label.color=0xffE0D8B0 \
+	padding_left=0 \
+	padding_right=3 \
+	script="$PLUGIN_DIR/clock_day.sh"
+
+# Month (darker gradient)
+sketchybar --add item clock_month right \
+	--set clock_month update_freq=60 \
+	icon.drawing=off \
+	label.font="SF Pro:Regular:13.0" \
+	label.color=0xffE0D0A0 \
+	padding_left=0 \
+	padding_right=3 \
+	script="$PLUGIN_DIR/clock_month.sh"
+
+# Week (darker gradient)
+sketchybar --add item clock_week right \
+	--set clock_week update_freq=60 \
+	icon.drawing=off \
+	label.font="SF Pro:Regular:13.0" \
+	label.color=0xffDDC890 \
 	padding_left=0 \
 	padding_right=3 \
 	script="$PLUGIN_DIR/clock_week.sh"
 
-# Clock date part (white) with icon - leftmost of clock group
-sketchybar --add item clock_date right \
-	--set clock_date update_freq=1 \
+# Year with analog clock icon (kanagawa yellow) - leftmost  
+sketchybar --add item clock_year right \
+	--set clock_year update_freq=30 \
+	icon.drawing=on \
 	icon="􀐬" \
 	icon.font="SF Symbols:Regular:13.0" \
 	icon.color=$MID_GRAY \
+	icon.padding_right=1 \
 	label.font="SF Pro:Regular:13.0" \
-	label.color=$WHITE \
-	padding_left=3 \
+	label.color=$YELLOW \
+	padding_left=2 \
 	padding_right=3 \
-	script="$PLUGIN_DIR/clock_date.sh"
+	script="$PLUGIN_DIR/clock_year.sh"
 
 # Battery
 sketchybar --add item battery right \
@@ -206,7 +281,7 @@ sketchybar --add item menuanywhere right \
 	padding_right=6 \
 	icon.color=$MID_GRAY \
 	label.color=$MID_GRAY \
-	click_script="$PLUGIN_DIR/launch_menuanywhere.sh"
+	click_script="$PLUGIN_DIR/launch_menuanywhere.sh"click_script="$PLUGIN_DIR/launch_menuanywhere.sh"
 
 # Force update
 sketchybar --update
