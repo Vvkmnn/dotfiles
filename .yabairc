@@ -1,125 +1,197 @@
 #!/usr/bin/env sh
 
-# https://github.com/koekeishiya/yabai/wiki/Commands
+################################################################################
+# YABAI CONFIGURATION FILE
+# https://github.com/koekeishiya/yabai
+#
+# This file contains the complete configuration for the yabai window manager.
+# It is organized into logical sections for better readability:
+#   1. Scripting Addition Setup
+#   2. Window Focus Behavior
+#   3. Window Management Signals
+#   4. Global Configuration Settings
+#   5. Application-Specific Rules
+#   6. Space Configuration
+#   7. Visual Enhancements (Borders)
+################################################################################
 
+################################################################################
+# 1. SCRIPTING ADDITION SETUP
+################################################################################
+# The scripting addition requires sudo permissions to be properly configured
+# See: https://github.com/koekeishiya/yabai/wiki/Installing-yabai-(latest-release)#configure-scripting-addition
 #
-# for this to work you must configure sudo such that
-# it will be able to run the command without password
-#
-# see this wiki page for information:
-#  - https://github.com/koekeishiya/yabai/wiki/Installing-yabai-(latest-release)#configure-scripting-addition
-#
-yabai -m signal --add event=dock_did_restart action="sudo yabai --load-sa"
+# This signal ensures yabai's scripting addition is reloaded when the Dock restarts
+/opt/homebrew/bin/yabai -m signal --add event=dock_did_restart action="sudo yabai --load-sa"
+# Load the scripting addition immediately on startup
 sudo yabai --load-sa
-#
 
-# softer window closing
+################################################################################
+# 2. WINDOW FOCUS BEHAVIOR
+################################################################################
+# Smart window focusing behavior when windows are closed/destroyed
+# This ensures focus shifts to another window when the current one is closed
 # https://github.com/koekeishiya/yabai/issues/1012
-yabai -m signal --add event=window_destroyed action="yabai -m query --windows --window &> /dev/null || yabai -m window --focus recent || yabai -m window --focus first"
-yabai -m signal --add event=application_terminated action="yabai -m query --windows --window &> /dev/null || yabai -m window --focus recent || yabai -m window --focus first"
+#
+# When a window is destroyed, focus the most recently used window or the first one
+/opt/homebrew/bin/yabai -m signal --add event=window_destroyed action="/opt/homebrew/bin/yabai -m query --windows --window &> /dev/null || /opt/homebrew/bin/yabai -m window --focus recent || /opt/homebrew/bin/yabai -m window --focus first"
+# Same behavior when an application is terminated
+/opt/homebrew/bin/yabai -m signal --add event=application_terminated action="/opt/homebrew/bin/yabai -m query --windows --window &> /dev/null || /opt/homebrew/bin/yabai -m window --focus recent || /opt/homebrew/bin/yabai -m window --focus first"
 
-# ffm (# autoraise | autofocus      )
+################################################################################
+# 3. WINDOW MANAGEMENT SIGNALS
+################################################################################
+# Focus handling when changing spaces
+# https://github.com/koekeishiya/yabai/issues/719
+#
+# Focus the first window when switching spaces
+/opt/homebrew/bin/yabai -m signal --add event=space_changed action="/opt/homebrew/bin/yabai -m window --focus \$(/opt/homebrew/bin/yabai -m query --windows --space | jq .[0].id)"
 
-# NOTE
-# autoraise works better than autofocus
+# Focus the first window when changing displays
+/opt/homebrew/bin/yabai -m signal --add event=display_changed action="/opt/homebrew/bin/yabai -m window --focus \$(/opt/homebrew/bin/yabai -m query --windows --space | jq .[0].id)"
 
-# global settings
-yabai -m config \
-	mouse_follows_focus on \
-	focus_follows_mouse autoraise \
-	window_origin_display default \
-	window_placement second_child \
-	window_topmost off \
-	window_shadow off \
-	window_animation_duration 0.0 \
-	window_animation_frame_rate 120 \
-	window_opacity_duration 0.0 \
-	active_window_opacity 1.0 \
-	normal_window_opacity 0.90 \
-	window_opacity off \
-	insert_feedback_color 0xffd75f5f \
-	active_window_border_color 0xff775759 \
-	normal_window_border_color 0xff555555 \
-	window_border_width 4 \
-	window_border_radius 12 \
-	window_border_blur off \
-	window_border_hidpi on \
-	window_border off \
-	split_ratio 0.51 \
-	split_type auto \
-	auto_balance off \
-	top_padding 12 \
-	bottom_padding 12 \
-	left_padding 12 \
-	right_padding 12 \
-	window_gap 06 \
-	layout bsp \
-	mouse_modifier fn \
-	mouse_action1 move \
-	mouse_action2 resize \
-	mouse_drop_action swap
+# Focus the first visible window when switching spaces
+# TODO: Fix later, some error
+# /opt/homebrew/bin/yabai -m signal --add event=space_changed action='/opt/homebrew/bin/yabai -m window --focus $(/opt/homebrew/bin/yabai -m query --windows --space | jq -r \'[.[]|select(."is-visible")][0].id\')'
 
-# Exclusions
+# Special handling for small floating windows
+# https://github.com/koekeishiya/yabai/issues/1317#issuecomment-2122833942
+# Makes small utility windows float by default and positions them in a grid
+# /opt/homebrew/bin/yabai -m signal --add event=window_created action='
+#   /opt/homebrew/bin/yabai -m query --windows --window $yabai_window_id | jq -er ".\"can-resize\" or .\"is-floating\"" || \
+#   /opt/homebrew/bin/yabai -m window $yabai_window_id --toggle float --layer above --grid 4:4:1:1:2:2
+# '
 
-# Floating Windows
-yabai -m rule --add app=".*" sub-layer=normal
+################################################################################
+# 4. GLOBAL CONFIGURATION SETTINGS
+################################################################################
+# Focus and mouse behavior
+# 'autofocus' mode activates windows when the mouse enters them
+/opt/homebrew/bin/yabai -m config mouse_follows_focus on          # Move mouse cursor with window focus
+/opt/homebrew/bin/yabai -m config focus_follows_mouse autofocus   # Focus windows when mouse hovers over them
 
-# Applications
-# yabai -m rule --add app="^System Preferences$" manage=off
-# yabai -m rule --add app="^quickhue$" manage=off
-# yabai -m rule --add app="^Music$" manage=off
-# yabai -m rule --add app="Music" manage=off
-# yabai -m rule --add app="^Spark$" manage=off
-# yabai -m rule --add app="^Discord$" manage=off
-# yabai -m rule --add app="^RememBear$" manage=off
-# yabai -m rule --add app="^1Password$" manage=off
+# Window placement and appearance
+/opt/homebrew/bin/yabai -m config window_origin_display default   # Place new windows on the current display
+/opt/homebrew/bin/yabai -m config window_placement second_child   # Place new windows as the second child in BSP
+/opt/homebrew/bin/yabai -m config window_topmost off              # Windows won't stay on top by default
+/opt/homebrew/bin/yabai -m config window_shadow off               # Disable window shadows
 
-# yabai -m rule --add app=Emacs manage=on
-# # yabai -m rule --add app=RememBear manage=on
-# yabai -m rule --add app="^System­einstellungen$" sticky=on layer=above manage=off
-# yabai -m rule --add app="^Mail$" sticky=on manage=on
-# yabai -m rule --add app="^Music$" sticky=on layer=above manage=on
-# yabai -m rule --add app="^1Password$" sticky=on layer=above manage=on
-# yabai -m rule --add app="^1Password$" sticky=on layer=above manage=on
-# yabai -m rule --add app="Terminal" sticky=on layer=above manage=on
-# yabai -m rule --add app="App Store" sticky=on layer=above manage=on
-# yabai -m rule --add app="^System Preferences$" manage=off
-# # yabai -m rule --add app=Steam manage=on
-# # yabai -m rule --add app=IMVU manage=off
+# Window animations
+/opt/homebrew/bin/yabai -m config window_animation_duration 0.0   # Duration of window animations (0.0 = instant)
+/opt/homebrew/bin/yabai -m config window_animation_easing ease_out_circ  # Animation easing type
+/opt/homebrew/bin/yabai -m config window_animation_frame_rate 120 # Animation frame rate
 
-# ignore floating windows if possible
-# TODO seems to do nothing
-# https://github.com/koekeishiya/yabai/issues/1317
-yabai -m signal --add event=window_created action='
-  yabai -m query --windows --window $YABAI_WINDOW_ID | jq -er ".\"can-resize\" or .\"is-floating\"" || \
-  yabai -m window $YABAI_WINDOW_ID --toggle float && \
-  yabai -m window $YABAI_WINDOW_ID --layer above && \
-  yabai -m window $YABAI_WINDOW_ID --grid 3:3:1:1:1:1
+# Window opacity settings
+/opt/homebrew/bin/yabai -m config window_opacity off              # Disable window opacity
+/opt/homebrew/bin/yabai -m config window_opacity_duration 0.0     # Duration for opacity changes
+/opt/homebrew/bin/yabai -m config active_window_opacity 1.0       # Active window is fully opaque
+/opt/homebrew/bin/yabai -m config normal_window_opacity 0.90      # Inactive windows are slightly transparent
+
+# Visual feedback settings
+/opt/homebrew/bin/yabai -m config insert_feedback_color 0xffd75f5f # Color shown when a window insertion point is displayed
+
+# Window border settings (currently disabled)
+/opt/homebrew/bin/yabai -m config window_border off               # Window borders are disabled
+/opt/homebrew/bin/yabai -m config window_border_width 4           # Border width if enabled
+/opt/homebrew/bin/yabai -m config window_border_radius 12         # Border radius for rounded corners
+/opt/homebrew/bin/yabai -m config window_border_blur off          # No blur effect on borders
+/opt/homebrew/bin/yabai -m config window_border_hidpi on          # Enable HiDPI support for borders
+/opt/homebrew/bin/yabai -m config active_window_border_color 0xff775759  # Color for active window border
+/opt/homebrew/bin/yabai -m config normal_window_border_color 0xff555555  # Color for inactive window borders
+
+# Layout and spacing settings
+/opt/homebrew/bin/yabai -m config layout bsp                      # Binary Space Partitioning layout
+/opt/homebrew/bin/yabai -m config split_ratio 0.51                # Window split ratio (slightly favors the new window)
+/opt/homebrew/bin/yabai -m config split_type vertical # Automatically determine split type
+/opt/homebrew/bin/yabai -m config auto_balance on                # Don't automatically balance windows
+
+# Padding around windows (pixels)
+/opt/homebrew/bin/yabai -m config top_padding 12                  # Padding at the top of the screen
+/opt/homebrew/bin/yabai -m config bottom_padding 12               # Padding at the bottom of the screen
+/opt/homebrew/bin/yabai -m config left_padding 12                 # Padding on the left side
+/opt/homebrew/bin/yabai -m config right_padding 12                # Padding on the right side
+/opt/homebrew/bin/yabai -m config window_gap 06                   # Gap between windows
+
+# Mouse controls
+/opt/homebrew/bin/yabai -m config mouse_modifier fn               # Function key as the mouse modifier
+/opt/homebrew/bin/yabai -m config mouse_action1 move              # Left-click + fn = move window
+/opt/homebrew/bin/yabai -m config mouse_action2 resize            # Right-click + fn = resize window
+/opt/homebrew/bin/yabai -m config mouse_drop_action swap          # Dropping windows swaps their positions
+
+################################################################################
+# 5. APPLICATION-SPECIFIC RULES
+################################################################################
+# Set default layer for all applications
+/opt/homebrew/bin/yabai -m rule --add app=".*" sub-layer=normal  # All apps use normal sub-layer by default
+
+# Handle floating windows automatically
+# Detects windows that can't be resized or are already floating
+# and makes them float with a nice position on the screen
+/opt/homebrew/bin/yabai -m signal --add event=window_created action='
+  /opt/homebrew/bin/yabai -m query --windows --window $YABAI_WINDOW_ID | jq -er ".\"can-resize\" or .\"is-floating\"" || \
+  /opt/homebrew/bin/yabai -m window $YABAI_WINDOW_ID --toggle float && \
+  /opt/homebrew/bin/yabai -m window $YABAI_WINDOW_ID --layer above && \
+  /opt/homebrew/bin/yabai -m window $YABAI_WINDOW_ID --grid 3:3:1:1:1:1
 '
 
-yabai -m signal --add event=window_created action='yabai -m query --windows --window $YABAI_WINDOW_ID | jq -er ".\"can-resize\" or .\"is-floating\"" || yabai -m window $YABAI_WINDOW_ID --toggle float'
+# Alternative floating window handling (simpler version)
+/opt/homebrew/bin/yabai -m signal --add event=window_created action='/opt/homebrew/bin/yabai -m query --windows --window $YABAI_WINDOW_ID | jq -er ".\"can-resize\" or .\"is-floating\"" || /opt/homebrew/bin/yabai -m window $YABAI_WINDOW_ID --toggle float'
 
-# https://d12frosted.io/posts/2022-04-23-yabai-spaces.html
-# setup spaces
-##
-#for _ in $(yabai -m query --spaces | jq '.[].index | select(. > 6)'); do
-#  yabai -m space --destroy 7
-#done
+# Uncomment individual rules below to enable them
+# SYSTEM APPLICATIONS
+# /opt/homebrew/bin/yabai -m rule --add app="^System Preferences$" manage=off
+# /opt/homebrew/bin/yabai -m rule --add app="^System­einstellungen$" sticky=on layer=above manage=off
+# /opt/homebrew/bin/yabai -m rule --add app="App Store" sticky=on layer=above manage=on
 
+# PRODUCTIVITY APPLICATIONS
+# /opt/homebrew/bin/yabai -m rule --add app="^Mail$" sticky=on manage=on
+# /opt/homebrew/bin/yabai -m rule --add app=Emacs manage=on
+# /opt/homebrew/bin/yabai -m rule --add app="Terminal" sticky=on layer=above manage=on
+
+# UTILITY APPLICATIONS
+# /opt/homebrew/bin/yabai -m rule --add app="^quickhue$" manage=off
+# /opt/homebrew/bin/yabai -m rule --add app="^RememBear$" manage=off
+# /opt/homebrew/bin/yabai -m rule --add app="^1Password$" sticky=on layer=above manage=on
+
+# MEDIA APPLICATIONS
+# /opt/homebrew/bin/yabai -m rule --add app="^Music$" sticky=on layer=above manage=on
+# /opt/homebrew/bin/yabai -m rule --add app="^Spotify$" space=5
+
+# COMMUNICATION APPLICATIONS
+# /opt/homebrew/bin/yabai -m rule --add app="^Spark$" manage=off
+# /opt/homebrew/bin/yabai -m rule --add app="^Discord$" manage=off
+# /opt/homebrew/bin/yabai -m rule --add app="^Telegram$" space=4
+
+# WEB BROWSERS
+# /opt/homebrew/bin/yabai -m rule --add app="^Safari$" space=3
+# /opt/homebrew/bin/yabai -m rule --add app="^Firefox$" space=3
+
+# GAMING APPLICATIONS
+# /opt/homebrew/bin/yabai -m rule --add app=Steam manage=on
+# /opt/homebrew/bin/yabai -m rule --add app=IMVU manage=off
+
+################################################################################
+# 6. SPACE CONFIGURATION
+################################################################################
+# Uncomment to setup named spaces automatically
+# Reference: https://d12frosted.io/posts/2022-04-23-yabai-spaces.html
+#
+# This function creates or configures a space with a specific name
 #function setup_space {
 #  local idx="$1"
 #  local name="$2"
 #  local space=
 #  echo "setup space $idx : $name"
-
-#  space=$(yabai -m query --spaces --space "$idx")
+#
+#  space=$(/opt/homebrew/bin/yabai -m query --spaces --space "$idx")
 #  if [ -z "$space" ]; then
-#    yabai -m space --create
+#    /opt/homebrew/bin/yabai -m space --create
 #  fi
-
-#  yabai -m space "$idx" --label "$name"
+#
+#  /opt/homebrew/bin/yabai -m space "$idx" --label "$name"
 #}
-
+#
+# Create named spaces
 #setup_space 1 emacs
 #setup_space 2 code
 #setup_space 3 web
@@ -127,19 +199,23 @@ yabai -m signal --add event=window_created action='yabai -m query --windows --wi
 #setup_space 5 media
 #setup_space 6 other
 
-# move some apps automatically to specific spaces
-# yabai -m rule --add app="^Safari$" space=^3
-# yabai -m rule --add app="^Firefox$" space=^3
-# yabai -m rule --add app="^Telegram$" space=4
-# yabai -m rule --add app="^Music$" space=5
-# yabai -m rule --add app="^Spotify$" space
-
+# Confirmation message when configuration is loaded
 echo "yabai configuration loaded.."
 
-# borders
-# https://github.com/FelixKratz/JankyBorders
-#!/bin/bash
+################################################################################
+# 7. VISUAL ENHANCEMENTS (BORDERS)
+################################################################################
+# JankyBorders for window borders - https://github.com/FelixKratz/JankyBorders
+# Adds a subtle border to the active window for better visibility
 
+# Active configuration: 1px round light-colored border
+borders active_color=0xffe1e3e4 width=1 style=round &
+
+# Other border configurations (commented out)
+# borders active_color=0xffe1e3e4 inactive_color=0xff494d64 width=5.0 &
+# borders active_color=0xffe1e3e4 inactive_color=0xff494d64 width=3 blur_radius=3.0 hidipi=on style=round &
+
+# Define options as an array (alternative method)
 # options=(
 # 	style=round
 # 	width=6.0
@@ -147,12 +223,7 @@ echo "yabai configuration loaded.."
 # 	active_color=0xffe2e2e3
 # 	inactive_color=0xff414550
 # )
-#
-
-# Window highlight
 # borders "${options[@]}"
-# borders active_color=0xffe1e3e4 inactive_color=0xff494d64 width=5.0 &
-# blur_radius=100.0
-# borders active_color=0xffe1e3e4 inactive_color=0xff494d64 width=3 blur_radius=3.0 hidipi=on style=round &
-borders active_color=0xffe1e3e4 width=3 blur_radius=3.0 style=round &
-# borders &
+/opt/homebrew/bin/yabai -m config debug_output on
+/opt/homebrew/bin/yabai -m config external_bar all:24:0
+/opt/homebrew/bin/yabai -m signal --add event=space_changed action="sketchybar --trigger space_change"

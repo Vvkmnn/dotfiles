@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:ghostty.org)",
+      "WebFetch(domain:www.reddit.com)",
+      "WebFetch(domain:gist.github.com)",
+      "WebFetch(domain:fredrikaverpil.github.io)"
+    ],
+    "deny": []
+  }
+}

@@ -1,26 +1,53 @@
-echo -e "
-${RED#    } ##################################################  ${fieldlist[1]}
-${RED#    } ######################        ####################  ${fieldlist[2]}
-${RED#    } ################                    ##############  ${fieldlist[3]}
-${RED#    } ############# ${normal}               ######  ${RED#}   ##########  ${fieldlist[4]}
-${RED#    } ###########   ${normal}             #######   ${RED#}     ########  ${fieldlist[5]}
-${RED#    } #########     ${normal}            #######    ${RED#}       ######  ${fieldlist[6]}
-${RED#    } ########      ${normal}            ######     ${RED#}        #####  ${fieldlist[7]}
-${RED#    } #######       ${normal}            ######     ${RED#}         ####  ${fieldlist[8]}
-${RED#    } ######        ${normal}    ######  ######     ${RED#}          ###  ${fieldlist[9]}
-${RED#    } #####         ${normal}  #######   ######     ${RED#}           ##  ${fieldlist[10]}
-${RED#    } #####         ${normal}  #####     ######     ${RED#}           ##  ${fieldlist[11]}
-${RED#    } #####         ${normal}   #####     #####     ${RED#}           ##  ${fieldlist[12]}
-${RED#    } #####         ${normal}    #####     ####     ${RED#}           ##
-${RED#    } #####         ${normal}     #####     ###     ${RED#}           ##
-${RED#    } #####         ${normal}      #####     ##     ${RED#}           ##
-${RED#    } ######        ${normal}       #####     #     ${RED#}          ###
-${RED#    } #######       ${normal}        #####          ${RED#}         ####
-${RED#    } ########      ${normal}         #####         ${RED#}        #####
-${RED#    } ##########    ${normal}          #####        ${RED#}      #######
-${RED#    } ############  ${normal}           #####       ${RED#}    #########
-${RED#    } ##############${normal}            #####      ${RED#}  ###########
-${RED#    } ##################                ################
-${RED#    } ##################################################
-${normal}
-"
+# Only show logo if:
+# 1. Terminal is wide enough (50+ columns)
+# 2. tput command exists and responds quickly
+# 3. Not in a non-interactive shell
+# 4. Not in a pipe or script
+
+# Skip if shell is still initializing (common in tmux startup)
+if [ -z "$PS1" ]; then
+    return 2>/dev/null || :
+fi
+
+if [ -t 1 ] && command -v tput >/dev/null 2>&1; then
+    # Get terminal width with timeout to prevent hanging
+    cols=$(timeout 0.1 tput cols 2>/dev/null || echo 0)
+    
+    # Only display if wide enough
+    if [ "$cols" -ge 50 ] 2>/dev/null; then
+        # Use printf instead of echo -e for better performance
+        printf "\n\n
+	      #####
+             #####
+            #####    
+            #####       @v
+            #####       
+     ####   #####       
+   #####    #####       
+   ####     #####       ॐ गणपतये नमः 
+    ####     ####       εἰφέρειν φέρε  
+     ####     ###       常に兵法の道をはなれず 
+      ####     ##       
+       ####     #     
+        ####            
+         ####           http://vvkmnn.xyz  
+          ####          
+           ####
+            ####
+             ####  
+\n\n"
+        # Set flag to avoid showing multiple times in subshells
+        # export LOGO_SHOWN=1
+    fi
+fi
+
+# Om Gum Ganapatayei Namah, ganesh mantra
+# The Greek phrase "εἰ φέρειν, φέρε· καὶ μὴ δυσχέραινε»." translates to "If it is endurable, then endure it, and do not be distressed"
+# Musashi - [Japanese>English] Never Stray From the Way direct translation https://www.reddit.com/r/translator/comments/12y1ddt/japaneseenglish_never_stray_from_the_way_direct/
+# The phrase "blessings of mountains" in the context of "skaiisyourgod" likely refers to the lyrics of the song "因果" (Karma) by the artist 揽佬SKAI ISYOURGOD. In the song, the phrase "老天保佑金山銀山前路有" translates to "God bless you with mountains of gold and silver in the journey ahead"
+# 老天保佑金山銀山前路有
+#Je pense, donc je suis 
+ #老天保佑金山銀山前路有 
+ #
+ ## TODO array of quotes to pull 3
+ ## TODO Flashes twice, once on load and then once on tmux load, is tmux loading the shell twice? 

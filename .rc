@@ -39,10 +39,5 @@
 # Shell
 [ -f ~/.shell ] && . ~/.shell
 
-. "$HOME/.grit/bin/env"
-
-# Added by Windsurf
-export PATH="/Users/v/.codeium/windsurf/bin:$PATH"
-
-# Added by Windsurf
-export PATH="/Users/v/.codeium/windsurf/bin:$PATH"
+# Logo
+# [ -f ~/.logo ] && . ~/.logo

@@ -117,8 +117,8 @@
             zcomet load ohmyzsh plugins/gitfast
 
             
-            # TODO modified NVM because does not work with MCP and NPX:
-            # https://github.com/modelcontextprotocol/servers/issues/64
+            # Minimal zsh-nvm configuration - no lazy loading
+            export NVM_LAZY_LOAD=false
             zcomet load lukechilds/zsh-nvm
             # zcomet load jeffreytse/zsh-vi-mode
             
@@ -145,6 +145,9 @@
             # QOL
             zcomet load paulirish/git-open
 
+	    # Env
+	    zcomet load MichaelAquilina/zsh-autoswitch-virtualenv
+
             # Custom 
             zcomet load Tarrasch/zsh-autoenv
             zcomet load zsh-users/zsh-completions
@@ -152,6 +155,7 @@
             # Run compinit and compile its cache
             zcomet compinit
             ##}}}
+
 
             # Powerlevel 10k {{{
 
@@ -175,12 +179,14 @@
             # source $HOME/.grit/bin/env.fish (fish)
 
             # zsh-nvm {{{
-            # NOTE don't need any other flags or checks, lazy load flags takes care of it all
-            export NVM_LAZY_LOAD=true
-            export NVM_COMPLETION=true
-            export NVM_AUTO_USE=true
-            export NVM_LAZY_LOAD_EXTRA_COMMANDS=('vim','nvim', 'windsurf')
+            # Disable lazy loading to ensure next and other commands work immediately
+            # export NVM_LAZY_LOAD=false
+            # export NVM_COMPLETION=true
+            # export NVM_AUTO_USE=true
             # }}}
+
+	    # Python3 VirtualEnv
+	    export AUTOSWITCH_DEFAULT_PYTHON="/opt/homebrew/bin/python3"   # or just "python3"
 
             # open-ai
             # NOTE 1password prompts everytime...
@@ -606,6 +612,12 @@ export NVM_DIR=~/.nvm
             #   exec tmux new-session -A -s workspace
             # fi
 
+
+
+
+
+
+
             case "$(uname -s)" in
               Linux )
 
@@ -845,3 +857,6 @@ export NVM_DIR=~/.nvm
 #         ;;
 #
 # esac
+#
+#
+

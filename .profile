@@ -46,12 +46,16 @@ export VISUAL=$EDITOR          # $VISUAL in case
 export ALTERNATE_EDITOR='nvim' # $EDITOR if all else fails
 
 # AI
-export OPENAI_API_KEY=$(cat ~/.openai)
+# export OPENAI_API_KEY=$(cat ~/.openai)
 
 # Prompt
 # FIX Not global
 # export RPROMPT='v@%M %(?,%F{green}[-_-]%f,%F{red}[ಠ_ಠ]%f)'
 # export PROMPT=' ॐ  '
+
+# GPG
+export GPG_TTY=$(tty)
+export SSH_AUTH_SOCK=~/.gnupg/S.gpg-agent.ssh
 
 # OS=$(uname -s)
 
@@ -59,6 +63,10 @@ case "$(uname -s)" in
 Linux) ;;
 
 Darwin)
+
+	# windsurf
+	export PATH="/Users/v/.codeium/windsurf/bin:$PATH"
+
 	# Prompt
 	# export PURE_PROMPT_SYMBOL="ॐ "
 
@@ -132,6 +140,8 @@ Darwin)
 
 	# Emacs (Doom)
 	export PATH="$HOME/.emacs.d/bin:$PATH"
+	export PATH="$HOME/.config/doom/bin:$PATH"
+	export PATH="$HOME/v.doom.d/bin:$PATH"
 
 	# Clang
 	export CPATH=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include
@@ -152,11 +162,19 @@ Darwin)
 	# MacOS (Brew) Emacs
 	# export PATH="/Applications/Emacs.app/Contents/MacOS/bin:$PATH"
 
+	# local bin for Claude Code?
+	export PATH="$HOME/.local/bin:$PATH"
+
 	## Fun ---------------------------------------------
 	export PATH="/Applications/Alacritty.app/Contents/MacOS/:$PATH"
 
 	## Work --------------------------------------------
 	# PATH="$HOME/Documents/lake/lake-hydra/bin:$PATH"
+
+	# uv
+	export PATH="$HOME/.local/bin:$PATH"
+	. "$HOME/.local/bin/env"
+
 	;;
 
 CYGWIN* | MINGW32* | MSYS* | MINGW*)
@@ -188,4 +206,4 @@ esac
 
 # . "$HOME/.cargo/env"
 
-. "$HOME/.grit/bin/env"
+# . "$HOME/.grit/bin/env"

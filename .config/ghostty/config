@@ -1,0 +1,551 @@
+# v.ghostty
+
+# ============================================================================
+# THEMES & COLORS
+# ============================================================================
+
+# Dark theme with vibrant colors
+# theme = catppuccin-mocha
+
+# Auto-switch with system light/dark mode
+theme = light:github_light,dark:tokyonight
+
+# Beautiful rose-pine theme switching
+# theme = light:rose-pine-dawn,dark:rose-pine
+
+# Custom background color (hex or X11 color name)
+# background = #1e1e2e
+
+# Custom foreground color (hex or X11 color name)
+# foreground = #cdd6f4
+
+# Custom color palette (0-255 indexed colors)
+# palette = 0=#45475a
+# palette = 1=#f38ba8
+
+# Background transparency (0.0-1.0)
+background-opacity = 0.95
+
+# Background blur effect
+background-blur-radius = 93
+
+# Minimum contrast ratio for text readability (1.0-21.0)
+minimum-contrast = 1.1
+
+# Color space for rendering
+# window-colorspace = srgb
+
+# Alpha blending mode
+# alpha-blending = true
+
+# ============================================================================
+# FONTS & TEXT
+# ============================================================================
+
+# Font family with fallbacks
+font-family = "Hack Nerd Font", "JetBrains Mono"
+
+# Your original font choice
+# font-family = "TX-02"
+
+# Additional font families for fallback
+# font-family = "SF Mono"
+# font-family = "Menlo"
+
+# Font families for specific styles
+# font-family-bold = 
+# font-family-italic = 
+# font-family-bold-italic = 
+
+# Font size in points
+font-size = 13
+
+# Font style preferences
+# font-style = default
+# font-style-bold = default
+# font-style-italic = default
+# font-style-bold-italic = default
+
+# Synthetic font styles (bold, italic, bold-italic)
+# font-synthetic-style = true
+
+# Font thickness (macOS only)
+font-thicken = true
+
+# Font thickness strength (0.0-1.0)
+# font-thicken-strength = 0.5
+
+# Font feature settings (OpenType features)
+font-feature = liga=1
+font-feature = calt=1
+
+# Font variation settings
+# font-variation = wght=400
+
+# Font codepoint mapping for specific characters
+# font-codepoint-map = U+E0B0=SF Mono
+
+# Adjust cell dimensions
+adjust-cell-height = 10%
+# adjust-cell-width = 0%
+
+# Fine-tune font positioning
+# adjust-font-baseline = 0
+# adjust-cursor-height = 0
+# adjust-cursor-thickness = 0
+
+# Line decoration adjustments
+# adjust-underline-position = 0
+# adjust-underline-thickness = 0
+# adjust-strikethrough-position = 0
+# adjust-strikethrough-thickness = 0
+# adjust-overline-position = 0
+# adjust-overline-thickness = 0
+
+# Box drawing thickness
+# adjust-box-thickness = 0
+
+# ============================================================================
+# CURSOR
+# ============================================================================
+
+# Cursor style (block, bar, underline, block_hollow)
+cursor-style = block
+
+# Cursor blinking
+cursor-style-blink = true
+
+# Cursor color
+# cursor-color = #f5e0dc
+
+# Text color under cursor
+# cursor-text = #1e1e2e
+
+# Cursor opacity (0.0-1.0)
+# cursor-opacity = 1.0
+
+# Invert foreground/background colors under cursor
+# cursor-invert-fg-bg = false
+
+# Click to move cursor (requires shell integration)
+# cursor-click-to-move = false
+
+# ============================================================================
+# WINDOW & DISPLAY
+# ============================================================================
+
+# Window decorations
+window-decoration = false
+
+# Window title
+# title = "Ghostty"
+
+# Window subtitle
+# window-subtitle = ""
+
+# Window title font
+# window-title-font-family = "System Font"
+
+# Window titlebar colors
+# window-titlebar-background = #1e1e2e
+# window-titlebar-foreground = #cdd6f4
+
+# Window dimensions
+# window-width = 80
+# window-height = 24
+
+# Window position
+# window-position-x = center
+# window-position-y = center
+
+# Window padding
+window-padding-x = 3
+window-padding-y = 3
+
+# Asymmetric padding (matches your WezTerm's left=15)
+# window-padding-x = 15
+
+# Padding color behavior
+window-padding-color = extend
+
+# Balance padding when resizing
+window-padding-balance = true
+
+# Start maximized
+# maximize = false
+
+# Start fullscreen
+# fullscreen = false
+
+# Save window state between sessions
+window-save-state = always
+
+# Inherit font size from previous window
+window-inherit-font-size = true
+
+# Inherit working directory from previous window
+window-inherit-working-directory = true
+
+# Step resize (resize by character cells)
+# window-step-resize = false
+
+# VSync for smooth rendering
+window-vsync = true
+
+# Window theme (light, dark, auto)
+# window-theme = auto
+
+# New tab position (after, before, end)
+# window-new-tab-position = after
+
+# ============================================================================
+# MACOS SPECIFIC
+# ============================================================================
+
+# Titlebar style (native, transparent, tabs, hidden)
+macos-titlebar-style = transparent 
+
+# Show tabs in titlebar for better organization
+# macos-titlebar-style = tabs
+
+# Non-native fullscreen behavior
+macos-non-native-fullscreen = visible-menu
+
+# Option key behavior
+macos-option-as-alt = true
+
+# Custom app icon (official, blueprint, chalkboard, microchip, glass, holographic, paper, retro, xray, custom-style)
+macos-icon = glass
+# macos-icon = xray
+
+# Icon frame color
+# macos-icon-frame = #000000
+
+# Icon ghost color
+# macos-icon-ghost-color = #ffffff
+
+# Icon screen color
+# macos-icon-screen-color = #000000
+
+# Auto secure input detection
+macos-auto-secure-input = true
+
+# Secure input indication
+macos-secure-input-indication = true
+
+# Titlebar proxy icon
+macos-titlebar-proxy-icon = visible
+
+# Window shadow
+# macos-window-shadow = true
+
+# ============================================================================
+# GTK/LINUX SPECIFIC
+# ============================================================================
+
+# GTK Adwaita theme
+# gtk-adwaita = true
+
+# GTK single instance
+gtk-single-instance = false
+
+# Tab bar location (top, bottom, left, right, hidden)
+# gtk-tabs-location = top
+
+# Hide tab bar completely
+# gtk-tabs-location = hidden
+
+# Wide tabs
+# gtk-wide-tabs = true
+
+# GTK titlebar
+# gtk-titlebar = true
+
+# Hide titlebar when maximized
+# gtk-titlebar-hide-when-maximized = false
+
+# Custom CSS
+# gtk-custom-css = ""
+
+# Adwaita toolbar style
+# adw-toolbar-style = raised
+
+# GSK renderer
+# gtk-gsk-renderer = auto
+
+# OpenGL debug
+# gtk-opengl-debug = false
+
+# ============================================================================
+# BEHAVIOR & INTERACTION
+# ============================================================================
+
+# Shell to run
+# command = /bin/zsh -l
+
+# Initial command to run
+# initial-command = ""
+
+# Working directory
+# working-directory = ""
+
+# Wait after command exit
+# wait-after-command = false
+
+# Shell integration
+shell-integration = detect
+
+# Shell integration features
+# shell-integration-features = no-cursor,no-sudo,no-title
+
+# Copy on select
+copy-on-select = true
+
+# Hide mouse while typing
+mouse-hide-while-typing = true
+
+# Mouse scroll multiplier
+mouse-scroll-multiplier = 1.5
+
+# Mouse shift capture
+# mouse-shift-capture = true
+
+# Focus follows mouse
+# focus-follows-mouse = false
+
+# Click repeat interval
+# click-repeat-interval = 500
+
+# ============================================================================
+# CLIPBOARD
+# ============================================================================
+
+# Clipboard read permissions (allow, deny, ask)
+# clipboard-read = ask
+
+# Clipboard write permissions (allow, deny, ask)
+clipboard-write = allow
+
+# Paste bracketed safe mode
+# clipboard-paste-bracketed-safe = true
+
+# Paste protection
+# clipboard-paste-protection = true
+
+# Trim trailing spaces when copying
+clipboard-trim-trailing-spaces = true
+
+# ============================================================================
+# SCROLLBACK & HISTORY
+# ============================================================================
+
+# Scrollback buffer size
+scrollback-limit = 50000
+
+# ============================================================================
+# TERMINAL BEHAVIOR
+# ============================================================================
+
+# Terminal type
+term = xterm-256color
+
+# Bold is bright colors
+bold-is-bright = false
+
+# Grapheme width method
+# grapheme-width-method = unicode
+
+# OSC color report format
+# osc-color-report-format = 8-bit
+
+# Enquiry response
+# enquiry-response = ""
+
+# VT KAM allowed
+# vt-kam-allowed = true
+
+# Title reporting
+# title-report = true
+
+# Abnormal command exit runtime
+# abnormal-command-exit-runtime = 2000
+
+# ============================================================================
+# NOTIFICATIONS
+# ============================================================================
+
+# Desktop notifications
+desktop-notifications = true
+
+# App notifications
+# app-notifications = true
+
+# ============================================================================
+# RESIZE & OVERLAY
+# ============================================================================
+
+# Resize overlay (always, never, after-first)
+resize-overlay = after-first
+
+# Resize overlay duration
+resize-overlay-duration = 500ms
+
+# Resize overlay position
+# resize-overlay-position = center
+
+# ============================================================================
+# SELECTION
+# ============================================================================
+
+# Selection background color
+# selection-background = #3c4142
+
+# Selection foreground color
+# selection-foreground = #ffffff
+
+# Invert selection colors
+# selection-invert-fg-bg = false
+
+# ============================================================================
+# SPLITS
+# ============================================================================
+
+# Split divider color
+# split-divider-color = #6c7086
+
+# Unfocused split opacity
+# unfocused-split-opacity = 0.7
+
+# Unfocused split fill
+# unfocused-split-fill = #1e1e2e
+
+# ============================================================================
+# ADVANCED
+# ============================================================================
+
+# Quit after last window closed
+quit-after-last-window-closed = true
+
+# Confirm close surface
+confirm-close-surface = false
+
+# Config file paths
+# config-file = ~/.config/ghostty/config
+
+# Config default files
+# config-default-files = true
+
+# Auto update
+# auto-update = true
+
+# Auto update channel
+# auto-update-channel = stable
+
+# Image storage limit
+# image-storage-limit = 320000000
+
+# Custom shader
+# custom-shader = ""
+
+# Custom shader animation
+# custom-shader-animation = true
+
+# Window class (X11)
+# class = ghostty
+
+# X11 instance name
+# x11-instance-name = ghostty
+
+# Initial window settings
+# initial-window = true
+
+# FreeType load flags
+# freetype-load-flags = ""
+
+# Linux cgroup settings
+# linux-cgroup = ""
+# linux-cgroup-hard-fail = false
+# linux-cgroup-memory-limit = 0
+# linux-cgroup-processes-limit = 0
+
+# ============================================================================
+# QUICK TERMINAL
+# ============================================================================
+
+# Quick terminal animation duration
+# quick-terminal-animation-duration = 200
+
+# Quick terminal autohide
+# quick-terminal-autohide = true
+
+# Quick terminal position
+# quick-terminal-position = top
+
+# Quick terminal screen
+# quick-terminal-screen = default
+
+# Quick terminal space behavior
+# quick-terminal-space-behavior = current
+
+# ============================================================================
+# KEYBINDINGS & LINKS
+# ============================================================================
+
+# Custom keybindings
+# keybind = ctrl+shift+n=new_window
+
+# Link URL handling
+# link-url = true
+
+# https://www.reddit.com/r/Ghostty/comments/1hoi3id/my_perfect_ghostty_tmux_nvim_configuration_on/
+# https://gist.github.com/adibhanna/c552c452fb244b3b721e3c2432e85cde
+# TODO AI Test and add later 
+# # To delete from the current position to the start of the line
+# keybind = super+backspace=esc:w
+# 
+# # TMUX integration considering that my leader key is ctrl + b
+# 
+# # Go to the N window in tmux in tmux it is Ctrl+b+number
+# keybind = super+one=text:\x02\x31
+# keybind = super+two=text:\x02\x32
+# keybind = super+three=text:\x02\x33
+# keybind = super+four=text:\x02\x34
+# keybind = super+five=text:\x02\x35
+# keybind = super+six=text:\x02\x36
+# keybind = super+seven=text:\x02\x37
+# keybind = super+eight=text:\x02\x38
+# keybind = super+nine=text:\x02\x39
+# 
+# # New tmux window on Cmd+t in tmux it is Ctrl+b+c
+# keybind = super+t=text:\x02\x63
+# 
+# # Close tmux pane on Cmd+w in tmux it is Ctrl+b+x (it is using a custom keybind in tmux to kill the pane)
+# keybind = super+w=text:\x02\x78
+# 
+# # Switch to a window using tmux-fzf on Cmd+p in tmux it is Ctrl+b+w
+# keybind = super+p=text:\x02\x77
+# 
+# #  Rename a tmux window on Cmd+r in tmux it is Ctrl+b+,
+# keybind = super+r=text:\x02\x2c
+# 
+# # Go to the previous tmux window on Cmd+h in tmux it is Ctrl+b+p
+# keybind = super+h=text:\x02\x70
+# 
+# # Go to te next tmux window on Cmd+l in tmux it is Ctrl+b+n
+# keybind = super+l=text:\x02\x6e
+# 
+# # Split the window horizontally on Cmd+minus in tmux it is Ctrl+b+" (For me it is horizontal split but in tmux it is considered vertical split)
+# keybind = super+minus=text:\x02\x22
+# 
+# # Split the window vertically on Cmd+backslash in tmux it is Ctrl+b+% (For me it is vertical split but in tmux it is considered horizontal split)
+# # TODO: I want to change it Cmd+pipe but looks like ghostty doesn't support that key for now
+# keybind = super+backslash=text:\x02\x25
+# #
+# # Toggle pane zoom on Cmd+z in tmux it is Ctrl+b+z
+# keybind = super+z=text:\x02\x7a
+# 
+# # Move tmux window to left on Cmd+i in tmux it is M-i (alt+i it is a custom keybind)
+# keybind = super+i=text:\x1bi
+# 
+# #Move tmux window to right on Cmd+o in tmux it is M-o (alt+o it is a custom keybind)
+# keybind = super+o=text:\x1bo

@@ -71,7 +71,7 @@ fn - 0x2C : osascript -e 'tell application "Safari" to make new document with pr
 # Toggle fullscreen for current window
 cmd + ctrl - f : yabai -m window --toggle zoom-fullscreen
 
-# Close application using osascript
+# use BACKSPACE Close application using osascript
 ctrl + cmd - 0x33 : osascript -e "tell application \"Finder\" to set p to item 1 of (get file of (processes whose frontmost = true)) as text" -e "tell application p to quit"
 
 # === Window Movement ===
@@ -81,6 +81,12 @@ shift + alt - h : yabai -m window --swap west
 shift + alt - j : yabai -m window --swap south
 shift + alt - k : yabai -m window --swap north
 shift + alt - l : yabai -m window --swap east
+
+# Focus windows in different directions (using option key)
+alt - h : yabai -m window --focus west
+alt - j : yabai -m window --focus south
+alt - k : yabai -m window --focus north
+alt - l : yabai -m window --focus east
 
 # Warp (move) window in different directions
 shift + cmd - h : yabai -m window --warp west
