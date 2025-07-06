@@ -270,13 +270,21 @@ Novel problems    → Opus       → ultrathink
 
 ### MCP Server Usage
 
-**When Available**
+**Global MCP Servers** (Available in all projects via `~/.config/claude/settings.json`)
 
-- `github` → PR creation, issue management
-- `memory-bank` → Cross-session continuity
+- `linear` → Issue management, project tracking
+- `sequential-thinking` → Complex reasoning, planning
+- `fetch` → Web content retrieval
+- `supermemory` → Cross-session memory
+- `apple-mcp` → macOS system integration
 - `time` → Scheduling, date calculations
-- `sequential-thinking` → Complex reasoning
-- Check `claude mcp list` for current servers
+- `obsidian` → Notes, knowledge management
+- `mcp-compass` → MCP server discovery
+- `context7` → Library documentation
+- `perplexity` → AI-powered search
+- `magic` → UI component generation
+- `github` → PR creation, issue management
+- `playwright` → Web automation, testing
 
 **Best Practices**
 
@@ -284,6 +292,7 @@ Novel problems    → Opus       → ultrathink
 - Combine with commands for workflows
 - Monitor which servers are most useful
 - Suggest new servers during `/learn`
+- Check `claude mcp list` for current servers
 
 ### Reliability Patterns
 

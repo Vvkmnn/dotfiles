@@ -1,0 +1,13 @@
+linear: https://mcp.linear.app/sse
+sequential-thinking: npx -y @modelcontextprotocol/server-sequential-thinking
+fetch: uvx mcp-server-fetch
+supermemory: https://mcp.supermemory.ai/EqC-u--q2mey-PvgF_fN-/sse
+magic: npx -y @21st-dev/magic@latest
+playwright: npx -y @playwright/mcp@latest
+mcp-compass: npx -y @liuyoshio/mcp-compass
+time: /Users/v/.local/bin/mcp-server-time --local-timezone=America/Montreal
+context7: npx -y @upstash/context7-mcp
+apple-mcp: bunx @dhravya/apple-mcp@latest
+obsidian: uvx mcp-obsidian
+perplexity: npx -y @chatmcp/server-perplexity-ask
+github: npx -y @modelcontextprotocol/server-github
