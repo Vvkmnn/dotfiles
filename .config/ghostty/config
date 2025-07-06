@@ -76,8 +76,8 @@ font-thicken = true
 # font-thicken-strength = 0.5
 
 # Font feature settings (OpenType features)
-font-feature = liga=1
-font-feature = calt=1
+font-feature = liga=0
+font-feature = calt=0
 
 # Font variation settings
 # font-variation = wght=400
@@ -110,7 +110,7 @@ adjust-cell-height = 10%
 # ============================================================================
 
 # Cursor style (block, bar, underline, block_hollow)
-cursor-style = block
+cursor-style = block_hollow
 
 # Cursor blinking
 cursor-style-blink = true
@@ -135,7 +135,7 @@ cursor-style-blink = true
 # ============================================================================
 
 # Window decorations
-window-decoration = false
+window-decoration = auto
 
 # Window title
 # title = "Ghostty"
@@ -159,8 +159,8 @@ window-decoration = false
 # window-position-y = center
 
 # Window padding
-window-padding-x = 3
-window-padding-y = 3
+window-padding-x = 7
+window-padding-y = 7
 
 # Asymmetric padding (matches your WezTerm's left=15)
 # window-padding-x = 15
@@ -203,7 +203,7 @@ window-vsync = true
 # ============================================================================
 
 # Titlebar style (native, transparent, tabs, hidden)
-macos-titlebar-style = transparent 
+macos-titlebar-style = hidden
 
 # Show tabs in titlebar for better organization
 # macos-titlebar-style = tabs
@@ -281,7 +281,7 @@ gtk-single-instance = false
 # ============================================================================
 
 # Shell to run
-# command = /bin/zsh -l
+command = /bin/zsh -l
 
 # Initial command to run
 # initial-command = ""
@@ -293,7 +293,7 @@ gtk-single-instance = false
 # wait-after-command = false
 
 # Shell integration
-shell-integration = detect
+shell-integration = zsh
 
 # Shell integration features
 # shell-integration-features = no-cursor,no-sudo,no-title
@@ -305,7 +305,7 @@ copy-on-select = true
 mouse-hide-while-typing = true
 
 # Mouse scroll multiplier
-mouse-scroll-multiplier = 1.5
+mouse-scroll-multiplier = 1.3
 
 # Mouse shift capture
 # mouse-shift-capture = true
@@ -330,7 +330,7 @@ clipboard-write = allow
 # clipboard-paste-bracketed-safe = true
 
 # Paste protection
-# clipboard-paste-protection = true
+clipboard-paste-protection = true
 
 # Trim trailing spaces when copying
 clipboard-trim-trailing-spaces = true
@@ -340,7 +340,7 @@ clipboard-trim-trailing-spaces = true
 # ============================================================================
 
 # Scrollback buffer size
-scrollback-limit = 50000
+scrollback-limit = 66666
 
 # ============================================================================
 # TERMINAL BEHAVIOR
@@ -350,7 +350,7 @@ scrollback-limit = 50000
 term = xterm-256color
 
 # Bold is bright colors
-bold-is-bright = false
+bold-is-bright = true
 
 # Grapheme width method
 # grapheme-width-method = unicode
@@ -378,7 +378,7 @@ bold-is-bright = false
 desktop-notifications = true
 
 # App notifications
-# app-notifications = true
+app-notifications = true
 
 # ============================================================================
 # RESIZE & OVERLAY

@@ -201,3 +201,10 @@
 
 [diff]
     tool = nvimdiff
+[gpg]
+	program = /opt/homebrew/bin/gpg
+[pack]
+	windowMemory = 1g
+	packSizeLimit = 1g
+	threads = 0
+	window = 0

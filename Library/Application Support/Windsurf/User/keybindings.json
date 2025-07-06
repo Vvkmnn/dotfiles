@@ -1,68 +1,14 @@
 [
-  // All keybindings are temporarily commented out
-  /* 
-  // LAYOUT CONTROL SHORTCUTS
-  
-  // FIXME Does not work at all, lol
-  // Toggle Terminal Panel - Alt+T
-  {
-    "key": "alt+t",
-    "command": "workbench.action.terminal.toggleTerminal"
-  },
-  {
-    "key": "alt++t",
-    "command": "workbench.action.toggleMaximizedPanel",
-    "when": "panelVisible"
-  },
-
-  // Focus Editor (Zen Mode) - Alt+E
-  {
-    "key": "alt+e",
-    "command": "workbench.action.toggleZenMode"
-  },
-
-  // Normal Layout - Alt+0
-  {
-    "key": "alt+0",
-    "command": "workbench.action.toggleZenMode",
-    "when": "inZenMode"
-  },
-  {
-    "key": "alt+0",
-    "command": "workbench.action.toggleMaximizedPanel",
-    "when": "panelMaximized"
-  },
-  {
-    "key": "alt+0",
-    "command": "workbench.action.toggleSidebarVisibility",
-    "when": "!sideBarVisible"
-  },
-
-  // Focus Right Sidebar (where Cascade typically is) - Alt+C
   {
     "key": "alt+c",
-    "command": "workbench.action.toggleSidebarVisibility",
-    "when": "!sideBarVisible"
-  },
-  {
-    "key": "alt+c",
-    "command": "workbench.action.focusSideBar",
-    "when": "sideBarVisible"
-  },
-  {
-    "key": "alt+shift+c", 
-    "command": "workbench.action.toggleSidebarPosition",
-    "when": "sideBarPosition == 'left'"
-  },
-
-  // Toggle Full Screen - Alt+F
-  {
-    "key": "alt+f",
-    "command": "workbench.action.toggleFullScreen"
-  },
-
-  // Focus Explorer (left sidebar) - Alt+X
-  {
-    "key": "alt+x",
-  */
+    "command": "windsurf.openCascade"
+},
+{
+    "key": "shift+enter",
+    "command": "workbench.action.terminal.sendSequence",
+    "args": {
+        "text": "\\\r\n"
+    },
+    "when": "terminalFocus"
+}
 ]

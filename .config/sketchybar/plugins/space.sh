@@ -4,7 +4,7 @@
 SPACE_ICONS=("1" "2" "3" "4" "5" "6" "7")
 
 # Modern colors
-YELLOW=0xffDDB670        # Kanagawa yellow for active space
+MISTY_BLUE=0xc0c0c0FF    # Misty blue for active space (fully opaque)
 LIGHT_GRAY=0xffE0E0E0    # Light gray for spaces with windows
 MID_GRAY=0xffA0A0A0      # Medium gray for normal
 DIM_GRAY=0xff606060      # Dim gray for empty
@@ -18,10 +18,10 @@ for i in {1..7}; do
   WINDOWS=$(echo "$SPACES_INFO" | jq -r --arg space "$i" '.[] | select(.index == ($space | tonumber)) | .windows | length // 0')
   
   if [ "$i" = "$CURRENT" ]; then
-    # Active space - yellow text
+    # Active space - silver text
     sketchybar --set space.$i \
       icon="${SPACE_ICONS[$i-1]}" \
-      icon.color=$YELLOW \
+      icon.color=$MISTY_BLUE \
       icon.font="SF Pro:Medium:13.0" \
       label.drawing=off \
       background.drawing=off \

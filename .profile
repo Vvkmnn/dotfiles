@@ -48,6 +48,9 @@ export ALTERNATE_EDITOR='nvim' # $EDITOR if all else fails
 # AI
 # export OPENAI_API_KEY=$(cat ~/.openai)
 
+# Claude Code MCP Environment
+[ -f ~/.claude/.env ] && . ~/.claude/.env
+
 # Prompt
 # FIX Not global
 # export RPROMPT='v@%M %(?,%F{green}[-_-]%f,%F{red}[ಠ_ಠ]%f)'
@@ -104,8 +107,11 @@ Darwin)
 	export PATH="/usr/local/opt/openssl/bin:$PATH"
 
 	# Python
-	# export python="/usr/bin/python3"
+	export PATH="$(brew --prefix)/opt/python@3.13/libexec/bin:$PATH"
 	# export PATH=/usr/local/share/python:$PATH
+	# export PYENV_ROOT="$HOME/.pyenv"
+	# command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
+	# eval "$(pyenv init -)"
 
 	# Python (Anaconda)
 	export PATH="$HOME/.miniconda/bin:$PATH"
@@ -174,6 +180,14 @@ Darwin)
 	# uv
 	export PATH="$HOME/.local/bin:$PATH"
 	. "$HOME/.local/bin/env"
+
+	# . "$HOME/.cargo/env"
+
+	# . "$HOME/.grit/bin/env"
+
+	# . "$HOME/.local/bin/env"
+
+	# . "$HOME/.local/bin/env"
 
 	;;
 

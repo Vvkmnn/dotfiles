@@ -63,7 +63,7 @@ config.font = wezterm.font_with_fallback({ "Hack Nerd Font", "JetBrains Mono" })
 -- 	"Symbols Nerd Font Mono",
 -- })
 
-config.font_size = 14
+config.font_size = 13
 config.line_height = 1.2
 config.use_dead_keys = false
 config.scrollback_lines = 6666
@@ -315,8 +315,8 @@ wezterm.on("window-focus-changed", function(window, pane)
 			orientation = { Linear = { angle = -(math.random() * 100) } },
 		},
 
-		window_background_opacity = 0.91, -- + (math.random() / 100),
-		-- macos_window_background_blur = 91 + (math.random() * 10),
+		window_background_opacity = 0.88, -- + (math.random() / 100),
+		-- macos_window_background_blur = 1 + (math.random() * 10),
 
 		--
 		-- config.window_background_opacity = 0.95

@@ -141,12 +141,18 @@
 
             # tmux
             zcomet load ohmyzsh plugins/tmux
+
+            # nvim
+            zcomet load jeffreytse/zsh-vi-mode
             
             # QOL
             zcomet load paulirish/git-open
 
 	    # Env
 	    zcomet load MichaelAquilina/zsh-autoswitch-virtualenv
+
+    ## fzf
+    zcomet load junegunn/fzf shell completion.zsh key-bindings.zsh
 
             # Custom 
             zcomet load Tarrasch/zsh-autoenv
@@ -155,6 +161,12 @@
             # Run compinit and compile its cache
             zcomet compinit
             ##}}}
+
+            # fzf
+(( ${+commands[fzf]} )) || ~[fzf]/install --bin
+#
+            # claude env
+# source ~/.claude/.env'
 
 
             # Powerlevel 10k {{{
@@ -503,8 +515,6 @@
 
 
 
-    ## fzf
-    [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 
             ## nvm

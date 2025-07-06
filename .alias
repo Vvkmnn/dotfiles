@@ -53,10 +53,18 @@ alias ,s='v ~/.shell'
 alias ,a='v ~/.alias'
 alias ,t='v ~/.config/tmux/tmux.conf'
 alias ,w='v ~/.config/wezterm/wezterm.lua'
+alias ,g='v ~/.config/ghostty/config'
 alias ,y='v ~/.yabairc'
 alias ,sk='v ~/.skhdrc'
+# alias ,c='v /Users/v/Library/Application\ Support/Claude/claude_desktop_config.json'
+alias ,c='v ~/.claude/CLAUDE.md'
+alias ,sb='v ~/.config/sketchybar/sketchybarrc'
 # alias ,h='history | nvim -'
 alias ,ys='yabai --restart-service && skhd --restart-service'
+alias ,l='v ~/.logo'
+
+# claude
+# alias claude="~/.claude/local/claude"
 
 ## cursor
 # c = cursor --no-plugins
@@ -71,11 +79,17 @@ alias ,git-undo='git clean -fd && git reset --hard'
 # update
 alias ,u=update_all
 
-# OpenAI
-alias ai=call_chatblade_ai
+# Claude
+alias ,ai='claude --model sonnet --print'
+alias ,c='claude --model sonnet'
+alias ,cl='claude --model sonnet --continue'
+alias ,clv='claude --verbose --model sonnet --continue'
+alias ,clr='claude --model sonnet --resume'
 
-# NeoVim
-alias vclear='rm -rf ~/.local/share/nvim/ && rm -rf ~/.local/state/nvim/ && rm -rf ~/.cache/nvim/'
+# alias cl='claude --verbose --model sonnet --continue'
+# alias cln='claude --verbose --model sonnet'
+# alias ai=c
+
 ## cursor vclear
 
 # util
@@ -99,17 +113,28 @@ alias rr='sudo reboot'
 alias zz='exec zsh -l'
 
 ## cursor
-alias c='cursor'
-alias c!='cursor --disable-extensions' # TODO fix
+# alias c='cursor'
+# alias c!='cursor --disable-extensions' # TODO fix
 
-## Vim
+## Fzf
+alias f='fzf'
+
+## Logo
+alias l='source ~/.logo'
+
+## Vim & neoVim
+
 # alias v='vim'                # Vim
-alias v='nvim'             # Vim
-alias v!='nvim --noplugin' # Vim
-alias ov='vim'             # (neo)Vim
-# alias nv='nvim'                # (neo)Vim
+alias v='nvim'                     # (neo)Vim
+alias vn='nvim --listen /tmp/nvim' # (neo)Vim listening on local socket https://x.com/dmwlff/status/1899144115981529512
+alias v!='nvim --noplugin --clean' # (neo)Vim clean (no plugins)
+alias ov='vim'                     # Vim
 
-alias v!='nvim -u NONE'    # Vanilla Vim
+alias vl='nvim -c "normal '\''0"' # Open last edited file
+alias -g V='| nvim -c "setlocal buftype=nofile bufhidden=wipe" -c "nnoremap <buffer> q :q!<CR>" -'
+alias vclear='rm -rf ~/.local/share/nvim/ && rm -rf ~/.local/state/nvim/ && rm -rf ~/.cache/nvim/'
+
+# alias v!='nvim -u NONE'    # Vanilla Vim
 alias ov!="vim -u NONE -N" # Pure Vim
 # alias nv!='nvim -u NORC'                # Vanilla (neo)Vim
 
@@ -123,7 +148,7 @@ alias today=$(date '+%F_%H:%M:%S')
 
 ## Git
 alias g='git'
-alias lg='lazygit'
+# alias lg='lazygit'
 
 case "$(uname -s)" in
 
@@ -181,8 +206,8 @@ Linux)
 	alias open='nautilus .'
 
 	# Python 3
-	alias python='/usr/bin/python3'
-	alias pip='/usr/bin/pip3'
+	# alias python='/usr/bin/python3'
+	# alias pip='/usr/bin/pip3'
 
 	## Emacs
 	alias e='

@@ -49,7 +49,8 @@ ctrl + cmd - space : open -na /Applications/Ghostty.app
 # === Web Browsers ===
 
 # Open Safari (new window)
-ctrl + cmd - return : osascript -e 'tell application "Safari" to make new document' -e 'tell application "Safari" to activate'
+# ctrl + cmd - return : osascript -e 'tell application "Safari" to make new document' -e 'tell application "Safari" to activate'
+ctrl + cmd - return : open -n /Applications/Safari.app
 # ctrl + cmd - s : open -na /Applications/Safari.app/
 # ctrl + cmd - 0x27 : open -na /Applications/Safari.app/
 
@@ -135,8 +136,10 @@ ctrl + alt - 2 : yabai -m display --focus 2
 ctrl + alt - 3 : yabai -m display --focus 3
 
 # Move window to previous/next display and follow with focus
-ctrl + cmd - h : yabai -m window --display prev; yabai -m display --focus prev
-ctrl + cmd - l : yabai -m window --display next; yabai -m display --focus next
+# ctrl + cmd - h : yabai -m window --display prev
+# yabai -m display --focus prev
+# ctrl + cmd - l : yabai -m window --display next
+# yabai -m display --focus next
 
 # Focus display in different directions
 ctrl + alt - j : yabai -m display --focus prev

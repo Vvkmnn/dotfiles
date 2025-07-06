@@ -137,8 +137,12 @@ skhd --start-service && yabai --start-service
 # qol
 brew install neovim karabiner-elements    \
   wezterm 1password mullvadvpn alfred nvm \
-  adguard ngrok obsidian gh jq fzf btop   \
-  coreutils 1password-cli bat batfi
+  adguard gnupg ngrok obsidian gh jq fzf  \
+  render btop coreutils 1password-cli bat batfi \
+
+# pipx
+brew install python3 pipx
+pipx install virtualenv
 
 
 # extra
@@ -154,9 +158,15 @@ git install lfs
 mas lucky xcode 1password vimari adguard \
           stopthemadness canary docker
 
-# maybe
-brew install emacs-mac-spacemacs-icon tmux
+# tmux
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+
+# neovim
+TBD
+
+# maybe
+brew install emacs-plus --with-debug --with-xwidgets --with-imagemagick --with-ma
+ilutils --with-dbus --with-modern-doom3-icon
 
 # obsidian
 brew tap yakitrak/yakitrak
@@ -176,9 +186,6 @@ nvm install node                           # installs system node via brew nvm
 flavor
 
 ```
-# borders
-brew install FelixKratz/formulae/borders
-
 # yabai scripting
 # https://github.com/koekeishiya/yabai/wiki/Installing-yabai-(latest-release)#configure-scripting-addition
 echo "$(whoami) ALL=(root) NOPASSWD: sha256:$(shasum -a 256 $(which yabai) \
@@ -187,8 +194,16 @@ echo "$(whoami) ALL=(root) NOPASSWD: sha256:$(shasum -a 256 $(which yabai) \
 # https://github.com/koekeishiya/yabai/issues/1333#issuecomment-1193128981
 # sudo nvram boot-args=-arm64e_preview_abi
 
-# svim
+
+# yabai addons
+brew tap FelixKratz/formulae
+brew install svim
+brew install sketchybar
+brew install FelixKratz/formulae/borders # borders
+
+# svim and sketchybar
 brew install FelixKratz/formulae/svim && brew services start svim
+brew services start felixkratz/formulae/sketchybar && felixkratz/formulae/svim
 
 ```
 

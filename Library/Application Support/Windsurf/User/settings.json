@@ -1,178 +1,149 @@
 {
-  // ╭─────────────────────────────────────────────────────────╮
-  // │ Editor Suggestions & Completions                        │
-  // ╰─────────────────────────────────────────────────────────╯
-  "editor.acceptSuggestionOnEnter": "on", // Controls if suggestions are accepted on Enter key press
-  "editor.suggestSelection": "first", // Controls which suggestion is selected when the list is displayed
-  "editor.acceptAllSuggestionsOnEnter": true, // Accept all suggestions at once using Enter
-  "editor.quickSuggestions": {
-    "other": true, // Show suggestions while typing in code blocks
-    "comments": false, // Don't show suggestions while typing in comments
-    "strings": false // Don't show suggestions while typing in string literals
+
+  "editor.fontFamily": "'Hack Nerd Font', monospace", // Use Hack Nerd Font for excellent glyph/icon support.
+  "editor.fontSize": 11.3, // A compact font size to maximize visible code.
+  "editor.lineHeight": 1.2, // Tighter line spacing for a more compact view.
+  "editor.fontLigatures": true, // Enable font ligatures for improved readability of operators.
+  "editor.fontWeight": "normal", // Standard font weight.
+  "editor.insertSpaces": true, // Use spaces for indentation for consistency across environments.
+  "editor.tabSize": 2, // Set indentation to 2 spaces, a common standard.
+  "editor.detectIndentation": true, // Automatically detect and adapt to the current file's indentation.
+  "editor.glyphMargin": false, // Hide the glyph margin to save horizontal space.
+  "editor.folding": false, // Disable code folding for a consistently expanded view.
+  "editor.showFoldingControls": "never", // Hide folding controls to maintain a clean UI.
+  "editor.wordWrap": "bounded", // Wrap lines that exceed the viewport width.
+  "editor.renderWhitespace": "boundary", // Show whitespace characters only at the beginning and end of lines.
+  "editor.renderFinalNewline": "on", // Ensure a final newline is rendered, preventing file truncation issues.
+  "editor.linkedEditing": true, // Automatically rename matching HTML/XML tags.
+  "editor.unfoldOnClickAfterEndOfLine": true, // Click after a folded line to expand it.
+  "editor.guides.bracketPairs": true, // Show guides for matching bracket pairs.
+  "editor.guides.highlightActiveIndentation": true, // Highlight the active indentation guide.
+  "editor.bracketPairColorization.enabled": true, // Enable colorization for matching brackets.
+  "editor.bracketPairColorization.independentColorPoolPerBracketType": true, // Use a unique color pool for each bracket type.
+  "editor.inlayHints.enabled": "on", // Display inline hints for parameters and types.
+  "editor.scrollBeyondLastLine": true, // Allow scrolling past the last line of the file.
+  "editor.smoothScrolling": true, // Enable smooth scrolling for a better visual experience.
+  "editor.stickyScroll.enabled": true, // Keep parent scopes visible at the top when scrolling.
+  "editor.stickyScroll.maxLineCount": 3, // Limit the number of sticky scroll lines to 3.
+  "editor.scrollbar.horizontalScrollbarSize": 3, // Set a thin horizontal scrollbar to save space.
+  "editor.scrollbar.verticalScrollbarSize": 3, // Set a thin vertical scrollbar to save space.
+  "editor.scrollbar.scrollByPage": true, // Scroll by a full page for faster navigation.
+
+  "editor.cursorStyle": "block-outline", // A distinct, outlined block cursor for better visibility.
+  "editor.cursorBlinking": "solid", // A non-blinking, solid cursor to reduce visual distraction.
+  "editor.cursorSmoothCaretAnimation": "on", // Animate cursor movement smoothly.
+  "editor.multiCursorModifier": "alt", // Use the Alt/Option key to create multiple cursors.
+  "editor.occurrencesHighlight": "singleFile", // Highlight occurrences of a selected symbol only within the current file.
+  "editor.selectionHighlight": false, // Disable highlighting of other occurrences of the selected text.
+  "editor.useTabStops": false, // Allow the cursor to move freely, not locked to tab stops.
+  "editor.renderLineHighlightOnlyWhenFocus": true, // Highlight the current line only when the editor is focused.
+
+  "vscode-neovim.neovimExecutablePaths.macOS": "/opt/homebrew/bin/nvim", // Defines the path to the Neovim executable on macOS.
+  "vscode-neovim.useSystemClipboard": true, // Allows Neovim to use the system clipboard.
+  "vscode-neovim.enableNeovim": true, // Enables the Neovim integration for modal editing.
+  "experimental.affinity": {
+    "vscode-neovim": 1 // Assigns a dedicated thread to the Neovim process for improved performance.
   },
-  "editor.inlineSuggest.enabled": true, // Shows AI-powered inline code suggestions as ghost text
-  "editor.suggest.preview": true, // Shows a preview of the selected suggestion inline
-  "editor.suggest.shareSuggestSelections": true, // Share selected suggestions across editor windows
-  "editor.snippetSuggestions": "inline", // Places snippet suggestions alongside other suggestions
-  "editor.suggest.insertMode": "replace", // When inserting a suggestion, replace text rather than overtyping
-  "editor.inlineSuggest.showToolbar": "always", // Controls when to show the inline suggestion toolbar
 
-  // ╭─────────────────────────────────────────────────────────╮
-  // │ Editor Typography & Visual Design                       │
-  // ╰─────────────────────────────────────────────────────────╯
-  "editor.fontFamily": "'Hack Nerd Font', monospace", // Font used in the editor
-  "editor.fontSize": 12.3, // Size of the editor font in pixels
-  "editor.lineHeight": 1.2, // Height of a line in the editor relative to the font size
-  "editor.fontLigatures": true, // Enables font ligatures for more readable code symbols
-  "editor.fontWeight": "normal", // Controls the font weight/thickness
-  "editor.insertSpaces": true, // Insert spaces when Tab key is pressed
-  "editor.tabSize": 2, // Number of spaces a tab is equal to
-  "editor.detectIndentation": true, // Automatically detect file indentation from content
-  "editor.glyphMargin": false, // Hides the glyph margin used for breakpoints and other indicators
-  "editor.folding": false, // Disables code folding capability
-  "editor.showFoldingControls": "never", // Removes the controls for folding/unfolding code regions
-
-  // ╭─────────────────────────────────────────────────────────╮
-  // │ Cursor & Selection Behavior                             │
-  // ╰─────────────────────────────────────────────────────────╯
-  "editor.cursorStyle": "block-outline", // Sets cursor to a solid block with outline for better visibility
-  "editor.cursorBlinking": "solid", // Controls if the cursor blinks, solid means no blinking
-  "editor.multiCursorModifier": "ctrlCmd", // Modifier key to add multiple cursors (Alt or Ctrl/Cmd)
-  "editor.occurrencesHighlight": "singleFile", // Highlight symbol occurrences only in current file
-  "editor.selectionHighlight": false, // Don't highlight matches of current selection
-  "editor.useTabStops": false, // When disabled, cursor moves more naturally across tab stops
-
-  // ╭─────────────────────────────────────────────────────────╮
-  // │ Text Visualization & Guides                             │
-  // ╰─────────────────────────────────────────────────────────╯
-  "editor.wordWrap": "bounded", // Wrap long lines at the viewport width rather than horizontally scrolling
-  "editor.renderWhitespace": "boundary", // Shows whitespace characters only at the beginning/end of words
-  "editor.guides.bracketPairs": true, // Displays vertical lines to help match opening and closing brackets
-  "editor.guides.highlightActiveIndentation": true, // Highlights the active indentation level with a different color
-  "editor.bracketPairColorization.enabled": true, // Gives matching brackets the same color for easier identification
-  "editor.bracketPairColorization.independentColorPoolPerBracketType": true, // Uses different color sets for different bracket types
-  "editor.renderFinalNewline": "on", // Shows the final newline at the end of a file
-  "editor.renderLineHighlightOnlyWhenFocus": true, // Only highlights the current line when the editor has focus
-  "editor.inlayHints.enabled": "on", // Shows additional type information inline with your code
-  "editor.unfoldOnClickAfterEndOfLine": true, // Clicking after line end expands folded code blocks
-
-  // ╭─────────────────────────────────────────────────────────╮
-  // │ Scrolling & Navigation                                  │
-  // ╰─────────────────────────────────────────────────────────╯
-  "editor.scrollBeyondLastLine": false, // Prevents scrolling past the end of the file
-  "editor.smoothScrolling": true, // Enables animated scrolling for smoother visual experience
-  "editor.scrollbar.horizontalScrollbarSize": 2, // Sets horizontal scrollbar to minimal 2px thickness
-  "editor.scrollbar.verticalScrollbarSize": 5, // Sets vertical scrollbar to compact 5px width
-  "editor.stickyScroll.enabled": true, // Keeps parent scopes (functions/classes) visible at top while scrolling
-  "editor.linkedEditing": true, // Automatically edits matching HTML/XML tags when one is modified
-  "editor.stickyScroll.maxLineCount": 3, // Maximum number of sticky lines shown at the top
-  "editor.scrollbar.scrollByPage": true, // Clicking scrollbar jumps by full page rather than by position
-  "editor.fastScrollSensitivity": 5, // Higher sensitivity for faster scrolling with mouse wheel
-
-  // ╭─────────────────────────────────────────────────────────╮
-  // │ Minimap Configuration                                   │
-  // ╰─────────────────────────────────────────────────────────╯
-  "editor.minimap.maxColumn": 70, // Maximum number of columns to display in the minimap (width limitation)
-  "editor.minimap.showSlider": "always", // Always shows the minimap slider regardless of mouse position
-  "editor.minimap.renderCharacters": false, // Uses color blocks instead of tiny characters for better performance
-  "editor.minimap.scale": 1, // Controls the scale of the minimap (1 is standard size)
-  "editor.minimap.size": "fit", // Automatically sizes the minimap to fit the height of the editor view
+  "editor.minimap.maxColumn": 77, // Set a maximum width for the minimap.
+  "editor.minimap.showSlider": "always", // Always show the minimap's scroll slider.
+  "editor.minimap.renderCharacters": false, // Do not render characters in the minimap for a cleaner look.
+  "editor.minimap.scale": 1, // Set the scale of the minimap content.
+  "editor.minimap.size": "fit", // The minimap will fit its size to the editor's height.
   
-  // ╭─────────────────────────────────────────────────────────╮
-  // │ Workbench Theme & Visual Style                          │
-  // ╰─────────────────────────────────────────────────────────╯
-  "workbench.colorTheme": "Kanagawa Wave", // Japanese-inspired dark theme with calming blue and earth tones
-  "workbench.iconTheme": "chalice-icon-theme", // File and folder icon set for better visual recognition
-  "chaliceIcons.showArrows": true, // Displays navigation arrows in the chalice icon theme
-  "workbench.productIconTheme": "bongocat", // Sets custom product icons for UI elements
+  "workbench.colorTheme": "Kanagawa Wave",         // Keep your beautiful dark theme
+  "workbench.iconTheme": "chalice-icon-theme",     // Icon theme
+  "chaliceIcons.showArrows": true,
+  "workbench.productIconTheme": "bongocat",        // Product icon theme
   "workbench.colorCustomizations": {
-    "editor.lineHighlightBackground": "#282834", // Subtle dark blue highlight for the current line
-    "terminal.border": "#00000000", // Transparent terminal borders for clean UI (alpha=0)
-    "panel.border": "#00000000", // Transparent panel borders for seamless look
-    "sideBar.border": "#00000000", // Transparent sidebar borders to reduce visual noise
-    "editorGroup.border": "#00000000", // Transparent editor group dividers for cleaner splits
-    "tab.activeBorderTop": "#7E9CD8", // Kanagawa blue accent for indicating active tab
-    "tab.activeBackground": "#1F1F28", // Kanagawa dark background for active tab
-    "tab.inactiveBackground": "#16161D", // Slightly darker background for inactive tabs
-    "editor.background": "#1F1F28", // Main editor background in Kanagawa dark tone
-    "sideBar.background": "#16161D", // Slightly darker sidebar background for contrast
-    "activityBar.background": "#16161D", // Matching dark background for activity bar
-    "statusBar.background": "#16161D", // Consistent dark background for status bar
-    "panel.background": "#16161D", // Matching dark background for bottom panels
-    // "terminal.background": "#16161D", // Terminal background color (commented out)
-    "terminal.tab.activeBorder": "#00000000", // Transparent border for active terminal tab
-    "panelTitle.activeBorder": "#00000000", // Transparent border for active panel title
-    "panelTitle.activeForeground": "#16161D", // Darker text color for active panel titles
-    "terminal.tab.activeBackground": "#16161D", // Background color for active terminal tab
-    "activityBar.border": "#00000000", // Transparent border for activity bar
-    "activityBar.activeBorder": "#00000000", // Transparent border for active item in activity bar
-    "activityBar.activeFocusBorder": "#00000000", // Transparent focus border in activity bar
-    "activityBar.activeBackground": "#16161D" // Background color for active item in activity bar
-  },
+    "foreground": "#DCD7BA", // Default foreground color for the entire workbench.
+    "disabledForeground": "#727169AA", // Foreground color for disabled elements.
+    "focusBorder": "#7E9CD8AA", // Overall border color for focused elements.
+    "descriptionForeground": "#957FB8", // Foreground color for description text.
+    "errorForeground": "#E82424", // Overall foreground color for error messages.
 
+    "editor.background": "#16161D", // Editor background color.
+    "editor.foreground": "#FFFFFF", // Editor default foreground color.
+    "editorLineNumber.foreground": "#727169", // Color of editor line numbers.
+    "editorLineNumber.activeForeground": "#DCA561", // Color of the active editor line number.
+    "editor.lineHighlightBackground": "#3b1f02", // Background color for the highlight on the current line.
+    "editorCursor.foreground": "#DCA561", // Color of the editor cursor.
+    
+    "editor.selectionBackground": "#DCD7BA17", // Color of the editor selection.
+    "editor.inactiveSelectionBackground": "#2D4F6777", // Color of the selection in an inactive editor.
+    "editor.selectionHighlightBackground": "#0049da66", // Color for regions with the same content as the selection.
+    "editor.selectionHighlightBorder": "#7E9CD800", // Border color for regions with the same content as the selection.
+    "editor.wordHighlightBackground": "#1616D833", // Background color of a symbol during read-access.
+    "editor.wordHighlightStrongBackground": "#957FB833", // Background color of a symbol during write-access.
+
+    "activityBar.background": "#16161D", // Activity bar background.
+    "activityBar.foreground": "#DCD7BA", // Activity Bar foreground color (e.g., for icons).
+    "activityBar.inactiveForeground": "#727169", // Activity Bar item foreground color when it is inactive.
+    "activityBar.border": "#00000000", // Remove activity bar border.
+    "activityBar.activeBorder": "#00000000", // Remove activity bar active item border.
+    
   // ╭─────────────────────────────────────────────────────────╮
   // │ Workbench Layout & Panel Configuration                  │
   // ╰─────────────────────────────────────────────────────────╯
-  "workbench.panel.defaultLocation": "bottom", // Positions panel section at the bottom of the window
-  "workbench.sideBar.location": "left", // Places the sidebar on the left side of the window
-  "workbench.editor.showIcons": true, // Shows file type icons in editor tabs for quick identification
-  "workbench.activityBar.location": "default", // Places activity bar in standard position (left side)
-  "workbench.list.smoothScrolling": true, // Enables smooth animated scrolling in list/tree views
-  "workbench.editor.decorations.colors": true, // Shows colorized decorations (e.g., git changes)
-  "workbench.editor.decorations.badges": false, // Disables badge decorations for cleaner UI
-  "workbench.sash.hoverBorder": "transparent", // Makes the border that appears when hovering over sash invisible
-  "workbench.sash.size": 1, // Sets resize handles (sashes) to minimal 1px thickness
-  "workbench.editor.enablePreview": true, // Opens files in preview mode when clicked once
-  "workbench.tree.enableStickyScroll": true, // Keeps parent folders visible when scrolling tree views
-  "workbench.editor.pinnedTabsOnSeparateRow": false, // Keeps all tabs in a single row for compact layout
-  "workbench.tree.renderIndentGuides": "onHover", // Shows tree indentation guides only when hovering
-  "workbench.tree.indent": 10, // Sets tree indent to 10px for better space utilization
-  "workbench.editor.preferredSideBySideGroupLocation": "right", // New editor groups open to the right
-  "workbench.settings.editor": "json", // Uses JSON mode for editing settings instead of UI
-  "workbench.layoutControl.enabled": true, // Shows layout control buttons in the UI
-  "workbench.editor.limit.enabled": true, // Enables the limit on number of open editor tabs
-  "workbench.editor.limit.value": 10, // Sets maximum number of open editors to 10
-  "workbench.editor.limit.perEditorGroup": true, // Applies the tab limit separately to each editor group
-  "window.density.editorTabHeight": "compact", // Reduces the height of editor tabs for denser UI
+  "workbench.sideBar.location": "right",           // Sidebar on right
+  "workbench.panel.defaultLocation": "bottom",     // Panel at bottom (hidden by default)
+  "workbench.panel.opensMaximized": "always",      // Always maximize panel when opened
+  "workbench.editor.showTabs": "multiple",               // Show editor tabs
+  "workbench.editor.tabCloseButton": "right",      // Close button on tabs
+  "workbench.editor.splitInGroupLayout": "vertical", // Vertical split for editor groups
+  "workbench.panel.terminal.location": "left",     // Move terminal to left side
+  "workbench.panel.terminal.size": 0.4,            // Terminal takes 40% of panel width
+  "workbench.editor.showIcons": true,              // Show file icons in tabs
+  "workbench.activityBar.location": "default",     // Activity bar in default position
+  "workbench.list.smoothScrolling": true,          // Smooth scrolling in lists
+  "workbench.panel.alignment": "left",             // Align panel to left side
+    "python.experiments.optOutFrom": [
+        "pythonTerminalEnvVarActivation"
+    ],
+    "python.terminal.activateEnvInCurrentTerminal": true,
+    "python.terminal.activateEnvironment": true,
+  "terminal.integrated.profiles.osx": {
+  "zsh": {
+    "path": "/bin/zsh",
+    "args": ["-l"]
+  }
+},
+"terminal.integrated.defaultProfile.osx": "zsh",
+  "terminal.integrated.shellIntegration.enabled": true,
+  "terminal.integrated.splitCwd": "workspaceRoot",  // Open terminals in workspace root
+  "workbench.editor.decorations.colors": true,     // Colorized decorations
+  "workbench.editor.decorations.badges": false,    // No decorations badges
+  "workbench.sash.hoverBorder": "transparent",     // Transparent sash borders
+  "workbench.sash.size": 1,                        // Thin sashes
+  "workbench.editor.enablePreview": true,          // Preview files without opening
+  "workbench.tree.enableStickyScroll": true,       // Sticky scroll in trees
+  "workbench.editor.pinnedTabsOnSeparateRow": false, // All tabs on same row
+  "workbench.tree.renderIndentGuides": "onHover",  // Show indent guides on hover
+  "workbench.tree.indent": 10,                     // Compact tree indentation
+  "workbench.editor.preferredSideBySideGroupLocation": "right",
+  "workbench.settings.editor": "json",             // Use JSON for settings
+  "workbench.layoutControl.enabled": true,         // Show layout controls
+  "workbench.editor.limit.enabled": true,          // Limit number of open editors
+  "workbench.editor.limit.value": 10,              // Maximum 10 editors open
+  "workbench.editor.limit.perEditorGroup": true,   // Apply limit per group
+  "window.density.editorTabHeight": "compact",     // Compact tab height
   
-  // ╭─────────────────────────────────────────────────────────╮
-  // │ Terminal Configuration                                  │
-  // ╰─────────────────────────────────────────────────────────╯
-  "terminal.integrated.automaticRenderRequestDelay": 0, // No render delay
-  "terminal.integrated.fontFamily": "'Hack Nerd Font', monospace",
-  "terminal.integrated.fontSize": 12.3,            // Match editor font size
-  "terminal.integrated.lineHeight": 1.2,           // Compact line height
-  "terminal.integrated.minimumContrastRatio": 4.5, // Better contrast
-  "terminal.integrated.customGlyphs": false,       // No custom glyphs
-  "terminal.integrated.enableColorization": true,  // Colorize terminal output
-  "terminal.integrated.shellIntegration.decorationsEnabled": "never",
-  "terminal.integrated.persistentSessionReviveProcess": "onExitAndWindowClose",
-  "terminal.integrated.tabs.enabled": true,        // Enable terminal tabs
-  "terminal.integrated.cursorBlinking": true,      // Blinking cursor in terminal
-  "terminal.integrated.shellIntegration.enabled": true, // Shell integration
-  "terminal.integrated.scrollback": 7777,          // Generous scrollback
-  "terminal.integrated.scrollbar.vertical": "hidden", // Hide scrollbar until needed
-  "terminal.integrated.rightClickBehavior": "default", // Default right-click
-  "terminal.integrated.enableRightClickSelection": true, // Right-click selection
-  "terminal.integrated.gpuAcceleration": "on",     // Use GPU acceleration
-  "terminal.integrated.fastScrollSensitivity": 5,  // Fast scrolling
-  "terminal.integrated.defaultProfile.osx": "zsh", // Use zsh on macOS
-  "terminal.integrated.tabs.showActiveTerminal": "singleTerminalOrNarrow",
+  "terminal.integrated.fontFamily": "'Hack Nerd Font', monospace", // Use Hack Nerd Font in the integrated terminal.
+  "terminal.integrated.fontSize": 11.3, // Set a compact font size for the terminal.
+  "terminal.integrated.lineHeight": 1.2, // Use tighter line spacing in the terminal.
+  "terminal.integrated.gpuAcceleration": "auto", // Let Windsurf decide whether to use GPU acceleration for the terminal.
+  "terminal.integrated.persistentSessionReviveProcess": "onExitAndWindowClose", // Restore terminal sessions on restart.
+  "terminal.integrated.scrollback": 5000, // Keep a large scrollback buffer of 5000 lines.
+  "terminal.integrated.rightClickBehavior": "default", // Use the default right-click context menu.
+  "terminal.integrated.tabs.enabled": true, // Enable tabs for the integrated terminal.
 
-  // ╭─────────────────────────────────────────────────────────╮
-  // │ File Handling & Auto Save                               │
-  // ╰─────────────────────────────────────────────────────────╯
-  "files.dialog.defaultPath": "/Users/v/Documents/cascade", // Default location for open/save dialogs
-  "files.autoSave": "afterDelay",                  // Auto save files
-  "files.autoSaveDelay": 1000,                     // 1 second delay
-  "files.enableTrash": true,                       // Use trash for deleted files
-  "files.refactoring.autoSave": true,              // Auto-save on refactoring
-  "files.saveConflictResolution": "overwriteFileOnDisk", // Avoid prompts
-
-  // ╭─────────────────────────────────────────────────────────╮
-  // │ Performance & Resource Optimization                     │
-  // ╰─────────────────────────────────────────────────────────╯
-  "files.watcherExclude": {                        // Exclude from file watching
+  "files.dialog.defaultPath": "/Users/v/Documents/cascade", // Set the default path for file dialogs.
+  "files.autoSave": "afterDelay", // Automatically save files after a delay.
+  "files.autoSaveDelay": 1000, // Set the auto-save delay to 1000ms (1 second).
+  "files.enableTrash": true, // Move deleted files to the system trash.
+  "files.refactoring.autoSave": true, // Automatically save files before refactoring.
+  "files.saveConflictResolution": "overwriteFileOnDisk", // Automatically resolve save conflicts by overwriting.
+  "files.watcherExclude": { // Exclude specific directories from file watching to improve performance.
     "**/.git/objects/**": true,
     "**/.git/subtree-cache/**": true,
     "**/node_modules/*/**": true,
@@ -186,7 +157,7 @@
     "**/coverage/**": true,
     "**/.turbo/**": true
   },
-  "search.exclude": {                              // Exclude from search
+  "search.exclude": { // Exclude specific directories from search results.
     "**/node_modules": true,
     "**/bower_components": true,
     "**/dist": true,
@@ -199,88 +170,83 @@
     "**/tmp": true,
     "**/coverage": true
   },
-  "search.smartCase": true,                        // Smart case search
-  "editor.experimental.asyncTokenization": true,   // Async tokenization
-  "editor.experimentalWhitespaceRendering": "off", // Disable experimental whitespace
-  "workbench.list.typeNavigationMode": "automatic", // Faster navigation
-  "window.autoDetectColorScheme": false,           // Don't auto-detect color scheme
-  "search.quickAccess.preserveInput": true,        // Preserve search terms
+  "search.smartCase": true, // Perform case-sensitive search only if the query contains uppercase letters.
+  "search.quickAccess.preserveInput": true, // Preserve the input in quick access search boxes.
 
-  // ╭─────────────────────────────────────────────────────────╮
-  // │ Git Integration                                         │
-  // ╰─────────────────────────────────────────────────────────╯
-  "git.blame.editorDecoration.enabled": false,     // No inline blame decorations
-  "git.blame.statusBarItem.enabled": true,         // Show blame in status bar
-  "git.autofetch": true,                           // Auto-fetch changes
-  "git.enableSmartCommit": true,                   // Smart git commits
-  "git.confirmSync": false,                        // No sync confirmation
-  "git.mergeEditor.enableAutoCompleteMerge": true, // Auto-complete merges
-  "editor.codeLens": true,                         // Enable code lens
-  "git.enableCommitSigning": true,                 // Sign commits
-  "gitlens.hovers.enabled": true,                  // GitLens hovers
-  "gitlens.codeLens.enabled": false,               // No GitLens code lens
-  "gitlens.mode.active": "zen",                    // Zen mode for GitLens
-  "gitlens.currentLine.enabled": true,             // Current line blame
-  "gitlens.statusBar.enabled": true,               // Status bar blame
-  "gitlens.hovers.currentLine.over": "line",       // Line hover only
-  "diffEditor.renderSideBySide": false,            // Inline diff view
-  "git.openRepositoryInParentFolders": "never",    // Don't scan parent folders
-  "git.untrackedChanges": "hidden",                // Hide untracked changes
-  "git.detectSubmodules": false,                   // No submodule detection
+  "editor.experimental.asyncTokenization": true, // Enable experimental asynchronous tokenization for performance.
+  "editor.experimentalWhitespaceRendering": "off", // Disable experimental whitespace rendering.
 
-  // ╭─────────────────────────────────────────────────────────╮
-  // │ Debugging & Diagnostics                                 │
-  // ╰─────────────────────────────────────────────────────────╯
-  "debug.console.fontSize": 12.3,                  // Debug console font size
-  "debug.console.fontFamily": "'Hack Nerd Font', monospace",
-  "debug.toolBarLocation": "docked",               // Docked debug toolbar
-  "debug.inlineValues": true,                      // Show inline values
-  "debug.showInStatusBar": "always",               // Always show debug status
+  "workbench.list.typeNavigationMode": "automatic", // Enable type-to-navigate in lists.
+  "window.autoDetectColorScheme": false, // Do not automatically detect the OS color scheme.
 
-  // ╭─────────────────────────────────────────────────────────╮
-  // │ Windsurf/Cascade Specific Settings                      │
-  // ╰─────────────────────────────────────────────────────────╯
-  "cascade.gitignoreAccess": true,                 // Access gitignore files
-  "cascade.panelLocation": "right",                // Cascade panel on right
-  
-  // ╭─────────────────────────────────────────────────────────╮
-  // │ Neovim Integration                                      │
-  // ╰─────────────────────────────────────────────────────────╯
-  "extensions.experimental.affinity": {
-    "asvetliakov.vscode-neovim": 1                 // Neovim extension affinity
-  },
-  "keyboard.dispatch": "keyCode",                  // Better key handling for Neovim
+  "editor.codeLens": true, // Enable CodeLens to show contextual info, like Git blame and references.
 
-  // ╭─────────────────────────────────────────────────────────╮
-  // │ Workspace & Security                                    │
-  // ╰─────────────────────────────────────────────────────────╯
-  "security.workspace.trust.untrustedFiles": "open",
-  "sync.autoUpload": true,                         // Auto-upload settings
-  "local-sync.backupPath": ".config/windsurf",     // Local backup path
-  "sync.gist": "9b2d4665d1b0ab0e667ec0d5654038c6",
-  "sync.quietSync": true,
-  
-  // ╭─────────────────────────────────────────────────────────╮
-  // │ Translation & Accessibility                             │
-  // ╰─────────────────────────────────────────────────────────╯
-  "deepl.formality": "default",
-  "deepl.tagHandling": "off",
-  "deepl.splitSentences": "1",
-  "deepl.translationMode": "Replace",
-  "editor.accessibilitySupport": "auto",           // Respect OS settings
-  "editor.screenReaderAnnounceInlineSuggestion": true, // Announce suggestions
-  "workbench.preferredHighContrastColorTheme": "Default High Contrast",
-  "accessibility.verbosity.diffEditor": true,      // Verbose diff editor
+  "git.blame.editorDecoration.enabled": false, // Do not show Git blame information as an inline decoration.
+  "git.blame.statusBarItem.enabled": true, // Show Git blame information in the status bar.
+  "git.autofetch": true, // Automatically fetch from all remotes.
+  "git.enableSmartCommit": true, // Commit all changes when there are no staged changes.
+  "git.confirmSync": false, // Do not ask for confirmation before syncing.
+  "git.mergeEditor.enableAutoCompleteMerge": true, // Enable auto-completion in the merge editor.
+  "git.enableCommitSigning": false, // Do not sign Git commits.
+  "git.openRepositoryInParentFolders": "never", // Do not scan parent folders for Git repositories.
+  "git.untrackedChanges": "hidden", // Hide untracked changes in the source control view.
+  "git.detectSubmodules": false, // Do not automatically detect submodules.
 
-  // ╭─────────────────────────────────────────────────────────╮
-  // │ Custom UI                                               │
-  // ╰─────────────────────────────────────────────────────────╯
-  "window.menuBarVisibility": "toggle",            // Toggle menu bar
-  "customizeUI.titleBar": "frameless",             // Frameless title bar
+  "gitlens.hovers.enabled": true, // Enable GitLens hover annotations.
+  "gitlens.codeLens.enabled": false, // Disable GitLens CodeLens annotations.
+  "gitlens.mode.active": "zen", // Use Zen mode for a cleaner GitLens experience.
+  "gitlens.currentLine.enabled": true, // Show blame annotation for the current line.
+  "gitlens.statusBar.enabled": true, // Show blame information in the status bar.
+  "gitlens.hovers.currentLine.over": "line", // Show the current line hover over the entire line.
 
-  // ╭─────────────────────────────────────────────────────────╮
-  // │ TODO Highlighting                                       │
-  // ╰─────────────────────────────────────────────────────────╯
+  "diffEditor.renderSideBySide": false, // Use the inline view for the diff editor.
+  "diffEditor.ignoreTrimWhitespace": false, // Do not ignore trim whitespace differences.
+  "diffEditor.maxComputationTime": 5000, // Set the maximum time for diff computation to 5000ms.
+  "diffEditor.removedTextBackground": "#00000000", // Use a transparent background for removed text in the diff editor.
+  "diffEditor.insertedTextBackground": "#00000000", // Use a transparent background for inserted text in the diff editor.
+  "diffEditor.diagonalFill": false, // Disable the diagonal fill pattern in the diff editor for a cleaner look.
+  "debug.console.fontSize": 11.3, // Set the font size for the debug console.
+  "debug.console.fontFamily": "'Hack Nerd Font', monospace", // Use Hack Nerd Font in the debug console.
+  "debug.console.lineHeight": 1.2, // Set the line height for the debug console.
+  "debug.toolBarLocation": "floating", // Display the debug toolbar as a floating element.
+
+  "breadcrumbs.enabled": true, // Show breadcrumbs in the editor for easy navigation.
+  "explorer.confirmDragAndDrop": false, // Do not ask for confirmation when dragging and dropping files.
+  "explorer.confirmDelete": false, // Do not ask for confirmation when deleting files.
+
+  "security.workspace.trust.untrustedFiles": "open", // Automatically open untrusted files without a prompt.
+  "update.mode": "none", // Disable automatic updates for Windsurf.
+  "extensions.ignoreRecommendations": true, // Do not show extension recommendations.
+
+  "settingsSync.gist": "", // The Gist ID for settings sync (leave empty if not using Gist).
+  "sync.autoUpload": true, // Automatically upload settings changes.
+  "sync.autoDownload": false, // Do not automatically download settings changes.
+  "sync.forceUpload": false, // Do not force upload on startup.
+  "sync.forceDownload": false, // Do not force download on startup.
+  "sync.quiet": true, // Perform sync operations quietly without verbose notifications.
+  "sync.removeExtensions": false, // Do not remove extensions that are not in the synced list.
+  "sync.syncExtensions": true, // Synchronize the list of installed extensions.
+  "sync.host": "", // Custom host for settings sync (e.g., for self-hosted instances).
+  "sync.pathPrefix": "", // Path prefix for the custom sync host.
+  "sync.lastUpload": "", // Timestamp of the last successful upload (managed by the extension).
+  "sync.lastDownload": "", // Timestamp of the last successful download (managed by the extension).
+  "sync.log": false, // Disable verbose logging for settings sync.
+
+  "settings.backup.path": "/Users/v/Library/Application Support/Code/User/sync/local-sync/backup/", // Specifies the local path for settings sync backups.
+
+  "workbench.preferredHighContrastColorTheme": "Default High Contrast", // The default high contrast theme for accessibility.
+  "accessibility.verbosity.diffEditor": true, // Enable verbose announcements in the diff editor for screen readers.
+
+  "window.menuBarVisibility": "toggle", // Toggle the menu bar visibility with the Alt key.
+  "customizeUI.titleBar": "frameless", // Use a frameless title bar for a custom look.
+
+  "deepl.formality": "default", // Use the default formality for DeepL translations.
+  "deepl.tagHandling": "off", // Disable special tag handling in DeepL.
+  "deepl.splitSentences": "1", // Control sentence splitting in DeepL.
+  "deepl.translationMode": "Replace", // Replace selected text with the translation.
+  "editor.accessibilitySupport": "auto", // Automatically detect if accessibility support should be enabled.
+  "editor.screenReaderAnnounceInlineSuggestion": true, // Announce inline suggestions for screen readers.
+
   "todohighlight.include": [
     "**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx",
     "**/*.html", "**/*.css", "**/*.scss", "**/*.php",
@@ -292,7 +258,7 @@
       "text": "TODO:",
       "color": "#DCD7BA",
       "backgroundColor": "#7E9CD8",
-      "overviewRulerColor": "rgba(126,156,216,0.8)"
+      "overviewRulerColor": "rgba(126, 156, 216, 0.7)"
     },
     {
       "text": "FIX:",
@@ -331,5 +297,13 @@
       "overviewRulerColor": "rgba(118,148,106,0.8)"
     }
   ],
-  "todohighlight.enableDiagnostics": true
+  "todohighlight.enableDiagnostics": true,
+  "diffEditor.experimental.useTrueInlineView": true,
+  "scm.diffDecorationsGutterPattern": {
+    "added": true
+  },
+  "diffEditor.experimental.showMoves": true,
+  "editor.largeFileOptimizations": false,
+  "workbench.editor.tabActionLocation": "right",
+  "diffEditor.hideUnchangedRegions.enabled": true
 }

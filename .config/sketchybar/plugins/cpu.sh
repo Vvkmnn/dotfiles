@@ -1,24 +1,32 @@
 #!/usr/bin/env sh
 
-# CPU usage - accurate and responsive
-TOP_OUTPUT=$(top -l 2 -n 0 -s 0 | grep "CPU usage" | tail -1)
-USER=$(echo "$TOP_OUTPUT" | awk '{print $3}' | sed 's/%//')
-SYS=$(echo "$TOP_OUTPUT" | awk '{print $5}' | sed 's/%//')
+# CPU usage - direct reading, no smoothing needed
+source "$HOME/.config/sketchybar/plugins/macmon_shared.sh"
 
-# Calculate total CPU usage
-CPU_TOTAL=$(awk "BEGIN {printf \"%.0f\", $USER + $SYS}")
+CPU_PERCENT=""
+MACMON_DATA=$(get_macmon_data)
 
-# Color scheme: dim gray -> white -> yellow -> red
-if [ $CPU_TOTAL -lt 30 ]; then
-    COLOR=0xff606060  # Dim gray (normal)
-elif [ $CPU_TOTAL -lt 60 ]; then
-    COLOR=0xffFFFFFF  # White (notable)
-elif [ $CPU_TOTAL -lt 80 ]; then
-    COLOR=0xffDDB670  # Yellow (warning)
-else
-    COLOR=0xffE74C3C  # Red (critical)
+if [ "$MACMON_DATA" != "{}" ]; then
+    ECPU=$(echo "$MACMON_DATA" | sed -n 's/.*"ecpu_usage":\[[0-9]*,\([0-9]*\.[0-9]*\)\].*/\1/p')
+    PCPU=$(echo "$MACMON_DATA" | sed -n 's/.*"pcpu_usage":\[[0-9]*,\([0-9]*\.[0-9]*\)\].*/\1/p')
+    
+    if [ -n "$ECPU" ] && [ -n "$PCPU" ]; then
+        CPU_PERCENT=$(echo "$ECPU $PCPU" | awk '{avg=($1+$2)/2*100; print (avg>100)?100:int(avg)}')
+    fi
 fi
 
-sketchybar --set cpu label="${CPU_TOTAL}%" \
-                    label.color=$COLOR \
-                    icon.color=$COLOR
+# Fallback
+[ -z "$CPU_PERCENT" ] && CPU_PERCENT=$(ps aux | awk '{sum += $3} END {s=int(sum); print (s>100)?100:s}')
+
+# Colors
+if [ $CPU_PERCENT -lt 10 ]; then
+    COLOR=0xff606060
+elif [ $CPU_PERCENT -lt 25 ]; then
+    COLOR=0xffFFFFFF
+elif [ $CPU_PERCENT -lt 40 ]; then
+    COLOR=0xffFFA500
+else
+    COLOR=0xffE74C3C
+fi
+
+sketchybar --set cpu label="${CPU_PERCENT}%" label.color=$COLOR icon.color=$COLOR

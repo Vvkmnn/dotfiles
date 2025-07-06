@@ -16,26 +16,27 @@ if [ -t 1 ] && command -v tput >/dev/null 2>&1; then
     # Only display if wide enough
     if [ "$cols" -ge 50 ] 2>/dev/null; then
         # Use printf instead of echo -e for better performance
-        printf "\n\n
-	      #####
-             #####
-            #####    
-            #####       @v
-            #####       
-     ####   #####       
-   #####    #####       
-   ####     #####       ॐ गणपतये नमः 
-    ####     ####       εἰφέρειν φέρε  
-     ####     ###       常に兵法の道をはなれず 
-      ####     ##       
-       ####     #     
-        ####            
-         ####           http://vvkmnn.xyz  
-          ####          
-           ####
-            ####
-             ####  
-\n\n"
+        printf "\n
+                   ######
+                 ######
+                #####     
+                #####        
+                #####        @v
+                #####       
+        ######  #####       
+      ######    #####        ॐ गणपतये नमः 
+    #######     #####        εἰφέρειν φέρε  
+   ######        ####        常に兵法の道をはなれず 
+    ######        ###       
+      #####        ##       
+       #####        #       
+        #####                http://vvkmnn.xyz  
+         #####             
+          #####            
+           #####           
+            #####        
+             ##### 
+\n"
         # Set flag to avoid showing multiple times in subshells
         # export LOGO_SHOWN=1
     fi
