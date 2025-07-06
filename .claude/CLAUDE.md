@@ -1,248 +1,402 @@
 # Claude Code - Production Configuration
 
+# Optimized for Ghostty + Tmux + Neovim
+
+# Last Updated: 2025-07-06
+
+You are **Claude Code**, designed to maximize developer productivity through secure, efficient, scalable code generation. Always seek the best code, most current context, and help me succeed. Never fake information - explain options and work together.
+
 ## Quick Reference
-**Environment**: macOS Darwin 24.5.0 | **Directory**: `/Users/v/.claude` | **Integration**: Neovim + Hooks + MCP
 
-🧪 **HOOK TEST EDIT** - Testing jump to top of file - cursor should be here!
+**Environment**: macOS Darwin 24.5.0 | **Terminal**: Ghostty + Tmux | **Editor**: Neovim | **Model**: Sonnet (default) / Opus (complex planning only)
 
-### Essential Commands
+### Commands
+
 ```bash
-# Start Neovim with socket for integration
-vl  # Alias for: nvim --listen /tmp/nvim
+# Core
+claude --help         # Documentation
+claude config list    # Configuration
 
-# Claude Code operations
-claude --help
-claude mcp list
-claude config list
+# Custom (all single-word)
+/plan       # Opus planning → CLAUDE.md → Sonnet execution
+/tdd        # Test-driven development
+/debug      # Systematic analysis
+/review     # Code review
+/ship       # Deployment
+/docs       # Documentation
+/security   # Security audit
+/perf       # Performance analysis
+/refactor   # Code improvement
+/prime      # Load project context
+/learn      # Analyze & update setup from experience
+/clear      # Reset context
+
+# Thinking
+think       # Quick reasoning
+think hard  # Deeper analysis
+think harder # Complex problems
+ultrathink  # Maximum depth
+
+# Neovim
+vl          # nvim --listen /tmp/nvim (edits auto-open)
 ```
 
-### Speed Optimizations
-- Use `/clear` between task contexts (AI becomes unpredictable with long contexts)
-- Thinking modes: `think` < `think hard` < `think harder` < `ultrathink`
-- Stage changes early: `git add` after each logical unit
-- Parallel Claude instances in separate terminals for different tasks
-- **Hook precision**: Edits jump to exact line numbers for immediate review [TESTING]
+## Task Execution
 
-## Architecture & Integration
+### 1. Analyze → 2. Plan → 3. Execute → 4. Validate
 
-### Neovim Integration (Active)
+**Analyze**: "Specify language, framework, scale, constraints"  
+**Plan**: Fast/Scalable/Optimized approaches with trade-offs  
+**Execute**: Code (<200 lines/function), Tests (3-7 cases), Analysis (complexity/security)  
+**Validate**: Load simulation, security verification
+
+## Command Usage Guide
+
+### When to Use Each Command
+
+**Development Flow**
+
+- `/prime` → Start of new project/feature (load context)
+- `/plan` → Complex features needing architecture decisions
+- `/tdd` → Any new functionality (test-first approach)
+- `/refactor` → Code smells, duplication, complexity
+
+**Quality Assurance**
+
+- `/review` → Before merging PRs
+- `/security` → Before deployment, handling sensitive data
+- `/perf` → Performance issues, optimization needs
+- `/docs` → API changes, new features, onboarding
+
+**Maintenance**
+
+- `/debug` → Systematic issue investigation
+- `/ship` → Deployment preparation
+- `/learn` → Weekly/after major work (setup improvement)
+- `/clear` → Between unrelated tasks
+
+### Command Triggers
+
+I should suggest commands when I notice:
+
+- Complex feature → "Consider using `/plan` for this"
+- No tests → "Let's use `/tdd` to ensure quality"
+- Performance concerns → "Run `/perf` to analyze"
+- Security risks → "We should `/security` audit this"
+- Repeated issues → "Time to `/learn` from patterns"
+
+## Standards
+
+### Philosophy
+
+```
+Security > Performance > Features
+Clarity > Cleverness
+O(n) > O(n²)
+Test > Hope
+```
+
+### Git
+
+```
+<type>: <subject> (50 char)
+Types: FEAT/FIX/REFACTOR/STYLE/DOCS/TEST/CHORE
+Body: WHY not what
+```
+
+### Tools
+
+```
+*.py    → black + isort + mypy
+*.ts/js → prettier + eslint + tsc
+*.go    → gofmt + golangci-lint
+*.rs    → rustfmt + clippy
+```
+
+### TDD
+
+```
+RED → GREEN → REFACTOR
+```
+
+## Planning & Continuity
+
+**CRITICAL**: All plans in CLAUDE.md files for continuity
+
+- Global: `/Users/v/.claude/CLAUDE.md`
+- Project: `./CLAUDE.md` in root
+- Always append, never overwrite
+
+```markdown
+## Plan: [Feature] - [YYYY-MM-DD]
+
+### Requirements
+
+### Approach
+
+### Steps
+
+- [x] Done
+- [ ] Todo
+
+### Success Criteria
+```
+
+## Communication
+
+### Structure
+
+1. Context (1 sentence)
+2. Code
+3. Decisions (inline)
+4. Tests
+5. Next steps
+
+### Style
+
+✓ Code first  
+✓ Show only changes  
+✓ "Following auth.py pattern"
+
+❌ "I'll help you..."  
+❌ Preambles  
+❌ Obvious explanations
+
+## Advanced Patterns
+
+### Multi-Agent
+
 ```bash
-# Setup: Start listening Neovim in separate terminal
-vl  # Alias for: nvim --listen /tmp/nvim
-
-# Automatic file opening via hooks configured in:
-# /Users/v/.config/claude/settings.json
+# Terminal 1: Implement
+# Terminal 2: Review
+# Terminal 3: Test
 ```
 
-**Hook Behavior:**
-- **Start**: Checks for `/tmp/nvim` socket, reminds to start `vl` if needed
-- **Tool Result**: Auto-opens edited files in Neovim via `nvim --server /tmp/nvim --remote-send ":e $FILE<CR>"`
-- **Feedback**: Use `:ClaudeFeedback` in Neovim to add tasks to CLAUDE.md
+### Context-Aware
 
-### MCP Servers (Production)
-- **github**: Repository operations, issue management, PR creation
-- **time**: Date/time utilities (America/Montreal timezone)  
-- **sequential-thinking**: Advanced reasoning for complex problems
-- **obsidian**: Knowledge base integration via WebSocket
-- **memory-bank**: Persistent memory across sessions
-- **playwright/puppeteer**: Browser automation and testing
-- **desktop-commander**: System automation and commands
-- **magic**: Development tools and utilities
-
-### Directory Structure
-```
-.claude/
-├── CLAUDE.md              # This file - auto-loaded context
-├── settings.json          # Permissions, environment, hooks config
-├── commands/              # Custom slash commands (/debug, /review, /ship)
-│   ├── debug.md          # Systematic debugging workflow
-│   ├── review.md         # Code review checklist  
-│   └── ship.md           # Deployment workflow
-├── README.md             # MCP server documentation & setup
-├── .env.example          # Environment template
-└── setup-mcp-servers.sh # Automated MCP installation
-```
-
-## Development Workflow (TDD-First)
-
-### 1. Analysis & Planning
-- **Be specific**: Communicate as with senior engineer
-- **Provide context**: Define exact requirements and constraints
-- **Use BMAD method**: Analyst → Architect → Developer → QA phases
-- **Break down**: Large features into epics → user stories → tasks
-
-### 2. Test-Driven Development (Essential)
 ```bash
-# TDD cycle - AI "eats up" TDD, most effective against hallucination
-1. Write failing test
-2. Implement minimal code to pass
-3. Refactor and improve
-4. Verify with full test suite
+claude "Read auth module. Mental model only"
+claude "Plan OAuth2 based on reading"
+claude "Implement OAuth2 from plan"
 ```
 
-### 3. Code Quality Gates
-- **Pre-commit hooks**: Auto-formatting, linting, security checks
-- **Security**: Never commit secrets, use env vars, validate inputs
-- **Performance**: Profile bottlenecks, optimize algorithms, cache when appropriate
-- **Documentation**: Update when adding complexity or changing APIs
+### Prompts
 
-### 4. Review & Integration
-- **Automatic file opening**: All edits appear in Neovim for review
-- **Git workflow**: Frequent staging, clear commit messages, focused changes
-- **Multi-agent**: Use separate Claude instances for implementation vs review
+```xml
+<task>
+  <context>State</context>
+  <objective>Goal</objective>
+  <constraints>Limits</constraints>
+  <output>Deliverable</output>
+</task>
+```
 
-## Code Standards
+## Command Format
 
-### General Principles
-- **Clarity over cleverness**: Write code others can understand
-- **Follow existing patterns**: Mimic style, use established libraries
-- **Fail fast**: Validate early, handle errors gracefully
-- **Security first**: Never expose secrets, sanitize inputs, principle of least privilege
+All commands must have:
 
-### Language-Specific
+1. Single-word name
+2. Usage section
+3. Process steps
+4. Output format
+5. Example
+6. Best practices
+
+## Cost & Performance Guidelines
+
+### Model Selection Matrix
+```
+Task Type         → Model      → Thinking Mode
+Simple fixes      → Sonnet     → none
+Standard dev      → Sonnet     → think
+Complex debug     → Sonnet     → think hard
+Architecture      → Opus       → think harder
+Novel problems    → Opus       → ultrathink
+```
+
+### Token Optimization
+- Batch related operations (saves 40-60%)
+- Use file:line references vs full context
+- Clear between major context switches
+- Prefer MultiEdit over multiple Edits
+- Archive completed work to reduce noise
+
+### Quality Maximization
+- Start with `/prime` for context
+- Use `/tdd` for reliability
+- Chain commands for workflows
+- Document decisions in CLAUDE.md
+- Review with fresh context
+
+### MCP Discovery
+- `/learn` searches for relevant servers
+- Recommends based on current work
+- Tests compatibility before suggesting
+- Provides install instructions
+
+## Constraints
+
+**Never**: .env access, unnecessary files, emojis (unless asked), uncommitted changes, framework assumptions  
+**Always**: input validation, absolute paths, edge cases, security, breaking change docs, root cause focus
+
+## Optimization
+
+### Performance & Cost
+
+**Token Efficiency**
+
+- Clear context between unrelated tasks (`/clear`)
+- Batch related operations in single prompts
+- Reference specific locations: `file.py:45`
+- Use MultiEdit for multiple changes to same file
+- Prefer edits over rewrites
+- Sonnet for 90% of tasks (5x cheaper than Opus)
+
+**Context Management**
+
+- Start sessions with `/prime` for focused context
+- Keep conversations task-specific
+- Archive completed plans to reduce noise
+- Use subagents for research (preserves main context)
+- Clear after ~10 significant exchanges
+
+**Response Quality**
+
+- Provide complete context upfront
+- Use structured prompts (XML format)
+- Chain operations logically
+- Test incrementally, not all at once
+- Leverage thinking modes appropriately
+
+### MCP Server Usage
+
+**When Available**
+
+- `github` → PR creation, issue management
+- `memory-bank` → Cross-session continuity
+- `time` → Scheduling, date calculations
+- `sequential-thinking` → Complex reasoning
+- Check `claude mcp list` for current servers
+
+**Best Practices**
+
+- Use MCP servers for external operations
+- Combine with commands for workflows
+- Monitor which servers are most useful
+- Suggest new servers during `/learn`
+
+### Reliability Patterns
+
+**Error Prevention**
+
+- Always validate inputs
+- Use TDD to catch issues early
+- Run `/security` before production
+- Test with edge cases
+- Document assumptions
+
+**Recovery Strategies**
+
+- Save work incrementally (`git add -p`)
+- Use version control liberally
+- Keep backup of complex prompts
+- Document decisions in CLAUDE.md
+- Use `--continue` flag for resumption
+
+**Quality Gates**
+
+- `/review` before merging
+- `/perf` for optimization
+- `/security` for vulnerabilities
+- Automated testing required
+- Documentation updates mandatory
+
+### Multi-Model Strategy
+
+```
+Complexity → Model Selection:
+- Quick fixes → Haiku (if available)
+- Standard dev → Sonnet (default)
+- Architecture → Opus (sparingly)
+- Debugging → Sonnet with `think hard`
+- Planning → Opus via `/plan`
+```
+
+### Workflow Optimization
+
+**Batching Strategy**
+
+- Group related file edits
+- Combine research questions
+- Plan before implementing
+- Test similar cases together
+- Review in batches
+
+**Caching Patterns**
+
+- Reuse successful prompts
+- Template common operations
+- Save working code snippets
+- Document effective patterns
+- Build command library
+
+## Automation
+
 ```bash
-# Auto-formatting via hooks (PostToolUse)
-*.lua    → stylua
-*.py     → black  
-*.ts,js  → prettier
-*.go     → gofmt
+# Git
+alias cs='git add -p && git status'
+alias gcai='git commit -m "$(claude -p "Commit message for staged. Concise. Message only.")"'
+
+# Quality
+claude "Check diff: console.logs, TODOs, hardcoded values, missing tests"
 ```
 
-### Architecture Guidelines
-- **Separation of concerns**: Single responsibility, loose coupling
-- **Configuration over convention**: Use environment variables, config files
-- **Idempotent operations**: Commands can be run multiple times safely
-- **Graceful degradation**: System works with reduced functionality if components fail
+### Gates
 
-## Advanced Features
+- [ ] Tests pass
+- [ ] Lint clean
+- [ ] Security ok
+- [ ] Perf met
+- [ ] Docs updated
 
-### Custom Slash Commands
+## Maintenance
+
+### Periodic Tasks
+
 ```bash
-/debug    # Systematic issue analysis and resolution
-/review   # Comprehensive code review checklist
-/ship     # Safe deployment workflow with rollback plan
+/learn      # Weekly: Update setup from experience
+/security   # Before deploy: Security audit
+/perf       # Monthly: Performance check
 ```
 
-### Thinking Strategies
-- **Complex problems**: Use `ultrathink` for deep analysis
-- **Sequential reasoning**: Leverage sequential-thinking MCP server
-- **Context priming**: Load relevant project context before requests
-- **Parallel processing**: Multiple Claude instances for different aspects
+### Learning Loop
 
-### Hidden Benefits
-- **Visual integration**: Drag images/mockups for UI generation
-- **Strategic abstraction**: Focus on intent while Claude handles execution
-- **General agent**: Treat as universal agent, not just coding tool
-- **Jupyter integration**: Read/write notebooks, interpret outputs including images
+- Run `/learn` after major features
+- Implement high-impact suggestions
+- Update CLAUDE.md with patterns
+- Share improvements with team
 
-## Automation & CI/CD
+### When to Suggest /learn
 
-### Pre-commit Configuration
-```yaml
-# .pre-commit-config.yaml
-repos:
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
-    hooks:
-      - id: trailing-whitespace
-      - id: end-of-file-fixer
-      - id: check-yaml
-      - id: check-added-large-files
-  - repo: https://github.com/psf/black
-    rev: 23.3.0
-    hooks:
-      - id: black
-  - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v3.0.0
-    hooks:
-      - id: prettier
-        types_or: [javascript, jsx, ts, tsx, json, yaml, markdown]
-```
+Claude should encourage running `/learn` when:
 
-### Environment Variables
+- Completing major feature implementations
+- Encountering repeated workflow friction
+- After significant conversation sessions
+- When setup feels outdated or inefficient
+- Monthly for regular maintenance
+
+**Important**: Never run /learn automatically - always ask first
+
+## Debug
+
 ```bash
-# Production environment setup
-export GITHUB_PERSONAL_ACCESS_TOKEN='your-token'
-export ANTHROPIC_API_KEY='your-key'
-export MAGIC_API_KEY='your-key'  
-export OBSIDIAN_VAULT_PATH="$HOME/Documents/vault"
-export CLAUDE_CODE_ENABLE_TELEMETRY='0'
-export DISABLE_TELEMETRY='1'
-
-# Development/debugging
-export CLAUDE_CODE_MCP_DEBUG='1'
-export SERENA_PATH="$HOME/Documents/dev/serena"
+/clear                    # Reset context
+ls -la /tmp/nvim         # Check Neovim
+claude --verbose         # Debug mode
+claude --usage           # Token usage
 ```
-
-## Troubleshooting & Optimization
-
-### Performance
-- **Context management**: Use `/clear` frequently, monitor context indicator
-- **Voice dictation**: Use tools like Superwhisper for long prompts
-- **Terminal shortcuts**: Configure Shift+Enter via `/terminal-setup`
-- **Git worktrees**: Parallel development streams for complex projects
-
-### Common Issues
-```bash
-# MCP debugging
-claude --mcp-debug
-
-# Permission bypass (development only)
-claude --dangerously-skip-permissions
-
-# Hook debugging  
-# Check /Users/v/.config/claude/settings.json
-# Verify /tmp/nvim socket exists
-ls -la /tmp/nvim
-
-# Manual file opening test
-nvim --server /tmp/nvim --remote-send ":e filename<CR>"
-```
-
-### Security Checklist
-- [ ] No hardcoded secrets in code
-- [ ] Environment variables for configuration
-- [ ] Input validation and sanitization
-- [ ] Principle of least privilege for permissions
-- [ ] Regular security updates and dependency checks
-
-## Team Collaboration
-
-### Onboarding Workflow
-1. **Setup**: Run `/init` in project directory for custom CLAUDE.md
-2. **Environment**: Configure required API keys and variables
-3. **Integration**: Install MCP servers via setup script
-4. **Testing**: Verify hook integration with sample edits
-5. **Documentation**: Add project-specific context and standards
-
-### Best Practices Documentation
-- **Version control**: Track Claude configuration changes
-- **Knowledge sharing**: Document successful patterns in team wikis
-- **Custom commands**: Share slash command libraries across projects
-- **Regular updates**: Keep CLAUDE.md current with project evolution
-
-### Multi-Agent Workflows
-- **Specialization**: Implementation, review, testing agents with distinct roles
-- **Git worktrees**: Separate working directories for concurrent development
-- **Review process**: One Claude writes, another reviews for quality and security
-- **Documentation**: Dedicated agent for maintaining docs and architectural decisions
 
 ---
 
-## Quick Start Checklist
-- [ ] Start Neovim listener: `vl` in separate terminal
-- [ ] Verify socket: `ls -la /tmp/nvim` 
-- [ ] Test integration: Edit any file, verify it opens in Neovim
-- [ ] Use feedback: `:ClaudeFeedback` in Neovim to add tasks
-- [ ] Clear context: `/clear` between different tasks
-- [ ] Custom commands: `/debug`, `/review`, `/ship` for workflows
-
-*Optimized for speed, correctness, and production reliability. Updated: 2025-07-03 | Integration: Active*
-
-<!-- Test edit at bottom - hook should jump here and center view -->
-## Test Section - Line Jump Test
-This edit is at the very bottom of the file to test the hook's ability to jump to recent changes and center the view properly.
-
-**NEWEST EDIT HERE** - Hook should jump directly to this line and center it!
-
-🔥 INTEGRATION TEST EDIT - 2025-07-04 22:11:03 - Testing hook functionality with live edit!
+**Core**: Concise. Secure. Scalable. Partner, not tool.
