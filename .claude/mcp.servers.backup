@@ -1,7 +1,7 @@
-linear: https://mcp.linear.app/sse
+linear: npx -y mcp-remote https://mcp.linear.app/sse
 sequential-thinking: npx -y @modelcontextprotocol/server-sequential-thinking
 fetch: uvx mcp-server-fetch
-supermemory: https://mcp.supermemory.ai/EqC-u--q2mey-PvgF_fN-/sse
+supermemory: npx -y mcp-remote https://mcp.supermemory.ai/EqC-u--q2mey-PvgF_fN-/sse
 magic: npx -y @21st-dev/magic@latest
 playwright: npx -y @playwright/mcp@latest
 mcp-compass: npx -y @liuyoshio/mcp-compass
@@ -11,3 +11,10 @@ apple-mcp: bunx @dhravya/apple-mcp@latest
 obsidian: uvx mcp-obsidian
 perplexity: npx -y @chatmcp/server-perplexity-ask
 github: npx -y @modelcontextprotocol/server-github
+tmux: npx -y tmux-mcp
+brave-search: npx -y @modelcontextprotocol/server-brave-search
+actors-mcp-server: npx -y @apify/actors-mcp-server
+figma/framelink: npx -y figma-developer-mcp 
+gcp-mcp: npx -y gcp-mcp
+stackoverflow: npx -y @notalk-tech/stackoverflow-mcp
+reddit: npx -y reddit-mcp-server

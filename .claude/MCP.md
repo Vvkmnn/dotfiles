@@ -4,8 +4,8 @@
 
 This document tracks all MCP (Model Context Protocol) servers configured for Claude Code. These servers provide external tool access, API integrations, and enhanced capabilities.
 
-**Last Updated**: 2025-07-06  
-**Total Servers**: 13  
+**Last Updated**: 2025-07-09  
+**Total Servers**: 18  
 **Status**: ✅ All Functional
 
 ## 🔥 CRITICAL SERVERS
@@ -78,6 +78,32 @@ This document tracks all MCP (Model Context Protocol) servers configured for Cla
     - Status: ✅ Fully Functional
     - Auth: `PERPLEXITY_API_KEY`
 
+### Extended Integrations (4)
+14. **tmux** - Terminal multiplexer integration
+    - Package: `tmux-mcp`
+    - Status: ✅ Fully Functional
+    - Auth: None required
+
+15. **brave-search** - Web search capabilities
+    - Package: `@modelcontextprotocol/server-brave-search`
+    - Status: ✅ Fully Functional
+    - Auth: `BRAVE_API_KEY`
+
+16. **actors-mcp-server** - Apify actor automation
+    - Package: `@apify/actors-mcp-server`
+    - Status: ✅ Fully Functional
+    - Auth: `APIFY_TOKEN`
+
+17. **figma/framelink** - Figma design integration
+    - Package: `figma-developer-mcp`
+    - Status: ✅ Fully Functional
+    - Auth: Hardcoded API key
+
+18. **gcp-mcp** - Google Cloud Platform resource management
+    - Package: `gcp-mcp`
+    - Status: ✅ Fully Functional
+    - Auth: GCP Application Default Credentials required
+
 ## Environment Configuration
 
 ### Required API Keys
@@ -94,6 +120,10 @@ MAGIC_API_KEY=***
 
 # Search & AI Services
 PERPLEXITY_API_KEY=pplx-***
+BRAVE_API_KEY=***
+
+# Automation & Integration
+APIFY_TOKEN=***
 
 # Obsidian Configuration
 OBSIDIAN_API_KEY=7935806dde346ec357436c21282b3271dada7f077aba5782c5404406dc1e1de4
@@ -103,8 +133,20 @@ OBSIDIAN_VAULT_PATH=/Users/v/Documents/vault
 ```
 
 ### Installation Commands
+
+#### New: Enhanced /install Command
 ```bash
-# Restore all servers (if corrupted)
+# Interactive installation with backup and verification
+claude /install                    # Interactive server selection
+claude /install server-name        # Install specific server
+claude /install --list            # Show available servers
+claude /install --update          # Update all servers
+claude /install --status          # Show current server status
+```
+
+#### Manual Installation (Legacy)
+```bash
+# Core servers
 claude mcp add linear -- npx -y mcp-remote https://mcp.linear.app/sse
 claude mcp add sequential-thinking -- npx -y @modelcontextprotocol/server-sequential-thinking
 claude mcp add fetch -- uvx mcp-server-fetch
@@ -118,6 +160,13 @@ claude mcp add apple-mcp -- bunx @dhravya/apple-mcp@latest
 claude mcp add obsidian -e OBSIDIAN_API_KEY="\$OBSIDIAN_API_KEY" -e OBSIDIAN_HOST="\$OBSIDIAN_HOST" -e OBSIDIAN_PORT="\$OBSIDIAN_PORT" -- uvx mcp-obsidian
 claude mcp add perplexity -e PERPLEXITY_API_KEY="\$PERPLEXITY_API_KEY" -- npx -y @chatmcp/server-perplexity-ask
 claude mcp add github -e GITHUB_PERSONAL_ACCESS_TOKEN="\$GITHUB_PERSONAL_ACCESS_TOKEN" -- npx -y @modelcontextprotocol/server-github
+
+# Extended servers
+claude mcp add tmux -- npx -y tmux-mcp
+claude mcp add brave-search -e BRAVE_API_KEY="\$BRAVE_API_KEY" -- npx -y @modelcontextprotocol/server-brave-search
+claude mcp add actors-mcp-server -e APIFY_TOKEN="\$APIFY_TOKEN" -- npx -y @apify/actors-mcp-server
+claude mcp add figma/framelink -- npx -y figma-developer-mcp --figma-api-key=figd_vzcwpi9px563yhl2_zgsanisgmoazfkezyrsakyj --stdio
+claude mcp add gcp-mcp -- npx -y gcp-mcp
 ```
 
 ## Global Configuration
@@ -181,7 +230,7 @@ claude mcp list
 claude mcp list
 
 # Verify server count
-claude mcp list | wc -l  # Should return 13
+claude mcp list | wc -l  # Should return 18
 
 # Test environment variables
 source ~/.claude/.env && env | grep -E "(GITHUB|PERPLEXITY|TWENTY|OBSIDIAN)"
