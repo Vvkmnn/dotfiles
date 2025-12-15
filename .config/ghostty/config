@@ -7,8 +7,8 @@
 # Dark theme with vibrant colors
 # theme = catppuccin-mocha
 
-# Auto-switch with system light/dark mode
-theme = light:github_light,dark:tokyonight
+# Unified theme configuration - tokyonight for consistency
+theme = tokyonight
 
 # Beautiful rose-pine theme switching
 # theme = light:rose-pine-dawn,dark:rose-pine
@@ -24,10 +24,10 @@ theme = light:github_light,dark:tokyonight
 # palette = 1=#f38ba8
 
 # Background transparency (0.0-1.0)
-background-opacity = 0.95
+# background-opacity = 0.97
 
-# Background blur effect
-background-blur-radius = 93
+# Background blur - reduced for better performance
+# background-blur-radius = 40
 
 # Minimum contrast ratio for text readability (1.0-21.0)
 minimum-contrast = 1.1
@@ -58,7 +58,7 @@ font-family = "Hack Nerd Font", "JetBrains Mono"
 # font-family-bold-italic = 
 
 # Font size in points
-font-size = 13
+font-size = 12.3
 
 # Font style preferences
 # font-style = default
@@ -189,7 +189,7 @@ window-inherit-working-directory = true
 # Step resize (resize by character cells)
 # window-step-resize = false
 
-# VSync for smooth rendering
+# VSync for maximum smoothness and performance
 window-vsync = true
 
 # Window theme (light, dark, auto)
@@ -304,8 +304,8 @@ copy-on-select = true
 # Hide mouse while typing
 mouse-hide-while-typing = true
 
-# Mouse scroll multiplier
-mouse-scroll-multiplier = 1.3
+# Mouse scroll multiplier - optimized for smooth terminal scrolling
+mouse-scroll-multiplier = 1.0
 
 # Mouse shift capture
 # mouse-shift-capture = true
@@ -340,14 +340,14 @@ clipboard-trim-trailing-spaces = true
 # ============================================================================
 
 # Scrollback buffer size
-scrollback-limit = 66666
+scrollback-limit = 10000
 
 # ============================================================================
 # TERMINAL BEHAVIOR
 # ============================================================================
 
-# Terminal type
-term = xterm-256color
+# Terminal type - use xterm-ghostty for better compatibility
+term = xterm-ghostty
 
 # Bold is bright colors
 bold-is-bright = true
@@ -387,8 +387,8 @@ app-notifications = true
 # Resize overlay (always, never, after-first)
 resize-overlay = after-first
 
-# Resize overlay duration
-resize-overlay-duration = 500ms
+# Resize overlay - faster for better responsiveness
+resize-overlay-duration = 200ms
 
 # Resize overlay position
 # resize-overlay-position = center
@@ -441,8 +441,8 @@ confirm-close-surface = false
 # Auto update channel
 # auto-update-channel = stable
 
-# Image storage limit
-# image-storage-limit = 320000000
+# Image storage limit (prevents unbounded memory from pasted images)
+image-storage-limit = 160000000
 
 # Custom shader
 # custom-shader = ""

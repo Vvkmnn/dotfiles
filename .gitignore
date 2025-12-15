@@ -343,5 +343,38 @@ Session.vim
 # Auto-generated tag files
 tags
 
-# Claude Code configuration files
-/.claude.json
+# Claude Code - secrets and ephemeral
+# Note: .utcp_config.json is git-crypt encrypted, so it CAN be tracked
+.claude/.claude.json
+.claude/.claude.json.backup
+.claude/settings.local.json
+.claude/history.jsonl
+.claude/stats-cache.json
+.claude/*.log
+.claude/debug/
+.claude/file-history/
+.claude/plans/
+.claude/plugins/
+.claude/projects/
+.claude/session-env/
+.claude/shell-snapshots/
+.claude/statsig/
+.claude/telemetry/
+.claude/todos/
+.claude/ide/
+.claude/security_warnings_state_*.json
+.claude/.claude/
+.claude/TODO.md
+.claude/CLAUDE.tmp.md
+
+# Codeium/Windsurf
+.codeium/
+
+# Claude memory plugin
+.claude-mem/
+
+# ClaudPoint checkpoint system
+.checkpoints/
+
+# git-crypt key (NEVER commit)
+dotfiles.key

@@ -356,3 +356,47 @@ dotfiles submodule update --init --recursive
 dotfiles submodule init # Create all folders
 dotfiles submodule update # Update all folders to master branch
 ```
+
+## Claude Code
+
+[Claude Code](https://docs.anthropic.com/en/docs/claude-code) AI assistant configuration.
+
+### Structure
+
+```
+.claude/
+├── CLAUDE.md          # Global instructions
+├── settings.json      # Plugins, hooks, statusline
+├── rules/             # Behavioral rules
+│   ├── explore.md     # Investigation before acting
+│   ├── verify.md      # Evidence-based claims
+│   ├── test.md        # Testing requirements
+│   ├── minimize.md    # Simplicity principles
+│   ├── teach.md       # Educational insights
+│   ├── improve.md     # Self-improvement
+│   └── avoid.md       # Context efficiency
+├── hooks/             # Event hooks (JS)
+│   ├── session-start.js
+│   ├── notification.js
+│   └── pre-tool-use.js
+├── commands/          # Slash commands
+│   └── commit.md
+└── statusline.sh      # Custom statusline
+```
+
+### Secrets
+
+`.utcp_config.json` contains MCP server tokens (Notion, GitHub, Brave, etc.) and is **git-crypt encrypted**.
+
+```sh
+# On new machine, after clone:
+git-crypt unlock ~/dotfiles.key  # Key stored in 1Password
+```
+
+### Plugins
+
+Enabled plugins configured in `settings.json`:
+- `superpowers@superpowers-marketplace` - Skills and workflows
+- `claude-mem@thedotmack` - Cross-session memory
+- `repomix-mcp@repomix` - Codebase analysis
+- Various workflow plugins (tdd, security, debugging, etc.)
