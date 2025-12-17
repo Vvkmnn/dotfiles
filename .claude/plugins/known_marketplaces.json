@@ -1,0 +1,74 @@
+{
+  "claude-code-plugins": {
+    "source": {
+      "source": "github",
+      "repo": "anthropics/claude-code"
+    },
+    "installLocation": "/Users/v/.claude/plugins/marketplaces/claude-code-plugins",
+    "lastUpdated": "2025-12-17T09:13:00.005Z"
+  },
+  "claude-code-workflows": {
+    "source": {
+      "source": "github",
+      "repo": "wshobson/agents"
+    },
+    "installLocation": "/Users/v/.claude/plugins/marketplaces/claude-code-workflows",
+    "lastUpdated": "2025-12-15T09:03:05.320Z"
+  },
+  "superpowers-marketplace": {
+    "source": {
+      "source": "github",
+      "repo": "obra/superpowers-marketplace"
+    },
+    "installLocation": "/Users/v/.claude/plugins/marketplaces/superpowers-marketplace",
+    "lastUpdated": "2025-12-16T01:35:12.462Z"
+  },
+  "thedotmack": {
+    "source": {
+      "source": "github",
+      "repo": "thedotmack/claude-mem"
+    },
+    "installLocation": "/Users/v/.claude/plugins/marketplaces/thedotmack",
+    "lastUpdated": "2025-12-17T07:13:34.280Z"
+  },
+  "repomix": {
+    "source": {
+      "source": "github",
+      "repo": "yamadashy/repomix"
+    },
+    "installLocation": "/Users/v/.claude/plugins/marketplaces/repomix",
+    "lastUpdated": "2025-12-17T07:14:19.635Z"
+  },
+  "every-marketplace": {
+    "source": {
+      "source": "git",
+      "url": "https://github.com/EveryInc/compound-engineering-plugin.git"
+    },
+    "installLocation": "/Users/v/.claude/plugins/marketplaces/every-marketplace",
+    "lastUpdated": "2025-12-17T07:13:13.097Z"
+  },
+  "cc_chrome_devtools_mcp_skill-plugin-marketplace": {
+    "source": {
+      "source": "github",
+      "repo": "justfinethanku/cc_chrome_devtools_mcp_skill"
+    },
+    "installLocation": "/Users/v/.claude/plugins/marketplaces/cc_chrome_devtools_mcp_skill-plugin-marketplace",
+    "lastUpdated": "2025-12-16T01:44:33.713Z"
+  },
+  "claude-plugins-official": {
+    "source": {
+      "source": "github",
+      "repo": "anthropics/claude-plugins-official"
+    },
+    "installLocation": "/Users/v/.claude/plugins/marketplaces/claude-plugins-official",
+    "lastUpdated": "2025-12-17T09:12:10.098Z"
+  },
+  "custom": {
+    "source": {
+      "source": "directory",
+      "path": "/Users/v/.claude/plugins/custom"
+    },
+    "installLocation": "/Users/v/.claude/plugins/custom",
+    "lastUpdated": "2025-12-17T08:08:45.759Z"
+  }
+}

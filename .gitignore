@@ -347,6 +347,7 @@ tags
 # Note: .utcp_config.json is git-crypt encrypted, so it CAN be tracked
 .claude/.claude.json
 .claude/.claude.json.backup
+**/.claude/settings.local.json
 .claude/settings.local.json
 .claude/security_warnings_state_*.json
 .claude/history.jsonl
@@ -368,6 +369,7 @@ tags
 .claude/.claude/
 .claude/plugins/cache/
 .claude/plugins/marketplaces/
+.claude/plugins/installed_plugins.json
 
 # Codeium/Windsurf
 .codeium/
