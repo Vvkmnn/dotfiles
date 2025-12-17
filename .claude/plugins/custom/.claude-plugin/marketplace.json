@@ -1,0 +1,23 @@
+{
+  "name": "custom",
+  "owner": {
+    "name": "v"
+  },
+  "plugins": [
+    {
+      "name": "writing",
+      "source": "./writing",
+      "description": "Resume customization and writing skills"
+    },
+    {
+      "name": "coding",
+      "source": "./coding",
+      "description": "Custom coding skills"
+    },
+    {
+      "name": "automating",
+      "source": "./automating",
+      "description": "Automation skills"
+    }
+  ]
+}

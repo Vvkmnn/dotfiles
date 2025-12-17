@@ -1,0 +1,355 @@
+{
+  "version": 2,
+  "plugins": {
+    "explanatory-output-style@claude-code-plugins": [
+      {
+        "scope": "user",
+        "installPath": "/Users/v/.claude/plugins/cache/claude-code-plugins/explanatory-output-style/1.0.0",
+        "version": "1.0.0",
+        "installedAt": "2025-12-08T13:05:23.239Z",
+        "lastUpdated": "2025-12-17T08:26:23.959Z",
+        "gitCommitSha": "de49a076792f56beefb78b18fa60015145532808",
+        "isLocal": true
+      }
+    ],
+    "superpowers@superpowers-marketplace": [
+      {
+        "scope": "user",
+        "installPath": "/Users/v/.claude/plugins/cache/superpowers-marketplace/superpowers/3.6.2",
+        "version": "3.6.2",
+        "installedAt": "2025-12-10T04:53:40.808Z",
+        "lastUpdated": "2025-12-17T08:26:23.959Z",
+        "gitCommitSha": "4ac67830d9637dadc04c97ce9bb9ab65abadca73",
+        "isLocal": false
+      }
+    ],
+    "superpowers-developing-for-claude-code@superpowers-marketplace": [
+      {
+        "scope": "user",
+        "installPath": "/Users/v/.claude/plugins/cache/superpowers-marketplace/superpowers-developing-for-claude-code/0.3.1",
+        "version": "0.3.1",
+        "installedAt": "2025-12-10T04:56:24.867Z",
+        "lastUpdated": "2025-12-17T08:26:23.959Z",
+        "gitCommitSha": "74afe935da49efe782907e837a27ce618498099a",
+        "isLocal": false
+      }
+    ],
+    "elements-of-style@superpowers-marketplace": [
+      {
+        "scope": "user",
+        "installPath": "/Users/v/.claude/plugins/cache/superpowers-marketplace/elements-of-style/1.0.0",
+        "version": "1.0.0",
+        "installedAt": "2025-12-10T05:01:36.918Z",
+        "lastUpdated": "2025-12-17T08:26:23.959Z",
+        "gitCommitSha": "6099c505c2a8eb066f3777f83a97d9d828f7954c",
+        "isLocal": false
+      }
+    ],
+    "security-guidance@claude-code-plugins": [
+      {
+        "scope": "user",
+        "installPath": "/Users/v/.claude/plugins/cache/claude-code-plugins/security-guidance/1.0.0",
+        "version": "1.0.0",
+        "installedAt": "2025-12-10T05:05:12.703Z",
+        "lastUpdated": "2025-12-17T08:26:23.959Z",
+        "gitCommitSha": "de49a076792f56beefb78b18fa60015145532808",
+        "isLocal": true
+      }
+    ],
+    "code-review@claude-code-plugins": [
+      {
+        "scope": "user",
+        "installPath": "/Users/v/.claude/plugins/cache/claude-code-plugins/code-review/1.0.0",
+        "version": "1.0.0",
+        "installedAt": "2025-12-10T05:05:12.703Z",
+        "lastUpdated": "2025-12-17T08:26:23.959Z",
+        "gitCommitSha": "de49a076792f56beefb78b18fa60015145532808",
+        "isLocal": true
+      }
+    ],
+    "commit-commands@claude-code-plugins": [
+      {
+        "scope": "user",
+        "installPath": "/Users/v/.claude/plugins/cache/claude-code-plugins/commit-commands/1.0.0",
+        "version": "1.0.0",
+        "installedAt": "2025-12-10T05:05:12.703Z",
+        "lastUpdated": "2025-12-17T08:26:23.959Z",
+        "gitCommitSha": "de49a076792f56beefb78b18fa60015145532808",
+        "isLocal": true
+      }
+    ],
+    "plugin-dev@claude-code-plugins": [
+      {
+        "scope": "user",
+        "installPath": "/Users/v/.claude/plugins/cache/claude-code-plugins/plugin-dev/0.1.0",
+        "version": "0.1.0",
+        "installedAt": "2025-12-10T05:05:12.703Z",
+        "lastUpdated": "2025-12-17T08:26:23.959Z",
+        "gitCommitSha": "de49a076792f56beefb78b18fa60015145532808",
+        "isLocal": true
+      }
+    ],
+    "feature-dev@claude-code-plugins": [
+      {
+        "scope": "user",
+        "installPath": "/Users/v/.claude/plugins/cache/claude-code-plugins/feature-dev/1.0.0",
+        "version": "1.0.0",
+        "installedAt": "2025-12-10T05:28:20.783Z",
+        "lastUpdated": "2025-12-17T08:26:23.959Z",
+        "gitCommitSha": "de49a076792f56beefb78b18fa60015145532808",
+        "isLocal": true
+      }
+    ],
+    "frontend-design@claude-code-plugins": [
+      {
+        "scope": "user",
+        "installPath": "/Users/v/.claude/plugins/cache/claude-code-plugins/frontend-design/1.0.0",
+        "version": "1.0.0",
+        "installedAt": "2025-12-10T05:28:20.783Z",
+        "lastUpdated": "2025-12-17T08:26:23.959Z",
+        "gitCommitSha": "de49a076792f56beefb78b18fa60015145532808",
+        "isLocal": true
+      }
+    ],
+    "pr-review-toolkit@claude-code-plugins": [
+      {
+        "scope": "user",
+        "installPath": "/Users/v/.claude/plugins/cache/claude-code-plugins/pr-review-toolkit/1.0.0",
+        "version": "1.0.0",
+        "installedAt": "2025-12-10T05:28:20.783Z",
+        "lastUpdated": "2025-12-17T08:26:23.959Z",
+        "gitCommitSha": "de49a076792f56beefb78b18fa60015145532808",
+        "isLocal": true
+      }
+    ],
+    "claude-mem@thedotmack": [
+      {
+        "scope": "user",
+        "installPath": "/Users/v/.claude/plugins/cache/thedotmack/claude-mem/7.1.14",
+        "version": "7.1.14",
+        "installedAt": "2025-12-13T13:41:55.072Z",
+        "lastUpdated": "2025-12-17T08:26:23.959Z",
+        "isLocal": true
+      }
+    ],
+    "agent-sdk-dev@claude-code-plugins": [
+      {
+        "scope": "user",
+        "installPath": "/Users/v/.claude/plugins/cache/claude-code-plugins/agent-sdk-dev/1.0.0",
+        "version": "1.0.0",
+        "installedAt": "2025-12-14T12:22:40.564Z",
+        "lastUpdated": "2025-12-17T08:26:23.959Z",
+        "gitCommitSha": "eb872450105745e9489c6f6d73fa2fb4ff5a1e9a",
+        "isLocal": true
+      }
+    ],
+    "tdd-workflows@claude-code-workflows": [
+      {
+        "scope": "user",
+        "installPath": "/Users/v/.claude/plugins/cache/claude-code-workflows/tdd-workflows/1.2.1",
+        "version": "1.2.1",
+        "installedAt": "2025-12-14T12:22:40.564Z",
+        "lastUpdated": "2025-12-17T08:26:23.959Z",
+        "gitCommitSha": "c7ad381360bb8a2263aa42e25f81dc41161bf7d9",
+        "isLocal": true
+      }
+    ],
+    "git-pr-workflows@claude-code-workflows": [
+      {
+        "scope": "user",
+        "installPath": "/Users/v/.claude/plugins/cache/claude-code-workflows/git-pr-workflows/1.2.1",
+        "version": "1.2.1",
+        "installedAt": "2025-12-14T12:28:17.300Z",
+        "lastUpdated": "2025-12-17T08:26:23.959Z",
+        "gitCommitSha": "c7ad381360bb8a2263aa42e25f81dc41161bf7d9",
+        "isLocal": true
+      }
+    ],
+    "debugging-toolkit@claude-code-workflows": [
+      {
+        "scope": "user",
+        "installPath": "/Users/v/.claude/plugins/cache/claude-code-workflows/debugging-toolkit/1.2.0",
+        "version": "1.2.0",
+        "installedAt": "2025-12-14T12:28:17.300Z",
+        "lastUpdated": "2025-12-17T08:26:23.959Z",
+        "gitCommitSha": "c7ad381360bb8a2263aa42e25f81dc41161bf7d9",
+        "isLocal": true
+      }
+    ],
+    "security-scanning@claude-code-workflows": [
+      {
+        "scope": "user",
+        "installPath": "/Users/v/.claude/plugins/cache/claude-code-workflows/security-scanning/1.2.2",
+        "version": "1.2.2",
+        "installedAt": "2025-12-14T12:28:17.300Z",
+        "lastUpdated": "2025-12-17T08:26:23.959Z",
+        "gitCommitSha": "c7ad381360bb8a2263aa42e25f81dc41161bf7d9",
+        "isLocal": true
+      }
+    ],
+    "error-debugging@claude-code-workflows": [
+      {
+        "scope": "user",
+        "installPath": "/Users/v/.claude/plugins/cache/claude-code-workflows/error-debugging/1.2.0",
+        "version": "1.2.0",
+        "installedAt": "2025-12-14T12:28:17.300Z",
+        "lastUpdated": "2025-12-17T08:26:23.959Z",
+        "gitCommitSha": "c7ad381360bb8a2263aa42e25f81dc41161bf7d9",
+        "isLocal": true
+      }
+    ],
+    "unit-testing@claude-code-workflows": [
+      {
+        "scope": "user",
+        "installPath": "/Users/v/.claude/plugins/cache/claude-code-workflows/unit-testing/1.2.0",
+        "version": "1.2.0",
+        "installedAt": "2025-12-14T12:28:17.300Z",
+        "lastUpdated": "2025-12-17T08:26:23.959Z",
+        "gitCommitSha": "c7ad381360bb8a2263aa42e25f81dc41161bf7d9",
+        "isLocal": true
+      }
+    ],
+    "code-refactoring@claude-code-workflows": [
+      {
+        "scope": "user",
+        "installPath": "/Users/v/.claude/plugins/cache/claude-code-workflows/code-refactoring/1.2.0",
+        "version": "1.2.0",
+        "installedAt": "2025-12-14T12:55:24.463Z",
+        "lastUpdated": "2025-12-17T08:26:23.959Z",
+        "gitCommitSha": "c7ad381360bb8a2263aa42e25f81dc41161bf7d9",
+        "isLocal": true
+      }
+    ],
+    "cicd-automation@claude-code-workflows": [
+      {
+        "scope": "user",
+        "installPath": "/Users/v/.claude/plugins/cache/claude-code-workflows/cicd-automation/1.2.1",
+        "version": "1.2.1",
+        "installedAt": "2025-12-14T12:55:24.463Z",
+        "lastUpdated": "2025-12-17T08:26:23.959Z",
+        "gitCommitSha": "c7ad381360bb8a2263aa42e25f81dc41161bf7d9",
+        "isLocal": true
+      }
+    ],
+    "database-design@claude-code-workflows": [
+      {
+        "scope": "user",
+        "installPath": "/Users/v/.claude/plugins/cache/claude-code-workflows/database-design/1.2.0",
+        "version": "1.2.0",
+        "installedAt": "2025-12-14T12:55:24.463Z",
+        "lastUpdated": "2025-12-17T08:26:23.959Z",
+        "gitCommitSha": "c7ad381360bb8a2263aa42e25f81dc41161bf7d9",
+        "isLocal": true
+      }
+    ],
+    "deployment-validation@claude-code-workflows": [
+      {
+        "scope": "user",
+        "installPath": "/Users/v/.claude/plugins/cache/claude-code-workflows/deployment-validation/1.2.0",
+        "version": "1.2.0",
+        "installedAt": "2025-12-14T12:55:24.463Z",
+        "lastUpdated": "2025-12-17T08:26:23.959Z",
+        "gitCommitSha": "c7ad381360bb8a2263aa42e25f81dc41161bf7d9",
+        "isLocal": true
+      }
+    ],
+    "repomix-mcp@repomix": [
+      {
+        "scope": "user",
+        "installPath": "/Users/v/.claude/plugins/cache/repomix/repomix-mcp/1.0.1",
+        "version": "1.0.1",
+        "installedAt": "2025-12-14T23:55:34.147Z",
+        "lastUpdated": "2025-12-17T08:26:23.959Z",
+        "gitCommitSha": "b7f960e7241271841a7f033529a1ad3ccd1abcf3",
+        "isLocal": true
+      }
+    ],
+    "repomix-commands@repomix": [
+      {
+        "scope": "user",
+        "installPath": "/Users/v/.claude/plugins/cache/repomix/repomix-commands/1.0.2",
+        "version": "1.0.2",
+        "installedAt": "2025-12-14T23:55:34.147Z",
+        "lastUpdated": "2025-12-17T08:26:23.959Z",
+        "gitCommitSha": "b7f960e7241271841a7f033529a1ad3ccd1abcf3",
+        "isLocal": true
+      }
+    ],
+    "repomix-explorer@repomix": [
+      {
+        "scope": "user",
+        "installPath": "/Users/v/.claude/plugins/cache/repomix/repomix-explorer/1.1.0",
+        "version": "1.1.0",
+        "installedAt": "2025-12-14T23:55:34.147Z",
+        "lastUpdated": "2025-12-17T08:26:23.959Z",
+        "gitCommitSha": "b7f960e7241271841a7f033529a1ad3ccd1abcf3",
+        "isLocal": true
+      }
+    ],
+    "python-development@claude-code-workflows": [
+      {
+        "scope": "user",
+        "installPath": "/Users/v/.claude/plugins/cache/claude-code-workflows/python-development/1.2.1",
+        "version": "1.2.1",
+        "installedAt": "2025-12-15T00:27:03.869Z",
+        "lastUpdated": "2025-12-17T08:26:23.959Z",
+        "gitCommitSha": "c7ad381360bb8a2263aa42e25f81dc41161bf7d9",
+        "isLocal": true
+      }
+    ],
+    "javascript-typescript@claude-code-workflows": [
+      {
+        "scope": "user",
+        "installPath": "/Users/v/.claude/plugins/cache/claude-code-workflows/javascript-typescript/1.2.1",
+        "version": "1.2.1",
+        "installedAt": "2025-12-15T00:27:03.869Z",
+        "lastUpdated": "2025-12-17T08:26:23.959Z",
+        "gitCommitSha": "c7ad381360bb8a2263aa42e25f81dc41161bf7d9",
+        "isLocal": true
+      }
+    ],
+    "systems-programming@claude-code-workflows": [
+      {
+        "scope": "user",
+        "installPath": "/Users/v/.claude/plugins/cache/claude-code-workflows/systems-programming/1.2.0",
+        "version": "1.2.0",
+        "installedAt": "2025-12-15T00:27:03.869Z",
+        "lastUpdated": "2025-12-17T08:26:23.959Z",
+        "gitCommitSha": "c7ad381360bb8a2263aa42e25f81dc41161bf7d9",
+        "isLocal": true
+      }
+    ],
+    "backend-development@claude-code-workflows": [
+      {
+        "scope": "user",
+        "installPath": "/Users/v/.claude/plugins/cache/claude-code-workflows/backend-development/1.2.3",
+        "version": "1.2.3",
+        "installedAt": "2025-12-15T00:27:03.869Z",
+        "lastUpdated": "2025-12-17T08:26:23.959Z",
+        "gitCommitSha": "c7ad381360bb8a2263aa42e25f81dc41161bf7d9",
+        "isLocal": true
+      }
+    ],
+    "cc_chrome_devtools_mcp_skill@cc_chrome_devtools_mcp_skill-plugin-marketplace": [
+      {
+        "scope": "user",
+        "installPath": "/Users/v/.claude/plugins/cache/cc_chrome_devtools_mcp_skill-plugin-marketplace/cc_chrome_devtools_mcp_skill/1.0.0",
+        "version": "1.0.0",
+        "installedAt": "2025-12-15T00:27:03.869Z",
+        "lastUpdated": "2025-12-17T08:26:23.959Z",
+        "gitCommitSha": "96840c73dc36c420e57341180013889e21d5932e",
+        "isLocal": true
+      }
+    ],
+    "writing@custom": [
+      {
+        "scope": "user",
+        "installPath": "/Users/v/.claude/plugins/cache/custom/writing/0.1.0",
+        "version": "0.1.0",
+        "installedAt": "2025-12-17T08:09:03.906Z",
+        "lastUpdated": "2025-12-17T08:26:23.959Z",
+        "isLocal": true
+      }
+    ]
+  }
+}
