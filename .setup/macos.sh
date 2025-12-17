@@ -2,6 +2,9 @@
 
 # ~/osx.sh — Originally from ihkhttps://mths.be/osx
 
+# Custom
+defaults write com.apple.PowerChime ChimeOnAllHardware -bool false
+
 # Ask for the administrator password upfront
 sudo -v
 

@@ -1,6 +1,14 @@
 #!/usr/bin/env sh
 
-# Milliseconds - more efficient using date command
-MS=$(date '+.%3N' 2>/dev/null || printf ".%03d" $(($(date +%s%3N) % 1000)))
+# Centisecond component for clock (two digits, no trailing spaces)
+NS=$(date '+%N' 2>/dev/null)
 
-sketchybar --set clock_ms label="$MS"
+if [ "$NS" = "%N" ] || [ -z "$NS" ]; then
+    CENTIS=$(python3 -c 'import time; print(f"{int((time.time()%1)*100):02d}")' 2>/dev/null)
+else
+    CENTIS=$(printf "%s" "$NS" | cut -c1-2)
+fi
+
+[ -z "$CENTIS" ] && CENTIS="00"
+
+sketchybar --set clock_ms label=".$CENTIS"

@@ -3,6 +3,7 @@
     "commit": "",
     "pr": ""
   },
+  "model": "opusplan",
   "hooks": {
     "SessionStart": [
       {
@@ -75,6 +76,7 @@
     "systems-programming@claude-code-workflows": true,
     "compounding-engineering@every-marketplace": false,
     "backend-development@claude-code-workflows": true,
-    "cc_chrome_devtools_mcp_skill@cc_chrome_devtools_mcp_skill-plugin-marketplace": true
+    "cc_chrome_devtools_mcp_skill@cc_chrome_devtools_mcp_skill-plugin-marketplace": true,
+    "writing@custom": true
   }
 }

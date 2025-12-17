@@ -1,6 +1,6 @@
 #!/bin/bash
 # Minimal Claude Code statusline
-# Output: λ Opus 4.5 ▶ 57% ⧖ 7d 3h 39m ◐ 12%
+# Output: λ Opus 4.5 ▶ 57% ⧖ 39m 3h 7d ◐ 12%
 
 input=$(cat)
 
@@ -22,16 +22,22 @@ command -v jq >/dev/null 2>&1 || {
 model_name=$(echo "$input" | jq -r '.model.display_name // "Claude"' 2>/dev/null | sed 's/ [0-9.]*$//')
 
 # ---- Get time remaining from ccusage (independent of API) ----
-time_left=""
+time_mins=""
+time_hours=""
+time_days=""
 get_time_remaining() {
-	local remaining_mins hours mins
+	local remaining_mins days hours mins
 
 	remaining_mins=$(bun x ccusage blocks --json 2>/dev/null | jq -r '.blocks[] | select(.isActive == true) | .projection.remainingMinutes // empty' 2>/dev/null)
 
 	if [ -n "$remaining_mins" ] && [ "$remaining_mins" -gt 0 ] 2>/dev/null; then
-		hours=$((remaining_mins / 60))
+		days=$((remaining_mins / 1440))
+		hours=$(((remaining_mins % 1440) / 60))
 		mins=$((remaining_mins % 60))
-		time_left="${hours}h ${mins}m"
+
+		[ "$mins" -gt 0 ] && time_mins="${mins}m"
+		[ "$hours" -gt 0 ] && time_hours="${hours}h"
+		[ "$days" -gt 0 ] && time_days="${days}d"
 	fi
 }
 
@@ -100,23 +106,26 @@ printf '%b %s' "$ICON_MODEL" "$model_name"
 printf ' %b %d%%' "$ICON_CTX" "${context_pct:-0}"
 
 # Session field: 🤖 rate% weekly% (time) - show whatever is available
-if [ -n "$rate_pct" ] || [ -n "$time_left" ]; then
+if [ -n "$rate_pct" ] || [ -n "$time_mins" ] || [ -n "$time_hours" ] || [ -n "$time_days" ]; then
 	printf ' %b' "$ICON_RATE"
 	if [ -n "$rate_pct" ]; then
 		printf ' %.0f%%' "$rate_pct"
 		if [ -n "$weekly_pct" ]; then
 			printf ' %.0f%%' "$weekly_pct"
 		fi
-		if [ -n "$time_left" ] || [ -n "$weekly_days" ]; then
-			# printf ' ('
-			printf ' %b ' "$ICON_TIME"
-			[ -n "$weekly_days" ] && printf '%s' "$weekly_days"
-			[ -n "$weekly_days" ] && [ -n "$time_left" ] && printf ' '
-			[ -n "$time_left" ] && printf '%s' "$time_left"
-			# printf ')'
+		if [ -n "$time_mins" ] || [ -n "$time_hours" ] || [ -n "$time_days" ] || [ -n "$weekly_days" ]; then
+			printf ' %b' "$ICON_TIME"
+			# Output in order: mins, hours, days
+			[ -n "$time_mins" ] && printf ' %s' "$time_mins"
+			[ -n "$time_hours" ] && printf ' %s' "$time_hours"
+			[ -n "$time_days" ] && printf ' %s' "$time_days"
+			[ -n "$weekly_days" ] && printf ' %s' "$weekly_days"
 		fi
-	elif [ -n "$time_left" ]; then
-		printf ' %s' "$time_left"
+	elif [ -n "$time_mins" ] || [ -n "$time_hours" ] || [ -n "$time_days" ]; then
+		printf ' %b' "$ICON_TIME"
+		[ -n "$time_mins" ] && printf ' %s' "$time_mins"
+		[ -n "$time_hours" ] && printf ' %s' "$time_hours"
+		[ -n "$time_days" ] && printf ' %s' "$time_days"
 	fi
 fi
 

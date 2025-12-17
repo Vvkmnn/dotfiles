@@ -104,7 +104,7 @@ sketchybar --add item ip left \
 	padding_right=6 \
 	--subscribe ip wifi_change
 
-# Network Stats - with arrows
+# Network Stats - text with sparkline graphs
 sketchybar --add item network_down left \
 	--set network_down update_freq=3 \
 	icon.drawing=off \
@@ -120,8 +120,31 @@ sketchybar --add item network_up left \
 	label.font="SF Pro:Regular:13.0" \
 	label.color=$SILVER \
 	padding_left=0 \
-	padding_right=6 \
+	padding_right=2 \
 	script="$PLUGIN_DIR/network_stats.sh up"
+
+# Network Box Indicators - Commented out for now (will fix later)
+# sketchybar --add item network_down_box left \
+# 	--set network_down_box update_freq=2 \
+# 	icon.drawing=off \
+# 	label="■" \
+# 	label.font="SF Pro:Regular:8.0" \
+# 	label.color=0xff404040 \
+# 	padding_left=1 \
+# 	padding_right=1 \
+# 	y_offset=0 \
+# 	script="$PLUGIN_DIR/network_boxes.sh down"
+
+# sketchybar --add item network_up_box left \
+# 	--set network_up_box update_freq=2 \
+# 	icon.drawing=off \
+# 	label="■" \
+# 	label.font="SF Pro:Regular:8.0" \
+# 	label.color=0xff404040 \
+# 	padding_left=1 \
+# 	padding_right=6 \
+# 	y_offset=0 \
+# 	script="$PLUGIN_DIR/network_boxes.sh up"
 
 # --- CENTER ITEMS --- #
 
@@ -152,14 +175,14 @@ sketchybar --add item network_up left \
 # Order: year week month day dow hour :min :sec .ms
 
 # Milliseconds (white) - rightmost
-sketchybar --add item clock_ms right \
-	--set clock_ms update_freq=100 \
-	icon.drawing=off \
-	label.font="SF Pro:Regular:13.0" \
-	label.color=0xffFFFFFF \
-	padding_left=0 \
-	padding_right=6 \
-	script="$PLUGIN_DIR/clock_ms.sh"
+# sketchybar --add item clock_ms right \
+# 	--set clock_ms update_freq=100 \
+# 	icon.drawing=off \
+# 	label.font="SF Pro:Regular:13.0" \
+# 	label.color=0xffFFFFFF \
+# 	padding_left=0 \
+# 	padding_right=6 \
+# 	script="$PLUGIN_DIR/clock_ms.sh"
 
 # Seconds with colon (very light)
 sketchybar --add item clock_sec right \
@@ -167,8 +190,10 @@ sketchybar --add item clock_sec right \
 	icon.drawing=off \
 	label.font="SF Pro:Regular:13.0" \
 	label.color=0xffE8EAEC \
+	label.padding_left=0 \
+	label.padding_right=0 \
 	padding_left=0 \
-	padding_right=0 \
+	padding_right=3 \
 	script="$PLUGIN_DIR/clock_sec.sh"
 
 # Minutes with colon (light gradient)
@@ -177,6 +202,8 @@ sketchybar --add item clock_min right \
 	icon.drawing=off \
 	label.font="SF Pro:Regular:13.0" \
 	label.color=0xffE0E3E4 \
+	label.padding_left=0 \
+	label.padding_right=0 \
 	padding_left=0 \
 	padding_right=0 \
 	script="$PLUGIN_DIR/clock_min.sh"
@@ -187,8 +214,10 @@ sketchybar --add item clock_hour right \
 	icon.drawing=off \
 	label.font="SF Pro:Regular:13.0" \
 	label.color=0xffD8DCDE \
-	padding_left=3 \
-	padding_right=0 \
+	label.padding_left=0 \
+	label.padding_right=0 \
+	padding_left=0 \
+	padding_right=1 \
 	script="$PLUGIN_DIR/clock_hour.sh"
 
 # Day of week (middle gradient)
@@ -198,8 +227,18 @@ sketchybar --add item clock_dow right \
 	label.font="SF Pro:Regular:13.0" \
 	label.color=0xffD0D4D8 \
 	padding_left=0 \
-	padding_right=3 \
+	padding_right=2 \
 	script="$PLUGIN_DIR/clock_dow.sh"
+
+# Week (darker gradient)
+sketchybar --add item clock_week right \
+	--set clock_week update_freq=60 \
+	icon.drawing=off \
+	label.font="SF Pro:Regular:13.0" \
+	label.color=0xffB8BEC6 \
+	padding_left=0 \
+	padding_right=1 \
+	script="$PLUGIN_DIR/clock_week.sh"
 
 # Day (darker gradient)
 sketchybar --add item clock_day right \
@@ -208,7 +247,7 @@ sketchybar --add item clock_day right \
 	label.font="SF Pro:Regular:13.0" \
 	label.color=0xffC8CDD2 \
 	padding_left=0 \
-	padding_right=2 \
+	padding_right=1 \
 	script="$PLUGIN_DIR/clock_day.sh"
 
 # Month (darker gradient)
@@ -221,16 +260,6 @@ sketchybar --add item clock_month right \
 	padding_right=1 \
 	script="$PLUGIN_DIR/clock_month.sh"
 
-# Week (darker gradient)
-sketchybar --add item clock_week right \
-	--set clock_week update_freq=60 \
-	icon.drawing=off \
-	label.font="SF Pro:Regular:13.0" \
-	label.color=0xffB8BEC6 \
-	padding_left=0 \
-	padding_right=1 \
-	script="$PLUGIN_DIR/clock_week.sh"
-
 # Year with analog clock icon (kanagawa yellow) - leftmost
 sketchybar --add item clock_year right \
 	--set clock_year update_freq=30 \
@@ -242,7 +271,7 @@ sketchybar --add item clock_year right \
 	label.font="SF Pro:Regular:13.0" \
 	label.color=$MISTY_BLUE \
 	padding_left=0 \
-	padding_right=2 \
+	padding_right=1 \
 	script="$PLUGIN_DIR/clock_year.sh"
 
 # Battery
@@ -296,19 +325,34 @@ sketchybar --add item temp right \
 	icon="􀇬" \
 	icon.font="SF Symbols:Regular:13.0" \
 	padding_right=3 \
-	update_freq=30 \
+	update_freq=10 \
 	script="$PLUGIN_DIR/temp.sh"
 
-# Menu Anywhere - First on right side before CPU
-sketchybar --add item menuanywhere right \
-	--set menuanywhere icon="􀍟" \
+# Codex Usage Limits (compact)
+sketchybar --add item codex_usage right \
+	--set codex_usage label.font="SF Pro:Regular:13.0" \
+	icon="􀁗" \
 	icon.font="SF Symbols:Regular:13.0" \
-	label="⌥M" \
-	label.font="SF Pro:Light:12.0" \
-	padding_right=6 \
+	icon.drawing=on \
 	icon.color=$MID_GRAY \
-	label.color=$MID_GRAY \
-	click_script="$PLUGIN_DIR/launch_menuanywhere.sh"
+	icon.padding_right=2 \
+	label.padding_left=0 \
+	label.padding_right=0 \
+	padding_left=0 \
+	padding_right=6 \
+	update_freq=180 \
+	script="$PLUGIN_DIR/codex_usage.sh"
+
+# Menu Anywhere - Temporarily commented out
+# sketchybar --add item menuanywhere right \
+# 	--set menuanywhere icon="􀍟" \
+# 	icon.font="SF Symbols:Regular:13.0" \
+# 	label="⌥M" \
+# 	label.font="SF Pro:Light:12.0" \
+# 	padding_right=6 \
+# 	icon.color=$MID_GRAY \
+# 	label.color=$MID_GRAY \
+# 	click_script="$PLUGIN_DIR/launch_menuanywhere.sh"
 
 # Force update
 sketchybar --update
