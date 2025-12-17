@@ -40,6 +40,9 @@ export BROWSER=open
 export TERM=xterm-256color
 export ARCHEY_LOGO_FILE=$HOME/.logo
 
+# Home
+# export OPENCODE_CONFIG=/Users/v/.config/opencode/opencode.json
+
 # Editor
 export EDITOR='nvim'           # $EDITOR is the default for most shells
 export VISUAL=$EDITOR          # $VISUAL in case
@@ -48,8 +51,20 @@ export ALTERNATE_EDITOR='nvim' # $EDITOR if all else fails
 # AI
 # export OPENAI_API_KEY=$(cat ~/.openai)
 
-# Claude Code MCP Environment
-[ -f ~/.claude/.env ] && . ~/.claude/.env
+# Claude Code Optimization
+# TODO: Figure out what tehse do with claude code first
+# export MAX_THINKING_TOKENS=10000
+# export CLAUDE_CODE_MAX_OUTPUT_TOKENS=4000
+export UTCP_CONFIG_FILE="$HOME/.utcp_config.json"
+
+# PostgreSQL
+export PATH="$(brew --prefix postgresql@17)/bin:$PATH"
+
+# opencode
+export PATH=/Users/v/.opencode/bin:$PATH
+
+# Node.js memory for Claude CLI
+export NODE_OPTIONS="--max-old-space-size=8192"
 
 # Prompt
 # FIX Not global
@@ -66,6 +81,7 @@ case "$(uname -s)" in
 Linux) ;;
 
 Darwin)
+	# Neovim server now in ~/.shell
 
 	# windsurf
 	export PATH="/Users/v/.codeium/windsurf/bin:$PATH"
@@ -73,15 +89,12 @@ Darwin)
 	# Prompt
 	# export PURE_PROMPT_SYMBOL="ॐ "
 
-	## brew
-	export PATH="/usr/local/bin:$PATH"
-	export PATH="/usr/local/sbin:$PATH"
-
-	# Brew
+	# Homebrew (Apple Silicon optimized)
+	export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
 	export HOMEBREW_CASK_OPTS="--appdir=/Applications"
 
-	# tmux
-	export PATH="/opt/homebrew/bin:$PATH"
+	# Legacy Intel brew paths (compatibility)
+	export PATH="/usr/local/bin:/usr/local/sbin:$PATH"
 
 	# openSSL
 	export LDFLAGS="-L/usr/local/opt/openssl/lib"
@@ -169,7 +182,16 @@ Darwin)
 	# export PATH="/Applications/Emacs.app/Contents/MacOS/bin:$PATH"
 
 	# local bin for Claude Code?
+	# Local Bin (for Codex IDE)?
 	export PATH="$HOME/.local/bin:$PATH"
+	export PATH="$HOME/.local/bin:$PATH"
+
+	# PNPM
+	# export PNPM_HOME="$HOME/Library/pnpm"
+	# case ":$PATH:" in
+	# *":$PNPM_HOME:"*) ;;
+	# *) export PATH="$PNPM_HOME:$PATH" ;;
+	# esac
 
 	## Fun ---------------------------------------------
 	export PATH="/Applications/Alacritty.app/Contents/MacOS/:$PATH"

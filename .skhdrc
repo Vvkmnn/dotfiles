@@ -43,14 +43,14 @@ ctrl + cmd - o : open -na /Applications/Obsidian.app/
 # ctrl + cmd - return : windsurf -n
 
 # Open WezTerm terminal
-ctrl + cmd - space : open -na /Applications/Ghostty.app
+ctrl + cmd - space : open -Fn /Applications/Ghostty.app
 # ctrl + cmd - space : open -na /Applications/Wezterm.app
 
 # === Web Browsers ===
 
 # Open Safari (new window)
 # ctrl + cmd - return : osascript -e 'tell application "Safari" to make new document' -e 'tell application "Safari" to activate'
-ctrl + cmd - return : open -n /Applications/Safari.app
+ctrl + cmd - return : open -Fn /Applications/Safari.app
 # ctrl + cmd - s : open -na /Applications/Safari.app/
 # ctrl + cmd - 0x27 : open -na /Applications/Safari.app/
 
@@ -75,7 +75,19 @@ cmd + ctrl - f : yabai -m window --toggle zoom-fullscreen
 # use BACKSPACE Close application using osascript
 ctrl + cmd - 0x33 : osascript -e "tell application \"Finder\" to set p to item 1 of (get file of (processes whose frontmost = true)) as text" -e "tell application p to quit"
 
+# Kill current tmux session in ghostty, otherwise close app
+ctrl + cmd - delete [
+"ghostty" : osascript -e 'tell application "System Events" to keystroke "b" using control down' -e 'delay 0.2' -e 'tell application "System Events" to keystroke ":"' -e 'delay 0.2' -e 'tell application "System Events" to keystroke "kill-session"' -e 'delay 0.2' -e 'tell application "System Events" to key code 36'
+* : osascript -e 'tell application "Finder" to set p to item 1 of (get file of (processes whose frontmost = true)) as text' -e 'tell application p to quit'
+]
+
 # === Window Movement ===
+
+# Swap windows in different directions
+shift + alt - h : yabai -m window --swap west
+shift + alt - j : yabai -m window --swap south
+shift + alt - k : yabai -m window --swap north
+shift + alt - l : yabai -m window --swap east
 
 # Swap windows in different directions
 shift + alt - h : yabai -m window --swap west
@@ -111,11 +123,42 @@ shift + alt - right : yabai -m window --grid 1:2:1:0:1:1
 ################################################################################
 
 # Move to space based on number
-ctrl + cmd - 1 : yabai -m window --space 1 && yabai -m space --focus 1
+# NOTE ctrl - left and ctrl - right are default workspace hotkeys
+# ctrl + cmd - left : yabai -m window --space next || yabai -m space --focus next
+# ctrl + cmd - right : yabai -m window --space prev || yabai -m space --focus prev
+
+# ctrl + cmd - left : (yabai -m window --space prev && yabai -m space --focus prev; hs -c "hs.alert.show('Moved Window Previous Space')") || (yabai -m window --space last && yabai -m space --focus last; hs -c "hs.alert.show('Moved Window Last Space')")
+# ctrl + cmd - right : (yabai -m window --space next && yabai -m space --focus next; hs -c "hs.alert.show('Moved Window Next Space')") || (yabai -m window --space first && yabai -m space --focus first; hs -c "hs.alert.show('Moved Window First Space')")
+
+# Move current window between adjacent spaces and follow focus (per yabai Commands wiki)
+ctrl + cmd - left : yabai -m window --space prev --focus || yabai -m window --space last --focus
+ctrl + cmd - right : yabai -m window --space next --focus || yabai -m window --space first --focus
 
 # Move to previous/next space with wraparound
-cmd - j : yabai -m space --focus prev || yabai -m space --focus last
-cmd - k : yabai -m space --focus next || yabai -m space --focus first
+ctrl + cmd - j : yabai -m space --focus prev || yabai -m space --focus last
+ctrl + cmd - k : yabai -m space --focus next || yabai -m space --focus first
+
+# Quick focus between desktops (fallbacks to macOS defaults)
+# ctrl - left : (yabai -m space --focus prev || yabai -m space --focus last) || skhd -k "ctrl + cmd - left"
+# ctrl - right : (yabai -m space --focus next || yabai -m space --focus first) || skhd -k "ctrl + cmd - right"
+# Reorder spaces across the bar
+# ctrl + shift - left : (yabai -m space --move prev && sketchybar -m --trigger space_change; hs -c "hs.alert.show('Moved Space Left')") || (yabai -m space --swap last && sketchybar -m --trigger space_change; hs -c "hs.alert.show('Swapped With Last Space')")
+# ctrl + shift - right : (yabai -m space --move next && sketchybar -m --trigger space_change; hs -c "hs.alert.show('Moved Space Right')") || (yabai -m space --swap first && sketchybar -m --trigger space_change; hs -c "hs.alert.show('Swapped With First Space')")
+
+# Focus the most recently used space
+ctrl + cmd - tab : yabai -m space --focus recent
+
+# Create spaces on demand (requires jq for parsing yabai output)
+ctrl + alt - t : yabai -m space --create && \
+                index="$(yabai -m query --spaces --display | jq 'map(select(."is-native-fullscreen" == false))[-1].index')" && \
+                yabai -m space --focus "${index}" && \
+                sketchybar -m --trigger space_change && hs -c "hs.alert.show('New Space Created')"
+
+ctrl + shift - t : yabai -m space --create && \
+                  index="$(yabai -m query --spaces --display | jq 'map(select(."is-native-fullscreen" == false))[-1].index')" && \
+                  yabai -m window --space "${index}" && \
+                  yabai -m space --focus "${index}" && \
+                  sketchybar -m --trigger space_change && hs -c "hs.alert.show('Window Moved To New Space')"
 
 # Move window to previous/next space and follow with focus
 # cmd + ctrl - j : yabai -m window --space prev || yabai -m window --space last sleep 0.3 yabai -m space --focus prev || yabai -m space --focus last

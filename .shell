@@ -72,9 +72,9 @@
         elif [ -n "$ZSH_VERSION" ]; then
 
 
-            # Scroll region
+            # Scroll region - disabled in tmux to prevent wasted bottom space
             # https://askubuntu.com/questions/1226840/is-there-a-way-to-prevent-the-cursor-from-reaching-the-bottom-of-the-terminal
-            trap 'tput csr 1 $((LINES-3))' WINCH ; kill -s WINCH $$
+            # trap 'tput csr 1 $((LINES-3))' WINCH ; kill -s WINCH $$
 
             # NOTE Marginal change in performance, but less buggy when below zcomet
             # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
@@ -99,7 +99,7 @@
             #   p10k segment -b 2 -f 214 -t 'ॐ '
             # }
             
-            ## Zcomet {{{
+            ## Zcomet - plugin manager {{{
 
             # Clone zcomet if necessary
             if [[ ! -f ${ZDOTDIR:-${HOME}}/.zcomet/bin/zcomet.zsh ]]; then
@@ -117,9 +117,14 @@
             zcomet load ohmyzsh plugins/gitfast
 
             
-            # Minimal zsh-nvm configuration - no lazy loading
-            export NVM_LAZY_LOAD=false
-            zcomet load lukechilds/zsh-nvm
+            # NVM configuration - lazy loading with global node path for MCP servers
+            # export NVM_LAZY_LOAD=true
+            # export NVM_COMPLETION=true
+            # export NVM_AUTO_USE=true  # Auto-use .nvmrc files
+            # Add default node to PATH for immediate access to npx/global modules
+            # export PATH="$HOME/.nvm/versions/node/$(ls $HOME/.nvm/versions/node | tail -1)/bin:$PATH"
+            # zcomet load lukechilds/zsh-nvm
+
             # zcomet load jeffreytse/zsh-vi-mode
             
             # Load a code snippet - no need to download an entire repo
@@ -134,15 +139,16 @@
             zcomet trigger --no-submodules archive unarchive lsarchive \
                 sorin-ionescu/prezto modules/archive
 
-            # It is good to load these popular plugins last, and in this order:
-            zcomet load zsh-users/zsh-syntax-highlighting
+            # Load popular plugins last - autosuggestions first, syntax highlighting last:
             zcomet load zsh-users/zsh-autosuggestions
+            zcomet load zsh-users/zsh-syntax-highlighting
             
 
             # tmux
             zcomet load ohmyzsh plugins/tmux
 
-            # nvim
+            # nvim - start background server for instant editing
+            [[ ! -S /tmp/nvim ]] && nvim --listen /tmp/nvim --headless &>/dev/null &
             zcomet load jeffreytse/zsh-vi-mode
             
             # QOL
@@ -167,6 +173,16 @@
 #
             # claude env
 # source ~/.claude/.env'
+
+
+            # Claude {{{
+
+            # NOTE claude has new location now, but we may still need env later
+# Claude Code MCP Environment
+# alias claude="/Users/v/.claude/local/claude"
+# export CLAUDE_CONFIG_DIR=$HOME/.claude
+# [ -f ~/.claude/.env ] && . ~/.claude/.env
+            # }}}
 
 
             # Powerlevel 10k {{{
@@ -320,12 +336,8 @@
             # # }}}
             
 
-            # p10k
-            # NOTE Instant Prompt used above - unrelated to this config
-            # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-            [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-            # export POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD=true
-            # }}}
+            # p10k config already loaded in Powerlevel 10k section above
+            # }}}}
 
             # TODO
             # bounjourr safari
@@ -347,19 +359,17 @@
             # /* #interface #main {justify-content: flex-start} */
             # /* #interface #widgets {justify-content: flex-start} */
 
-            # ohmyzsh/tmux {{{
-            # NOTE conflicts with instant prompt, turn that off for tmux to have time
-            # NOTE turns off and on the tmux datae integration
-            # Run TMUX settings only in WezTerm (skip when in VSCode)
-            if [ "$TERM_PROGRAM" != "vscode" ]; then
-                ZSH_TMUX_AUTOSTART=true
-                ZSH_TMUX_AUTOCONNECT=false
-                ZSH_TMUX_AUTOQUIT=true
-                ZSH_TMUX_DETACHED=true
-            fi
+            # ohmyzsh/tmux integration - optimized for Ghostty {{{
+            # Tmux settings - only when not in VSCode for better performance
+            # if [ "$TERM_PROGRAM" != "vscode" ]; then
+            ZSH_TMUX_AUTOSTART=true      # Auto-start tmux sessions
+            ZSH_TMUX_AUTOCONNECT=false   # Don't auto-connect to existing
+            ZSH_TMUX_AUTOQUIT=true       # Quit when tmux exits
+            ZSH_TMUX_DETACHED=true       # Start detached for stability
+            # fi
             # }}}
             
-            # conda {{{
+            # conda - defer heavy initialization for faster shell startup {{{
             # >>> conda initialize >>>
             # !! Contents within this block are managed by 'conda init' !!
             __conda_setup="$('/Users/v/.miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
@@ -517,100 +527,19 @@
 
 
 
-            ## nvm
+            ## nvm - handled by zcomet above with lazy loading
             
-# Add default node to path
-# export PATH=~/.nvm/versions/node/*/bin:$PATH
-
-# Load NVM
-export NVM_DIR=~/.nvm
-[[ -s "$NVM_DIR/nvm.sh" ]] && source "$NVM_DIR/nvm.sh" --no-use
+            # NVM already configured above with lazy loading and global PATH
+            # Redundant loading removed for better performance
 #
 
-# # lazy_load_nvm() {
-# export NVM_LAZY_LOAD=true
-#   # unset -f node
-#   export NVM_DIR=~/.nvm
-#   [[ -s "$NVM_DIR/nvm.sh" ]] && source "$NVM_DIR/nvm.sh"
-# # }
-#
-# # Conditional appending of Node.js bin path to the system $PATH
-# # This will add the path for the default Node.js version to your $PATH, which relies on nvm having set that up.
-# # The 'default' alias is assumed to exist and has been set to the version you want in the path.
-# # If NVM has been initialized successfully, it will work. Otherwise, the path alteration won't take effect.
-# # Replace 'default' with your desired Node.js version if you have a specific version requirement.
-# if [[ -d "$NVM_DIR/versions/node" ]] && command -v nvm >/dev/null; then
-#     NODE_VERSION_PATH=$(nvm which default 2>/dev/null)
-#     if [[ -n "$NODE_VERSION_PATH" ]]; then
-#         NODE_BIN_PATH=$(dirname "$NODE_VERSION_PATH")
-#         export PATH="$NODE_BIN_PATH:$PATH"
-#     else
-#         echo "NVM is installed but the default node version is not set. Run 'nvm alias default <version>' to fix this."
-#     fi
-# fi
+            # Old lazy loading implementations - removed since zcomet handles this better
 
-# lazy nvm
-# Lazy loader function for nvm and Node.js commands
-# _lazy_nvm() {
-#     unset -f nvm node npm npx # Remove the stubs
-#     export NVM_DIR="${HOME}/.nvm"
-#
-#     # Source nvm script if it exists
-#     if [[ -s "${NVM_DIR}/nvm.sh" ]]; then
-#         source "${NVM_DIR}/nvm.sh"
-#     else
-#         echo "[-_-] NVM script not found"
-#         return
-#     fi
-#
-#     # Trigger nvm use default, this will change the PATH
-#     if ! nvm use default >/dev/null 2>&1; then
-#         echo "[-_-] NVM is installed but the default node version is not set. Run 'nvm alias default <version>' to fix this."
-#         return
-#     fi
-#
-#     # After `nvm use default`, the correct version of Node.js should be active
-#     # Re-invoke the original command that triggered this function
-#     "$@"
-# }
-#
-# # Stubbing common Node.js related binaries with the lazy loader
-# nvm() {
-#     _lazy_nvm nvm "$@"
-# }
-#
-# node() {
-#     _lazy_nvm node "$@"
-# }
-#
-# npm() {
-#     _lazy_nvm npm "$@"
-# }
-#
-# npx() {
-#     _lazy_nvm npx "$@"
-# }
+            # More old NVM implementations removed - zcomet handles all this
 
 
-# lazy_load_nvm() {
-# export NVM_LAZY_LOAD=true
-#   unset -f node
-#   export NVM_DIR=~/.nvm
-#   [[ -s "$NVM_DIR/nvm.sh" ]] && source "$NVM_DIR/nvm.sh"
-# }
-#
-# node() {
-#   lazy_load_nvm
-#   node $@
-# }
-            # export NVM_DIR="$HOME/.nvm"
-            #
-            # [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-            # export NVM_DIR="$HOME/.nvm"
-            #
-
-            # [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
-            # [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+            # All old NVM configurations cleaned up
+            # Old homebrew NVM loading - now using zcomet instead
 
             # if [ -z "$TMUX" ]; then
             #   exec tmux new-session -A -s workspace
@@ -652,6 +581,10 @@ export NVM_DIR=~/.nvm
 
             ;;
               Darwin )
+
+            # GPG: ensure GUI + VS Code shells can reach the agent and tty
+            export GPG_TTY=$(tty)
+            export SSH_AUTH_SOCK="$HOME/.gnupg/S.gpg-agent.ssh"
 
             # Brew
             eval "$(/opt/homebrew/bin/brew shellenv)"
@@ -869,4 +802,3 @@ export NVM_DIR=~/.nvm
 # esac
 #
 #
-

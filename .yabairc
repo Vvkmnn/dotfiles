@@ -22,9 +22,9 @@
 # See: https://github.com/koekeishiya/yabai/wiki/Installing-yabai-(latest-release)#configure-scripting-addition
 #
 # This signal ensures yabai's scripting addition is reloaded when the Dock restarts
-/opt/homebrew/bin/yabai -m signal --add event=dock_did_restart action="sudo yabai --load-sa"
-# Load the scripting addition immediately on startup
-sudo yabai --load-sa
+yabai -m signal --add event=dock_did_restart action="sudo /opt/homebrew/bin/yabai --load-sa"
+sudo /opt/homebrew/bin/yabai --load-sa
+# https://github.com/koekeishiya/yabai/wiki/Installing-yabai-(latest-release)#macos-big-sur---automatically-load-scripting-addition-on-startup
 
 ################################################################################
 # 2. WINDOW FOCUS BEHAVIOR

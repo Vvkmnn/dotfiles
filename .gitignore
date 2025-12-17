@@ -364,7 +364,6 @@ tags
 .claude/ide/
 .claude/security_warnings_state_*.json
 .claude/.claude/
-.claude/TODO.md
 .claude/CLAUDE.tmp.md
 
 # Codeium/Windsurf

@@ -15,6 +15,165 @@ debugger_chrome() {
 	# google-chrome --remote-debugging-port=9222 --user-data-dir=/tmp/chrome-debug-profile
 }
 
+# VS Code launcher — minimal wrapper to include the project folder up front.
+vc() {
+	local code_bin
+	code_bin=$(command -v code || command -v code-insiders)
+	if [ -z "$code_bin" ]; then
+		printf 'v: VS Code CLI (code) not found\n' >&2
+		return 127
+	fi
+
+	if [ $# -eq 0 ]; then
+		"$code_bin"
+		return
+	fi
+
+	local -a args=("$@")
+	local -a pass_args=()
+	local target=""
+	local awaiting=0
+	local seen_double_dash=0
+	local force_same=0
+
+	for arg in "${args[@]}"; do
+		if [ $awaiting -eq 1 ]; then
+			pass_args+=("$arg")
+			awaiting=0
+			if [ -z "$target" ]; then
+				target="$arg"
+			fi
+			continue
+		fi
+		if [ "$arg" = "--" ]; then
+			seen_double_dash=1
+			pass_args+=("$arg")
+			continue
+		fi
+		if [ $seen_double_dash -eq 0 ]; then
+			case "$arg" in
+			-s | --same)
+				force_same=1
+				continue
+				;;
+			--*=*)
+				pass_args+=("$arg")
+				continue
+				;;
+			--user-data-dir | --extensions-dir | --locale | --profile | --log | --category | --command | \
+				--file-write | --file-chmod | --folder-uri | --file-uri | --proxy-server | --proxy-bypass-list | \
+				--install-extension | --uninstall-extension | --app-port | --enable-proposed-api | -g)
+				pass_args+=("$arg")
+				awaiting=1
+				continue
+				;;
+			-*)
+				pass_args+=("$arg")
+				continue
+				;;
+			esac
+		fi
+		pass_args+=("$arg")
+		if [ -z "$target" ]; then
+			target="$arg"
+		fi
+	done
+
+	if [ -z "$target" ]; then
+		"$code_bin" "$@"
+		return
+	fi
+
+	local path_hint="$target"
+	if [ ! -e "$path_hint" ]; then
+		local trimmed=${target%%:*}
+		if [ -n "$trimmed" ] && [ -e "$trimmed" ]; then
+			path_hint="$trimmed"
+		fi
+	fi
+
+	local project_dir
+	if [ -d "$path_hint" ]; then
+		project_dir="$path_hint"
+	else
+		project_dir=$(dirname -- "$path_hint")
+		[ -z "$project_dir" ] && project_dir="."
+	fi
+	[[ "$project_dir" == ~* ]] && project_dir="${project_dir/#\~/$HOME}"
+	if ! project_dir=$(cd -- "$project_dir" 2>/dev/null && pwd -P); then
+		"$code_bin" "$@"
+		return
+	fi
+
+	local window_flag="--new-window"
+	if [ $force_same -eq 1 ]; then
+		window_flag="--reuse-window"
+	else
+		local status_lines=""
+		local now
+		now=$(date +%s)
+		if [ -n "${__V_STATUS_CACHE_AT:-}" ] && [ -n "${__V_STATUS_CACHE:-}" ]; then
+			if [ $((now - __V_STATUS_CACHE_AT)) -le 2 ]; then
+				status_lines="$__V_STATUS_CACHE"
+			fi
+		fi
+		if [ -z "$status_lines" ]; then
+			status_lines=$("$code_bin" --status 2>/dev/null | sed -n -e 's/^[[:space:]]*Folder URI: //p' -e 's/^[[:space:]]*Workspace: //p') || status_lines=""
+			__V_STATUS_CACHE="$status_lines"
+			__V_STATUS_CACHE_AT=$now
+		fi
+		if [ -n "$status_lines" ]; then
+			local line path
+			while IFS= read -r line; do
+				[ -z "$line" ] && continue
+				path="$line"
+				if [[ "$path" == file://* ]]; then
+					path=${path#file://}
+					if [[ "$path" == *%* ]]; then
+						path=$(printf '%b' "${path//%/\\x}")
+					fi
+				fi
+				[[ "$path" == ~* ]] && path="${path/#\~/$HOME}"
+				if path=$(cd -- "$path" 2>/dev/null && pwd -P); then
+					case "$project_dir" in
+					"$path" | "$path"/*)
+						window_flag="--reuse-window"
+						break
+						;;
+					esac
+				fi
+			done <<<"$status_lines"
+		fi
+	fi
+
+	local have_dir=0
+	for arg in "${pass_args[@]}"; do
+		[ "$arg" = "--" ] && break
+		case "$arg" in
+		-*)
+			continue
+			;;
+		esac
+		local candidate="$arg"
+		[[ "$candidate" == ~* ]] && candidate="${candidate/#\~/$HOME}"
+		if candidate=$(cd -- "$candidate" 2>/dev/null && pwd -P 2>/dev/null); then
+			if [ "$candidate" = "$project_dir" ]; then
+				have_dir=1
+				break
+			fi
+		fi
+	done
+
+	local -a final_cmd=("$code_bin")
+	final_cmd+=("$window_flag")
+	if [ $have_dir -eq 0 ]; then
+		final_cmd+=("$project_dir")
+	fi
+	final_cmd+=("${pass_args[@]}")
+
+	"${final_cmd[@]}"
+}
+
 # Helper: Returns the fixed face [¬_¬] with a random ANSI color (red–cyan)
 get_colored_face() {
 	local face="[¬_¬]"
@@ -157,6 +316,73 @@ update_all() {
 		echo -e "${colored_face} ${bold_ts} Cleaning up via \`sudo apt autoclean\` ..."
 		sudo apt autoclean
 	fi
+
+	# Claude Code Plugins
+	ts=$(date +%s)
+	colored_face=$(get_colored_face)
+	bold_ts="${bold}${ts}${reset}"
+	echo -e "${colored_face} ${bold_ts} Updating Claude Code plugins via \`claude-plugin-update\` ..."
+	claude-plugin-update
+}
+
+# }}}
+
+# Claude CLI {{{
+
+# Claude CLI - bypass NVM lazy loading
+# claude() {
+#     ~/.claude/local/claude "$@"
+# }
+
+# Claude Update Plugins - updates all installed Claude Code plugins
+claude-plugin-update() {
+	local bold="\033[1m"
+	local reset="\033[0m"
+	local ts colored_face bold_ts
+
+	# Update marketplace indexes first
+	ts=$(date +%s)
+	colored_face=$(get_colored_face)
+	bold_ts="${bold}${ts}${reset}"
+	echo -e "${colored_face} ${bold_ts} Updating Claude plugin marketplaces via \`claude plugin marketplace update\` ..."
+	claude plugin marketplace update
+
+	# Get list of installed plugins from settings.json
+	ts=$(date +%s)
+	colored_face=$(get_colored_face)
+	bold_ts="${bold}${ts}${reset}"
+	echo -ne "${colored_face} ${bold_ts} Checking installed plugins ... "
+
+	local settings_file="$HOME/.claude/settings.json"
+	if [ ! -f "$settings_file" ]; then
+		echo "settings file not found."
+		return 0
+	fi
+
+	local plugins
+	plugins=$(jq -r '.enabledPlugins | keys[]' "$settings_file" 2>/dev/null)
+	if [ -z "$plugins" ]; then
+		echo "no plugins found."
+		return 0
+	fi
+	local count
+	count=$(echo "$plugins" | wc -l | tr -d ' ')
+	echo "found ${count} plugins."
+
+	# Update each plugin
+	echo "$plugins" | while read -r plugin; do
+		[ -z "$plugin" ] && continue
+		ts=$(date +%s)
+		colored_face=$(get_colored_face)
+		bold_ts="${bold}${ts}${reset}"
+		echo -e "${colored_face} ${bold_ts} Updating plugin via \`claude plugin update ${plugin}\` ..."
+		claude plugin update "$plugin" 2>&1 || true
+	done
+
+	ts=$(date +%s)
+	colored_face=$(get_colored_face)
+	bold_ts="${bold}${ts}${reset}"
+	echo -e "${colored_face} ${bold_ts} Done! Restart Claude Code to apply updates."
 }
 
 # }}}
@@ -165,6 +391,24 @@ update_all() {
 # Vim Diff
 vd() {
 	vim -d -- "$1" "$2"
+}
+
+# }}}
+
+# Neovim Client-Server {{{
+
+# Connect to server or start new instance
+# v() {
+#     nvim --listen /tmp/nvim "$@"
+# }
+#
+# Server management
+vstatus() {
+	[[ -S /tmp/nvim ]] && echo "Server running" || echo "No server"
+}
+
+vkill() {
+	pkill -f "nvim.*--listen /tmp/nvim"
 }
 
 # }}}

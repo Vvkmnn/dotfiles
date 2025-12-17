@@ -1,0 +1,525 @@
+[
+  // Pop open the Codex sidebar unless the terminal is focused (conflicts with Neovim's ctrl+c escape).
+  {
+    "key": "ctrl+g",
+    "command": "chatgpt.openSidebar",
+    // "when": "!terminalFocus"
+  },
+  // Open edamagit Magit Status with ctrl+Shift+G.
+  {
+    "key": "ctrl+shift+g",
+    "command": "magit.status"
+  },
+  // Invoke the Command Palette with a two-step chord to avoid accidental hits.
+  // {
+  //   "key": "cmd+o cmd+p",
+  //   "command": "workbench.action.showCommands"
+  // },
+  // Jump straight to the Extensions view.
+  // {
+  //   "key": "cmd+x",
+  //   "command": "workbench.view.extensions"
+  // },
+  // Open the Settings UI quickly.
+  // {
+  //   "key": "alt+cmd+",
+  //   "command": "workbench.action.openSettings"
+  // },
+  // Reset editor zoom back to default.
+  // {
+  //   "key": "cmd+0",
+  //   "command": "workbench.action.zoomReset"
+  // },
+  // Dismiss notification toasts with a single escape.
+  // {
+  //   "key": "escape",
+  //   "command": "notifications.hideToasts",
+  //   "when": "notificationToastsVisible"
+  // },
+  // Go to a specific line by number.
+  // {
+  //   "key": "cmd+g",
+  //   "command": "workbench.action.gotoLine"
+  // },
+  // Jump to a symbol in the current file.
+  {
+    "key": "cmd+r",
+    "command": "workbench.action.gotoSymbol"
+  },
+  // Show the global symbol search across the workspace.
+  // {
+  //   "key": "cmd+shift+r",
+  //   "command": "workbench.action.showAllSymbols"
+  // },
+  // Focus the nth editor tab while editing (1 through 9).
+  // {
+  //   "key": "ctrl+1",
+  //   "command": "workbench.action.openEditorAtIndex1",
+  //   "when": "!terminalFocus"
+  // },
+  // {
+  //   "key": "ctrl+2",
+  //   "command": "workbench.action.openEditorAtIndex2",
+  //   "when": "!terminalFocus"
+  // },
+  // {
+  //   "key": "ctrl+3",
+  //   "command": "workbench.action.openEditorAtIndex3",
+  //   "when": "!terminalFocus"
+  // },
+  // {
+  //   "key": "ctrl+4",
+  //   "command": "workbench.action.openEditorAtIndex4",
+  //   "when": "!terminalFocus"
+  // },
+  // {
+  //   "key": "ctrl+5",
+  //   "command": "workbench.action.openEditorAtIndex5",
+  //   "when": "!terminalFocus"
+  // },
+  // {
+  //   "key": "ctrl+6",
+  //   "command": "workbench.action.openEditorAtIndex6",
+  //   "when": "!terminalFocus"
+  // },
+  // {
+  //   "key": "ctrl+7",
+  //   "command": "workbench.action.openEditorAtIndex7",
+  //   "when": "!terminalFocus"
+  // },
+  // {
+  //   "key": "ctrl+8",
+  //   "command": "workbench.action.openEditorAtIndex8",
+  //   "when": "!terminalFocus"
+  // },
+  // {
+  //   "key": "ctrl+9",
+  //   "command": "workbench.action.openEditorAtIndex9",
+  //   "when": "!terminalFocus"
+  // },
+  // Toggle focus between sidebar, search, and editor with cmd+h.
+  {
+    "key": "ctrl+h",
+    "command": "workbench.action.focusSideBar",
+    "when": "editorTextFocus || terminalFocus"
+  },
+  {
+    "key": "ctrl+h",
+    "command": "workbench.view.search.focus",
+    "when": "activeViewlet == 'workbench.view.search' && !inputFocus"
+  },
+  {
+    "key": "ctrl+h",
+    "command": "workbench.action.focusActiveEditorGroup",
+    "when": "editorIsOpen && !editorTextFocus && !view.terminal.visible"
+  },
+  // Cycle search inputs with cmd+k and cmd+l when search UI is active.
+  {
+    "key": "cmd+k",
+    "command": "search.focus.nextInputBox",
+    "when": "inSearchEditor && inputBoxFocus || inputBoxFocus && searchViewletVisible"
+  },
+  {
+    "key": "cmd+l",
+    "command": "search.focus.previousInputBox",
+    "when": "inSearchEditor && inputBoxFocus || inputBoxFocus && searchViewletVisible && !searchInputBoxFocus"
+  },
+  // Manage search results expansion and focus.
+  {
+    "key": "alt+cmd+;",
+    "command": "search.action.collapseSearchResults"
+  },
+  {
+    "key": "alt+cmd+'",
+    "command": "search.action.expandSearchResults"
+  },
+  {
+    "key": "alt+cmd+0",
+    "command": "search.action.focusSearchList"
+  },
+  // Trigger the editor context menu with the keyboard.
+  {
+    "key": "cmd+enter",
+    "command": "editor.action.showContextMenu",
+    "when": "editorTextFocus"
+  },
+  // Quick editing helpers while typing.
+  // {
+  //   "key": "cmd+j",
+  //   "command": "editor.action.copyLinesDownAction",
+  //   "when": "editorTextFocus && !editorReadonly"
+  // },
+  // {
+  //   "key": "alt+cmd+k",
+  //   "command": "editor.action.formatDocument",
+  //   "when": "editorHasDocumentFormattingProvider && editorTextFocus && !editorReadonly && !inCompositeEditor"
+  // },
+  // Emmet HTML helpers under cmd+m chords.
+  {
+    "key": "cmd+m cmd+w",
+    "command": "editor.emmet.action.wrapWithAbbreviation",
+    "when": "editorTextFocus"
+  },
+  {
+    "key": "cmd+m cmd+r",
+    "command": "editor.emmet.action.updateTag",
+    "when": "editorTextFocus"
+  },
+  {
+    "key": "cmd+m cmd+backspace",
+    "command": "editor.emmet.action.removeTag",
+    "when": "editorTextFocus"
+  },
+  {
+    "key": "cmd+m cmd+m",
+    "command": "editor.emmet.action.matchTag",
+    "when": "editorTextFocus"
+  },
+  // Folding shortcuts mirroring standard bracket keys.
+  {
+    "key": "cmd+[",
+    "command": "editor.fold",
+    "when": "editorTextFocus && foldingEnabled"
+  },
+  {
+    "key": "cmd+]",
+    "command": "editor.unfold",
+    "when": "editorTextFocus && foldingEnabled"
+  },
+  {
+    "key": "alt+cmd+[",
+    "command": "editor.foldAll",
+    "when": "editorTextFocus && foldingEnabled"
+  },
+  {
+    "key": "alt+cmd+]",
+    "command": "editor.unfoldAll",
+    "when": "editorTextFocus && foldingEnabled"
+  },
+  {
+    "key": "ctrl+alt+cmd+[",
+    "command": "editor.foldRecursively",
+    "when": "editorTextFocus && foldingEnabled"
+  },
+  {
+    "key": "ctrl+alt+cmd+]",
+    "command": "editor.unfoldRecursively",
+    "when": "editorTextFocus && foldingEnabled"
+  },
+  // Explorer controls for collapsing and revealing files.
+  // {
+  //   "key": "cmd+\\",
+  //   "command": "workbench.files.action.collapseExplorerFolders"
+  // },
+  // {
+  //   "key": "alt+\\",
+  //   "command": "workbench.files.action.showActiveFileInExplorer"
+  // },
+  // {
+  //   "key": "cmd+n",
+  //   "command": "explorer.newFile",
+  //   "when": "explorerViewletVisible && filesExplorerFocus && !inputFocus"
+  // },
+  // {
+  //   "key": "shift+cmd+n",
+  //   "command": "explorer.newFolder",
+  //   "when": "explorerViewletVisible && filesExplorerFocus && !inputFocus"
+  // },
+  {
+    "key": "ctrl+x",
+    "command": "workbench.view.explorer",
+    // "when": "viewContainer.workbench.view.explorer.enabled"
+  },
+  // Panel and terminal management shortcuts.
+  // {
+  //   "key": "cmd+t",
+  //   "command": "workbench.action.toggleMaximizedPanel"
+  // },
+  // {
+  //   "key": "escape",
+  //   "command": "workbench.action.terminal.toggleTerminal",
+  //   "when": "terminalFocus"
+  // },
+  {
+    "key": "cmd+n",
+    "command": "workbench.action.terminal.new",
+    "when": "terminalFocus"
+  },
+  {
+    "key": "cmd+w",
+    "command": "workbench.action.terminal.kill",
+    "when": "terminalFocus"
+  },
+  {
+    "key": "cmd+l",
+    "command": "workbench.action.terminal.focusNext",
+    "when": "terminalFocus"
+  },
+  {
+    "key": "cmd+k",
+    "command": "workbench.action.terminal.focusPrevious",
+    "when": "terminalFocus"
+  },
+  {
+    "key": "ctrl+cmd+k",
+    "command": "workbench.action.terminal.clear",
+    "when": "terminalFocus"
+  },
+  {
+    "key": "ctrl+n",
+    "command": "workbench.action.terminal.split",
+    "when": "terminalFocus"
+  },
+  // {
+  //   "key": "cmd+h",
+  //   "command": "workbench.action.terminal.focus",
+  //   "when": "view.terminal.visible && !terminalFocus"
+  // },
+  // {
+  //   "key": "ctrl+;",
+  //   "command": "workbench.action.terminal.focusNextPane",
+  //   "when": "terminalFocus"
+  // },
+  // {
+  //   "key": "ctrl+1",
+  //   "command": "workbench.action.terminal.focusAtIndex1",
+  //   "when": "terminalFocus"
+  // },
+  // {
+  //   "key": "ctrl+2",
+  //   "command": "workbench.action.terminal.focusAtIndex2",
+  //   "when": "terminalFocus"
+  // },
+  // {
+  //   "key": "ctrl+3",
+  //   "command": "workbench.action.terminal.focusAtIndex3",
+  //   "when": "terminalFocus"
+  // },
+  // {
+  //   "key": "ctrl+4",
+  //   "command": "workbench.action.terminal.focusAtIndex4",
+  //   "when": "terminalFocus"
+  // },
+  // {
+  //   "key": "ctrl+5",
+  //   "command": "workbench.action.terminal.focusAtIndex5",
+  //   "when": "terminalFocus"
+  // },
+  // {
+  //   "key": "ctrl+6",
+  //   "command": "workbench.action.terminal.focusAtIndex6",
+  //   "when": "terminalFocus"
+  // },
+  // {
+  //   "key": "ctrl+7",
+  //   "command": "workbench.action.terminal.focusAtIndex7",
+  //   "when": "terminalFocus"
+  // },
+  // {
+  //   "key": "ctrl+8",
+  //   "command": "workbench.action.terminal.focusAtIndex8",
+  //   "when": "terminalFocus"
+  // },
+  // {
+  //   "key": "ctrl+9",
+  //   "command": "workbench.action.terminal.focusAtIndex9",
+  //   "when": "terminalFocus"
+  // },
+  // Navigate editors and quick open with familiar cmd+k/cmd+l pairing.
+  {
+    "key": "cmd+k",
+    "command": "workbench.action.nextEditor",
+    "when": "!terminalFocus && !listFocus && !suggestWidgetVisible && !inQuickOpen && !inputBoxFocus"
+  },
+  {
+    "key": "cmd+l",
+    "command": "workbench.action.previousEditor",
+    "when": "!terminalFocus && !listFocus && !suggestWidgetVisible && !inQuickOpen && !inputBoxFocus"
+  },
+  {
+    "key": "alt+tab",
+    "command": "workbench.action.quickSwitchWindow"
+  },
+  {
+    "key": "cmd+k",
+    "command": "workbench.action.quickOpenSelectNext",
+    "when": "inQuickOpen"
+  },
+  {
+    "key": "cmd+l",
+    "command": "workbench.action.quickOpenSelectPrevious",
+    "when": "inQuickOpen"
+  },
+  {
+    "key": "cmd+k",
+    "command": "selectNextSuggestion",
+    "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus"
+  },
+  {
+    "key": "cmd+l",
+    "command": "selectPrevSuggestion",
+    "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus"
+  },
+  // Navigation history bindings mirroring browser shortcuts.
+  {
+    "key": "cmd+.",
+    "command": "workbench.action.navigateForward",
+    "when": "canNavigateForward"
+  },
+  {
+    "key": "cmd+,",
+    "command": "workbench.action.navigateBack",
+    "when": "canNavigateBack"
+  },
+  // List navigation using vim-like k/l keys.
+  {
+    "key": "k",
+    "command": "list.focusDown",
+    "when": "listFocus && !inputFocus"
+  },
+  {
+    "key": "l",
+    "command": "list.focusUp",
+    "when": "listFocus && !inputFocus"
+  },
+  // Split editor layout helpers.
+  {
+    "key": "ctrl+n",
+    "command": "workbench.action.splitEditor",
+    "when": "!terminalFocus"
+  },
+  {
+    "key": "ctrl+alt+n",
+    "command": "workbench.action.splitEditorDown"
+  },
+  // Bulk editor closing shortcuts.
+  {
+    "key": "shift+cmd+w",
+    "command": "workbench.action.closeAllEditors"
+  },
+  {
+    "key": "alt+w",
+    "command": "workbench.action.closeGroup"
+  },
+  // Resize editor groups with ctrl plus symbols.
+  {
+    "key": "ctrl+=",
+    "command": "workbench.action.increaseViewSize",
+    "when": "editorFocus"
+  },
+  {
+    "key": "ctrl+-",
+    "command": "workbench.action.decreaseViewSize",
+    "when": "editorFocus"
+  },
+  // Rebind ctrl-l/;/k/j for arrow-free navigation of editor focus.
+  // {
+  //   "key": "ctrl+l",
+  //   "command": "workbench.action.navigateUp",
+  //   "when": "editorFocus"
+  // },
+  // {
+  //   "key": "ctrl+;",
+  //   "command": "workbench.action.navigateRight",
+  //   "when": "editorFocus"
+  // },
+  // {
+  //   "key": "ctrl+k",
+  //   "command": "workbench.action.navigateDown",
+  //   "when": "editorFocus"
+  // },
+  // {
+  //   "key": "ctrl+j",
+  //   "command": "workbench.action.navigateLeft",
+  //   "when": "editorFocus"
+  // },
+  // Toggle ctrl+e between the editor and the active workbench surface.
+  {
+    "key": "ctrl+e",
+    "command": "chatgpt.openSidebar",
+    "when": "editorFocus && chatgpt.sidebarView.visible"
+  },
+  {
+    "key": "ctrl+e",
+    "command": "workbench.action.terminal.focus",
+    "when": "editorFocus && panelVisible && activePanel == 'workbench.panel.terminal'"
+  },
+  {
+    "key": "ctrl+e",
+    "command": "workbench.action.focusSideBar",
+    "when": "editorFocus && sideBarVisible"
+  },
+  {
+    "key": "ctrl+e",
+    "command": "workbench.action.focusActiveEditorGroup",
+    "when": "!editorFocus"
+  },
+  // Focus the terminal panel with ctrl+t from any context.
+  {
+    "key": "ctrl+t",
+    "command": "workbench.action.terminal.focus"
+  },
+  // Edamagit - https://github.com/kahole/edamagit
+    {
+     "key": "g g",
+     "command": "cursorTop",
+     "when": "editorTextFocus && editorLangId == 'magit' && vim.mode =~ /^(?!SearchInProgressMode|CommandlineInProgress).*$/"
+  },
+  { "key": "g r",
+     "command": "magit.refresh",
+     "when": "editorTextFocus && editorLangId == 'magit' && vim.mode =~ /^(?!SearchInProgressMode|CommandlineInProgress).*$/"
+  },
+  {
+    "key": "tab",
+    "command": "extension.vim_tab",
+    "when": "editorTextFocus && vim.active && !inDebugRepl && vim.mode != 'Insert' && !inlineEditIsVisible && editorLangId != 'magit'"
+  },
+  {
+    "key": "tab",
+    "command": "-extension.vim_tab"
+  },
+  {
+    "key": "x",
+    "command": "magit.discard-at-point",
+    "when": "editorTextFocus && editorLangId == 'magit' && vim.mode =~ /^(?!SearchInProgressMode|CommandlineInProgress).*$/"
+  },
+  {
+    "key": "k",
+    "command": "-magit.discard-at-point"
+  },
+  {
+    "key": "-",
+    "command": "magit.reverse-at-point",
+    "when": "editorTextFocus && editorLangId == 'magit' && vim.mode =~ /^(?!SearchInProgressMode|CommandlineInProgress).*$/"
+  },
+  {
+    "key": "v",
+    "command": "-magit.reverse-at-point"
+  },
+  {
+    "key": "shift+-",
+    "command": "magit.reverting",
+    "when": "editorTextFocus && editorLangId == 'magit' && vim.mode =~ /^(?!SearchInProgressMode|CommandlineInProgress).*$/"
+  },
+  {
+    "key": "shift+v",
+    "command": "-magit.reverting"
+  },
+  {
+    "key": "shift+o",
+    "command": "magit.resetting",
+    "when": "editorTextFocus && editorLangId == 'magit' && vim.mode =~ /^(?!SearchInProgressMode|CommandlineInProgress).*$/"
+  },
+  {
+    "key": "shift+x",
+    "command": "-magit.resetting"
+  },
+  {
+    "key": "x",
+    "command": "-magit.reset-mixed"
+  },
+  {
+    "key": "ctrl+u x",
+    "command": "-magit.reset-hard"
+  }
+]

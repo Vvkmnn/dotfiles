@@ -42,26 +42,44 @@ alias ds="dotfiles status --untracked-files=no"
 alias dg='lazygit --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 
 # Quickedit
-alias ,v='v ~/.config/nvim/lua/'
-alias ,vc='v ~/.config/nvim'
-alias ,nk='v ~/.config/nvim/lua/config/keymaps.lua'
-alias ,vc='v ~/.config/nvim/lua/plugins/custom.lua'
-alias ,nm='v ~/.config/nvim/lua/plugins/modify.lua'
-alias ,nd='v ~/.config/nvim/lua/plugins/disable.lua'
-alias ,no='v ~/.config/nvim/lua/config/options.lua'
-alias ,s='v ~/.shell'
-alias ,a='v ~/.alias'
-alias ,t='v ~/.config/tmux/tmux.conf'
-alias ,w='v ~/.config/wezterm/wezterm.lua'
-alias ,g='v ~/.config/ghostty/config'
-alias ,y='v ~/.yabairc'
-alias ,sk='v ~/.skhdrc'
-# alias ,c='v /Users/v/Library/Application\ Support/Claude/claude_desktop_config.json'
-alias ,c='v ~/.claude/CLAUDE.md'
-alias ,sb='v ~/.config/sketchybar/sketchybarrc'
-# alias ,h='history | nvim -'
-alias ,ys='yabai --restart-service && skhd --restart-service'
-alias ,l='v ~/.logo'
+alias ,f='cd **'
+alias ,r='rg'
+alias ,x='exit'
+alias ,z='zed -n'
+alias ,nv='nv ~/.config/nvim/lua/'
+alias ,vc='nv ~/.config/nvim'
+alias ,vk='nv ~/.config/nvim/lua/config/keymaps.lua'
+alias ,vc='nv ~/.config/nvim/lua/plugins/custom.lua'
+alias ,vm='nv ~/.config/nvim/lua/plugins/modify.lua'
+alias ,vd='nv ~/.config/nvim/lua/plugins/disable.lua'
+alias ,vo='nv ~/.config/nvim/lua/config/options.lua'
+alias ,s='nv ~/.shell'
+alias ,a='nv ~/.alias'
+alias ,t='nv ~/.config/tmux/tmux.conf'
+alias ,w='nv ~/.config/wezterm/wezterm.lua'
+alias ,g='nv ~/.config/ghostty/config'
+alias ,y='nv ~/.yabairc'
+alias ,sk='nv ~/.skhdrc'
+# alias ,c='nv' /Users/v/Library/Application\ Support/Claude/claude_desktop_config.json'
+alias ,c='nv ~/.claude/CLAUDE.md'
+alias ,sb='nv ~/.config/sketchybar/sketchybarrc'
+# alias ,h='history | nnv'im -'
+alias ,ys='yabai --restart-sernvice && skhd --restart-service'
+alias ,l='nv ~/.logo'
+alias ,c='code $HOME/Library/Application\ Support/Code/User/settings.json'
+
+# Vscode
+# vanilla mode
+# alias v=code
+alias ,vc='code --new-window --user-data-dir "$(mktemp -d)" --extensions-dir "$(mktemp -d)"
+'
+
+# google
+# GCP Account Switching - Multiple Google Cloud Configurations
+alias ,gcp-casper='gcloud config configurations activate casper-account'
+alias ,gcp-personal='gcloud config configurations activate personal-account'
+# alias gcp-list='gcloud config configurations list'        # Shows all GCP configurations and which is active
+# alias gcp-current='gcloud config get-value account && gcloud config get-value project'  # Shows current account and project
 
 # claude
 # alias claude="~/.claude/local/claude"
@@ -74,6 +92,7 @@ alias ,mcp-chrome-debug=debugger_chrome
 alias ,mcp-browser-server='npx @agentdeskai/browser-tools-server@1.2.0'
 
 ## git
+alias gs='git status'
 alias ,git-undo='git clean -fd && git reset --hard'
 
 # update
@@ -81,14 +100,22 @@ alias ,u=update_all
 
 # Claude
 alias ,ai='claude --model sonnet --print'
-alias ,c='claude --model sonnet'
-alias ,cl='claude --model sonnet --continue'
-alias ,clv='claude --verbose --model sonnet --continue'
-alias ,clr='claude --model sonnet --resume'
+alias ,c='claude'
+alias ,c.='claude --add-dir .'
+alias ,cl='claude --continue'
+alias ,clv='claude --verbose --continue'
+alias ,clr='claude --resume'
+alias ,cu='ccusage blocks --live'
+alias ,clear='clear && clear && clear'
 
 # alias cl='claude --verbose --model sonnet --continue'
 # alias cln='claude --verbose --model sonnet'
 # alias ai=c
+
+# pokemon
+# https://github.com/zachMahan64/pokemon-tbje/
+# java -jar target/pokemon_tbje-1.0.jar
+alias pkm="cd /Users/v/Documents/dev/pokemon-tbje/ && java -jar target/pokemon_tbje-1.0.jar"
 
 ## cursor vclear
 
@@ -125,8 +152,11 @@ alias l='source ~/.logo'
 ## Vim & neoVim
 
 # alias v='vim'                # Vim
-alias v='nvim'                     # (neo)Vim
-alias vn='nvim --listen /tmp/nvim' # (neo)Vim listening on local socket https://x.com/dmwlff/status/1899144115981529512
+# alias v='nvim'
+# alias v='nvim'
+alias vl='--listen /tmp/nvim' # (neo)Vim - listening to a tmp socket for Claude
+alias v='nvim'                # Original nvim
+# alias vn='nvim --listen /tmp/nvim' # (neo)Vim listening on local socket - REPLACED by v() function
 alias v!='nvim --noplugin --clean' # (neo)Vim clean (no plugins)
 alias ov='vim'                     # Vim
 

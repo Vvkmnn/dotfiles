@@ -1,185 +1,35 @@
 #!/usr/bin/env bash
-# Install command-line tools using Homebrew.
+# Modern Homebrew setup using Brewfile
+# Installs all formulae, casks, taps, and Mac App Store apps
 
-# Ask for the administrator password upfront.
-sudo -v
+set -e
 
-# Keep-alive: update existing `sudo` time stamp until the script has finished.
-while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+BREWFILE="${SCRIPT_DIR}/Resources/Brewfile"
 
-	# Check for Homebrew,
-	# Install if we don't have it
-	if test ! $(which brew); then
-		echo "Installing homebrew..."
-		ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-	fi
+echo "==> macOS package installation via Homebrew"
 
-	# Make sure we’re using the latest Homebrew.
-	brew update
+# Check for Homebrew, install if missing
+if ! command -v brew &> /dev/null; then
+    echo "Installing Homebrew..."
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+fi
 
-	# Upgrade any already-installed formulae.
-	brew upgrade --all
+# Update Homebrew
+echo "Updating Homebrew..."
+brew update
 
-        # Unix Utilities {{{
+# Install from Brewfile
+echo "Installing packages from Brewfile..."
+if [[ -f "${BREWFILE}" ]]; then
+    brew bundle install --file="${BREWFILE}"
+else
+    echo "Error: Brewfile not found at ${BREWFILE}"
+    exit 1
+fi
 
-	# Install GNU core utilities (those that come with OS X are outdated).
-	# Don’t forget to add `$(brew --prefix coreutils)/libexec/gnubin` to `$PATH`.
-	brew install coreutils
+# Cleanup
+echo "Cleaning up..."
+brew cleanup
 
-	# Install some other useful utilities like `sponge`.
-	# brew install moreutils
-
-	# Install GNU `find`, `locate`, `updatedb`, and `xargs`, `g`-prefixed.
-	# brew install findutils
-        
-	# Install GNU `sed`, overwriting the built-in `sed`.
-	# brew install gnu-sed --with-default-names
-        
-	# Install Bash 4.
-	# brew install bash
-	# brew install bash-completion2
-
-	# We installed the new shell, now we have to activate it
-	# echo "Adding the newly installed shell to the list of allowed shells"
-	# Prompts for password
-	# sudo bash -c 'echo /usr/local/bin/bash >> /etc/shells'
-	# Change to the new shell, prompts for password
-	# chsh -s /usr/local/bin/bash
-
-        # Grep
-	brew install homebrew/dupes/grep
-        # OpenSSH
-	brew install homebrew/dupes/openssh
-
-	# ack - excellent little search tool: https://www.youtube.com/watch?time_continue=85&v=sKmyl5D8Da8
-	brew install ack
-
-
-	# git LFS - Large file storage; just in case
-	brew install git-lfs
-        git lfs install --system
-
-	# git Flow - extensions for Vincent Driessen's branching model: https://jeffkreeftmeijer.com/2010/why-arent-you-using-git-flow/
-	brew install git-flow
-
-	# brew install git-extras
-	# brew install imagemagick --with-webp
-	# brew install lua
-	# brew install lynx
-	# brew install p7zip
-	# brew install pigz
-	# brew install pv
-	# brew install rename
-	# brew install rhino
-	# brew install speedtest_cli
-	# brew install ssh-copy-id
-	# brew install tree
-	# brew install webkit2png
-	# brew install zopfli
-	# brew install pkg-config libffi
-	# brew install pandoc
-	# brew instal irssi
-
-	# Lxml and Libxslt
-	# brew install libxml2
-	# brew install libxslt
-	# brew link libxml2 --force
-	# brew link libxslt --force
-
-	# Install `wget` with IRI support.
-	brew install wget --with-iri
-        # }}}
-    
-        # Python {{{
-	brew install python
-	brew install python3
-        # }}}
-
-        # Clojure {{{
-        brew install clojurescript
-        # }}}
-	# Ruby {{{
-	# brew install ruby-build
-	# brew install rbenv
-	# LINE='eval "$(rbenv init -)"'
-	# grep -q "$LINE" ~/.extra || echo "$LINE" >> ~/.extra
-
-	# Vim {{{
-        #brew install vim --override-system-vi
-        brew install neovim
-        brew install ctags-exuberant
-        # }}}
-
-        # Tmux {{{
-	brew install tmux
-
-	# spectacle - hotkey window management
-	# brew cask install spectacle
-
-        # }}}
-
-
-        # CLI {{{
-	# Z
-	brew install z
-
-        # htop
-        brew install htop
-        
-        # Archey
-	brew install archey
-
-	# Reddit
-	brew install rtv 
-
-        # The Fuck 
-        brew install thefuck
-
-        # htop
-        brew install htop
-
-        # fzf
-        brew install fzf # && $(brew --prefix)/opt/fzf/install
-
-        # htop
-        brew install htop
-
-        # ripgrep - recursive regex search (Silver Surfer / ack + GNU grep)
-        brew install rg
-
-	# pyenv - simple python version management
-	brew install pyenv
-
-        # nnn - great terminal file navigator
-        brew install nnn
-
-        # chunkwm - the tiling window manager
-        brew install chunkwm
-
-        # skhd - Modal Hotkey daemon
-        brew install skhd
-
-        # languagetool - Needed for Wordnut {{{
-        brew install languagetool
-
-        # wordnet - word lookup
-        brew install wordnet
-
-        # wakatime - Time tracking
-        # brew install wakatime-cli
-
-	# hunspell - the best spell checker
-	brew install hunspell
-        
-	# ispell - another spellchecker (for Doom Emacs), with English
-	brew install ispell --with-lang-en
-
-	# direnv - directory based environments via .envrc with unloading
-	brew install direnv
-
-	# tldr - simplified man page
-	brew install direnv
-
-	# Postinstall and Cleanup
-	brew doctor
-	brew cleanup
+echo "✓ Homebrew setup complete"
