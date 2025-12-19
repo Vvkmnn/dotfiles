@@ -1,35 +1,41 @@
 #!/usr/bin/env sh
 
-# Ultra-light shared cache and smoothing
-CACHE="/tmp/sketchybar_cache"
+CACHE="/tmp/sketchybar_powermetrics.json"
 STATE_FILE="/tmp/sketchybar_state"
+CACHE_MAX_AGE=5
 
-# Get macmon data (5s cache for better performance)
-get_macmon_data() {
+# Get powermetrics data (with 5s cache)
+get_powermetrics_data() {
     if [ -f "$CACHE" ]; then
         AGE=$(($(date +%s) - $(stat -f %m "$CACHE" 2>/dev/null || echo 0)))
-        [ $AGE -lt 3 ] && cat "$CACHE" && return
+        if [ $AGE -lt $CACHE_MAX_AGE ]; then
+            cat "$CACHE"
+            return
+        fi
     fi
 
-    LINE=$(macmon pipe --interval 100 2>/dev/null | { IFS= read -r first_line || true; printf '%s' "$first_line"; })
+    # Call powermetrics (with sudo, no password needed)
+    # Write plist to temp file first
+    PLIST_TEMP="/tmp/sketchybar_pm.plist"
+    sudo powermetrics -n 1 -i 1000 \
+        --samplers cpu_power,gpu_power,thermal,tasks \
+        --format plist > "$PLIST_TEMP" 2>/dev/null
 
-    if [ -n "$LINE" ]; then
-        printf '%s\n' "$LINE" > "$CACHE.tmp"
-        mv "$CACHE.tmp" "$CACHE"
-        printf '%s\n' "$LINE"
+    if [ -s "$PLIST_TEMP" ]; then
+        # Convert to JSON
+        plutil -convert json "$PLIST_TEMP" -o "$CACHE" 2>/dev/null
+        cat "$CACHE"
     else
         echo "{}"
     fi
 }
 
-# Efficient smoothing - single state file
+# Smoothing function (same as before)
 smooth_value() {
     STAT=$1; VAL=$2; WIN=${3:-3}
 
-    # Get current state
     CURRENT_STATE=$(awk -F: -v s="$STAT" '$1==s {print $2}' "$STATE_FILE" 2>/dev/null)
 
-    # Update with new value (keep last WIN values)
     if [ -n "$CURRENT_STATE" ]; then
         VALS=$(echo "$CURRENT_STATE $VAL" | awk -v w=$WIN '{
             start=(NF>=w)?NF-w+1:1
@@ -41,7 +47,6 @@ smooth_value() {
         AVG="$VAL"
     fi
 
-    # Atomic update
     (grep -v "^$STAT:" "$STATE_FILE" 2>/dev/null || true; echo "$STAT:$VALS") > "$STATE_FILE.tmp"
     mv "$STATE_FILE.tmp" "$STATE_FILE"
 

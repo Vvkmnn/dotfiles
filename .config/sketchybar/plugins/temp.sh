@@ -18,7 +18,7 @@ if [ "$MACMON_DATA" != "{}" ]; then
 
         # Reject outliers outside plausible Celsius range
         if [ "$RAW_TEMP_INT" -ge 10 ] && [ "$RAW_TEMP_INT" -le 110 ]; then
-            TEMP=$(smooth_value "temp" "$RAW_TEMP_INT" 6)
+            TEMP=$(smooth_value "temp" "$RAW_TEMP_INT" 3)
         fi
     fi
 fi

@@ -9,16 +9,16 @@ TOTAL_POWER=""
 MACMON_DATA=$(get_macmon_data)
 
 if [ "$MACMON_DATA" != "{}" ]; then
-    RAW_POWER=$(echo "$MACMON_DATA" | jq -r '.all_power // empty' 2>/dev/null)
+    RAW_POWER=$(echo "$MACMON_DATA" | jq -r '.sys_power // empty' 2>/dev/null)
 
     if [ -z "$RAW_POWER" ]; then
-        RAW_POWER=$(echo "$MACMON_DATA" | sed -n 's/.*"all_power":\([0-9]*\.[0-9]*\).*/\1/p')
+        RAW_POWER=$(echo "$MACMON_DATA" | sed -n 's/.*"sys_power":\([0-9]*\.[0-9]*\).*/\1/p')
     fi
 
     if echo "$RAW_POWER" | grep -Eq '^[0-9]+(\.[0-9]+)?$'; then
         if awk -v p="$RAW_POWER" 'BEGIN { exit !(p >= 0 && p <= 100) }'; then
             RAW_POWER_TENTHS=$(awk -v p="$RAW_POWER" 'BEGIN { printf "%d", int(p*10 + 0.5) }')
-            SMOOTH_TENTHS=$(smooth_value "$STATE_KEY" "$RAW_POWER_TENTHS" 6)
+            SMOOTH_TENTHS=$(smooth_value "$STATE_KEY" "$RAW_POWER_TENTHS" 3)
             TOTAL_POWER=$(awk -v t="$SMOOTH_TENTHS" 'BEGIN { printf "%.1f", t/10.0 }')
         fi
     fi

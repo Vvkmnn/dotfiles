@@ -12,14 +12,14 @@ if [ "$MACMON_DATA" != "{}" ]; then
     
     if [ -n "$RAM_USAGE" ] && [ -n "$RAM_TOTAL" ] && [ "$RAM_TOTAL" -gt 0 ]; then
         RAW_MEM=$(awk "BEGIN {printf \"%.0f\", ($RAM_USAGE/$RAM_TOTAL)*100}")
-        MEMORY_PERCENT=$(smooth_value "memory" "$RAW_MEM" 5)  # 5 samples for memory
+        MEMORY_PERCENT=$(smooth_value "memory" "$RAW_MEM" 3)
     fi
 fi
 
 # Fallback
 if [ -z "$MEMORY_PERCENT" ]; then
     RAW_MEM=$(memory_pressure | grep "System-wide memory free percentage:" | awk '{printf "%.0f", 100-$5}')
-    MEMORY_PERCENT=$(smooth_value "memory" "$RAW_MEM" 5)
+    MEMORY_PERCENT=$(smooth_value "memory" "$RAW_MEM" 3)
 fi
 
 # Thresholds for 16GB M3 Air

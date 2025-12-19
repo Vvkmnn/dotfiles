@@ -184,85 +184,152 @@ sketchybar --add item network_up left \
 # 	padding_right=6 \
 # 	script="$PLUGIN_DIR/clock_ms.sh"
 
-# Seconds with colon (very light)
-sketchybar --add item clock_sec right \
-	--set clock_sec update_freq=1 \
-	icon.drawing=off \
-	label.font="SF Pro:Regular:13.0" \
-	label.color=0xffE8EAEC \
-	label.padding_left=0 \
-	label.padding_right=0 \
-	padding_left=0 \
-	padding_right=3 \
-	script="$PLUGIN_DIR/clock_sec.sh"
+# Old clock items (commented out - replaced by progress indicators)
+# # Seconds with colon (very light)
+# sketchybar --add item clock_sec right \
+# 	--set clock_sec update_freq=1 \
+# 	icon.drawing=off \
+# 	label.font="SF Pro:Regular:13.0" \
+# 	label.color=0xffE8EAEC \
+# 	label.padding_left=0 \
+# 	label.padding_right=0 \
+# 	padding_left=0 \
+# 	padding_right=3 \
+# 	script="$PLUGIN_DIR/clock_sec.sh"
+#
+# # Minutes with colon (light gradient)
+# sketchybar --add item clock_min right \
+# 	--set clock_min update_freq=1 \
+# 	icon.drawing=off \
+# 	label.font="SF Pro:Regular:13.0" \
+# 	label.color=0xffE0E3E4 \
+# 	label.padding_left=0 \
+# 	label.padding_right=0 \
+# 	padding_left=0 \
+# 	padding_right=0 \
+# 	script="$PLUGIN_DIR/clock_min.sh"
+#
+# # Hour (lighter gradient)
+# sketchybar --add item clock_hour right \
+# 	--set clock_hour update_freq=60 \
+# 	icon.drawing=off \
+# 	label.font="SF Pro:Regular:13.0" \
+# 	label.color=0xffD8DCDE \
+# 	label.padding_left=0 \
+# 	label.padding_right=0 \
+# 	padding_left=0 \
+# 	padding_right=1 \
+# 	script="$PLUGIN_DIR/clock_hour.sh"
+#
+# # Day of week (middle gradient)
+# sketchybar --add item clock_dow right \
+# 	--set clock_dow update_freq=60 \
+# 	icon.drawing=off \
+# 	label.font="SF Pro:Regular:13.0" \
+# 	label.color=0xffD0D4D8 \
+# 	padding_left=0 \
+# 	padding_right=2 \
+# 	script="$PLUGIN_DIR/clock_dow.sh"
+#
+# # Week (darker gradient)
+# sketchybar --add item clock_week right \
+# 	--set clock_week update_freq=60 \
+# 	icon.drawing=off \
+# 	label.font="SF Pro:Regular:13.0" \
+# 	label.color=0xffB8BEC6 \
+# 	padding_left=0 \
+# 	padding_right=1 \
+# 	script="$PLUGIN_DIR/clock_week.sh"
+#
+# # Day (darker gradient)
+# sketchybar --add item clock_day right \
+# 	--set clock_day update_freq=60 \
+# 	icon.drawing=off \
+# 	label.font="SF Pro:Regular:13.0" \
+# 	label.color=0xffC8CDD2 \
+# 	padding_left=0 \
+# 	padding_right=1 \
+# 	script="$PLUGIN_DIR/clock_day.sh"
+#
+# # Month (darker gradient)
+# sketchybar --add item clock_month right \
+# 	--set clock_month update_freq=60 \
+# 	icon.drawing=off \
+# 	label.font="SF Pro:Regular:13.0" \
+# 	label.color=0xffC0C5CC \
+# 	padding_left=0 \
+# 	padding_right=1 \
+# 	script="$PLUGIN_DIR/clock_month.sh"
+#
+# # Year with analog clock icon (kanagawa yellow) - leftmost
+# sketchybar --add item clock_year right \
+# 	--set clock_year update_freq=30 \
+# 	icon.drawing=on \
+# 	icon="􀐬" \
+# 	icon.font="SF Symbols:Regular:13.0" \
+# 	icon.color=$MID_GRAY \
+# 	icon.padding_right=0 \
+# 	label.font="SF Pro:Regular:13.0" \
+# 	label.color=$MISTY_BLUE \
+# 	padding_left=0 \
+# 	padding_right=1 \
+# 	script="$PLUGIN_DIR/clock_year.sh"
 
-# Minutes with colon (light gradient)
-sketchybar --add item clock_min right \
-	--set clock_min update_freq=1 \
-	icon.drawing=off \
-	label.font="SF Pro:Regular:13.0" \
-	label.color=0xffE0E3E4 \
-	label.padding_left=0 \
-	label.padding_right=0 \
-	padding_left=0 \
-	padding_right=0 \
-	script="$PLUGIN_DIR/clock_min.sh"
+# Old multi-indicator format (commented out)
+# # Day of month progress (rightmost)
+# sketchybar --add item progress_day right \
+# 	--set progress_day update_freq=1 \
+# 	icon.drawing=off \
+# 	label.font="SF Pro:Regular:13.0" \
+# 	label.color=$MISTY_BLUE \
+# 	label.padding_left=0 \
+# 	label.padding_right=0 \
+# 	padding_left=0 \
+# 	padding_right=3 \
+# 	script="$PLUGIN_DIR/progress_day.sh"
+#
+# # Week progress
+# sketchybar --add item progress_week right \
+# 	--set progress_week update_freq=60 \
+# 	icon.drawing=off \
+# 	label.font="SF Pro:Regular:13.0" \
+# 	label.color=$MISTY_BLUE \
+# 	label.padding_left=0 \
+# 	label.padding_right=0 \
+# 	padding_left=0 \
+# 	padding_right=1 \
+# 	script="$PLUGIN_DIR/progress_week.sh"
+#
+# # Month progress
+# sketchybar --add item progress_month right \
+# 	--set progress_month update_freq=60 \
+# 	icon.drawing=off \
+# 	label.font="SF Pro:Regular:13.0" \
+# 	label.color=$MISTY_BLUE \
+# 	label.padding_left=0 \
+# 	label.padding_right=0 \
+# 	padding_left=0 \
+# 	padding_right=1 \
+# 	script="$PLUGIN_DIR/progress_month.sh"
+#
+# # Year progress with clock icon (leftmost)
+# sketchybar --add item progress_year right \
+# 	--set progress_year update_freq=3600 \
+# 	icon.drawing=on \
+# 	icon="􀐬" \
+# 	icon.font="SF Symbols:Regular:13.0" \
+# 	icon.color=$MID_GRAY \
+# 	icon.padding_right=0 \
+# 	label.font="SF Pro:Regular:13.0" \
+# 	label.color=$MISTY_BLUE \
+# 	padding_left=0 \
+# 	padding_right=1 \
+# 	script="$PLUGIN_DIR/progress_year.sh"
 
-# Hour (lighter gradient)
-sketchybar --add item clock_hour right \
-	--set clock_hour update_freq=60 \
-	icon.drawing=off \
-	label.font="SF Pro:Regular:13.0" \
-	label.color=0xffD8DCDE \
-	label.padding_left=0 \
-	label.padding_right=0 \
-	padding_left=0 \
-	padding_right=1 \
-	script="$PLUGIN_DIR/clock_hour.sh"
-
-# Day of week (middle gradient)
-sketchybar --add item clock_dow right \
-	--set clock_dow update_freq=60 \
-	icon.drawing=off \
-	label.font="SF Pro:Regular:13.0" \
-	label.color=0xffD0D4D8 \
-	padding_left=0 \
-	padding_right=2 \
-	script="$PLUGIN_DIR/clock_dow.sh"
-
-# Week (darker gradient)
-sketchybar --add item clock_week right \
-	--set clock_week update_freq=60 \
-	icon.drawing=off \
-	label.font="SF Pro:Regular:13.0" \
-	label.color=0xffB8BEC6 \
-	padding_left=0 \
-	padding_right=1 \
-	script="$PLUGIN_DIR/clock_week.sh"
-
-# Day (darker gradient)
-sketchybar --add item clock_day right \
-	--set clock_day update_freq=60 \
-	icon.drawing=off \
-	label.font="SF Pro:Regular:13.0" \
-	label.color=0xffC8CDD2 \
-	padding_left=0 \
-	padding_right=1 \
-	script="$PLUGIN_DIR/clock_day.sh"
-
-# Month (darker gradient)
-sketchybar --add item clock_month right \
-	--set clock_month update_freq=60 \
-	icon.drawing=off \
-	label.font="SF Pro:Regular:13.0" \
-	label.color=0xffC0C5CC \
-	padding_left=0 \
-	padding_right=1 \
-	script="$PLUGIN_DIR/clock_month.sh"
-
-# Year with analog clock icon (kanagawa yellow) - leftmost
-sketchybar --add item clock_year right \
-	--set clock_year update_freq=30 \
+# New unified progress indicator (format: 353━━━●──354 17:13)
+# Shows day-of-year progress with current time
+sketchybar --add item progress_unified right \
+	--set progress_unified update_freq=1 \
 	icon.drawing=on \
 	icon="􀐬" \
 	icon.font="SF Symbols:Regular:13.0" \
@@ -270,9 +337,11 @@ sketchybar --add item clock_year right \
 	icon.padding_right=0 \
 	label.font="SF Pro:Regular:13.0" \
 	label.color=$MISTY_BLUE \
+	label.padding_left=0 \
+	label.padding_right=0 \
 	padding_left=0 \
-	padding_right=1 \
-	script="$PLUGIN_DIR/clock_year.sh"
+	padding_right=3 \
+	script="$PLUGIN_DIR/progress_unified.sh"
 
 # Battery
 sketchybar --add item battery right \
