@@ -1,0 +1,65 @@
+{
+  "alfredtheme" : {
+    "result" : {
+      "textSpacing" : 8,
+      "subtext" : {
+        "size" : 13,
+        "colorSelected" : "#F0F0F07F",
+        "font" : "System",
+        "color" : "#F1F1F17F"
+      },
+      "shortcut" : {
+        "size" : 11,
+        "colorSelected" : "#F1F1F17F",
+        "font" : "System Light",
+        "color" : "#B7B9B77F"
+      },
+      "backgroundSelected" : "#E8EBED19",
+      "text" : {
+        "size" : 17,
+        "colorSelected" : "#FEFFFFF3",
+        "font" : "System",
+        "color" : "#FEFFFFF3"
+      },
+      "iconPaddingHorizontal" : 10,
+      "roundness" : 18,
+      "paddingVertical" : 8,
+      "iconSize" : 40
+    },
+    "search" : {
+      "backgroundSelected" : "#7C7E7F26",
+      "paddingHorizontal" : 8,
+      "spacing" : 10,
+      "text" : {
+        "size" : 30,
+        "colorSelected" : "#CBCBCBF3",
+        "font" : "System",
+        "color" : "#FEFFFFF3"
+      },
+      "background" : "#00000000",
+      "roundness" : 0,
+      "paddingVertical" : 0
+    },
+    "window" : {
+      "color" : "#2525252F",
+      "paddingHorizontal" : 11,
+      "width" : 618,
+      "borderPadding" : 0,
+      "borderColor" : "#FEFFFE7F",
+      "blur" : 0,
+      "roundness" : 27,
+      "paddingVertical" : 10
+    },
+    "credit" : "mayuzumi",
+    "visualEffectMode" : 2,
+    "separator" : {
+      "color" : "#CBCBCBF3",
+      "thickness" : 0
+    },
+    "scrollbar" : {
+      "color" : "#7F7F7FF3",
+      "thickness" : 6
+    },
+    "name" : "Taheo Night"
+  }
+}

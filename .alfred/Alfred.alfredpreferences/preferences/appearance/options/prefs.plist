@@ -4,7 +4,13 @@
 <dict>
 	<key>hidehat</key>
 	<true/>
+	<key>hidemenu</key>
+	<true/>
+	<key>nativedarkmode</key>
+	<true/>
 	<key>showOnScreen</key>
-	<integer>1</integer>
+	<integer>2</integer>
+	<key>visibleresults</key>
+	<integer>6</integer>
 </dict>
 </plist>

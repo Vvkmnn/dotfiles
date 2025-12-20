@@ -1,0 +1,1223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>bundleid</key>
+	<string>com.github.vanstrouble.alfred.amphetaminedose</string>
+	<key>connections</key>
+	<dict>
+		<key>0B2338A8-DEFB-4B38-B9E8-487A8FEA4D81</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>A1B2265C-5530-4DCB-B35A-7E2208471EA3</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>20400DB6-5F44-4521-89AD-7726D653C199</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>E170A949-67E0-4473-A26B-B085FD7A7758</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>23E12899-365E-4F15-B207-B0CBE97AD3CD</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>20400DB6-5F44-4521-89AD-7726D653C199</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>4746E794-6270-44A3-9508-2FA94F22732A</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>C7BCFF95-48F5-4960-AA21-6BB9DE987967</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>535CE951-9EB5-42FB-B419-12B1FDE6B083</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>0B2338A8-DEFB-4B38-B9E8-487A8FEA4D81</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>6636AAF8-DB5E-4FC1-A0C0-C3A934D7AC73</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>A1B2265C-5530-4DCB-B35A-7E2208471EA3</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>85998765-D8E9-420D-A26F-D1A92E1FE534</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>535CE951-9EB5-42FB-B419-12B1FDE6B083</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>EF049EAC-4567-4BDE-8057-D8E5FBE7BF15</string>
+				<key>modifiers</key>
+				<integer>1048576</integer>
+				<key>modifiersubtext</key>
+				<string>Allow display sleep</string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>C7BCFF95-48F5-4960-AA21-6BB9DE987967</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>E170A949-67E0-4473-A26B-B085FD7A7758</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>DDAEA08A-F5C9-4DDC-BA0C-1A74F8E2C45D</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>E170A949-67E0-4473-A26B-B085FD7A7758</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>FF063610-8F54-4C8A-8B68-79F4CC4CEAEB</string>
+				<key>modifiers</key>
+				<integer>1048576</integer>
+				<key>modifiersubtext</key>
+				<string>Allow display sleep</string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>E170A949-67E0-4473-A26B-B085FD7A7758</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>6636AAF8-DB5E-4FC1-A0C0-C3A934D7AC73</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>EF049EAC-4567-4BDE-8057-D8E5FBE7BF15</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>535CE951-9EB5-42FB-B419-12B1FDE6B083</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>FF063610-8F54-4C8A-8B68-79F4CC4CEAEB</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>E170A949-67E0-4473-A26B-B085FD7A7758</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+	</dict>
+	<key>createdby</key>
+	<string>vanstrouble</string>
+	<key>description</key>
+	<string>Keep your Mac awake with simple commands.</string>
+	<key>disabled</key>
+	<false/>
+	<key>name</key>
+	<string>Amphetamine Dose</string>
+	<key>objects</key>
+	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>alfredfiltersresults</key>
+				<false/>
+				<key>alfredfiltersresultsmatchmode</key>
+				<integer>0</integer>
+				<key>argumenttreatemptyqueryasnil</key>
+				<true/>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
+				<key>argumenttype</key>
+				<integer>2</integer>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>keyword</key>
+				<string>{var:amp_keyboard}</string>
+				<key>queuedelaycustom</key>
+				<integer>3</integer>
+				<key>queuedelayimmediatelyinitially</key>
+				<true/>
+				<key>queuedelaymode</key>
+				<integer>0</integer>
+				<key>queuemode</key>
+				<integer>1</integer>
+				<key>runningsubtext</key>
+				<string>Please wait…</string>
+				<key>script</key>
+				<string>#!/bin/zsh --no-rcs
+
+INPUT="$1"
+STATE=$(osascript -e 'tell application "Amphetamine" to return session is active' 2&gt;/dev/null)
+
+if [[ "$STATE" != "true" ]]; then
+    echo '{"items":[{"title":"Turn On","subtitle":"Prevent sleep indefinitely","arg":"on","icon":{"path":"icon.png"}}]}'
+else
+    echo '{"items":[{"title":"Turn Off","subtitle":"Allow computer to sleep","arg":"off","icon":{"path":"icon.png"}}]}'
+fi
+</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>skipuniversalaction</key>
+				<true/>
+				<key>subtext</key>
+				<string>Prevent your computer from going to sleep</string>
+				<key>title</key>
+				<string>{const:alfred_workflow_name}</string>
+				<key>type</key>
+				<integer>11</integer>
+				<key>withspace</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>DDAEA08A-F5C9-4DDC-BA0C-1A74F8E2C45D</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>concurrently</key>
+				<true/>
+				<key>escaping</key>
+				<integer>0</integer>
+				<key>script</key>
+				<string>#!/bin/bash
+
+INPUT="$1"
+
+# Use hotkey_value if provided
+if [[ -n "$hotkey_value" ]]; then
+    INPUT="$hotkey_value"
+fi
+
+# Default value for display_sleep_allow if not set
+display_sleep_allow=${display_sleep_allow:-false}
+
+if [[ "$INPUT" == "off" ]]; then
+    osascript -e "tell application \"Amphetamine\" to end session"
+    echo "Amphetamine deactivated."
+elif [[ "$INPUT" == "on" ]]; then
+    # Use display_sleep_allow parameter only when turning on
+    osascript -e "tell application \"Amphetamine\" to start new session with options {displaySleepAllowed:$display_sleep_allow}"
+
+    if [[ "$display_sleep_allow" == "true" ]]; then
+        echo "Amphetamine activated (display can sleep)."
+    else
+        echo "Amphetamine activated."
+    fi
+else
+    exit 1
+fi</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>type</key>
+				<integer>11</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>6636AAF8-DB5E-4FC1-A0C0-C3A934D7AC73</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict/>
+			<key>type</key>
+			<string>alfred.workflow.utility.junction</string>
+			<key>uid</key>
+			<string>E170A949-67E0-4473-A26B-B085FD7A7758</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argument</key>
+				<string>{query}</string>
+				<key>passthroughargument</key>
+				<false/>
+				<key>variables</key>
+				<dict>
+					<key>display_sleep_allow</key>
+					<string>true</string>
+				</dict>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.utility.argument</string>
+			<key>uid</key>
+			<string>FF063610-8F54-4C8A-8B68-79F4CC4CEAEB</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>action</key>
+				<integer>0</integer>
+				<key>argument</key>
+				<integer>0</integer>
+				<key>focusedappvariable</key>
+				<false/>
+				<key>focusedappvariablename</key>
+				<string></string>
+				<key>leftcursor</key>
+				<false/>
+				<key>modsmode</key>
+				<integer>0</integer>
+				<key>relatedAppsMode</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.trigger.hotkey</string>
+			<key>uid</key>
+			<string>23E12899-365E-4F15-B207-B0CBE97AD3CD</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argument</key>
+				<string></string>
+				<key>passthroughargument</key>
+				<true/>
+				<key>variables</key>
+				<dict>
+					<key>hotkey_value</key>
+					<string>on</string>
+				</dict>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.utility.argument</string>
+			<key>uid</key>
+			<string>20400DB6-5F44-4521-89AD-7726D653C199</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>lastpathcomponent</key>
+				<false/>
+				<key>onlyshowifquerypopulated</key>
+				<false/>
+				<key>removeextension</key>
+				<false/>
+				<key>text</key>
+				<string>{query}</string>
+				<key>title</key>
+				<string>{const:alfred_workflow_name}</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.notification</string>
+			<key>uid</key>
+			<string>A1B2265C-5530-4DCB-B35A-7E2208471EA3</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>action</key>
+				<integer>0</integer>
+				<key>argument</key>
+				<integer>0</integer>
+				<key>focusedappvariable</key>
+				<false/>
+				<key>focusedappvariablename</key>
+				<string></string>
+				<key>leftcursor</key>
+				<false/>
+				<key>modsmode</key>
+				<integer>0</integer>
+				<key>relatedAppsMode</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.trigger.hotkey</string>
+			<key>uid</key>
+			<string>4746E794-6270-44A3-9508-2FA94F22732A</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argument</key>
+				<string></string>
+				<key>passthroughargument</key>
+				<true/>
+				<key>variables</key>
+				<dict>
+					<key>hotkey_value</key>
+					<string>off</string>
+				</dict>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.utility.argument</string>
+			<key>uid</key>
+			<string>C7BCFF95-48F5-4960-AA21-6BB9DE987967</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>alfredfiltersresults</key>
+				<false/>
+				<key>alfredfiltersresultsmatchmode</key>
+				<integer>0</integer>
+				<key>argumenttreatemptyqueryasnil</key>
+				<true/>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
+				<key>argumenttype</key>
+				<integer>0</integer>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>keyword</key>
+				<string>{var:ams_keyboard}</string>
+				<key>queuedelaycustom</key>
+				<integer>3</integer>
+				<key>queuedelayimmediatelyinitially</key>
+				<true/>
+				<key>queuedelaymode</key>
+				<integer>0</integer>
+				<key>queuemode</key>
+				<integer>1</integer>
+				<key>runningsubtext</key>
+				<string>Please wait…</string>
+				<key>script</key>
+				<string>#!/bin/zsh --no-rcs
+
+# Function to detect system time format (12h or 24h)
+detect_time_format() {
+    local time_format=$(date +%X | grep -E "AM|PM" &amp;&gt;/dev/null &amp;&amp; echo "12" || echo "24")
+    echo "$time_format"
+}
+
+# Function to calculate the end time based on the given minutes
+calculate_end_time() {
+    local minutes=$1
+
+    # Check Alfred variable for time format preference
+    # 'a' is 12-hour format, 'b' is 24-hour format
+    if [[ "${alfred_time_format:-a}" == "a" ]]; then
+        # 12-hour format with AM/PM
+        date -v+"$minutes"M +"%l:%M %p" | sed 's/^ //'
+    else
+        # 24-hour format
+        date -v+"$minutes"M +"%H:%M"
+    fi
+}
+
+# Function to get the nearest future time based on input hour and minute
+get_nearest_future_time() {
+    local hour=$1
+    local minute=$2
+    local current_hour=$3
+    local current_minute=$4
+
+    # Special handling for hour 12
+    local am_hour=$hour
+    local pm_hour=$hour
+
+    # For 12-hour format conversion
+    if [[ $hour -eq 12 ]]; then
+        am_hour=0  # 12 AM is actually 0 in 24-hour format
+    elif [[ $hour -lt 12 ]]; then
+        pm_hour=$(( hour + 12 ))
+    fi
+
+    # Calculate minutes for AM and PM interpretations
+    local am_total_minutes=$(( (am_hour * 60 + minute) - (current_hour * 60 + current_minute) ))
+    local pm_total_minutes=$(( (pm_hour * 60 + minute) - (current_hour * 60 + current_minute) ))
+
+    # If AM time is in the past and PM time is in future, use PM
+    if [[ $am_total_minutes -lt 0 &amp;&amp; $pm_total_minutes -gt 0 ]]; then
+        echo $pm_total_minutes
+    # If AM time is in the future, use that
+    elif [[ $am_total_minutes -gt 0 ]]; then
+        echo $am_total_minutes
+    # If both are in the past, roll over to tomorrow
+    else
+        echo $(( am_total_minutes + 1440 ))
+    fi
+}
+
+# Function to parse the input and calculate the total minutes
+parse_input() {
+    local input=(${(@s/ /)1})  # Split the input into parts
+    local current_hour=$(date +"%H")
+    local current_minute=$(date +"%M")
+    local system_format=$(detect_time_format)
+
+    if [[ "${#input[@]}" -eq 1 ]]; then
+        if [[ "${input[1]}" == "i" ]]; then
+            # Special value for indefinite mode
+            echo "indefinite"
+        elif [[ "${input[1]}" =~ ^[0-9]+h$ ]]; then
+            local hours=${input[1]%h}
+            echo $(( hours * 60 ))
+        elif [[ "${input[1]}" =~ ^[0-9]+$ ]]; then
+            echo "${input[1]}"
+        elif [[ "${input[1]}" =~ ^([0-9]{1,2}):?$ ]]; then
+            local hour=${match[1]}
+            local minute=0
+            hour=$(echo "$hour" | sed 's/^0*//')
+
+            # Use nearest future time logic
+            if [[ -n "$ampm" ]]; then
+                # Process explicit AM/PM if provided
+                if [[ "$ampm" =~ [pP] &amp;&amp; "$hour" -lt 12 ]]; then
+                    hour=$(( hour + 12 ))
+                elif [[ "$ampm" =~ [aA] &amp;&amp; "$hour" -eq 12 ]]; then
+                    hour=0
+                fi
+                local total_minutes=$(( (hour * 60 + minute) - (current_hour * 60 + current_minute) ))
+                (( total_minutes &lt; 0 )) &amp;&amp; total_minutes=$(( total_minutes + 1440 ))
+            else
+                # Use new function to get nearest future time
+                local total_minutes=$(get_nearest_future_time "$hour" "$minute" "$current_hour" "$current_minute")
+            fi
+
+            echo "$total_minutes"
+        elif [[ "${input[1]}" =~ ^([0-9]{1,2})([aApP])?(m)?$ ]]; then
+            # New case to handle inputs like 1p, 1pm, 8a, 8am
+            local hour=${match[1]}
+            local partial_am=${match[2]:-""}
+            local complete_ampm=${match[3]:-""}
+
+            hour=$(echo "$hour" | sed 's/^0*//')
+            local minute=0
+
+            # If AM/PM is provided, use that
+            if [[ -n "$partial_am" ]]; then
+                if [[ "$partial_am" =~ [pP] &amp;&amp; "$hour" -lt 12 ]]; then
+                    hour=$(( hour + 12 ))
+                elif [[ "$partial_am" =~ [aA] &amp;&amp; "$hour" -eq 12 ]]; then
+                    hour=0
+                fi
+                local total_minutes=$(( (hour * 60 + minute) - (current_hour * 60 + current_minute) ))
+                (( total_minutes &lt; 0 )) &amp;&amp; total_minutes=$(( total_minutes + 1440 ))
+            else
+                # Use new function to get nearest future time
+                local total_minutes=$(get_nearest_future_time "$hour" "$minute" "$current_hour" "$current_minute")
+            fi
+
+            echo "$total_minutes"
+        elif [[ "${input[1]}" =~ ^([0-9]{1,2}):([0-9]{1,2})([aApP])?$ ]]; then
+            # Case to handle inputs like 11:10, 11:10a, 11:10p
+            local hour=${match[1]}
+            local partial_minute=${match[2]}
+            local partial_ampm=${match[3]:-""}
+
+            hour=$(echo "$hour" | sed 's/^0*//')
+
+            # Complete minutes if partial
+            local minute=0
+            if [[ "${#partial_minute}" -eq 1 ]]; then
+                minute=0
+            else
+                minute=$partial_minute
+            fi
+
+            # If AM/PM is provided, use that
+            if [[ -n "$partial_ampm" ]]; then
+                if [[ "$partial_ampm" =~ [pP] &amp;&amp; "$hour" -lt 12 ]]; then
+                    hour=$(( hour + 12 ))
+                elif [[ "$partial_ampm" =~ [aA] &amp;&amp; "$hour" -eq 12 ]]; then
+                    hour=0
+                fi
+                local total_minutes=$(( (hour * 60 + minute) - (current_hour * 60 + current_minute) ))
+                (( total_minutes &lt; 0 )) &amp;&amp; total_minutes=$(( total_minutes + 1440 ))
+            else
+                # Use new function to get nearest future time
+                local total_minutes=$(get_nearest_future_time "$hour" "$minute" "$current_hour" "$current_minute")
+            fi
+
+            echo "$total_minutes"
+        elif [[ "${input[1]}" =~ ^([0-9]{1,2}):([0-9]{2})([aApP][mM])?$ ]]; then
+            local hour=${match[1]}
+            local minute=${match[2]}
+            local ampm=${match[3]:-""}
+
+            hour=$(echo "$hour" | sed 's/^0*//')
+
+            # If AM/PM is provided, use that
+            if [[ -n "$ampm" ]]; then
+                if [[ "$ampm" =~ [pP][mM] &amp;&amp; "$hour" -lt 12 ]]; then
+                    hour=$(( hour + 12 ))
+                elif [[ "$ampm" =~ [aA][mM] &amp;&amp; "$hour" -eq 12 ]]; then
+                    hour=0
+                fi
+                local total_minutes=$(( (hour * 60 + minute) - (current_hour * 60 + current_minute) ))
+                (( total_minutes &lt; 0 )) &amp;&amp; total_minutes=$(( total_minutes + 1440 ))
+            else
+                # Use new function to get nearest future time
+                local total_minutes=$(get_nearest_future_time "$hour" "$minute" "$current_hour" "$current_minute")
+            fi
+
+            echo "$total_minutes"
+        else
+            echo "0"
+        fi
+    elif [[ "${#input[@]}" -eq 2 ]]; then
+        if [[ "${input[1]}" =~ ^[0-9]+$ &amp;&amp; "${input[2]}" =~ ^[0-9]+$ ]]; then
+            echo $(( input[1] * 60 + input[2] ))
+        else
+            echo "0"
+        fi
+    else
+        echo "0"
+    fi
+}
+
+# Function to format the duration in hours and minutes
+format_duration() {
+    local total_minutes=$1
+    local hours=$(( total_minutes / 60 ))
+    local minutes=$(( total_minutes % 60 ))
+
+    if [[ "$hours" -gt 0 &amp;&amp; "$minutes" -gt 0 ]]; then
+        echo "$hours hour(s) $minutes minute(s)"
+    elif [[ "$hours" -gt 0 ]]; then
+        echo "$hours hour(s)"
+    else
+        echo "$minutes minute(s)"
+    fi
+}
+
+# Function to generate Alfred JSON output
+generate_output() {
+    local total_minutes=$1
+    if [[ "$total_minutes" == "indefinite" ]]; then
+        echo '{"items":[{"title":"Active indefinitely","subtitle":"Keep your Mac awake until manually disabled","arg":"indefinite","icon":{"path":"icon.png"}}]}'
+    elif [[ "$total_minutes" -gt 0 ]]; then
+        local end_time=$(calculate_end_time "$total_minutes")
+        local formatted_duration=$(format_duration "$total_minutes")
+        echo '{"items":[{"title":"Active for '"$formatted_duration"'","subtitle":"Keep awake until around '"$end_time"'","arg":"'"$total_minutes"'","icon":{"path":"icon.png"}}]}'
+    else
+        echo '{"items":[{"title":"Invalid input","subtitle":"Please provide a valid time format","arg":"0","icon":{"path":"icon.png"}}]}'
+    fi
+}
+
+# Main function
+main() {
+    local total_minutes=$(parse_input "$1")
+    generate_output "$total_minutes"
+}
+
+# Execute the main function with the input
+main "$1"
+</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>subtext</key>
+				<string>Define the time</string>
+				<key>title</key>
+				<string>Active for {query}</string>
+				<key>type</key>
+				<integer>11</integer>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>85998765-D8E9-420D-A26F-D1A92E1FE534</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>concurrently</key>
+				<true/>
+				<key>escaping</key>
+				<integer>68</integer>
+				<key>script</key>
+				<string>#!/bin/bash
+
+# Function to detect system time format (12h or 24h)
+detect_time_format() {
+    local time_format=$(date +%X | grep -E "AM|PM" &amp;&gt;/dev/null &amp;&amp; echo "12" || echo "24")
+    echo "$time_format"
+}
+
+# Function to calculate the end time based on the given minutes
+calculate_end_time() {
+    local minutes=$1
+
+    # Check Alfred variable for time format preference
+    # 'a' is 12-hour format, 'b' is 24-hour format
+    if [[ "${alfred_time_format:-a}" == "a" ]]; then
+        # 12-hour format with AM/PM
+        date -v+"$minutes"M +"%l:%M %p" | sed 's/^ //'
+    else
+        # 24-hour format
+        date -v+"$minutes"M +"%H:%M"
+    fi
+}
+
+# Function to get the nearest future time based on input hour and minute
+get_nearest_future_time() {
+    local hour=$1
+    local minute=$2
+    local current_hour=$3
+    local current_minute=$4
+
+    # Special handling for hour 12
+    local am_hour=$hour
+    local pm_hour=$hour
+
+    # For 12-hour format conversion
+    if [[ $hour -eq 12 ]]; then
+        am_hour=0  # 12 AM is actually 0 in 24-hour format
+    elif [[ $hour -lt 12 ]]; then
+        pm_hour=$(( hour + 12 ))
+    fi
+
+    # Calculate minutes for AM and PM interpretations
+    local am_total_minutes=$(( (am_hour * 60 + minute) - (current_hour * 60 + current_minute) ))
+    local pm_total_minutes=$(( (pm_hour * 60 + minute) - (current_hour * 60 + current_minute) ))
+
+    # If AM time is in the past and PM time is in future, use PM
+    if [[ $am_total_minutes -lt 0 &amp;&amp; $pm_total_minutes -gt 0 ]]; then
+        echo $pm_total_minutes
+    # If AM time is in the future, use that
+    elif [[ $am_total_minutes -gt 0 ]]; then
+        echo $am_total_minutes
+    # If both are in the past, roll over to tomorrow
+    else
+        echo $(( am_total_minutes + 1440 ))
+    fi
+}
+
+# Function to parse the input and calculate the total minutes
+parse_input() {
+    local input=("${(@s/ /)1}")  # Split the input into parts
+    local current_hour=$(date +"%H")
+    local current_minute=$(date +"%M")
+    local system_format=$(detect_time_format)
+
+    if [[ "${#input[@]}" -eq 1 ]]; then
+        if [[ "${input[1]}" == "i" ]]; then
+            # Special value for indefinite mode
+            echo "indefinite"
+        elif [[ "${input[1]}" =~ ^[0-9]+h$ ]]; then
+            # Format: 2h (hours with 'h' suffix)
+            local hours=${input[1]%h}  # Remove the 'h' suffix
+            echo $(( hours * 60 ))
+        elif [[ "${input[1]}" =~ ^[0-9]+$ ]]; then
+            # Format: 30 (only minutes)
+            echo "${input[1]}"
+        elif [[ "${input[1]}" =~ ^([0-9]{1,2}):?$ ]]; then
+            # Format: 8 (hour only)
+            local hour=${input[1]}
+            local minute=0
+            hour=$(echo "$hour" | sed 's/^0*//')
+
+            # Use nearest future time logic
+            local total_minutes=$(get_nearest_future_time "$hour" "$minute" "$current_hour" "$current_minute")
+            echo "$total_minutes"
+        elif [[ "${input[1]}" =~ ^([0-9]{1,2})([aApP])?(m)?$ ]]; then
+            # Format: 8a, 8am, 8p, 8pm
+            local hour=${input[1]}
+            local minute=0
+
+            # Extract the hour and AM/PM part
+            if [[ $hour =~ ^([0-9]+)([aApP])[mM]?$ ]]; then
+                hour=${BASH_REMATCH[1]}
+                local ampm=${BASH_REMATCH[2]}
+
+                hour=$(echo "$hour" | sed 's/^0*//')
+
+                # Process explicit AM/PM
+                if [[ "$ampm" =~ [pP] &amp;&amp; "$hour" -lt 12 ]]; then
+                    hour=$(( hour + 12 ))
+                elif [[ "$ampm" =~ [aA] &amp;&amp; "$hour" -eq 12 ]]; then
+                    hour=0
+                fi
+
+                local total_minutes=$(( (hour * 60 + minute) - (current_hour * 60 + current_minute) ))
+                (( total_minutes &lt; 0 )) &amp;&amp; total_minutes=$(( total_minutes + 1440 ))
+                echo "$total_minutes"
+            else
+                # If no AM/PM specified, use nearest future time
+                hour=$(echo "$hour" | sed 's/^0*//')
+                local total_minutes=$(get_nearest_future_time "$hour" "$minute" "$current_hour" "$current_minute")
+                echo "$total_minutes"
+            fi
+        elif [[ "${input[1]}" =~ ^([0-9]{1,2}):([0-9]{1,2})([aApP])?([mM])?$ ]]; then
+            # Format: 8:30, 8:30a, 8:30am, 8:30p, 8:30pm
+            local full_match=${input[1]}
+            local hour=""
+            local minute=""
+            local ampm=""
+
+            # Extract hour, minute and AM/PM
+            if [[ $full_match =~ ^([0-9]{1,2}):([0-9]{1,2})$ ]]; then
+                # Format: 8:30
+                hour=${BASH_REMATCH[1]}
+                minute=${BASH_REMATCH[2]}
+
+                hour=$(echo "$hour" | sed 's/^0*//')
+
+                # Use nearest future time logic
+                local total_minutes=$(get_nearest_future_time "$hour" "$minute" "$current_hour" "$current_minute")
+                echo "$total_minutes"
+            elif [[ $full_match =~ ^([0-9]{1,2}):([0-9]{1,2})([aApP])([mM])?$ ]]; then
+                # Format: 8:30a, 8:30am, 8:30p, 8:30pm
+                hour=${BASH_REMATCH[1]}
+                minute=${BASH_REMATCH[2]}
+                ampm=${BASH_REMATCH[3]}
+
+                hour=$(echo "$hour" | sed 's/^0*//')
+
+                # Process explicit AM/PM
+                if [[ "$ampm" =~ [pP] &amp;&amp; "$hour" -lt 12 ]]; then
+                    hour=$(( hour + 12 ))
+                elif [[ "$ampm" =~ [aA] &amp;&amp; "$hour" -eq 12 ]]; then
+                    hour=0
+                fi
+
+                local total_minutes=$(( (hour * 60 + minute) - (current_hour * 60 + current_minute) ))
+                (( total_minutes &lt; 0 )) &amp;&amp; total_minutes=$(( total_minutes + 1440 ))
+                echo "$total_minutes"
+            else
+                echo "0"
+            fi
+        else
+            # Invalid single input
+            echo "0"
+        fi
+    elif [[ "${#input[@]}" -eq 2 ]]; then
+        if [[ "${input[1]}" =~ ^[0-9]+$ &amp;&amp; -z "${input[2]}" ]]; then
+            # Format: 1 (hours only, but second number not yet entered)
+            echo $(( input[1] * 60 ))
+        elif [[ "${input[1]}" =~ ^[0-9]+$ &amp;&amp; "${input[2]}" =~ ^[0-9]+$ ]]; then
+            # Format: 1 20 (hours and minutes)
+            echo $(( input[1] * 60 + input[2] ))
+        else
+            # Invalid second part
+            echo "0"
+        fi
+    else
+        # Invalid input or incomplete
+        echo "0"
+    fi
+}
+
+# Function to start an Amphetamine session
+start_amphetamine_session() {
+    local total_minutes=$1
+    local allow_display_sleep=$2
+
+    osascript -e "tell application \"Amphetamine\" to start new session with options {duration:$total_minutes, interval:minutes, displaySleepAllowed:$allow_display_sleep}" || {
+        echo "Error: Failed to start Amphetamine session."
+        exit 1
+    }
+}
+
+# Function to handle indefinite session
+start_indefinite_session() {
+    local allow_display_sleep=$1
+
+    osascript -e "tell application \"Amphetamine\" to start new session with options {displaySleepAllowed:$allow_display_sleep}" || {
+        echo "Error: Failed to start Amphetamine session."
+        exit 1
+    }
+
+    if [[ "$allow_display_sleep" == "true" ]]; then
+        echo "Keeping awake indefinitely. (Display can sleep)"
+    else
+        echo "Keeping awake indefinitely."
+    fi
+}
+
+# Main function
+main() {
+    # Default value for display_sleep_allow if not set
+    display_sleep_allow=${display_sleep_allow:-false}
+
+    # Check direct input for "indefinite" or parse the input
+    if [[ "$INPUT" == "indefinite" ]]; then
+        start_indefinite_session "$display_sleep_allow"
+        exit 0
+    fi
+
+    local total_minutes=$(parse_input "$INPUT")
+
+    if [[ "$total_minutes" == "indefinite" ]]; then
+        start_indefinite_session "$display_sleep_allow"
+    elif [[ "$total_minutes" -gt 0 ]]; then
+        local end_time=$(calculate_end_time "$total_minutes")
+        start_amphetamine_session "$total_minutes" "$display_sleep_allow"
+
+        if [[ "$display_sleep_allow" == "true" ]]; then
+            echo "Keeping awake until around $end_time. (Display can sleep)"
+        else
+            echo "Keeping awake until around $end_time."
+        fi
+    else
+        echo "Error: Invalid input. Please provide a valid duration."
+        exit 1
+    fi
+}
+
+INPUT="$1"
+main</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>type</key>
+				<integer>11</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>0B2338A8-DEFB-4B38-B9E8-487A8FEA4D81</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict/>
+			<key>type</key>
+			<string>alfred.workflow.utility.junction</string>
+			<key>uid</key>
+			<string>535CE951-9EB5-42FB-B419-12B1FDE6B083</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argument</key>
+				<string>{query}</string>
+				<key>passthroughargument</key>
+				<false/>
+				<key>variables</key>
+				<dict>
+					<key>display_sleep_allow</key>
+					<string>true</string>
+				</dict>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.utility.argument</string>
+			<key>uid</key>
+			<string>EF049EAC-4567-4BDE-8057-D8E5FBE7BF15</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+	</array>
+	<key>readme</key>
+	<string># Amphetamine Dose | Alfred Workflow
+
+A simple workflow that integrates with the [Amphetamine app](https://apps.apple.com/us/app/amphetamine/id937984704?mt=12) to keep your Mac awake. This workflow allows you to activate or deactivate Amphetamine and set it to stay awake for a specified duration or until a specific time, all from within Alfred.
+
+## Getting Started
+
+### Toggle Amphetamine (dose)
+
+Use the `dose` keyword to toggle Amphetamine on or off, preventing macOS from sleeping.
+
+**Keyword:** `dose`
+
+If you hold the Command key while using the `dose` command, the session will allow the display to sleep.
+
+### One command for everything (ams)
+
+The `ams` command allows you to set Amphetamine to keep your Mac awake for a specific duration or until a specific time. It supports natural input formats for minutes, hours, and specific times, making it flexible and easy to use.
+
+**Keyword:** `ams [duration or time]`
+
+If you hold the Command key while using the `ams` command, the session will allow the display to sleep.
+
+#### Examples:
+- `ams 15`: Keeps your Mac awake for 15 minutes.
+- `ams 1 30`: Keeps your Mac awake for 1 hour and 30 minutes.
+- `ams 2h`: Keeps your Mac awake for 2 hours.
+- `ams 8am`: Keeps your Mac awake until 8:00 AM.
+- `ams 9:30`: Keeps your Mac awake until the next 9:30.
+- `ams 11:40pm`: Keeps your Mac awake until 11:40 PM.
+
+The `ams` command supports both 12-hour (AM/PM) and 24-hour time formats.
+
+---
+
+This workflow provides an easy and flexible way to control Amphetamine directly from Alfred. Enjoy!</string>
+	<key>uidata</key>
+	<dict>
+		<key>0B2338A8-DEFB-4B38-B9E8-487A8FEA4D81</key>
+		<dict>
+			<key>xpos</key>
+			<real>525</real>
+			<key>ypos</key>
+			<real>400</real>
+		</dict>
+		<key>20400DB6-5F44-4521-89AD-7726D653C199</key>
+		<dict>
+			<key>note</key>
+			<string>Turn On</string>
+			<key>xpos</key>
+			<real>270</real>
+			<key>ypos</key>
+			<real>160</real>
+		</dict>
+		<key>23E12899-365E-4F15-B207-B0CBE97AD3CD</key>
+		<dict>
+			<key>note</key>
+			<string>Turn On Hotkey</string>
+			<key>xpos</key>
+			<real>30</real>
+			<key>ypos</key>
+			<real>130</real>
+		</dict>
+		<key>4746E794-6270-44A3-9508-2FA94F22732A</key>
+		<dict>
+			<key>note</key>
+			<string>Turn Off Hotkey</string>
+			<key>xpos</key>
+			<real>30</real>
+			<key>ypos</key>
+			<real>265</real>
+		</dict>
+		<key>535CE951-9EB5-42FB-B419-12B1FDE6B083</key>
+		<dict>
+			<key>xpos</key>
+			<real>415</real>
+			<key>ypos</key>
+			<real>430</real>
+		</dict>
+		<key>6636AAF8-DB5E-4FC1-A0C0-C3A934D7AC73</key>
+		<dict>
+			<key>xpos</key>
+			<real>530</real>
+			<key>ypos</key>
+			<real>15</real>
+		</dict>
+		<key>85998765-D8E9-420D-A26F-D1A92E1FE534</key>
+		<dict>
+			<key>xpos</key>
+			<real>30</real>
+			<key>ypos</key>
+			<real>400</real>
+		</dict>
+		<key>A1B2265C-5530-4DCB-B35A-7E2208471EA3</key>
+		<dict>
+			<key>xpos</key>
+			<real>720</real>
+			<key>ypos</key>
+			<real>215</real>
+		</dict>
+		<key>C7BCFF95-48F5-4960-AA21-6BB9DE987967</key>
+		<dict>
+			<key>note</key>
+			<string>Turn Off</string>
+			<key>xpos</key>
+			<real>265</real>
+			<key>ypos</key>
+			<real>295</real>
+		</dict>
+		<key>DDAEA08A-F5C9-4DDC-BA0C-1A74F8E2C45D</key>
+		<dict>
+			<key>xpos</key>
+			<real>30</real>
+			<key>ypos</key>
+			<real>15</real>
+		</dict>
+		<key>E170A949-67E0-4473-A26B-B085FD7A7758</key>
+		<dict>
+			<key>xpos</key>
+			<real>420</real>
+			<key>ypos</key>
+			<real>45</real>
+		</dict>
+		<key>EF049EAC-4567-4BDE-8057-D8E5FBE7BF15</key>
+		<dict>
+			<key>xpos</key>
+			<real>265</real>
+			<key>ypos</key>
+			<real>485</real>
+		</dict>
+		<key>FF063610-8F54-4C8A-8B68-79F4CC4CEAEB</key>
+		<dict>
+			<key>xpos</key>
+			<real>270</real>
+			<key>ypos</key>
+			<real>95</real>
+		</dict>
+	</dict>
+	<key>userconfigurationconfig</key>
+	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string>dose</string>
+				<key>placeholder</key>
+				<string></string>
+				<key>required</key>
+				<false/>
+				<key>trim</key>
+				<true/>
+			</dict>
+			<key>description</key>
+			<string>Switch the workflow on or off via keyboard input.</string>
+			<key>label</key>
+			<string>Keyboard Toggle Control</string>
+			<key>type</key>
+			<string>textfield</string>
+			<key>variable</key>
+			<string>amp_keyboard</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string>ams</string>
+				<key>placeholder</key>
+				<string></string>
+				<key>required</key>
+				<false/>
+				<key>trim</key>
+				<true/>
+			</dict>
+			<key>description</key>
+			<string>Use the keyboard to set a custom wake duration or time.</string>
+			<key>label</key>
+			<string>Activate Wake Timer</string>
+			<key>type</key>
+			<string>textfield</string>
+			<key>variable</key>
+			<string>ams_keyboard</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string>a</string>
+				<key>pairs</key>
+				<array>
+					<array>
+						<string>12-hour (AM/PM)</string>
+						<string>a</string>
+					</array>
+					<array>
+						<string>24-hour</string>
+						<string>b</string>
+					</array>
+				</array>
+			</dict>
+			<key>description</key>
+			<string>Set your preferred time display: 12-hour (AM/PM) or 24-hour format.</string>
+			<key>label</key>
+			<string>Time Format Selection</string>
+			<key>type</key>
+			<string>popupbutton</string>
+			<key>variable</key>
+			<string>alfred_time_format</string>
+		</dict>
+	</array>
+	<key>variables</key>
+	<dict>
+		<key>workflow_name</key>
+		<string>{const:alfred_workflow_name}</string>
+	</dict>
+	<key>variablesdontexport</key>
+	<array/>
+	<key>version</key>
+	<string>1.5.1</string>
+	<key>webaddress</key>
+	<string>https://github.com/vanstrouble/dose-alfred-workflow.git</string>
+</dict>
+</plist>

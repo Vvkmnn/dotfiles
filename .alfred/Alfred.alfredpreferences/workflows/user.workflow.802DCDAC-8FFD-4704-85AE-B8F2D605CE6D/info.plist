@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>bundleid</key>
+	<string>com.zeitlings.internet.speedtest</string>
+	<key>connections</key>
+	<dict>
+		<key>45D0C889-AA19-435A-8A06-7F4D7D0A3CDB</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>2DCE8728-65FD-47EF-8168-392388B2D42E</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>B5728FAF-2A3B-41E4-8C5D-A5FD1817E64A</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>45D0C889-AA19-435A-8A06-7F4D7D0A3CDB</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>BD0276A8-49A7-4922-B151-0810BCFC418C</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>2DCE8728-65FD-47EF-8168-392388B2D42E</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<true/>
+			</dict>
+		</array>
+	</dict>
+	<key>createdby</key>
+	<string>Patrick Sy</string>
+	<key>description</key>
+	<string>Internet Speedtest</string>
+	<key>disabled</key>
+	<false/>
+	<key>name</key>
+	<string>Speedtest</string>
+	<key>objects</key>
+	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>availableviaurlhandler</key>
+				<false/>
+				<key>triggerid</key>
+				<string>run_speedtest</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.trigger.external</string>
+			<key>uid</key>
+			<string>B5728FAF-2A3B-41E4-8C5D-A5FD1817E64A</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>unstackview</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.utility.hidealfred</string>
+			<key>uid</key>
+			<string>45D0C889-AA19-435A-8A06-7F4D7D0A3CDB</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>alfredfiltersresults</key>
+				<false/>
+				<key>alfredfiltersresultsmatchmode</key>
+				<integer>0</integer>
+				<key>argumenttreatemptyqueryasnil</key>
+				<true/>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
+				<key>argumenttype</key>
+				<integer>1</integer>
+				<key>escaping</key>
+				<integer>0</integer>
+				<key>keyword</key>
+				<string>{var:key}</string>
+				<key>queuedelaycustom</key>
+				<integer>3</integer>
+				<key>queuedelayimmediatelyinitially</key>
+				<true/>
+				<key>queuedelaymode</key>
+				<integer>0</integer>
+				<key>queuemode</key>
+				<integer>1</integer>
+				<key>runningsubtext</key>
+				<string></string>
+				<key>script</key>
+				<string></string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string>src/ui.sh</string>
+				<key>skipuniversalaction</key>
+				<true/>
+				<key>subtext</key>
+				<string></string>
+				<key>title</key>
+				<string>Internet Speedtest</string>
+				<key>type</key>
+				<integer>8</integer>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>inboundconfig</key>
+			<dict>
+				<key>externalid</key>
+				<string>ui_speedtest</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>BD0276A8-49A7-4922-B151-0810BCFC418C</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>0</integer>
+				<key>script</key>
+				<string></string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string>src/speedtest.sh</string>
+				<key>type</key>
+				<integer>8</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>2DCE8728-65FD-47EF-8168-392388B2D42E</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+	</array>
+	<key>readme</key>
+	<string>![Speedtest Workflow Icon](images/previews/workflow.icon.png)
+
+# Internet Speedtest
+
+---  
+__Created by__ [Patrick Sy](https://github.com/zeitlings) | [Github](https://github.com/zeitlings/alfred-workflows) | [Alfred Forum](https://www.alfredforum.com/topic/22834-internet-speedtest/) | [Buy me a Coffee](https://ko-fi.com/zeitlings) ☕  
+---  
+
+## Usage
+
+Test your internet connection speed via the `speedtest` keyword.
+
+![Keyword preview](images/previews/workflow.keyword.png)
+- &lt;kbd&gt;⏎&lt;/kbd&gt; Start the Speedtest
+- &lt;kbd&gt;⌘&lt;/kbd&gt;&lt;kbd&gt;⏎&lt;/kbd&gt; Start the Speedtest [sequentially | in parallel]
+
+![Live update preview](images/previews/workflow.update.png)
+![Live result preview](images/previews/workflow.result.png)
+- &lt;kbd&gt;⌘&lt;/kbd&gt;&lt;kbd&gt;⏎&lt;/kbd&gt; Rerun the Speedtest
+- &lt;kbd&gt;⌘&lt;/kbd&gt;&lt;kbd&gt;⇧&lt;/kbd&gt;&lt;kbd&gt;⏎&lt;/kbd&gt; Rerun the Speedtest [sequentially | in parallel]</string>
+	<key>uidata</key>
+	<dict>
+		<key>2DCE8728-65FD-47EF-8168-392388B2D42E</key>
+		<dict>
+			<key>note</key>
+			<string>Run Speedtest</string>
+			<key>xpos</key>
+			<real>400</real>
+			<key>ypos</key>
+			<real>205</real>
+		</dict>
+		<key>45D0C889-AA19-435A-8A06-7F4D7D0A3CDB</key>
+		<dict>
+			<key>xpos</key>
+			<real>300</real>
+			<key>ypos</key>
+			<real>90</real>
+		</dict>
+		<key>B5728FAF-2A3B-41E4-8C5D-A5FD1817E64A</key>
+		<dict>
+			<key>xpos</key>
+			<real>155</real>
+			<key>ypos</key>
+			<real>60</real>
+		</dict>
+		<key>BD0276A8-49A7-4922-B151-0810BCFC418C</key>
+		<dict>
+			<key>colorindex</key>
+			<integer>4</integer>
+			<key>xpos</key>
+			<real>155</real>
+			<key>ypos</key>
+			<real>205</real>
+		</dict>
+	</dict>
+	<key>userconfigurationconfig</key>
+	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string>speedtest</string>
+				<key>placeholder</key>
+				<string></string>
+				<key>required</key>
+				<false/>
+				<key>trim</key>
+				<true/>
+			</dict>
+			<key>description</key>
+			<string></string>
+			<key>label</key>
+			<string>Keyword</string>
+			<key>type</key>
+			<string>textfield</string>
+			<key>variable</key>
+			<string>key</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<false/>
+				<key>required</key>
+				<false/>
+				<key>text</key>
+				<string>Begin without confirmation</string>
+			</dict>
+			<key>description</key>
+			<string>Start the speedtest automatically when the keyword is matched</string>
+			<key>label</key>
+			<string>Behavior</string>
+			<key>type</key>
+			<string>checkbox</string>
+			<key>variable</key>
+			<string>start_speedtest</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<false/>
+				<key>required</key>
+				<false/>
+				<key>text</key>
+				<string>Run speedtest sequentially</string>
+			</dict>
+			<key>description</key>
+			<string>The download and upload speed will be tested one after another</string>
+			<key>label</key>
+			<string></string>
+			<key>type</key>
+			<string>checkbox</string>
+			<key>variable</key>
+			<string>sequentially</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<false/>
+				<key>required</key>
+				<false/>
+				<key>text</key>
+				<string>Reduce value precision</string>
+			</dict>
+			<key>description</key>
+			<string>Reducing value precision can improve readability of compact result summaries for narrow themes</string>
+			<key>label</key>
+			<string>Display</string>
+			<key>type</key>
+			<string>checkbox</string>
+			<key>variable</key>
+			<string>shorter_values</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string>compact</string>
+				<key>pairs</key>
+				<array>
+					<array>
+						<string>Sequential results: compact</string>
+						<string>compact</string>
+					</array>
+					<array>
+						<string>Sequential results: verbose</string>
+						<string>verbose</string>
+					</array>
+				</array>
+			</dict>
+			<key>description</key>
+			<string></string>
+			<key>label</key>
+			<string></string>
+			<key>type</key>
+			<string>popupbutton</string>
+			<key>variable</key>
+			<string>display</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>defaultvalue</key>
+				<integer>3</integer>
+				<key>markercount</key>
+				<integer>10</integer>
+				<key>maxvalue</key>
+				<integer>10</integer>
+				<key>minvalue</key>
+				<integer>1</integer>
+				<key>onlystoponmarkers</key>
+				<true/>
+				<key>showmarkers</key>
+				<true/>
+			</dict>
+			<key>description</key>
+			<string>The time in minutes before a test result is considered stale</string>
+			<key>label</key>
+			<string>Lifetime</string>
+			<key>type</key>
+			<string>slider</string>
+			<key>variable</key>
+			<string>freshness</string>
+		</dict>
+	</array>
+	<key>variablesdontexport</key>
+	<array/>
+	<key>version</key>
+	<string>1.2.0</string>
+	<key>webaddress</key>
+	<string>https://github.com/zeitlings/alfred-workflows</string>
+</dict>
+</plist>

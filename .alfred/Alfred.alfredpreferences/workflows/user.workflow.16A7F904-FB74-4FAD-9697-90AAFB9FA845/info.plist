@@ -1,0 +1,450 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>bundleid</key>
+	<string>com.zeitlings.batterypercent</string>
+	<key>connections</key>
+	<dict>
+		<key>247C3A70-48FF-44B2-AAAE-22391D56666B</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>CADB56AD-71C9-4EFF-8894-0477713E9010</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>274CA1BE-B7B9-4316-935F-75765F20554D</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>30BF9060-AD8C-4845-93F1-0ABA30BF7544</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>9CC37AC2-5A33-43D5-88F6-276DF3C1B9F8</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>18442702-654E-4267-8893-7CD9D61685F8</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>sourceoutputuid</key>
+				<string>60501498-FB81-47E3-8473-4E161C1099C2</string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>A36637D8-6575-4FD8-B860-03DE4EA06823</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>A36637D8-6575-4FD8-B860-03DE4EA06823</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>CAE3BEAA-EA04-4F55-B72E-9A955987C30E</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>CADB56AD-71C9-4EFF-8894-0477713E9010</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>9CC37AC2-5A33-43D5-88F6-276DF3C1B9F8</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+	</dict>
+	<key>createdby</key>
+	<string>Patrick Sy</string>
+	<key>description</key>
+	<string>View the battery charge status of connected Bluetooth devices</string>
+	<key>disabled</key>
+	<false/>
+	<key>name</key>
+	<string>Device Battery</string>
+	<key>objects</key>
+	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>alfredfiltersresults</key>
+				<false/>
+				<key>alfredfiltersresultsmatchmode</key>
+				<integer>0</integer>
+				<key>argumenttreatemptyqueryasnil</key>
+				<true/>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
+				<key>argumenttype</key>
+				<integer>1</integer>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>keyword</key>
+				<string>{var:key}</string>
+				<key>queuedelaycustom</key>
+				<integer>3</integer>
+				<key>queuedelayimmediatelyinitially</key>
+				<true/>
+				<key>queuedelaymode</key>
+				<integer>0</integer>
+				<key>queuemode</key>
+				<integer>1</integer>
+				<key>runningsubtext</key>
+				<string>Please Wait...</string>
+				<key>script</key>
+				<string>profiler=$(system_profiler SPBluetoothDataType)
+ioreg=$(ioreg -r -n AppleDeviceManagementHIDEventService -k BatteryPercent -f)
+swift ./DeviceBattery.swift "$profiler" "$ioreg"</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>subtext</key>
+				<string></string>
+				<key>title</key>
+				<string>Device Battery</string>
+				<key>type</key>
+				<integer>5</integer>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>274CA1BE-B7B9-4316-935F-75765F20554D</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argument</key>
+				<string>
+&lt;{query}&gt; 
+
+{variables}</string>
+				<key>cleardebuggertext</key>
+				<false/>
+				<key>processoutputs</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.utility.debug</string>
+			<key>uid</key>
+			<string>30BF9060-AD8C-4845-93F1-0ABA30BF7544</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>lastpathcomponent</key>
+				<false/>
+				<key>onlyshowifquerypopulated</key>
+				<false/>
+				<key>removeextension</key>
+				<false/>
+				<key>text</key>
+				<string>Please open the Alfred Debugger (⌘D) before logging the Bluetooth device information.</string>
+				<key>title</key>
+				<string>Device Battery</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.notification</string>
+			<key>uid</key>
+			<string>18442702-654E-4267-8893-7CD9D61685F8</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>script</key>
+				<string>if [[ $alfred_debug -ne 1 ]]; then
+	echo -n "needsdebug"
+else 
+	mac_os_version=$(sw_vers -productVersion)
+	profiler=$(system_profiler SPBluetoothDataType)
+	ioreg=$(ioreg -r -n AppleDeviceManagementHIDEventService -k BatteryPercent -f)
+	echo -n "$mac_os_version💙$profiler💙$ioreg"
+fi</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>type</key>
+				<integer>11</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>CADB56AD-71C9-4EFF-8894-0477713E9010</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argumenttype</key>
+				<integer>1</integer>
+				<key>keyword</key>
+				<string>-{var:key}</string>
+				<key>subtext</key>
+				<string>Share these logs if your device is not properly handled</string>
+				<key>text</key>
+				<string>Log Bluetooth Device Info</string>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.keyword</string>
+			<key>uid</key>
+			<string>247C3A70-48FF-44B2-AAAE-22391D56666B</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>conditions</key>
+				<array>
+					<dict>
+						<key>inputstring</key>
+						<string></string>
+						<key>matchcasesensitive</key>
+						<false/>
+						<key>matchmode</key>
+						<integer>0</integer>
+						<key>matchstring</key>
+						<string>needsdebug</string>
+						<key>outputlabel</key>
+						<string>Needs Debugger</string>
+						<key>uid</key>
+						<string>60501498-FB81-47E3-8473-4E161C1099C2</string>
+					</dict>
+				</array>
+				<key>elselabel</key>
+				<string>Log Information</string>
+				<key>hideelse</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.utility.conditional</string>
+			<key>uid</key>
+			<string>9CC37AC2-5A33-43D5-88F6-276DF3C1B9F8</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>delimiter</key>
+				<string>💙</string>
+				<key>discardemptyarguments</key>
+				<false/>
+				<key>outputas</key>
+				<integer>0</integer>
+				<key>trimarguments</key>
+				<true/>
+				<key>variableprefix</key>
+				<string>info</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.utility.split</string>
+			<key>uid</key>
+			<string>A36637D8-6575-4FD8-B860-03DE4EA06823</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argument</key>
+				<string>
+==========================================
+		       Debug Info
+------------------------------------------
+Alfred:         v{const:alfred_version} ({const:alfred_version_build})
+Device Battery: v{const:alfred_workflow_version}
+macOS:          v{var:info1}
+==========================================
+System Profiler: 
+==========================================
+{var:info2}
+
+==========================================
+ioreg Device Info:
+==========================================
+{var:info3}
+</string>
+				<key>cleardebuggertext</key>
+				<true/>
+				<key>processoutputs</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.utility.debug</string>
+			<key>uid</key>
+			<string>CAE3BEAA-EA04-4F55-B72E-9A955987C30E</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+	</array>
+	<key>readme</key>
+	<string># Bluetooth Device Battery
+
+View the battery charge status of connected Apple Bluetooth devices.
+
+---
+Created by [Patrick Sy](https://github.com/zeitlings/alfred-workflows) | [Github](https://github.com/zeitlings/alfred-workflows) | [Alfred Forum](https://www.alfredforum.com/topic/20325-bluetooth-device-battery/) | [Buy me a Coffee](https://ko-fi.com/zeitlings) ☕
+---
+
+## Setup
+
+Download Apple's [SF Pro](https://developer.apple.com/fonts/) font to see the icons.
+
+## Usage
+
+See the battery status of your connected Bluetooth devices via the `btb` keyword.
+
+![Device Battery Workflow Preview](images/preview.png)
+
+__Note__: Many devices don't expose their battery status to the API's that are used by this workflow to retrieve the information. However, if you're missing a device and type the keyword preceded by a minus sign `-btb`, you can print the available information to Alfred's [Debugger Utility](https://www.alfredapp.com/help/workflows/utilities/debug/).¹
+
+![Device Battery Workflow Log Preview](images/preview-log.png)
+
+If you can find your device on that list and notice that __battery percent information__ is available, you can either extend the script to handle your case and create a pull request on Github, or you can reach out to me, e.g. on the [Alfred Forum](https://www.alfredforum.com/topic/20325-bluetooth-device-battery/) to share the information.
+
+
+## Notes
+
+¹ You can open the debugger by pressing &lt;kbd&gt;⌘&lt;/kbd&gt;&lt;kbd&gt;D&lt;/kbd&gt; while viewing the workflow canvas.</string>
+	<key>uidata</key>
+	<dict>
+		<key>18442702-654E-4267-8893-7CD9D61685F8</key>
+		<dict>
+			<key>xpos</key>
+			<real>515</real>
+			<key>ypos</key>
+			<real>185</real>
+		</dict>
+		<key>247C3A70-48FF-44B2-AAAE-22391D56666B</key>
+		<dict>
+			<key>note</key>
+			<string>Debug Print Log 
+————————————
+Remove sensitive data before sharing</string>
+			<key>xpos</key>
+			<real>75</real>
+			<key>ypos</key>
+			<real>200</real>
+		</dict>
+		<key>274CA1BE-B7B9-4316-935F-75765F20554D</key>
+		<dict>
+			<key>xpos</key>
+			<real>75</real>
+			<key>ypos</key>
+			<real>80</real>
+		</dict>
+		<key>30BF9060-AD8C-4845-93F1-0ABA30BF7544</key>
+		<dict>
+			<key>xpos</key>
+			<real>220</real>
+			<key>ypos</key>
+			<real>110</real>
+		</dict>
+		<key>9CC37AC2-5A33-43D5-88F6-276DF3C1B9F8</key>
+		<dict>
+			<key>xpos</key>
+			<real>360</real>
+			<key>ypos</key>
+			<real>220</real>
+		</dict>
+		<key>A36637D8-6575-4FD8-B860-03DE4EA06823</key>
+		<dict>
+			<key>xpos</key>
+			<real>515</real>
+			<key>ypos</key>
+			<real>300</real>
+		</dict>
+		<key>CADB56AD-71C9-4EFF-8894-0477713E9010</key>
+		<dict>
+			<key>xpos</key>
+			<real>220</real>
+			<key>ypos</key>
+			<real>200</real>
+		</dict>
+		<key>CAE3BEAA-EA04-4F55-B72E-9A955987C30E</key>
+		<dict>
+			<key>xpos</key>
+			<real>565</real>
+			<key>ypos</key>
+			<real>300</real>
+		</dict>
+	</dict>
+	<key>userconfigurationconfig</key>
+	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string>btb</string>
+				<key>placeholder</key>
+				<string></string>
+				<key>required</key>
+				<false/>
+				<key>trim</key>
+				<true/>
+			</dict>
+			<key>description</key>
+			<string></string>
+			<key>label</key>
+			<string>Keyword</string>
+			<key>type</key>
+			<string>textfield</string>
+			<key>variable</key>
+			<string>key</string>
+		</dict>
+	</array>
+	<key>variablesdontexport</key>
+	<array/>
+	<key>version</key>
+	<string>2.1.1</string>
+	<key>webaddress</key>
+	<string>https://github.com/zeitlings/alfred-workflows</string>
+</dict>
+</plist>

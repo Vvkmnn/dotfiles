@@ -1,0 +1,420 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>bundleid</key>
+	<string>com.calebevans.openconferenceurl</string>
+	<key>connections</key>
+	<dict>
+		<key>63611A99-79C1-437F-9440-06BD78E1A17F</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>09CA121B-D8B4-4ABF-AB14-039EE9CA5965</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>AD06006F-71F6-4731-9942-D0697E95329A</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>CAD3A45C-8496-4F9C-9FD8-78677008FBA5</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>CAD3A45C-8496-4F9C-9FD8-78677008FBA5</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>F69A44DF-57DE-4713-BACA-8EDFBFE14FF6</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>sourceoutputuid</key>
+				<string>86F92945-C294-4CF8-99CB-6C621052A87F</string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>63611A99-79C1-437F-9440-06BD78E1A17F</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>F69A44DF-57DE-4713-BACA-8EDFBFE14FF6</key>
+		<array/>
+	</dict>
+	<key>createdby</key>
+	<string>Caleb Evans</string>
+	<key>description</key>
+	<string>Open the conference URL for upcoming calendar events</string>
+	<key>disabled</key>
+	<false/>
+	<key>name</key>
+	<string>Open Conference URL</string>
+	<key>objects</key>
+	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>script</key>
+				<string>open "$event_conference_url"</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>type</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>F69A44DF-57DE-4713-BACA-8EDFBFE14FF6</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>alfredfiltersresults</key>
+				<false/>
+				<key>alfredfiltersresultsmatchmode</key>
+				<integer>0</integer>
+				<key>argumenttreatemptyqueryasnil</key>
+				<true/>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
+				<key>argumenttype</key>
+				<integer>1</integer>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>keyword</key>
+				<string>conf</string>
+				<key>queuedelaycustom</key>
+				<integer>3</integer>
+				<key>queuedelayimmediatelyinitially</key>
+				<true/>
+				<key>queuedelaymode</key>
+				<integer>0</integer>
+				<key>queuemode</key>
+				<integer>2</integer>
+				<key>runningsubtext</key>
+				<string>Loading...</string>
+				<key>script</key>
+				<string>/usr/bin/python3 -m ocu.list_events "$@" || xcode-select --install</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>subtext</key>
+				<string>Open the conference URL of your next calendar event</string>
+				<key>title</key>
+				<string>Open Conference URL</string>
+				<key>type</key>
+				<integer>0</integer>
+				<key>withspace</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>AD06006F-71F6-4731-9942-D0697E95329A</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>conditions</key>
+				<array>
+					<dict>
+						<key>inputstring</key>
+						<string>{var:event_conference_url}</string>
+						<key>matchcasesensitive</key>
+						<false/>
+						<key>matchmode</key>
+						<integer>1</integer>
+						<key>matchstring</key>
+						<string></string>
+						<key>outputlabel</key>
+						<string>has url</string>
+						<key>uid</key>
+						<string>86F92945-C294-4CF8-99CB-6C621052A87F</string>
+					</dict>
+				</array>
+				<key>elselabel</key>
+				<string>has no url</string>
+				<key>hideelse</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.utility.conditional</string>
+			<key>uid</key>
+			<string>CAD3A45C-8496-4F9C-9FD8-78677008FBA5</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>lastpathcomponent</key>
+				<false/>
+				<key>onlyshowifquerypopulated</key>
+				<false/>
+				<key>removeextension</key>
+				<false/>
+				<key>text</key>
+				<string>The event "{var:event_title}" has no conference URL</string>
+				<key>title</key>
+				<string>No Conference URL</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.notification</string>
+			<key>uid</key>
+			<string>63611A99-79C1-437F-9440-06BD78E1A17F</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>soundname</key>
+				<string>Basso</string>
+				<key>systemsound</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.playsound</string>
+			<key>uid</key>
+			<string>09CA121B-D8B4-4ABF-AB14-039EE9CA5965</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+	</array>
+	<key>readme</key>
+	<string>To use, simply type the `conf` command into Alfred, and you will see a list of upcoming calendar events. It does this by including all events within +/- 20 minutes of your system's current time, so even if you're running late to a meeting, the logical event will show.
+
+The workflow also accounts for timezones and Daylight Saving Time (DST). All times are displayed in your system's local timezone.</string>
+	<key>uidata</key>
+	<dict>
+		<key>09CA121B-D8B4-4ABF-AB14-039EE9CA5965</key>
+		<dict>
+			<key>xpos</key>
+			<real>600</real>
+			<key>ypos</key>
+			<real>170</real>
+		</dict>
+		<key>63611A99-79C1-437F-9440-06BD78E1A17F</key>
+		<dict>
+			<key>xpos</key>
+			<real>440</real>
+			<key>ypos</key>
+			<real>170</real>
+		</dict>
+		<key>AD06006F-71F6-4731-9942-D0697E95329A</key>
+		<dict>
+			<key>xpos</key>
+			<real>95</real>
+			<key>ypos</key>
+			<real>105</real>
+		</dict>
+		<key>CAD3A45C-8496-4F9C-9FD8-78677008FBA5</key>
+		<dict>
+			<key>xpos</key>
+			<real>265</real>
+			<key>ypos</key>
+			<real>125</real>
+		</dict>
+		<key>F69A44DF-57DE-4713-BACA-8EDFBFE14FF6</key>
+		<dict>
+			<key>xpos</key>
+			<real>440</real>
+			<key>ypos</key>
+			<real>40</real>
+		</dict>
+	</dict>
+	<key>userconfigurationconfig</key>
+	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string>*.zoom.us
+zoom.us
+meet.google.com
+hangouts.google.com
+teams.microsoft.com
+app.slack.com
+gotomeeting.com
+*.gotomeeting.com
+webex.com
+*.webex.com
+uberconference.com</string>
+				<key>required</key>
+				<true/>
+				<key>trim</key>
+				<true/>
+				<key>verticalsize</key>
+				<integer>9</integer>
+			</dict>
+			<key>description</key>
+			<string>List of domain names patterns representing which URLs to check within each calendar event. Wildcards are supported. One domain per line.</string>
+			<key>label</key>
+			<string>Conference Domains</string>
+			<key>type</key>
+			<string>textarea</string>
+			<key>variable</key>
+			<string>conference_domains</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string></string>
+				<key>required</key>
+				<false/>
+				<key>trim</key>
+				<true/>
+				<key>verticalsize</key>
+				<integer>3</integer>
+			</dict>
+			<key>description</key>
+			<string>List of calendar names for which to fetch events. If this field is blank, all calendars will be implied. One calendar name per line.</string>
+			<key>label</key>
+			<string>Calendars</string>
+			<key>type</key>
+			<string>textarea</string>
+			<key>variable</key>
+			<string>calendar_names</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string>20</string>
+				<key>placeholder</key>
+				<string>e.g. 30</string>
+				<key>required</key>
+				<true/>
+				<key>trim</key>
+				<true/>
+			</dict>
+			<key>description</key>
+			<string>Show events whose start time is within this number of minutes</string>
+			<key>label</key>
+			<string>Time Threshold</string>
+			<key>type</key>
+			<string>textfield</string>
+			<key>variable</key>
+			<string>event_time_threshold_mins</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<true/>
+				<key>required</key>
+				<false/>
+				<key>text</key>
+				<string>Bypass browser when opening Zoom links</string>
+			</dict>
+			<key>description</key>
+			<string>Whether or not to open Zoom URLs directly in the Zoom application, rather than going through the browser first</string>
+			<key>label</key>
+			<string>Use Direct Zoom Links</string>
+			<key>type</key>
+			<string>checkbox</string>
+			<key>variable</key>
+			<string>use_direct_zoom</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<true/>
+				<key>required</key>
+				<false/>
+				<key>text</key>
+				<string>Bypass browser when opening Microsoft Teams links</string>
+			</dict>
+			<key>description</key>
+			<string>Whether or not to open Teams URLs directly in the Microsoft Teams application, rather than going through the browser first</string>
+			<key>label</key>
+			<string>Use Direct Teams Links</string>
+			<key>type</key>
+			<string>checkbox</string>
+			<key>variable</key>
+			<string>use_direct_msteams</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<false/>
+				<key>required</key>
+				<false/>
+				<key>text</key>
+				<string>Use icalBuddy for sourcing event data</string>
+			</dict>
+			<key>description</key>
+			<string>Whether or not to use icalBuddy for sourcing event data; if you have calendars with a large number of events, use icalBuddy can drastically improve performance; you must have icalBuddy installed via Homebrew for this functionality to take effect</string>
+			<key>label</key>
+			<string>Use icalBuddy</string>
+			<key>type</key>
+			<string>checkbox</string>
+			<key>variable</key>
+			<string>use_icalbuddy</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string>12-hour</string>
+				<key>pairs</key>
+				<array>
+					<array>
+						<string>12-Hour</string>
+						<string>12-hour</string>
+					</array>
+					<array>
+						<string>24-Hour</string>
+						<string>24-hour</string>
+					</array>
+				</array>
+			</dict>
+			<key>description</key>
+			<string>Whether to use 12-hour or 24-hour time for the displayed event times</string>
+			<key>label</key>
+			<string>Time System</string>
+			<key>type</key>
+			<string>popupbutton</string>
+			<key>variable</key>
+			<string>time_system</string>
+		</dict>
+	</array>
+	<key>version</key>
+	<string>7.1.4</string>
+	<key>webaddress</key>
+	<string>calebevans.me</string>
+</dict>
+</plist>

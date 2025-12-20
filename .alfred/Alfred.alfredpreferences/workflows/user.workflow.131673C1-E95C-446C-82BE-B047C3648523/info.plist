@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>bundleid</key>
+	<string>com.may-june-july.ipaddress</string>
+	<key>connections</key>
+	<dict>
+		<key>57437172-903E-4E52-B95B-71F69C28819F</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>E8AE1551-D33E-467A-AB97-9F557BEB3420</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+	</dict>
+	<key>createdby</key>
+	<string>May June July</string>
+	<key>description</key>
+	<string>Get your local and external IP addresses.</string>
+	<key>disabled</key>
+	<false/>
+	<key>name</key>
+	<string>IP Address</string>
+	<key>objects</key>
+	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>autopaste</key>
+				<true/>
+				<key>clipboardtext</key>
+				<string>{query}</string>
+				<key>ignoredynamicplaceholders</key>
+				<false/>
+				<key>transient</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.clipboard</string>
+			<key>uid</key>
+			<string>E8AE1551-D33E-467A-AB97-9F557BEB3420</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>alfredfiltersresults</key>
+				<false/>
+				<key>alfredfiltersresultsmatchmode</key>
+				<integer>0</integer>
+				<key>argumenttreatemptyqueryasnil</key>
+				<false/>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
+				<key>argumenttype</key>
+				<integer>2</integer>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>keyword</key>
+				<string>{var:main_keyword}</string>
+				<key>queuedelaycustom</key>
+				<integer>3</integer>
+				<key>queuedelayimmediatelyinitially</key>
+				<true/>
+				<key>queuedelaymode</key>
+				<integer>0</integer>
+				<key>queuemode</key>
+				<integer>1</integer>
+				<key>runningsubtext</key>
+				<string>Loading IP addresses...</string>
+				<key>script</key>
+				<string># Get all local IPv4 addresses (only lines containing "broadcast")
+localipv4_arr=($(ifconfig | grep 'inet ' | grep 'broadcast' | awk '{print $2}'))
+# Get external IPv4 address from your service
+externalipv4=$(curl -4 -s -m 5 "$service")
+
+# Get all local IPv6 addresses for interfaces with '%en'
+localipv6_arr=($(ifconfig | grep 'inet6' | grep '%en' | awk '{print $2}' | sed 's/%en[0-9]*//'))
+# Get external IPv6 address from your service
+externalipv6=$(curl -6 -s -m 5 "$service")
+
+subtitletext='Press ↵ to paste or ⌘C to copy'
+
+# If no addresses were found, default to 'n/a'
+if [ ${#localipv4_arr[@]} -eq 0 ]; then
+    localipv4_arr=("n/a")
+fi
+
+if [ -z "$externalipv4" ]; then
+    externalipv4="n/a"
+fi
+
+if [ ${#localipv6_arr[@]} -eq 0 ]; then
+    localipv6_arr=("n/a")
+fi
+
+if [ -z "$externalipv6" ] || [ "$externalipv6" == "$externalipv4" ]; then
+    externalipv6="n/a"
+fi
+
+# Build the JSON output. We’ll create an item for each address.
+json_output="{\"items\": ["
+first_item=true
+
+# Append each local IPv4 address as a separate item.
+for ip in "${localipv4_arr[@]}"; do
+    if [ "$first_item" = false ]; then
+        json_output+=","
+    fi
+    json_output+="{\"title\": \"Local IPv4: $ip\", \"subtitle\": \"$subtitletext\", \"arg\": \"$ip\"}"
+    first_item=false
+done
+
+# Append external IPv4.
+json_output+=",{\"title\": \"External IPv4: $externalipv4\", \"subtitle\": \"$subtitletext\", \"arg\": \"$externalipv4\"}"
+
+# Append each local IPv6 address.
+for ip in "${localipv6_arr[@]}"; do
+    json_output+=",{\"title\": \"Local IPv6: $ip\", \"subtitle\": \"$subtitletext\", \"arg\": \"$ip\"}"
+done
+
+# Append external IPv6.
+json_output+=",{\"title\": \"External IPv6: $externalipv6\", \"subtitle\": \"$subtitletext\", \"arg\": \"$externalipv6\"}"
+
+json_output+="]}"
+echo "$json_output"
+</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>subtext</key>
+				<string>{const:alfred_workflow_description}</string>
+				<key>title</key>
+				<string>{const:alfred_workflow_name}</string>
+				<key>type</key>
+				<integer>0</integer>
+				<key>withspace</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>57437172-903E-4E52-B95B-71F69C28819F</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+	</array>
+	<key>readme</key>
+	<string>An Alfred 5 workflow for getting your local and external IP addresses.
+
+[Readme](https://github.com/April-June-August/alfred-ip-address-workflow/blob/master/README.md)</string>
+	<key>uidata</key>
+	<dict>
+		<key>57437172-903E-4E52-B95B-71F69C28819F</key>
+		<dict>
+			<key>xpos</key>
+			<real>240</real>
+			<key>ypos</key>
+			<real>200</real>
+		</dict>
+		<key>E8AE1551-D33E-467A-AB97-9F557BEB3420</key>
+		<dict>
+			<key>xpos</key>
+			<real>440</real>
+			<key>ypos</key>
+			<real>200</real>
+		</dict>
+	</dict>
+	<key>userconfigurationconfig</key>
+	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string>http://ifconfig.me</string>
+				<key>placeholder</key>
+				<string></string>
+				<key>required</key>
+				<true/>
+				<key>trim</key>
+				<true/>
+			</dict>
+			<key>description</key>
+			<string>Address of a service to query your external IP from</string>
+			<key>label</key>
+			<string>External IP Service</string>
+			<key>type</key>
+			<string>textfield</string>
+			<key>variable</key>
+			<string>service</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string>ip</string>
+				<key>placeholder</key>
+				<string></string>
+				<key>required</key>
+				<false/>
+				<key>trim</key>
+				<true/>
+			</dict>
+			<key>description</key>
+			<string>Keyword to evoke this workflow</string>
+			<key>label</key>
+			<string>Keyword</string>
+			<key>type</key>
+			<string>textfield</string>
+			<key>variable</key>
+			<string>main_keyword</string>
+		</dict>
+	</array>
+	<key>version</key>
+	<string>2025.1</string>
+	<key>webaddress</key>
+	<string>https://github.com/April-June-August/alfred-ip-address-workflow</string>
+</dict>
+</plist>

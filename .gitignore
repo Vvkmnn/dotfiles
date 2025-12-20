@@ -21,7 +21,15 @@ repos/
 files/
 
 ## alfred
-workflows/
+# Track workflows, exclude sensitive/cache data
+.alfred/Alfred.alfredpreferences/preferences/local/*/
+.alfred/**/cache/
+.alfred/**/*.cache
+.alfred/databases/
+.alfred/Caches/
+.alfred/history.json
+.alfred/usage.data
+.alfred/powerpack.*.dat
 libraries/
 .php
 
