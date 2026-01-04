@@ -1,4 +1,25 @@
 #!/usr/bin/env bash
+# Vivek Menon - vvkmnn.xyz
+
+####################################################
+# ~/.functions - Reusable shell functions
+####################################################
+# Purpose: Interactive workflow functions for
+#          complex operations requiring logic
+#
+# Loaded by: ~/.rc sources this third
+#
+# Includes: debugger_chrome() - Chrome debugging
+#           vc() - VS Code smart window management
+#           update_all() - System-wide updates
+#           claude-plugin-update() - Plugin refresh
+#           get_colored_face() - [¬_¬] color helper
+#           vd/vstatus/vkill() - Vim utilities
+####################################################
+
+# GUARD Prevent double-sourcing and skip in AI sandbox
+[ -n "$__FUNCTIONS_SOURCED" ] && return; __FUNCTIONS_SOURCED=1
+[ -n "$AI_SANDBOX_ONLY" ] && return
 
 #
 #
@@ -340,49 +361,19 @@ claude-plugin-update() {
 	local reset="\033[0m"
 	local ts colored_face bold_ts
 
-	# Update marketplace indexes first
+	# Update marketplace indexes (prevents stale cache issues)
 	ts=$(date +%s)
 	colored_face=$(get_colored_face)
 	bold_ts="${bold}${ts}${reset}"
 	echo -e "${colored_face} ${bold_ts} Updating Claude plugin marketplaces via \`claude plugin marketplace update\` ..."
-	claude plugin marketplace update
-
-	# Get list of installed plugins from settings.json
-	ts=$(date +%s)
-	colored_face=$(get_colored_face)
-	bold_ts="${bold}${ts}${reset}"
-	echo -ne "${colored_face} ${bold_ts} Checking installed plugins ... "
-
-	local settings_file="$HOME/.claude/settings.json"
-	if [ ! -f "$settings_file" ]; then
-		echo "settings file not found."
-		return 0
+	if ! claude plugin marketplace update 2>&1; then
+		echo "Warning: Marketplace update failed, continuing anyway..."
 	fi
-
-	local plugins
-	plugins=$(jq -r '.enabledPlugins | keys[]' "$settings_file" 2>/dev/null)
-	if [ -z "$plugins" ]; then
-		echo "no plugins found."
-		return 0
-	fi
-	local count
-	count=$(echo "$plugins" | wc -l | tr -d ' ')
-	echo "found ${count} plugins."
-
-	# Update each plugin
-	echo "$plugins" | while read -r plugin; do
-		[ -z "$plugin" ] && continue
-		ts=$(date +%s)
-		colored_face=$(get_colored_face)
-		bold_ts="${bold}${ts}${reset}"
-		echo -e "${colored_face} ${bold_ts} Updating plugin via \`claude plugin update ${plugin}\` ..."
-		claude plugin update "$plugin" 2>&1 || true
-	done
 
 	ts=$(date +%s)
 	colored_face=$(get_colored_face)
 	bold_ts="${bold}${ts}${reset}"
-	echo -e "${colored_face} ${bold_ts} Done! Restart Claude Code to apply updates."
+	echo -e "${colored_face} ${bold_ts} Done! Plugin caches refreshed. Restart Claude Code if needed."
 }
 
 # }}}

@@ -27,13 +27,33 @@
 ##################################################
 ##################################################
 
+####################################################
+# ~/.profile - Environment variables and PATH setup
+####################################################
+# Purpose: Comprehensive environment for interactive
+#          and login shells, inherited by IDEs/GUIs
+#
+# Loaded by: ~/.zprofile → here (login shells)
+#            ~/.rc sources this second
+#
+# Sets: XDG dirs, locale, EDITOR, GPG/SSH auth
+#       Development PATH for Homebrew, Python,
+#       Node, Ruby, Go, Rust, LaTeX, Claude Code
+#       Platform-specific (macOS/Linux), Conda
+####################################################
+
+# GUARD Prevent double-sourcing and skip in AI sandbox
+[ -n "$__PROFILE_SOURCED" ] && return
+__PROFILE_SOURCED=1
+[ -n "$AI_SANDBOX_ONLY" ] && return
+
 ## Environment -------------------------------------
 
 # XDG
 export XDG_CONFIG_HOME="$HOME/.config"
 
 # Params
-export LANG=en_US.iso88591
+export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 export BROWSER=open
 # export TERM=xterm
@@ -57,9 +77,6 @@ export ALTERNATE_EDITOR='nvim' # $EDITOR if all else fails
 # export CLAUDE_CODE_MAX_OUTPUT_TOKENS=4000
 export UTCP_CONFIG_FILE="$HOME/.utcp_config.json"
 
-# PostgreSQL
-export PATH="$(brew --prefix postgresql@17)/bin:$PATH"
-
 # opencode
 export PATH=/Users/v/.opencode/bin:$PATH
 
@@ -81,7 +98,11 @@ case "$(uname -s)" in
 Linux) ;;
 
 Darwin)
-	# Neovim server now in ~/.shell
+	# Cache brew prefix (saves ~100ms per call)
+	HOMEBREW_PREFIX="/opt/homebrew"
+
+	# PostgreSQL (optimized with cached prefix)
+	export PATH="$HOMEBREW_PREFIX/opt/postgresql@17/bin:$PATH"
 
 	# windsurf
 	export PATH="/Users/v/.codeium/windsurf/bin:$PATH"
@@ -119,30 +140,30 @@ Darwin)
 	## openSSL
 	export PATH="/usr/local/opt/openssl/bin:$PATH"
 
-	# Python
-	export PATH="$(brew --prefix)/opt/python@3.13/libexec/bin:$PATH"
+	# Python (optimized with cached prefix)
+	# export PATH="$HOMEBREW_PREFIX/opt/python@3.13/libexec/bin:$PATH"
 	# export PATH=/usr/local/share/python:$PATH
 	# export PYENV_ROOT="$HOME/.pyenv"
 	# command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
 	# eval "$(pyenv init -)"
 
 	# Python (Anaconda)
-	export PATH="$HOME/.miniconda/bin:$PATH"
-	export PATH="/usr/local/anaconda3/bin:$PATH"
+	# export PATH="$HOME/.miniconda/bin:$PATH"
+	# export PATH="/usr/local/anaconda3/bin:$PATH"
 
 	# >>> conda initialize >>>
 	# !! Contents within this block are managed by 'conda init' !!
-	__conda_setup="$('/opt/homebrew/Caskroom/miniconda/base/bin/conda' 'shell.zsh' 'hook' 2>/dev/null)"
-	if [ $? -eq 0 ]; then
-		eval "$__conda_setup"
-	else
-		if [ -f "/opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh" ]; then
-			. "/opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh"
-		else
-			export PATH="/opt/homebrew/Caskroom/miniconda/base/bin:$PATH"
-		fi
-	fi
-	unset __conda_setup
+	# __conda_setup="$('/opt/homebrew/Caskroom/miniconda/base/bin/conda' 'shell.zsh' 'hook' 2>/dev/null)"
+	# if [ $? -eq 0 ]; then
+	# 	eval "$__conda_setup"
+	# else
+	# 	if [ -f "/opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh" ]; then
+	# 		. "/opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh"
+	# 	else
+	# 		export PATH="/opt/homebrew/Caskroom/miniconda/base/bin:$PATH"
+	# 	fi
+	# fi
+	# unset __conda_setup
 	# <<< conda initialize <<<
 
 	# Rust
@@ -181,9 +202,7 @@ Darwin)
 	# MacOS (Brew) Emacs
 	# export PATH="/Applications/Emacs.app/Contents/MacOS/bin:$PATH"
 
-	# local bin for Claude Code?
-	# Local Bin (for Codex IDE)?
-	export PATH="$HOME/.local/bin:$PATH"
+	# Local bin (prioritize for Claude Code, uv, pipx, etc.)
 	export PATH="$HOME/.local/bin:$PATH"
 
 	# PNPM
@@ -199,17 +218,12 @@ Darwin)
 	## Work --------------------------------------------
 	# PATH="$HOME/Documents/lake/lake-hydra/bin:$PATH"
 
-	# uv
-	export PATH="$HOME/.local/bin:$PATH"
+	# uv (Python package manager)
 	. "$HOME/.local/bin/env"
 
 	# . "$HOME/.cargo/env"
 
 	# . "$HOME/.grit/bin/env"
-
-	# . "$HOME/.local/bin/env"
-
-	# . "$HOME/.local/bin/env"
 
 	;;
 
@@ -243,3 +257,6 @@ esac
 # . "$HOME/.cargo/env"
 
 # . "$HOME/.grit/bin/env"
+
+# Antigravity
+[ -d "$HOME/.antigravity/antigravity/bin" ] && export PATH="$HOME/.antigravity/antigravity/bin:$PATH"

@@ -27,12 +27,29 @@
 ##################################################
 ##################################################
 
+####################################################
+# ~/.alias - Command shortcuts and replacements
+####################################################
+# Purpose: Short memorable aliases for frequent
+#          commands and modern CLI tool replacements
+#
+# Loaded by: ~/.rc sources this fourth
+#
+# Key aliases: Dotfiles (d, ds, dg)
+#              Quick edit (,s ,a ,t ,w ,g ,y ,c)
+#              Claude (,ai ,c ,cl ,cu)
+#              Git (gs, ,git-undo)
+#              Modern (cat→bat, find→fd)
+#              System (,u update, zz reload, rr reboot)
+####################################################
+
+# GUARD Prevent double-sourcing and skip in AI sandbox
+[ -n "$__ALIAS_SOURCED" ] && return; __ALIAS_SOURCED=1
+[ -n "$AI_SANDBOX_ONLY" ] && return
+
 # NOTE Changed this
 # Custom prefix.
 #  typeset -g POWERLEVEL9K_DIR_PREFIX=' ॐ  '
-
-# Import
-source ~/.functions
 
 # Dotfiles
 alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
@@ -46,26 +63,26 @@ alias ,f='cd **'
 alias ,r='rg'
 alias ,x='exit'
 alias ,z='zed -n'
-alias ,nv='nv ~/.config/nvim/lua/'
-alias ,vc='nv ~/.config/nvim'
-alias ,vk='nv ~/.config/nvim/lua/config/keymaps.lua'
-alias ,vc='nv ~/.config/nvim/lua/plugins/custom.lua'
-alias ,vm='nv ~/.config/nvim/lua/plugins/modify.lua'
-alias ,vd='nv ~/.config/nvim/lua/plugins/disable.lua'
-alias ,vo='nv ~/.config/nvim/lua/config/options.lua'
-alias ,s='nv ~/.shell'
-alias ,a='nv ~/.alias'
-alias ,t='nv ~/.config/tmux/tmux.conf'
-alias ,w='nv ~/.config/wezterm/wezterm.lua'
-alias ,g='nv ~/.config/ghostty/config'
-alias ,y='nv ~/.yabairc'
-alias ,sk='nv ~/.skhdrc'
+alias ,nv='v ~/.config/nvim/lua/'
+alias ,vc='v ~/.config/nvim'
+alias ,vk='v ~/.config/nvim/lua/config/keymaps.lua'
+alias ,vc='v ~/.config/nvim/lua/plugins/custom.lua'
+alias ,vm='v ~/.config/nvim/lua/plugins/modify.lua'
+alias ,vd='v ~/.config/nvim/lua/plugins/disable.lua'
+alias ,vo='v ~/.config/nvim/lua/config/options.lua'
+alias ,s='v ~/.shell'
+alias ,a='v ~/.alias'
+alias ,t='v ~/.config/tmux/tmux.conf'
+alias ,w='v ~/.config/wezterm/wezterm.lua'
+alias ,g='v ~/.config/ghostty/config'
+alias ,y='v ~/.yabairc'
+alias ,sk='v ~/.skhdrc'
 # alias ,c='nv' /Users/v/Library/Application\ Support/Claude/claude_desktop_config.json'
-alias ,c='nv ~/.claude/CLAUDE.md'
-alias ,sb='nv ~/.config/sketchybar/sketchybarrc'
+alias ,c='v ~/.claude/CLAUDE.md'
+alias ,sb='v ~/.config/sketchybar/sketchybarrc'
 # alias ,h='history | nnv'im -'
 alias ,ys='yabai --restart-sernvice && skhd --restart-service'
-alias ,l='nv ~/.logo'
+alias ,l='v ~/.logo'
 alias ,c='code $HOME/Library/Application\ Support/Code/User/settings.json'
 
 # Vscode
@@ -145,6 +162,14 @@ alias zz='exec zsh -l'
 
 ## Fzf
 alias f='fzf'
+
+## Modern CLI Tools
+# bat - cat with syntax highlighting & git integration
+alias cat='bat --paging=never'
+alias cath='bat' # bat with header/line numbers
+# fd - modern find
+alias find='fd'
+alias fdfind='fd' # explicit fd for scripts
 
 ## Logo
 alias l='source ~/.logo'

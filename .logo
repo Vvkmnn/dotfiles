@@ -1,54 +1,495 @@
+#!/usr/bin/env sh
+# Vivek Menon - vvkmnn.xyz
+
+##################################################
+##################################################
+######################        ####################
+################                    ##############
+#############                #######   ###########
+###########                #########     #########
+#########                 ########         #######
+########                  ######            ######
+#######                   ######             #####
+######            ####### ######              ####
+#####           ######### ######               ###
+#####           #######   ######               ###
+#####            ######    #####               ###
+#####             ######    ####               ###
+#####              ######    ###               ###
+#####               ######    #                ###
+######               ######                   ####
+#######               #####                  #####
+########               #####                ######
+##########              #####             ########
+############             #####          ##########
+##############            #####       ############
+##################                ################
+##################################################
+##################################################
+
+####################################################
+# ~/.logo - Personalized ASCII art display
+####################################################
+# Purpose: Display logo on interactive shell startup
+#          with multilingual wisdom quotes
+#
+# Loaded by: ~/.rc sources this last (visual only)
+#
+# Shows: Triangle logo with @v signature
+#        Sanskrit: ॐ गणपतये नमः (Ganesh mantra)
+#        Greek: εἰφέρειν φέρε (Stoic endurance)
+#        Japanese: 常に兵法の道をはなれず (Musashi)
+#        Website: vvkmnn.xyz
+#
+# Displays only when: Terminal ≥50 cols, interactive
+#                     ($PS1 set), TTY output, tput works
+####################################################
+
+# GUARD Prevent double-sourcing (self-checks display via $PS1)
+[ -n "$__LOGO_SOURCED" ] && return
+__LOGO_SOURCED=1
+
 # Only show logo if:
 # 1. Terminal is wide enough (50+ columns)
 # 2. tput command exists and responds quickly
 # 3. Not in a non-interactive shell
 # 4. Not in a pipe or script
 
+# Wisdom quotes - 3 unique random quotes selected per shell startup (42 total)
+QUOTE_1="ॐ गणपतये नमः"
+QUOTE_2="εἰφέρειν φέρε"
+QUOTE_3="常に兵法の道をはなれず"
+QUOTE_4="老天保佑金山銀山前路有"
+QUOTE_5="Je pense, donc je suis"
+QUOTE_6="Τὰ εἰς ἑαυτόν"
+QUOTE_7="Phantasie ist wichtiger als Wissen"
+QUOTE_8="Pauca sed matura"
+QUOTE_9="Hypotheses non fingo"
+QUOTE_10="知之为知之，不知为不知"
+QUOTE_11="सब्बे सङ्खारा अनिच्चा"
+QUOTE_12="ἐγώ εἰμι ἡ ὁδὸς καὶ ἡ ἀλήθεια"
+QUOTE_13="Per aspera ad astra"
+QUOTE_14="道可道，非常道"
+QUOTE_15="Sapere aude"
+QUOTE_16="The question is not whether machines think but whether men do"
+QUOTE_17="Any sufficiently advanced technology is indistinguishable from magic"
+QUOTE_18="La filosofia è scritta in lingua matematica"
+QUOTE_19="Denn das Schöne ist nichts als des Schrecklichen Anfang"
+QUOTE_20="Esse est percipi"
+QUOTE_21="גם זה יעבור"
+QUOTE_22="Γνῶθι σεαυτόν"
+QUOTE_23="अहिंसा परमो धर्मः"
+QUOTE_24="دریا رفتم، مایه دریا شدم"
+QUOTE_25="床前明月光"
+QUOTE_26="古池や蛙飛びこむ水の音"
+QUOTE_27="知己知彼，百戰不殆"
+QUOTE_28="ऐसी वाणी बोलिए, मन का आपा खोय"
+QUOTE_29="तत् त्वम् असि"
+QUOTE_30="कर्मण्येवाधिकारस्ते मा फलेषु कदाचन"
+QUOTE_31="Nel mezzo del cammin di nostra vita"
+QUOTE_32="El que lee mucho y anda mucho, ve mucho y sabe mucho"
+QUOTE_33="Man muss noch Chaos in sich haben"
+QUOTE_34="Life can only be understood backwards, but must be lived forwards"
+QUOTE_35="Siempre imaginé que el Paraíso sería algún tipo de biblioteca"
+QUOTE_36="Aprender a dudar es aprender a pensar"
+QUOTE_37="L'existence précède l'essence"
+QUOTE_38="The first principle is that you must not fool yourself"
+QUOTE_39="An equation means nothing to me unless it expresses a thought of God"
+QUOTE_40="I learned that courage was not the absence of fear, but the triumph over it"
+QUOTE_41="ॐ भूर्भुवः स्वः तत्सवितुर्वरेण्यं भर्गो देवस्य धीमहि धियो यो नः प्रचोदयात्"
+QUOTE_42="सत्यं हि परमं धर्मं"
+QUOTE_COUNT=42
+
 # Skip if shell is still initializing (common in tmux startup)
 if [ -z "$PS1" ]; then
-    return 2>/dev/null || :
+	return 2>/dev/null || :
 fi
 
 if [ -t 1 ] && command -v tput >/dev/null 2>&1; then
-    # Get terminal width with timeout to prevent hanging
-    cols=$(timeout 0.1 tput cols 2>/dev/null || echo 0)
-    
-    # Only display if wide enough
-    if [ "$cols" -ge 50 ] 2>/dev/null; then
-        # Use printf instead of echo -e for better performance
-        printf "\n
+	# Define quote access functions first (needed for filtering)
+	# Get quote by number using case statement
+	get_quote() {
+			case "$1" in
+				1)  echo "$QUOTE_1" ;;
+				2)  echo "$QUOTE_2" ;;
+				3)  echo "$QUOTE_3" ;;
+				4)  echo "$QUOTE_4" ;;
+				5)  echo "$QUOTE_5" ;;
+				6)  echo "$QUOTE_6" ;;
+				7)  echo "$QUOTE_7" ;;
+				8)  echo "$QUOTE_8" ;;
+				9)  echo "$QUOTE_9" ;;
+				10) echo "$QUOTE_10" ;;
+				11) echo "$QUOTE_11" ;;
+				12) echo "$QUOTE_12" ;;
+				13) echo "$QUOTE_13" ;;
+				14) echo "$QUOTE_14" ;;
+				15) echo "$QUOTE_15" ;;
+				16) echo "$QUOTE_16" ;;
+				17) echo "$QUOTE_17" ;;
+				18) echo "$QUOTE_18" ;;
+				19) echo "$QUOTE_19" ;;
+				20) echo "$QUOTE_20" ;;
+				21) echo "$QUOTE_21" ;;
+				22) echo "$QUOTE_22" ;;
+				23) echo "$QUOTE_23" ;;
+				24) echo "$QUOTE_24" ;;
+				25) echo "$QUOTE_25" ;;
+				26) echo "$QUOTE_26" ;;
+				27) echo "$QUOTE_27" ;;
+				28) echo "$QUOTE_28" ;;
+				29) echo "$QUOTE_29" ;;
+				30) echo "$QUOTE_30" ;;
+				31) echo "$QUOTE_31" ;;
+				32) echo "$QUOTE_32" ;;
+				33) echo "$QUOTE_33" ;;
+				34) echo "$QUOTE_34" ;;
+				35) echo "$QUOTE_35" ;;
+				36) echo "$QUOTE_36" ;;
+				37) echo "$QUOTE_37" ;;
+				38) echo "$QUOTE_38" ;;
+				39) echo "$QUOTE_39" ;;
+				40) echo "$QUOTE_40" ;;
+				41) echo "$QUOTE_41" ;;
+				42) echo "$QUOTE_42" ;;
+				*)  echo "" ;;
+			esac
+		}
+
+		# Get translations for non-English quotes
+		get_translation() {
+			case "$1" in
+				1) echo "\"Om Ganapatayei Namah\"" ;;
+				2) echo "\"If it is endurable, endure it\"" ;;
+				3) echo "\"Never stray from the Way\"" ;;
+				4) echo "\"God bless mountains of gold ahead\"" ;;
+				5) echo "\"I think, therefore I am\"" ;;
+				6) echo "\"To himself\"" ;;
+				7) echo "\"Imagination is more important than knowledge\"" ;;
+				8) echo "\"Few, but ripe\"" ;;
+				9) echo "\"I frame no hypotheses\"" ;;
+				10) echo "\"To know is to know, not to know is not to know\"" ;;
+				11) echo "\"All conditioned things are impermanent\"" ;;
+				12) echo "\"I am the way and the truth\"" ;;
+				13) echo "\"Through hardships to the stars\"" ;;
+				14) echo "\"The Tao that can be spoken is not the eternal Tao\"" ;;
+				15) echo "\"Dare to know\"" ;;
+				18) echo "\"Philosophy is written in the language of mathematics\"" ;;
+				19) echo "\"Beauty is nothing but the beginning of terror\"" ;;
+				20) echo "\"To be is to be perceived\"" ;;
+				21) echo "\"This too shall pass\"" ;;
+				22) echo "\"Know thyself\"" ;;
+				23) echo "\"Non-violence is the highest dharma\"" ;;
+				24) echo "\"I went to the sea and became the sea\"" ;;
+				25) echo "\"Before my bed, the bright moonlight appears\"" ;;
+				26) echo "\"Ancient pond, frog jumps in, splash of water\"" ;;
+				27) echo "\"Know yourself and your enemy, never be defeated\"" ;;
+				28) echo "\"Speak such words without ego's sway\"" ;;
+				29) echo "\"Thou art That\"" ;;
+				30) echo "\"You have right to action, not to fruits\"" ;;
+				31) echo "\"Midway in the journey of our life\"" ;;
+				32) echo "\"Who reads much and walks much, sees much and knows much\"" ;;
+				33) echo "\"One must have chaos within to give birth to a dancing star\"" ;;
+				35) echo "\"I always imagined Paradise as a kind of library\"" ;;
+				36) echo "\"Learning to doubt is learning to think\"" ;;
+				37) echo "\"Existence precedes essence\"" ;;
+				41) echo "\"May that divine light illuminate our intellect\"" ;;
+				42) echo "\"Truth is the highest dharma\"" ;;
+				*) echo "" ;;
+			esac
+		}
+
+		get_author() {
+			case "$1" in
+				1) echo "Ganesh Mantra" ;;
+				2) echo "Epictetus, c. 50-135 CE" ;;
+				3) echo "Miyamoto Musashi, 1584-1645" ;;
+				4) echo "SKAI" ;;
+				5) echo "René Descartes, 1596-1650" ;;
+				6) echo "Marcus Aurelius, 121-180 CE" ;;
+				7) echo "Albert Einstein, 1929" ;;
+				8) echo "Carl Friedrich Gauss, 1777-1855" ;;
+				9) echo "Isaac Newton, 1713" ;;
+				10) echo "Confucius, 551-479 BCE" ;;
+				11) echo "Gautama Buddha, c. 563-483 BCE" ;;
+				12) echo "Jesus of Nazareth, c. 4 BCE-30 CE" ;;
+				13) echo "Seneca, c. 4 BCE-65 CE" ;;
+				14) echo "Laozi, 6th century BCE" ;;
+				15) echo "Horace/Kant, 65-8 BCE/1724-1804" ;;
+				16) echo "B.F. Skinner, 1904-1990" ;;
+				17) echo "Arthur C. Clarke, 1917-2008" ;;
+				18) echo "Galileo Galilei, 1623" ;;
+				19) echo "Rainer Maria Rilke, 1875-1926" ;;
+				20) echo "George Berkeley, 1685-1753" ;;
+				21) echo "King Solomon, c. 990-931 BCE" ;;
+				22) echo "Solon of Athens, c. 630-560 BCE" ;;
+				23) echo "Vyasa" ;;
+				24) echo "Jalal ad-Din Rumi, 1207-1273" ;;
+				25) echo "Li Bai, 701-762" ;;
+				26) echo "Matsuo Bashō, 1686" ;;
+				27) echo "Sun Tzu, c. 544-496 BCE" ;;
+				28) echo "Sant Kabir Das, 1440-1518" ;;
+				29) echo "Samaveda" ;;
+				30) echo "Vyasa" ;;
+				31) echo "Dante Alighieri, 1265-1321" ;;
+				32) echo "Miguel de Cervantes, 1547-1616" ;;
+				33) echo "Friedrich Nietzsche, 1844-1900" ;;
+				34) echo "Søren Kierkegaard, 1843" ;;
+				35) echo "Jorge Luis Borges, 1899-1986" ;;
+				36) echo "Octavio Paz, 1914-1998" ;;
+				37) echo "Jean-Paul Sartre, 1905-1980" ;;
+				38) echo "Richard Feynman, 1918-1988" ;;
+				39) echo "Srinivasa Ramanujan, 1887-1920" ;;
+				40) echo "Nelson Mandela, 1918-2013" ;;
+				41) echo "Sage Vishvamitra" ;;
+				42) echo "Valmiki" ;;
+				*) echo "" ;;
+			esac
+		}
+
+		get_source() {
+			case "$1" in
+				1) echo "Vedic tradition" ;;
+				2) echo "Discourses" ;;
+				3) echo "Book of Five Rings" ;;
+				4) echo "Karma Code" ;;
+				5) echo "Discourse on the Method" ;;
+				6) echo "Meditations" ;;
+				7) echo "Saturday Evening Post interview" ;;
+				8) echo "Personal motto" ;;
+				9) echo "Principia Mathematica" ;;
+				10) echo "Analects 2:17" ;;
+				11) echo "Dhammapada 277" ;;
+				12) echo "Gospel of John 14:6" ;;
+				13) echo "Hercules Furens" ;;
+				14) echo "Tao Te Ching, Ch. 1" ;;
+				15) echo "Epistles 1.2.40" ;;
+				16) echo "Contingencies of Reinforcement" ;;
+				17) echo "Profiles of the Future" ;;
+				18) echo "Il Saggiatore" ;;
+				19) echo "Duino Elegies, First Elegy" ;;
+				20) echo "Principles of Human Knowledge" ;;
+				21) echo "Persian Sufi tale" ;;
+				22) echo "Temple of Apollo, Delphi" ;;
+				23) echo "Mahabharata, Adi Parva" ;;
+				24) echo "Ruba'iyat" ;;
+				25) echo "Quiet Night Thought" ;;
+				26) echo "Frog haiku" ;;
+				27) echo "The Art of War, Ch. 3" ;;
+				28) echo "Kabir Dohe" ;;
+				29) echo "Chandogya Upanishad 6.8.7" ;;
+				30) echo "Bhagavad Gita 2.47" ;;
+				31) echo "Divine Comedy, Inferno, Canto 1" ;;
+				32) echo "Don Quixote, Part 2, Ch. 25" ;;
+				33) echo "Thus Spoke Zarathustra" ;;
+				34) echo "Journals IV.A.164" ;;
+				35) echo "Poema de los dones" ;;
+				36) echo "El laberinto de la soledad" ;;
+				37) echo "Existentialism is a Humanism" ;;
+				38) echo "Caltech commencement" ;;
+				39) echo "Ranganathan biography" ;;
+				40) echo "Long Walk to Freedom" ;;
+				41) echo "Rigveda 3.62.10" ;;
+				42) echo "Ramayana 2.109.12" ;;
+				*) echo "" ;;
+			esac
+		}
+
+		# Check if quote is in English (no translation needed)
+		is_english() {
+			case "$1" in
+				16|17|34|38|39|40) return 0 ;;
+				*) return 1 ;;
+			esac
+		}
+
+		# Debug logging (set LOGO_DEBUG=1 to enable)
+		if [ "$LOGO_DEBUG" = "1" ]; then
+			debug_log="/tmp/logo_debug_$$.log"
+			echo "=== Logo Debug $(date '+%H:%M:%S.%3N') ===" >> "$debug_log"
+		fi
+
+		# Small delay to allow window managers (yabai, etc.) to finish resizing
+		sleep 0.05 2>/dev/null || :
+
+		# Get terminal width with timeout to prevent hanging
+		cols=$(timeout 0.1 tput cols 2>/dev/null || echo 0)
+
+		# Debug: log initial width
+		[ "$LOGO_DEBUG" = "1" ] && echo "Initial cols: $cols" >> "$debug_log"
+
+		# Check width again after a tiny delay (yabai might still be resizing)
+		sleep 0.05 2>/dev/null || :
+		cols=$(timeout 0.1 tput cols 2>/dev/null || echo 0)
+
+		# Debug: log final width
+		[ "$LOGO_DEBUG" = "1" ] && echo "Final cols: $cols" >> "$debug_log"
+
+		# Always try to display if terminal has any reasonable width (40+ cols for V logo)
+		if [ "$cols" -ge 40 ] 2>/dev/null; then
+			# Determine display mode based on width
+			# Available space for quotes = terminal width - ASCII prefix (29 chars) - margin (5 chars)
+			available_space=$((cols - 34))
+
+			# Select quotes only if terminal is wide enough
+			# Conservative: require 120+ cols to avoid wrapping after window manager resize
+			if [ "$cols" -ge 120 ]; then
+				# Terminal wide enough - select 3 random quotes
+				selected=$(awk -v count="$QUOTE_COUNT" 'BEGIN {
+					srand()
+					for (i = 0; i < 3; i++) {
+						do {
+							r = int(rand() * count) + 1
+							dup = 0
+							for (j = 0; j < i; j++) {
+								if (chosen[j] == r) { dup = 1; break }
+							}
+						} while (dup)
+						chosen[i] = r
+						printf "%d ", r
+					}
+				}')
+				[ "$LOGO_DEBUG" = "1" ] && echo "Selected quotes: $selected (cols=$cols >= 120)" >> "$debug_log"
+			else
+				# Terminal too narrow for quotes
+				selected=""
+				[ "$LOGO_DEBUG" = "1" ] && echo "No quotes selected (cols=$cols < 120)" >> "$debug_log"
+			fi
+
+			# Convert to positional parameters (zsh needs ${=} for word splitting)
+			if [ -n "$ZSH_VERSION" ]; then
+				set -- ${=selected}
+			else
+				set -- $selected
+			fi
+
+		# Get system info
+		timestamp=$(date "+%b %d, %Y %H:%M:%S %Z")
+
+		# Detect OS and architecture
+		case "$(uname -s)" in
+			Darwin)
+				os_version=$(sw_vers -productVersion 2>/dev/null || echo "Unknown")
+				arch=$(uname -m)
+				chip=$(sysctl -n machdep.cpu.brand_string 2>/dev/null | sed 's/Apple //' || echo "Unknown")
+				sys_info="macOS $os_version $arch ($chip)"
+				;;
+			Linux)
+				os_version=$(uname -r)
+				arch=$(uname -m)
+				sys_info="Linux $os_version ($arch)"
+				;;
+			*)
+				os_version=$(uname -r)
+				arch=$(uname -m)
+				sys_info="$(uname -s) $os_version ($arch)"
+				;;
+		esac
+
+		# Build display based on what's available
+		if [ -n "$1" ] && [ -n "$2" ] && [ -n "$3" ]; then
+			# Build quote lines with proper formatting (source in brackets, translation with quotes)
+			# Quote 1
+			s1=$(get_source "$1")
+			if is_english "$1"; then
+				q1_line1="\"$(get_quote "$1")\" [$s1]"
+				q1_line2="   $(get_author "$1")"
+			else
+				q1_line1="$(get_quote "$1") [$s1]"
+				q1_line2="   $(get_translation "$1") - $(get_author "$1")"
+			fi
+
+			# Quote 2
+			s2=$(get_source "$2")
+			if is_english "$2"; then
+				q2_line1="\"$(get_quote "$2")\" [$s2]"
+				q2_line2="   $(get_author "$2")"
+			else
+				q2_line1="$(get_quote "$2") [$s2]"
+				q2_line2="   $(get_translation "$2") - $(get_author "$2")"
+			fi
+
+			# Quote 3
+			s3=$(get_source "$3")
+			if is_english "$3"; then
+				q3_line1="\"$(get_quote "$3")\" [$s3]"
+				q3_line2="   $(get_author "$3")"
+			else
+				q3_line1="$(get_quote "$3") [$s3]"
+				q3_line2="   $(get_translation "$3") - $(get_author "$3")"
+			fi
+
+			# Full display with quotes
+			printf "\n
                    ######
-                 ######
-                #####     
-                #####        
-                #####        @v
-                #####       
-        ######  #####       
-      ######    #####        ॐ गणपतये नमः 
-    #######     #####        εἰφέρειν φέρε  
-   ######        ####        常に兵法の道をはなれず 
-    ######        ###       
-      #####        ##       
-       #####        #       
-        #####                http://vvkmnn.xyz  
-         #####             
-          #####            
-           #####           
-            #####        
-             ##### 
+                 ######      Vivek Menon <@v>
+                #####        $timestamp
+                #####        $sys_info
+                #####
+        ######  #####
+      ######    #####        $q1_line1
+    #######     #####        $q1_line2
+   ######        ####
+    ######        ###        $q2_line1
+      #####        ##        $q2_line2
+       #####        #
+        #####                $q3_line1
+         #####               $q3_line2
+          #####
+           #####
+            #####            http://vvkmnn.xyz
+             #####
+
 \n"
-        # Set flag to avoid showing multiple times in subshells
-        # export LOGO_SHOWN=1
-    fi
+		elif [ "$cols" -ge 70 ]; then
+			# Medium width - show logo with timestamp/info but no quotes
+			printf "\n
+                   ######
+                 ######      Vivek Menon <@v>
+                #####        $timestamp
+                #####        $sys_info
+                #####
+        ######  #####
+      ######    #####
+    #######     #####
+   ######        ####
+    ######        ###
+      #####        ##
+       #####        #
+        #####
+         #####
+          #####
+           #####
+            #####            http://vvkmnn.xyz
+             #####
+
+\n"
+		else
+			# Minimal display for narrow terminals (40-79 cols) - V always shows!
+			printf "\n
+                   ######
+                 ######      Vivek Menon <@v>
+                #####
+                #####
+                #####
+        ######  #####
+      ######    #####
+    #######     #####
+   ######        ####
+    ######        ###
+      #####        ##
+       #####        #
+        #####
+         #####
+          #####
+           #####
+            #####            http://vvkmnn.xyz
+             #####
+
+\n"
+		fi
+		# Set flag to avoid showing multiple times in subshells
+		# export LOGO_SHOWN=1
+	fi
 fi
 
-# Om Gum Ganapatayei Namah, ganesh mantra
-# The Greek phrase "εἰ φέρειν, φέρε· καὶ μὴ δυσχέραινε»." translates to "If it is endurable, then endure it, and do not be distressed"
-# Musashi - [Japanese>English] Never Stray From the Way direct translation https://www.reddit.com/r/translator/comments/12y1ddt/japaneseenglish_never_stray_from_the_way_direct/
-# The phrase "blessings of mountains" in the context of "skaiisyourgod" likely refers to the lyrics of the song "因果" (Karma) by the artist 揽佬SKAI ISYOURGOD. In the song, the phrase "老天保佑金山銀山前路有" translates to "God bless you with mountains of gold and silver in the journey ahead"
-# 老天保佑金山銀山前路有
-#Je pense, donc je suis 
- #老天保佑金山銀山前路有 
- #
- ## TODO array of quotes to pull 3
- ## TODO Flashes twice, once on load and then once on tmux load, is tmux loading the shell twice? 

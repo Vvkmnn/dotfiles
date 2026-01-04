@@ -27,12 +27,32 @@
 ##################################################
 ##################################################
 
+####################################################
+# ~/.shell - Shell-specific plugins and theming
+####################################################
+# Purpose: Interactive shell configuration for zsh,
+#          bash, and fish (TODO) with plugins
+#
+# Loaded by: ~/.rc sources this fifth
+#
+# Zsh: Zcomet plugin manager, Powerlevel10k theme
+#      Plugins (zsh-z, autosuggestions, highlighting)
+#      Vi mode, fzf, tmux auto-start, nvim server
+#      Conda, cargo, platform-specific (macOS/Linux)
+#
+# Bash: PS1 with ॐ, history, colors
+####################################################
+
+# GUARD Prevent double-sourcing and skip in AI sandbox
+[ -n "$__SHELL_SOURCED" ] && return; __SHELL_SOURCED=1
+[ -n "$AI_SANDBOX_ONLY" ] && return
+
 
 #
 # case "$(uname -s)" in
-#     
+#
 #     Linux | Darwin)
-        
+
         # Bash
         if [ -n "$BASH_VERSION" ]; then
         # [ -f ~/.fzf.bash ] && source ~/.fzf.bash
@@ -142,7 +162,17 @@
             # Load popular plugins last - autosuggestions first, syntax highlighting last:
             zcomet load zsh-users/zsh-autosuggestions
             zcomet load zsh-users/zsh-syntax-highlighting
-            
+
+
+            # ohmyzsh/tmux integration - optimized for Ghostty {{{
+            # Tmux settings - only when not in VSCode for better performance
+            # if [ "$TERM_PROGRAM" != "vscode" ]; then
+            ZSH_TMUX_AUTOSTART=true      # Auto-start tmux sessions
+            ZSH_TMUX_AUTOCONNECT=false   # Don't auto-connect to existing
+            ZSH_TMUX_AUTOQUIT=true       # Quit when tmux exits
+            ZSH_TMUX_DETACHED=true       # Start detached for stability
+            # fi
+            # }}}
 
             # tmux
             zcomet load ohmyzsh plugins/tmux
@@ -359,16 +389,6 @@
             # /* #interface #main {justify-content: flex-start} */
             # /* #interface #widgets {justify-content: flex-start} */
 
-            # ohmyzsh/tmux integration - optimized for Ghostty {{{
-            # Tmux settings - only when not in VSCode for better performance
-            # if [ "$TERM_PROGRAM" != "vscode" ]; then
-            ZSH_TMUX_AUTOSTART=true      # Auto-start tmux sessions
-            ZSH_TMUX_AUTOCONNECT=false   # Don't auto-connect to existing
-            ZSH_TMUX_AUTOQUIT=true       # Quit when tmux exits
-            ZSH_TMUX_DETACHED=true       # Start detached for stability
-            # fi
-            # }}}
-            
             # conda - defer heavy initialization for faster shell startup {{{
             # >>> conda initialize >>>
             # !! Contents within this block are managed by 'conda init' !!
