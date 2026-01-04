@@ -43,7 +43,8 @@ minimum-contrast = 1.1
 # ============================================================================
 
 # Font family with fallbacks
-font-family = "Hack Nerd Font", "JetBrains Mono"
+# font-family = "Hack Nerd Font", "JetBrains Mono"
+font-family = "SFMono Nerd Font"
 
 # Your original font choice
 # font-family = "TX-02"
@@ -495,7 +496,7 @@ image-storage-limit = 160000000
 # keybind = ctrl+shift+n=new_window
 
 # Link URL handling
-# link-url = true
+link-url = true
 
 # https://www.reddit.com/r/Ghostty/comments/1hoi3id/my_perfect_ghostty_tmux_nvim_configuration_on/
 # https://gist.github.com/adibhanna/c552c452fb244b3b721e3c2432e85cde

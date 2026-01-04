@@ -13,8 +13,8 @@ for iface in en0 en1; do
 done
 
 if [ $CONNECTED -eq 0 ]; then
-    sketchybar --set network_down label="" padding_right=0 \
-               --set network_up label="" padding_right=0
+    sketchybar --set network_down label="↓ 0K" label.color=$SILVER \
+               --set network_up label="↑ 0K" label.color=$SILVER
     exit 0
 fi
 
@@ -42,28 +42,27 @@ if [ -f "$STATE" ]; then
     [ $DOWN_KB -lt 0 ] && DOWN_KB=0
     [ $UP_KB -lt 0 ] && UP_KB=0
     
-    # Format output
-    if [ $DOWN_KB -eq 0 ]; then
-        DOWN_STR="↓0"
-    elif [ $DOWN_KB -gt 999 ]; then
-        DOWN_STR="↓$((DOWN_KB/1024))M"
-    else
-        DOWN_STR="↓${DOWN_KB}K"
-    fi
-    
-    if [ $UP_KB -eq 0 ]; then
-        UP_STR="↑0"
-    elif [ $UP_KB -gt 999 ]; then
-        UP_STR="↑$((UP_KB/1024))M"
-    else
-        UP_STR="↑${UP_KB}K"
-    fi
+    format_rate() {
+        local kb="$1"
+        local val
+        if [ "$kb" -ge 1024 ]; then
+            val=$((kb / 1024))
+            [ "$val" -gt 99 ] && val=99
+            printf "%2dM" "$val"
+        else
+            [ "$kb" -gt 99 ] && kb=99
+            printf "%2dK" "$kb"
+        fi
+    }
+
+    DOWN_STR="↓$(format_rate "$DOWN_KB")"
+    UP_STR="↑$(format_rate "$UP_KB")"
     
     sketchybar --set network_down label="$DOWN_STR" label.color=$SILVER \
                --set network_up label="$UP_STR" label.color=$SILVER
 else
-    sketchybar --set network_down label="↓0" label.color=$SILVER \
-               --set network_up label="↑0" label.color=$SILVER
+    sketchybar --set network_down label="↓ 0K" label.color=$SILVER \
+               --set network_up label="↑ 0K" label.color=$SILVER
 fi
 
 # Save state

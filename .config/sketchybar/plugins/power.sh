@@ -19,7 +19,7 @@ if [ "$MACMON_DATA" != "{}" ]; then
         if awk -v p="$RAW_POWER" 'BEGIN { exit !(p >= 0 && p <= 100) }'; then
             RAW_POWER_TENTHS=$(awk -v p="$RAW_POWER" 'BEGIN { printf "%d", int(p*10 + 0.5) }')
             SMOOTH_TENTHS=$(smooth_value "$STATE_KEY" "$RAW_POWER_TENTHS" 3)
-            TOTAL_POWER=$(awk -v t="$SMOOTH_TENTHS" 'BEGIN { printf "%.1f", t/10.0 }')
+            TOTAL_POWER=$(awk -v t="$SMOOTH_TENTHS" 'BEGIN { printf "%.0f", t/10.0 }')
         fi
     fi
 fi
@@ -28,7 +28,7 @@ fi
 if ! echo "$TOTAL_POWER" | grep -Eq '^[0-9]+(\.[0-9]+)?$'; then
     LAST=$(awk -F: -v s="$STATE_KEY" '$1==s {print $2}' "/tmp/sketchybar_state" 2>/dev/null | awk '{print $NF}')
     if echo "$LAST" | grep -Eq '^[0-9]+$'; then
-        TOTAL_POWER=$(awk -v t="$LAST" 'BEGIN { printf "%.1f", t/10.0 }')
+        TOTAL_POWER=$(awk -v t="$LAST" 'BEGIN { printf "%.0f", t/10.0 }')
     else
         exit 0
     fi

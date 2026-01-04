@@ -77,15 +77,15 @@ sketchybar --add item front_app left \
 	padding_right=10 \
 	--subscribe front_app front_app_switched
 
-# Spaces
-SPACE_ICONS=("1" "2" "3" "4" "5" "6" "7")
-for i in "${!SPACE_ICONS[@]}"; do
-	sid=$(($i + 1))
+# Spaces - dynamically create based on existing yabai spaces
+# This allows unlimited spaces instead of hardcoded limit of 7
+SPACE_IDS=$(/opt/homebrew/bin/yabai -m query --spaces | jq -r '.[].index')
+for sid in $SPACE_IDS; do
 	sketchybar --add space space.$sid left \
 		--set space.$sid space=$sid \
-		icon=${SPACE_ICONS[i]} \
+		icon="$sid" \
 		icon.font="SF Pro:Medium:13.0" \
-		width=28 \
+		width=3 \
 		padding_left=0 \
 		padding_right=0 \
 		script="$PLUGIN_DIR/space.sh" \
@@ -96,12 +96,12 @@ done
 # IP Address
 sketchybar --add item ip left \
 	--set ip script="$PLUGIN_DIR/ip.sh" \
-	update_freq=1 \
 	icon="􀤆" \
 	icon.font="SF Symbols:Regular:13.0" \
 	icon.color=$SILVER \
 	label.font="SF Pro:Regular:13.0" \
-	padding_right=6 \
+	padding_left=-2 \
+	padding_right=-1 \
 	--subscribe ip wifi_change
 
 # Network Stats - text with sparkline graphs
@@ -110,8 +110,8 @@ sketchybar --add item network_down left \
 	icon.drawing=off \
 	label.font="SF Pro:Regular:13.0" \
 	label.color=$SILVER \
-	padding_left=3 \
-	padding_right=4 \
+	padding_left=0 \
+	padding_right=1 \
 	script="$PLUGIN_DIR/network_stats.sh down"
 
 sketchybar --add item network_up left \
@@ -120,9 +120,32 @@ sketchybar --add item network_up left \
 	label.font="SF Pro:Regular:13.0" \
 	label.color=$SILVER \
 	padding_left=0 \
-	padding_right=2 \
+	padding_right=4 \
 	script="$PLUGIN_DIR/network_stats.sh up"
 
+# Codex Usage Limits (compact)
+sketchybar --add item codex_logo left \
+	--set codex_logo drawing=on \
+	background.image="$HOME/.config/sketchybar/assets/openai.png" \
+	background.image.scale=0.014 \
+	background.color=$TRANSPARENT \
+	background.drawing=on \
+	background.height=14 \
+	width=14 \
+	label.drawing=off \
+	icon.drawing=off \
+	padding_left=0 \
+	padding_right=6
+
+sketchybar --add item codex_usage left \
+	--set codex_usage label.font="SF Pro:Regular:13.0" \
+	icon.drawing=off \
+	label.padding_left=0 \
+	label.padding_right=0 \
+	padding_left=0 \
+	padding_right=6 \
+	update_freq=180 \
+	script="$PLUGIN_DIR/codex_usage.sh"
 # Network Box Indicators - Commented out for now (will fix later)
 # sketchybar --add item network_down_box left \
 # 	--set network_down_box update_freq=2 \
@@ -326,21 +349,36 @@ sketchybar --add item network_up left \
 # 	padding_right=1 \
 # 	script="$PLUGIN_DIR/progress_year.sh"
 
-# New unified progress indicator (format: 353━━━●──354 17:13)
-# Shows day-of-year progress with current time
-sketchybar --add item progress_unified right \
-	--set progress_unified update_freq=1 \
+# === Progress Indicator (Unified) ===
+# 7 positions = ~3.43 hours per segment
+# Single progress bar with day numbers and progress line
+
+# Clock time (white, separate)
+sketchybar --add item clock_time right \
+	--set clock_time update_freq=1 \
+	icon.drawing=off \
+	label.font="SF Pro:Regular:13.0" \
+	label.color=$WHITE \
+	label.padding_left=0 \
+	label.padding_right=0 \
+	padding_left=0 \
+	padding_right=12 \
+	script=""
+
+# Unified progress bar (day + progress + day)
+sketchybar --add item progress right \
+	--set progress update_freq=1 \
 	icon.drawing=on \
 	icon="􀐬" \
 	icon.font="SF Symbols:Regular:13.0" \
 	icon.color=$MID_GRAY \
-	icon.padding_right=0 \
+	icon.padding_right=3 \
 	label.font="SF Pro:Regular:13.0" \
-	label.color=$MISTY_BLUE \
+	label.color=$WHITE \
 	label.padding_left=0 \
 	label.padding_right=0 \
 	padding_left=0 \
-	padding_right=3 \
+	padding_right=4 \
 	script="$PLUGIN_DIR/progress_unified.sh"
 
 # Battery
@@ -349,7 +387,7 @@ sketchybar --add item battery right \
 	update_freq=120 \
 	icon.font="SF Pro:Regular:13.0" \
 	label.font="SF Pro:Regular:13.0" \
-	padding_right=6 \
+	padding_right=1 \
 	--subscribe battery system_woke power_source_change
 
 # Disk
@@ -379,6 +417,15 @@ sketchybar --add item cpu right \
 	update_freq=10 \
 	script="$PLUGIN_DIR/cpu.sh"
 
+# GPU Usage
+sketchybar --add item gpu right \
+	--set gpu label.font="SF Pro:Regular:13.0" \
+	icon="􀬨" \
+	icon.font="SF Symbols:Regular:13.0" \
+	padding_right=3 \
+	update_freq=10 \
+	script="$PLUGIN_DIR/gpu.sh"
+
 # Total System Power
 sketchybar --add item power right \
 	--set power label.font="SF Pro:Regular:13.0" \
@@ -396,21 +443,6 @@ sketchybar --add item temp right \
 	padding_right=3 \
 	update_freq=10 \
 	script="$PLUGIN_DIR/temp.sh"
-
-# Codex Usage Limits (compact)
-sketchybar --add item codex_usage right \
-	--set codex_usage label.font="SF Pro:Regular:13.0" \
-	icon="􀁗" \
-	icon.font="SF Symbols:Regular:13.0" \
-	icon.drawing=on \
-	icon.color=$MID_GRAY \
-	icon.padding_right=2 \
-	label.padding_left=0 \
-	label.padding_right=0 \
-	padding_left=0 \
-	padding_right=6 \
-	update_freq=180 \
-	script="$PLUGIN_DIR/codex_usage.sh"
 
 # Menu Anywhere - Temporarily commented out
 # sketchybar --add item menuanywhere right \

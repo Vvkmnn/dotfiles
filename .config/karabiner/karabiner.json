@@ -6,6 +6,7 @@
                 "rules": [
                     {
                         "description": "Arrow keys + Spacebar combinations only",
+                        "enabled": false,
                         "manipulators": [
                             {
                                 "conditions": [
@@ -106,7 +107,7 @@
                         ]
                     },
                     {
-                        "description": "Right Command: Alone=Full Screenshot | +Space=Paste | +Option+Space=Screenshot Options | +Option+Space+Space=Area Screenshot",
+                        "description": "Right Command: Alone=Screenshot+Resize (700px) | +Space=Paste | Ctrl+Cmd=Area Screenshot | Ctrl+Shift+Cmd=Screenshot Options",
                         "manipulators": [
                             {
                                 "from": {
@@ -116,8 +117,7 @@
                                 "to": [{ "key_code": "right_command" }],
                                 "to_if_alone": [
                                     {
-                                        "key_code": "3",
-                                        "modifiers": ["left_control", "left_command", "left_shift"]
+                                        "shell_command": "~/.config/karabiner/scripts/smart-screenshot-resize.sh"
                                     }
                                 ],
                                 "type": "basic"
@@ -131,6 +131,32 @@
                                     {
                                         "key_code": "v",
                                         "modifiers": ["left_control"]
+                                    }
+                                ],
+                                "type": "basic"
+                            },
+                            {
+                                "from": {
+                                    "key_code": "right_command",
+                                    "modifiers": { "mandatory": ["control", "shift"] }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "5",
+                                        "modifiers": ["left_command", "left_shift"]
+                                    }
+                                ],
+                                "type": "basic"
+                            },
+                            {
+                                "from": {
+                                    "key_code": "right_command",
+                                    "modifiers": { "mandatory": ["control"] }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "4",
+                                        "modifiers": ["left_command", "left_shift", "left_control"]
                                     }
                                 ],
                                 "type": "basic"

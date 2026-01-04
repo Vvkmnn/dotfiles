@@ -5,10 +5,29 @@ WIFI_STATUS=$(ifconfig en0 2>/dev/null | grep 'status: active')
 ETH_STATUS=$(ifconfig en1 2>/dev/null | grep 'status: active')
 
 SILVER=0xB0B7C0EE
+CACHE_FILE="/tmp/sketchybar_public_ip"
+CACHE_TTL=600
+
+get_public_ip() {
+	if [ -f "$CACHE_FILE" ]; then
+		CACHE_AGE=$(($(date +%s) - $(stat -f %m "$CACHE_FILE")))
+		if [ "$CACHE_AGE" -lt "$CACHE_TTL" ]; then
+			cat "$CACHE_FILE"
+			return
+		fi
+	fi
+
+	PUBLIC_IP=$(curl -fsS --max-time 2 https://api.ipify.org 2>/dev/null)
+	if [ -n "$PUBLIC_IP" ]; then
+		printf "%s" "$PUBLIC_IP" >"$CACHE_FILE"
+		printf "%s" "$PUBLIC_IP"
+	fi
+}
 
 if [ -n "$WIFI_STATUS" ] || [ -n "$ETH_STATUS" ]; then
-	# We're connected - get IP
-	IP=$(ipconfig getifaddr en0 2>/dev/null || ipconfig getifaddr en1 2>/dev/null)
+	# We're connected - get public IP (fallback to local IP)
+	IP=$(get_public_ip)
+	[ -z "$IP" ] && IP=$(ipconfig getifaddr en0 2>/dev/null || ipconfig getifaddr en1 2>/dev/null)
 
 	# Check network activity
 	CURRENT_FILE="/tmp/sketchybar_ip_current"
@@ -62,8 +81,8 @@ if [ -n "$WIFI_STATUS" ] || [ -n "$ETH_STATUS" ]; then
 			icon.color=$ICON_COLOR \
 			icon.drawing=on \
 			label.drawing=on \
-			padding_left=0 \
-			padding_right=6
+			padding_left=-2 \
+			padding_right=2
 	else
 		# Connected but no IP yet
 		sketchybar --set ip label="..." \
@@ -71,8 +90,8 @@ if [ -n "$WIFI_STATUS" ] || [ -n "$ETH_STATUS" ]; then
 			icon.color=$ICON_COLOR \
 			icon.drawing=on \
 			label.drawing=on \
-			padding_left=0 \
-			padding_right=6
+			padding_left=-2 \
+			padding_right=2
 	fi
 else
 	# Not connected - hide completely

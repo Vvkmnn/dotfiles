@@ -28,6 +28,16 @@ MINUTE=$(date '+%-M')
 MINUTES_INTO_DAY=$((HOUR * 60 + MINUTE))
 PROGRESS=$((MINUTES_INTO_DAY * 100 / 1440))
 
+# Highlight for the first 10% of each segment
+SEGMENTS=5
+SEGMENT_MINUTES=$((1440 / SEGMENTS))
+SEGMENT_OFFSET=$((MINUTES_INTO_DAY % SEGMENT_MINUTES))
+HIGHLIGHT_MINUTES=$((SEGMENT_MINUTES / 10))
+TRACK_COLOR="0xffA0A0A0"
+if [ "$SEGMENT_OFFSET" -lt "$HIGHLIGHT_MINUTES" ]; then
+	TRACK_COLOR="0xffFFFFFF"
+fi
+
 # Render 5-position track for smooth progress
 DOT_POS=$((PROGRESS / 20))
 if [ $DOT_POS -gt 4 ]; then
@@ -36,17 +46,18 @@ fi
 
 TRACK=""
 for i in 0 1 2 3 4; do
-    if [ $i -eq $DOT_POS ]; then
-        TRACK="${TRACK}●"
-    elif [ $i -lt $DOT_POS ]; then
-        TRACK="${TRACK}━"
-    else
-        TRACK="${TRACK}─"
-    fi
+	if [ $i -eq $DOT_POS ]; then
+		TRACK="${TRACK}●"
+	elif [ $i -lt $DOT_POS ]; then
+		TRACK="${TRACK}━"
+	else
+		TRACK="${TRACK}┈"
+	fi
 done
 
 # Get current time in 24-hour format
 TIME=$(date '+%H:%M')
 
 # Set label: 353━━━●──354 17:13
-sketchybar --set progress_unified label="${DAY_OF_YEAR}${TRACK}${NEXT_DAY} ${TIME}"
+sketchybar --set progress label="${DAY_OF_YEAR}${TRACK}${NEXT_DAY}" label.color="$TRACK_COLOR" \
+           --set clock_time label="${TIME}"
