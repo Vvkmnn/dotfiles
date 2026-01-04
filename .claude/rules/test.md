@@ -22,6 +22,20 @@ Gate all work with appropriate tests, security checks, and scope verification.
 - One-off scripts
 - Pure documentation changes
 
+**TDD pattern (adapt to your framework):**
+```python
+# 1. RED - Write failing test first
+def test_feature():
+    assert feature(input) == expected
+
+# 2. GREEN - Minimal code to pass
+def feature(x):
+    return expected
+
+# 3. REFACTOR - Improve without changing behavior
+```
+*Frameworks: pytest, cargo test, go test, npm test, make test, busted (lua)*
+
 **Testing layers:**
 | Layer | Tests | When Required |
 |-------|-------|---------------|

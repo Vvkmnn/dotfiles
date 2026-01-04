@@ -104,7 +104,7 @@ function getDuration() {
 
 function getTmuxInfo() {
   return new Promise((resolve) => {
-    exec('tmux display-message -p "#S:#W"', (error, stdout) => {
+    exec('tmux display-message -p "v#S:#I:#W"', (error, stdout) => {
       if (error) {
         const fallback = `${process.env.TMUX_SESSION || 'unknown'}:${process.env.TMUX_WINDOW || process.env.TMUX_PANE || 'unknown'}`;
         resolve(fallback);

@@ -16,7 +16,7 @@ Write the minimum code needed, but make it beautiful. Iterate in small steps.
 **Edit, don't create:**
 - Prefer modifying existing files over creating new ones
 - Extend existing patterns rather than inventing new ones
-- Delete unused code entirely (no commenting out)
+- Comment out old code with explanations (preserve context and reasoning)
 
 **Simplest solution that works:**
 - Fewer files > more files
@@ -91,6 +91,7 @@ Before considering code complete:
 - [ ] Is it easy to test?
 - [ ] Does it match existing patterns?
 - [ ] Would a new developer understand it?
+- [ ] Removed code commented out with brief explanation?
 
 ### Anti-Patterns
 
@@ -98,7 +99,7 @@ Before considering code complete:
 |-------|-----|
 | Add features "for later" | Add when needed |
 | Create abstraction for one use | Inline until pattern emerges |
-| Comment out old code | Delete it (git has history) |
+| Delete code without explanation | Comment out with reason why removed |
 | Add docstrings to unchanged code | Leave it alone |
 | Clever one-liners | Clear multi-line |
 | Big bang changes | Incremental steps |

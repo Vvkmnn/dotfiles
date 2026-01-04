@@ -5,7 +5,7 @@
       "repo": "anthropics/claude-code"
     },
     "installLocation": "/Users/v/.claude/plugins/marketplaces/claude-code-plugins",
-    "lastUpdated": "2025-12-17T09:13:00.005Z"
+    "lastUpdated": "2026-01-04T12:21:10.183Z"
   },
   "claude-code-workflows": {
     "source": {
@@ -13,7 +13,7 @@
       "repo": "wshobson/agents"
     },
     "installLocation": "/Users/v/.claude/plugins/marketplaces/claude-code-workflows",
-    "lastUpdated": "2025-12-15T09:03:05.320Z"
+    "lastUpdated": "2026-01-04T12:21:16.318Z"
   },
   "superpowers-marketplace": {
     "source": {
@@ -21,7 +21,7 @@
       "repo": "obra/superpowers-marketplace"
     },
     "installLocation": "/Users/v/.claude/plugins/marketplaces/superpowers-marketplace",
-    "lastUpdated": "2025-12-16T01:35:12.462Z"
+    "lastUpdated": "2026-01-04T12:21:21.613Z"
   },
   "thedotmack": {
     "source": {
@@ -29,7 +29,7 @@
       "repo": "thedotmack/claude-mem"
     },
     "installLocation": "/Users/v/.claude/plugins/marketplaces/thedotmack",
-    "lastUpdated": "2025-12-17T07:13:34.280Z"
+    "lastUpdated": "2026-01-04T12:21:29.269Z"
   },
   "repomix": {
     "source": {
@@ -37,7 +37,7 @@
       "repo": "yamadashy/repomix"
     },
     "installLocation": "/Users/v/.claude/plugins/marketplaces/repomix",
-    "lastUpdated": "2025-12-17T07:14:19.635Z"
+    "lastUpdated": "2026-01-04T12:21:35.954Z"
   },
   "every-marketplace": {
     "source": {
@@ -45,7 +45,7 @@
       "url": "https://github.com/EveryInc/compound-engineering-plugin.git"
     },
     "installLocation": "/Users/v/.claude/plugins/marketplaces/every-marketplace",
-    "lastUpdated": "2025-12-17T07:13:13.097Z"
+    "lastUpdated": "2026-01-04T12:21:36.969Z"
   },
   "cc_chrome_devtools_mcp_skill-plugin-marketplace": {
     "source": {
@@ -53,7 +53,7 @@
       "repo": "justfinethanku/cc_chrome_devtools_mcp_skill"
     },
     "installLocation": "/Users/v/.claude/plugins/marketplaces/cc_chrome_devtools_mcp_skill-plugin-marketplace",
-    "lastUpdated": "2025-12-16T01:44:33.713Z"
+    "lastUpdated": "2026-01-04T12:21:41.782Z"
   },
   "claude-plugins-official": {
     "source": {
@@ -61,14 +61,14 @@
       "repo": "anthropics/claude-plugins-official"
     },
     "installLocation": "/Users/v/.claude/plugins/marketplaces/claude-plugins-official",
-    "lastUpdated": "2025-12-17T09:12:10.098Z"
+    "lastUpdated": "2026-01-04T12:21:47.320Z"
   },
   "custom": {
     "source": {
       "source": "directory",
-      "path": "/Users/v/.claude/plugins/custom"
+      "path": "/Users/v/.claude/plugins/marketplaces/custom"
     },
-    "installLocation": "/Users/v/.claude/plugins/custom",
-    "lastUpdated": "2025-12-17T08:08:45.759Z"
+    "installLocation": "/Users/v/.claude/plugins/marketplaces/custom",
+    "lastUpdated": "2026-01-04T12:21:47.321Z"
   }
 }

@@ -66,6 +66,14 @@ Python: `if __name__ == "__main__":` - Only runs when script is executed directl
 ```
 
 ### When to Teach
+
+**BEFORE adding unfamiliar items:**
+- New plugins/extras: Explain what they do, trade-offs, alternatives
+- New dependencies: Explain purpose, why this one over alternatives
+- New frameworks/patterns: Explain the concept if user may not know it
+- Ask which to proceed with (don't assume all)
+
+**During work:**
 - After exploration: share patterns discovered
 - When finding surprising or non-obvious behavior
 - When context helps the user make better decisions
@@ -95,8 +103,8 @@ Use the insight box (from `explanatory-output-style` plugin):
 - Generic programming advice the user already knows
 - Repeating the same insight multiple times
 - Surface-level observations ("this is a function that...")
-- Long explanations when a sentence suffices
-- Teaching when the user wants you to just DO the task
+- Long explanations when a concise statement suffices
+- Deep educational tangents when user wants concise execution
 
 ### Depth Calibration
 - **Junior context**: Explain more fundamentals, link concepts

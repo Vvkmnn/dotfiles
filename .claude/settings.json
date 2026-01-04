@@ -3,7 +3,44 @@
     "commit": "",
     "pr": ""
   },
-  "model": "opusplan",
+  "permissions": {
+    "defaultMode": "plan"
+  },
+  "sandbox": {
+    "mode": "auto-allow",
+    "allowUnsandboxedCommands": true,
+    "filesystem": {
+      "deniedReadPaths": [
+        "~/Library",
+        "~/Applications",
+        "~/Documents",
+        "~/Downloads",
+        "~/Desktop",
+        "~/Music",
+        "~/Movies",
+        "~/Pictures",
+        "~/.npm",
+        "~/.cache",
+        "~/.Trash"
+      ]
+    },
+    "network": {
+      "allowedDomains": [
+        "github.com",
+        "raw.githubusercontent.com",
+        "gist.github.com",
+        "api.github.com",
+        "docs.anthropic.com",
+        "code.claude.com",
+        "www.anthropic.com",
+        "anthropic.com",
+        "npmjs.com",
+        "registry.npmjs.org",
+        "pypi.org",
+        "files.pythonhosted.org"
+      ]
+    }
+  },
   "hooks": {
     "SessionStart": [
       {
@@ -23,6 +60,10 @@
           {
             "type": "command",
             "command": "node ~/.claude/hooks/notification.js"
+          },
+          {
+            "type": "command",
+            "command": "node ~/.claude/hooks/stop.js"
           }
         ]
       }
@@ -56,7 +97,7 @@
     "feature-dev@claude-code-plugins": true,
     "frontend-design@claude-code-plugins": true,
     "pr-review-toolkit@claude-code-plugins": true,
-    "claude-mem@thedotmack": true,
+    "claude-mem@thedotmack": false,
     "agent-sdk-dev@claude-code-plugins": true,
     "tdd-workflows@claude-code-workflows": true,
     "git-pr-workflows@claude-code-workflows": true,
@@ -74,9 +115,11 @@
     "python-development@claude-code-workflows": true,
     "javascript-typescript@claude-code-workflows": true,
     "systems-programming@claude-code-workflows": true,
-    "compounding-engineering@every-marketplace": false,
     "backend-development@claude-code-workflows": true,
     "cc_chrome_devtools_mcp_skill@cc_chrome_devtools_mcp_skill-plugin-marketplace": true,
+    "automating@custom": true,
+    "coding@custom": true,
     "writing@custom": true
-  }
+  },
+  "model": "opusplan"
 }

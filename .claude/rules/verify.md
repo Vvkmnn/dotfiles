@@ -43,6 +43,12 @@ From `superpowers:verification-before-completion`:
 4. VERIFY: Does output confirm the claim?
 5. ONLY THEN: Make the claim
 
+**Verification pattern:**
+```bash
+<command> 2>&1 | tail -15 && echo "Exit: $?"
+```
+*Commands: pytest, cargo build, go test, npm test, make, gcc -Wall, shellcheck*
+
 ### Token Efficiency
 - File:line references are cheaper than re-reading files
 - Concrete snippets prevent back-and-forth clarification

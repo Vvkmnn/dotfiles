@@ -9,7 +9,7 @@ input=$(cat)
 # ICON_MODEL='🕉'; ICON_RATE='🤖'; ICON_TIME='⏳'; ICON_CTX='🧠'
 # Style B: ASCII with blue
 B='\033[34m'; R='\033[0m'  # blue, reset (or use \033[94m for bright blue)
-ICON_MODEL="${B}ॐ${R}"; ICON_RATE="${B}λ${R}"; ICON_TIME="${B}Θ${R}"; ICON_CTX="${B}Ψ${R}"
+ICON_MODEL="${B}ॐ${R}"; ICON_RATE="${B}λ${R}"; ICON_ELAPSED="${B}Δ${R}"; ICON_TIME="${B}Θ${R}"; ICON_CTX="${B}Ψ${R}"
 # Alt icons: Δ (delta), ⧖ (hourglass), ⏣ (benzene/chip), ◐ (half-circle)
 
 # ---- Check jq ----
@@ -19,16 +19,29 @@ command -v jq >/dev/null 2>&1 || {
 }
 
 # ---- Extract model name ----
-model_name=$(echo "$input" | jq -r '.model.display_name // "Claude"' 2>/dev/null | sed 's/ [0-9.]*$//')
+display_name=$(echo "$input" | jq -r '.model.display_name // "Claude"' 2>/dev/null)
+full_model=$(echo "$display_name" | grep -oE "(Opus|Sonnet|Haiku)" | head -1)
+case "$full_model" in
+	Opus) model_name="O" ;;
+	Sonnet) model_name="S" ;;
+	Haiku) model_name="H" ;;
+	*) model_name="${display_name:-Claude}" ;;
+esac
 
 # ---- Get time remaining from ccusage (independent of API) ----
 time_mins=""
 time_hours=""
 time_days=""
+elapsed_hours=""
+elapsed_mins=""
 get_time_remaining() {
-	local remaining_mins days hours mins
+	local ccusage_json remaining_mins start_time start_epoch now_epoch elapsed_total
+	local days hours mins
 
-	remaining_mins=$(bun x ccusage blocks --json 2>/dev/null | jq -r '.blocks[] | select(.isActive == true) | .projection.remainingMinutes // empty' 2>/dev/null)
+	ccusage_json=$(bun x ccusage blocks --json 2>/dev/null)
+
+	# Get remaining time
+	remaining_mins=$(echo "$ccusage_json" | jq -r '.blocks[] | select(.isActive == true) | .projection.remainingMinutes // empty' 2>/dev/null)
 
 	if [ -n "$remaining_mins" ] && [ "$remaining_mins" -gt 0 ] 2>/dev/null; then
 		days=$((remaining_mins / 1440))
@@ -38,6 +51,43 @@ get_time_remaining() {
 		[ "$mins" -gt 0 ] && time_mins="${mins}m"
 		[ "$hours" -gt 0 ] && time_hours="${hours}h"
 		[ "$days" -gt 0 ] && time_days="${days}d"
+	fi
+
+	# Get elapsed time from first activity (not window start)
+	start_time=$(echo "$ccusage_json" | jq -r '.blocks[] | select(.isActive == true) | .startTime // empty' 2>/dev/null)
+	block_id=$(echo "$ccusage_json" | jq -r '.blocks[] | select(.isActive == true) | .id // empty' 2>/dev/null)
+
+	if [ -n "$start_time" ] && [ -n "$block_id" ]; then
+		cache_file="/tmp/claude_first_activity_${block_id}.cache"
+		first_activity=""
+
+		# Check cache
+		if [ -f "$cache_file" ]; then
+			first_activity=$(cat "$cache_file" 2>/dev/null)
+		else
+			# Find first activity in this billing block (expensive, so cache it)
+			window_start="${start_time%%.*}"
+			first_activity=$(find ~/.claude/projects -name "*.jsonl" -type f -newermt "${window_start/T/ } UTC" -exec head -1 {} \; 2>/dev/null | \
+				jq -r "select(.timestamp >= \"${start_time}\") | .timestamp" 2>/dev/null | sort | head -1)
+
+			# Cache for future calls
+			if [ -n "$first_activity" ]; then
+				echo "$first_activity" > "$cache_file"
+			fi
+		fi
+
+		# Calculate elapsed from first activity
+		if [ -n "$first_activity" ]; then
+			start_epoch=$(date -j -u -f "%Y-%m-%dT%H:%M:%S" "${first_activity%%.*}" "+%s" 2>/dev/null)
+			now_epoch=$(date "+%s")
+			if [ -n "$start_epoch" ] && [ "$now_epoch" -gt "$start_epoch" ]; then
+				elapsed_total=$(( (now_epoch - start_epoch) / 60 ))
+				hours=$((elapsed_total / 60))
+				mins=$((elapsed_total % 60))
+				[ "$hours" -gt 0 ] && elapsed_hours="${hours}h"
+				[ "$mins" -gt 0 ] && elapsed_mins="${mins}m"
+			fi
+		fi
 	fi
 }
 
@@ -113,6 +163,13 @@ if [ -n "$rate_pct" ] || [ -n "$time_mins" ] || [ -n "$time_hours" ] || [ -n "$t
 		if [ -n "$weekly_pct" ]; then
 			printf ' %.0f%%' "$weekly_pct"
 		fi
+		# Show elapsed time first
+		if [ -n "$elapsed_hours" ] || [ -n "$elapsed_mins" ]; then
+			printf ' %b' "$ICON_ELAPSED"
+			[ -n "$elapsed_hours" ] && printf ' %s' "$elapsed_hours"
+			[ -n "$elapsed_mins" ] && printf ' %s' "$elapsed_mins"
+		fi
+		# Then show remaining time
 		if [ -n "$time_mins" ] || [ -n "$time_hours" ] || [ -n "$time_days" ] || [ -n "$weekly_days" ]; then
 			printf ' %b' "$ICON_TIME"
 			# Output in order: mins, hours, days

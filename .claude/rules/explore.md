@@ -50,6 +50,7 @@ Before writing plans OR modifying code, explore and investigate first.
 - WebFetch when structured API access exists (check code-mode tools first)
 - Re-reading files when claude-mem already has the answer
 - Manual extraction when MCP provides structured access
+- Searching for MCP config in `~/.claude.json` - code-mode servers are in `~/.utcp_config.json`
 
 ## Complements
 - `superpowers:brainstorming` skill - Use AFTER exploration to refine ideas
