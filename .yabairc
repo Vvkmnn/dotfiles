@@ -44,15 +44,22 @@ sudo /opt/homebrew/bin/yabai --load-sa
 # Focus handling when changing spaces
 # https://github.com/koekeishiya/yabai/issues/719
 #
-# Focus the first window when switching spaces
-/opt/homebrew/bin/yabai -m signal --add event=space_changed action="/opt/homebrew/bin/yabai -m window --focus \$(/opt/homebrew/bin/yabai -m query --windows --space | jq .[0].id)"
+# Focus the first VISIBLE window when switching spaces
+# Filters out minimized and hidden windows to prevent focusing invisible windows
+/opt/homebrew/bin/yabai -m signal --add event=space_changed action='
+  /opt/homebrew/bin/yabai -m window --focus $(
+    /opt/homebrew/bin/yabai -m query --windows --space |
+    jq -r "[.[] | select(.\"is-visible\" == true and .\"is-minimized\" == false)][0].id // empty"
+  )
+'
 
-# Focus the first window when changing displays
-/opt/homebrew/bin/yabai -m signal --add event=display_changed action="/opt/homebrew/bin/yabai -m window --focus \$(/opt/homebrew/bin/yabai -m query --windows --space | jq .[0].id)"
-
-# Focus the first visible window when switching spaces
-# TODO: Fix later, some error
-# /opt/homebrew/bin/yabai -m signal --add event=space_changed action='/opt/homebrew/bin/yabai -m window --focus $(/opt/homebrew/bin/yabai -m query --windows --space | jq -r \'[.[]|select(."is-visible")][0].id\')'
+# Focus the first VISIBLE window when changing displays
+/opt/homebrew/bin/yabai -m signal --add event=display_changed action='
+  /opt/homebrew/bin/yabai -m window --focus $(
+    /opt/homebrew/bin/yabai -m query --windows --space |
+    jq -r "[.[] | select(.\"is-visible\" == true and .\"is-minimized\" == false)][0].id // empty"
+  )
+'
 
 # Special handling for small floating windows
 # https://github.com/koekeishiya/yabai/issues/1317#issuecomment-2122833942
@@ -74,7 +81,7 @@ sudo /opt/homebrew/bin/yabai --load-sa
 /opt/homebrew/bin/yabai -m config window_origin_display default # Place new windows on the current display
 /opt/homebrew/bin/yabai -m config window_placement second_child # Place new windows as the second child in BSP
 /opt/homebrew/bin/yabai -m config window_topmost off            # Windows won't stay on top by default
-/opt/homebrew/bin/yabai -m config window_shadow off             # Disable window shadows
+/opt/homebrew/bin/yabai -m config window_shadow float           # Shadows only on floating windows (visual distinction)
 
 # Window animations
 /opt/homebrew/bin/yabai -m config window_animation_duration 0.0         # Duration of window animations (0.0 = instant)
@@ -102,8 +109,8 @@ sudo /opt/homebrew/bin/yabai --load-sa
 # Layout and spacing settings
 /opt/homebrew/bin/yabai -m config layout bsp          # Binary Space Partitioning layout
 /opt/homebrew/bin/yabai -m config split_ratio 0.49    # Window split ratio (slightly favors the new window)
-/opt/homebrew/bin/yabai -m config split_type vertical # Automatically determine split type
-/opt/homebrew/bin/yabai -m config auto_balance on     # Don't automatically balance windows
+/opt/homebrew/bin/yabai -m config split_type auto     # Automatically determine split type
+/opt/homebrew/bin/yabai -m config auto_balance on     # Automatically balance windows
 
 # Padding around windows (pixels)
 /opt/homebrew/bin/yabai -m config top_padding 12    # Padding at the top of the screen
@@ -127,17 +134,56 @@ sudo /opt/homebrew/bin/yabai --load-sa
 # Handle floating windows automatically
 # Detects windows that can't be resized or are already floating
 # and makes them float with a nice position on the screen
+# NOTE: We do NOT set --layer above because it causes child dialogs
+# to appear behind the parent window
+# See: https://github.com/koekeishiya/yabai/issues/987
 /opt/homebrew/bin/yabai -m signal --add event=window_created action='
   /opt/homebrew/bin/yabai -m query --windows --window $YABAI_WINDOW_ID | jq -er ".\"can-resize\" or .\"is-floating\"" || \
   /opt/homebrew/bin/yabai -m window $YABAI_WINDOW_ID --toggle float && \
-  /opt/homebrew/bin/yabai -m window $YABAI_WINDOW_ID --layer above && \
-  /opt/homebrew/bin/yabai -m window $YABAI_WINDOW_ID --grid 3:3:1:1:1:1
+  /opt/homebrew/bin/yabai -m window $YABAI_WINDOW_ID --grid 4:4:1:1:2:2
 '
 
-# Alternative floating window handling (simpler version)
-/opt/homebrew/bin/yabai -m signal --add event=window_created action='/opt/homebrew/bin/yabai -m query --windows --window $YABAI_WINDOW_ID | jq -er ".\"can-resize\" or .\"is-floating\"" || /opt/homebrew/bin/yabai -m window $YABAI_WINDOW_ID --toggle float'
+# DISABLED: Alternative floating window handling (no grid positioning)
+# This signal is disabled because:
+# 1. It's redundant with the signal above (same can-resize check)
+# 2. Having both signals creates a race condition on window_created event
+# 3. Without grid positioning, windows can appear anywhere (off-screen, random)
+# 4. The signal above is superior - it centers floating windows predictably
+# /opt/homebrew/bin/yabai -m signal --add event=window_created action='/opt/homebrew/bin/yabai -m query --windows --window $YABAI_WINDOW_ID | jq -er ".\"can-resize\" or .\"is-floating\"" || /opt/homebrew/bin/yabai -m window $YABAI_WINDOW_ID --toggle float'
 
-# Uncomment individual rules below to enable them
+################################################################################
+# APP-SPECIFIC FLOATING RULES
+################################################################################
+# These rules override the automatic floating detection above
+# Use `manage=off` to prevent tiling for specific apps or windows
+# See: https://github.com/koekeishiya/yabai/wiki/Commands#rule
+#
+# To find app names: run `yabai -m query --windows | jq '.[] | {app, title}'`
+# To test a rule: `yabai -m rule --add app="AppName" manage=off` (takes effect immediately)
+
+# CATEGORY 1: SYSTEM UTILITIES (never tile)
+# These apps are designed to be floating and don't work well in tiling layouts
+/opt/homebrew/bin/yabai -m rule --add app="^System Settings$" manage=off    # macOS Ventura+
+/opt/homebrew/bin/yabai -m rule --add app="^System Preferences$" manage=off # macOS Big Sur and earlier
+/opt/homebrew/bin/yabai -m rule --add app="^Calculator$" manage=off
+/opt/homebrew/bin/yabai -m rule --add app="^Activity Monitor$" manage=off
+/opt/homebrew/bin/yabai -m rule --add app="^Dictionary$" manage=off
+/opt/homebrew/bin/yabai -m rule --add app="^Software Update$" manage=off
+/opt/homebrew/bin/yabai -m rule --add app="^Disk Utility$" manage=off
+/opt/homebrew/bin/yabai -m rule --add app="^Archive Utility$" manage=off
+/opt/homebrew/bin/yabai -m rule --add app="^Installer$" manage=off
+/opt/homebrew/bin/yabai -m rule --add app="^Photo Booth$" manage=off
+
+# CATEGORY 2: DIALOG WINDOWS (title-based rules)
+# Specific window titles within apps that should float
+# Pattern from FelixKratz: https://github.com/FelixKratz/dotfiles
+# Note: Main Finder/Safari windows will still tile, only these dialogs float
+/opt/homebrew/bin/yabai -m rule --add app="^Finder$" title="(Copy|Move|Delete|Trash|Info|Connect|Preferences)" manage=off
+/opt/homebrew/bin/yabai -m rule --add app="^Safari$" title="^(General|Password|Website|Extension|AutoFill|Search|Security|Privacy|Advanced)$" manage=off
+/opt/homebrew/bin/yabai -m rule --add app="^System Information$" title="About This Mac" manage=off
+
+# CATEGORY 3: OPTIONAL RULES (commented out - uncomment to enable)
+# Uncomment individual rules below to customize behavior for specific apps
 # SYSTEM APPLICATIONS
 # /opt/homebrew/bin/yabai -m rule --add app="^System Preferences$" manage=off
 # /opt/homebrew/bin/yabai -m rule --add app="^System­einstellungen$" sticky=on layer=above manage=off
@@ -206,14 +252,19 @@ echo "yabai configuration loaded.."
 # 7. VISUAL ENHANCEMENTS (BORDERS)
 ################################################################################
 # JankyBorders for window borders - https://github.com/FelixKratz/JankyBorders
-# Adds a subtle border to the active window for better visibility
+# Adds borders to windows for better visibility
+# To experiment: Comment out current config, uncomment one below, restart yabai
 
-# Active configuration: 1px round light-colored border
-borders active_color=0xffe1e3e4 width=1 style=round &
+# CURRENT: Minimal 1px border on active window only
+# /opt/homebrew/bin/borders active_color=0xffe1e3e4 width=1 style=round &
 
-# Other border configurations (commented out)
-# borders active_color=0xffe1e3e4 inactive_color=0xff494d64 width=5.0 &
-# borders active_color=0xffe1e3e4 inactive_color=0xff494d64 width=3 blur_radius=3.0 hidipi=on style=round &
+# ALTERNATIVE 1: FelixKratz pattern - inactive windows get subtle dark border
+# Benefit: Better visual separation between windows, easier to see boundaries
+# /opt/homebrew/bin/borders active_color=0xffe1e3e4 inactive_color=0xff414550 width=2.0 style=round &
+
+# ALTERNATIVE 2: Thicker borders with blur effect (high-DPI displays)
+# /opt/homebrew/bin/borders active_color=0xffe1e3e4 inactive_color=0xff494d64 width=5.0 &
+# /opt/homebrew/bin/borders active_color=0xffe1e3e4 inactive_color=0xff494d64 width=3 blur_radius=3.0 hidipi=on style=round &
 
 # Define options as an array (alternative method)
 # options=(
