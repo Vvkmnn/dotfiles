@@ -10,6 +10,12 @@ smart_name() {
         return
     fi
 
+    # Normalize codex binary names like codex-aarch64-a.
+    if [[ "$cmd" == codex-* ]]; then
+        echo "codex"
+        return
+    fi
+
     # If cmd looks like a semver (claude sets process.title to version), find the real command
     if [[ "$cmd" =~ ^[0-9]+\.[0-9]+\.[0-9]+ && -n "$pane_tty" ]]; then
         local processes=$(ps -t "$pane_tty" -o comm= 2>/dev/null | \

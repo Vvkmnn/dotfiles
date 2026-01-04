@@ -1,46 +1,30 @@
 ### tmux
 
 ## options
-set-option -g default-terminal 'xterm-ghostty'
-set-option -g terminal-overrides ',xterm-256color:RGB,xterm-ghostty:RGB'
-set-option -a terminal-features ',xterm-256color:RGB'
+set-option -g default-terminal 'screen-256color'
+set-option -g terminal-overrides ',xterm-256color:RGB'
 set-option -gw xterm-keys on
 
 set-window-option -g automatic-rename on # Automatically set window title
 set-option -g set-titles on
-# Smart window naming - fixes apps that set process.title to version numbers
-set-option -g automatic-rename-format '#(~/.config/tmux/tmux.sh name "#{pane_current_command}" "#{pane_tty}")'
 
 set -g base-index 1              # start indexing windows at 1 instead of 0
 set -g mouse on
-# Disable right-click context menu to prevent accidental splits
-unbind -T root MouseDown3Pane        # disable right-click menu
-unbind -T root M-MouseDown3Pane      # disable alt+right-click menu
-set -g terminal-overrides ',*:smcup@:rmcup@'  # disable alternate screen for smooth scrolling
 set -g detach-on-destroy off     # don't exit from tmux when closing a session
-# VS Code's terminal drops OSC replies when escape-time is 0; give it headroom.
-if-shell '[ "$TERM_PROGRAM" = "vscode" ]' \
-  'set -g escape-time 10' \
-  'set -g escape-time 0'
-set -g history-limit 100000      # increase history size (from 2,000)
+set -g escape-time 0             # zero-out escape time delay
+set -g history-limit 10000       # increase history size (from 2,000)
 # set -g renumber-windows on       # renumber all windows when any window is closed
 set -g set-clipboard on          # use system clipboard
-# Allow OSC sequences (10/11/52 etc.) to pass through so VS Code/xterm.js handle colour queries cleanly.
-set -g allow-passthrough on
 set -g status-position top       # macOS / darwin style
-set -g status-interval 30        # update status bar every 30s (reduces morbid_year script calls)
-# escape-time already set above
-# default-terminal set at top of file
+set -sg escape-time 0            # no delay for esc
+set -g default-terminal "${TERM}"
 setw -g mode-keys vi
 set -g status-keys vi
 set -g monitor-activity on        # if change show in command line
-set -g activity-action other      # don't switch to window on activity
-setw -g window-status-activity-style 'fg=#7aa2f7,bg=default'  # blue text when activity
 
 
-set -g pane-border-status off
-set -g pane-active-border-style 'fg=#1a1b26,bg=default'  # tokyo night background
-set -g pane-border-style 'fg=#1a1b26,bg=default'        # tokyo night background
+set -g pane-active-border-style 'fg=white,bg=default'
+set -g pane-border-style 'fg=brightblack,bg=default'
 set -g status-bg default
 set -g status-fg white
 
@@ -51,61 +35,17 @@ set -g status-fg white
 bind-key C-o run-shell -b "tmux capture-pane -J -p | grep -oE '(https?):\/\/.*[^>]' | fzf-tmux -d20 --multi --bind alt-a:select-all,alt-d:deselect-all | xargs open" # \; display-message "Config reloaded..."
 
 ## keybinds
-# prefix - C-a (classic screen style), C-b as backup
-set -g prefix C-a
-# C-a a = smart last window (double-tap feel)
-# (replaces send-prefix for literal C-a - use Home key for beginning of line instead)
-bind-key a run-shell 'bash ~/.config/tmux/smart_last_window.sh'
-set -g prefix2 C-b
-bind-key C-b send-prefix -2
-
-# C-a Space = FZF window search (using tmux-fzf plugin instead)
-# bind-key Space display-popup -w 88% -h 88% -E "~/.config/tmux/tmux.sh finder"
+# prefix - dual prefix keys: Ctrl+b (default) and Ctrl+Space
+set -g prefix2 C-Space
+bind-key C-Space send-prefix -2
 
 # learn defaults
 # Prefix-() tab between sessions
 # Prefix-S interactive nav between sessions
 # Prefix-np next previous windows
 
-# Beautiful consolidated move-window chooser - search all windows or create new session
-bind-key m display-popup -w 88% -h 88% -E "bash ~/.config/tmux/smart_move_window.sh"
-
-# Test choose-tree for move (compare with fzf script)
-bind-key M choose-tree -Zw "run-shell 'bash ~/.config/tmux/move_window_to_target.sh \"%%\"'"
-
-# DISABLED - popup sessions caused stuck windows
-# # Project-scoped popup session attached to current directory
-# bind-key g run-shell '\
-#     POPUP_NAME="popup-$(basename "#{pane_current_path}" | tr -cd "a-zA-Z0-9-")"; \
-#     if [ "#{session_name}" = "$POPUP_NAME" ]; then \
-#         tmux detach-client; \
-#     else \
-#         tmux display-popup -d "#{pane_current_path}" -xC -yC -w 80% -h 75% -E "tmux attach-session -t $POPUP_NAME || tmux new-session -s $POPUP_NAME"; \
-#     fi \
-# '
-
-# # Global popup workspace for long-lived scratch buffers
-# bind-key G run-shell '\
-#     POPUP_NAME="popup-global"; \
-#     if [ "#{session_name}" = "$POPUP_NAME" ]; then \
-#         tmux detach-client; \
-#     else \
-#         tmux display-popup -xC -yC -w 80% -h 75% -E "tmux attach-session -t $POPUP_NAME || tmux new-session -s $POPUP_NAME"; \
-#     fi \
-# '
-
-# Quick new session
-bind-key N new-session
-
-# Arrow keys for moving windows (reordering)
-bind-key Left swap-window -t -1\; select-window -t -1
-bind-key Right swap-window -t +1\; select-window -t +1
-
 # bind-key r source-file "~/.config/tmux/tmux.conf" # reload
 bind-key r source-file ~/.config/tmux/tmux.conf \; display-message "~/.config/tmux/tmux.conf reloaded..."
-
-# Global toggle for OpenCode pane: if in Neovim send <C-.>, otherwise jump back (ref: https://github.com/NickvanDyke/opencode.nvim#provider)
-bind-key -n C-. if-shell "$is_vim" "send-keys C-." "select-pane -l"
 
 # Quit server
 # bind-key C-Q confirm-before -p "kill tmux server? (y/n)" kill-server
@@ -126,59 +66,12 @@ bind-key K confirm-before -p "kill tmux server (#{session_attached} active sessi
 # bind-key s split-window -v; \
 
 # navigation
-# Window navigation (hjkl)
-bind -r h previous-window
-bind -r j select-window -t :-1  # Go to last window
-bind -r k select-window -t :+1  # Go to next window
-bind -r l next-window
-
-# Smart pane switching with awareness of Vim splits (refs: https://github.com/alexghergh/nvim-tmux-navigation#tmux,
-# https://github.com/christoomey/vim-tmux-navigator#readme)
-is_vim="ps -o state= -o comm= -t '#{pane_tty}' | grep -iqE '^[^TXZ ]+ +(\S+\/)?g?(view|n?vim?x?)(diff)?$'"
-
-tmux_version='$(tmux -V | sed -En "s/^tmux ([0-9]+(.[0-9]+)?).*/\1/p")'
-
-bind-key -n C-h if-shell "$is_vim" "send-keys C-h" "select-pane -L"
-bind-key -n C-j if-shell "$is_vim" "send-keys C-j" "select-pane -D"
-bind-key -n C-k if-shell "$is_vim" "send-keys C-k" "select-pane -U"
-bind-key -n C-l if-shell "$is_vim" "send-keys C-l" "select-pane -R"
-if-shell -b '[ "$(echo "$tmux_version < 3.0" | bc)" = 1 ]' \
-    "bind-key -n C-\\ if-shell \"$is_vim\" 'send-keys C-\\' 'select-pane -l'"
-if-shell -b '[ "$(echo "$tmux_version >= 3.0" | bc)" = 1 ]' \
-    "bind-key -n C-\\ if-shell \"$is_vim\" 'send-keys C-\\\\' 'select-pane -l'"
-bind-key -n C-Space if-shell "$is_vim" "send-keys C-Space" "select-pane -t:.+"
-
-# Direct scroll without prefix (option key)
-# bind -n M-Up copy-mode -e \; send-keys -X scroll-up
-# bind -n M-Down copy-mode -e \; send-keys -X scroll-down
-
-# Jump further
-bind -n M-Up copy-mode -e \; send-keys -X halfpage-up
-bind -n M-Down copy-mode -e \; send-keys -X halfpage-down
-
-# TODO: Does not work?
-# bind -n C-M-Up copy-mode -e \; send-keys -X halfpage-up
-# bind -n C-M-Down copy-mode -e \; send-keys -X halfpage-down
-
-# NOTE: The cmd+up half pge works, but not smooth scrolling, using the meta ones for now
-# Cmd+Arrow scroll (requires Ghostty keybinds to send escape sequences)
-# bind -n -T root "\e[1;10A" copy-mode -e \; send-keys -X scroll-up
-# bind -n -T root "\e[1;10B" copy-mode -e \; send-keys -X scroll-down
-# Ctrl+Cmd+Arrow for big jump
-# bind -n -T root "\e[1;14A" copy-mode -e \; send-keys -X halfpage-up
-# bind -n -T root "\e[1;14B" copy-mode -e \; send-keys -X halfpage-down
-
-# Pane navigation (commented out - using hjkl for windows)
-# bind h select-pane -L
-# bind j select-pane -D
-# bind k select-pane -U
-# bind l select-pane -R
-
-# Alternative window navigation (commented out)
-# bind -r H previous-window
-# bind -r L next-window
-# bind -r , previous-window
-# bind -r . next-window
+# NOTE add -r if want to repeat
+# bind -r h select-pane -L
+bind h select-pane -L
+bind j select-pane -D
+bind k select-pane -U
+bind l select-pane -R
 
 # switch panes
 bind-key -r Tab select-pane -t :.+
@@ -212,8 +105,8 @@ bind-key C-k break-pane
 # bind-key @ join-pane -h -t '!'
 # bind-key @ choose-window "join-pane -h -s "%%""
 
-# create new split window at path - DISABLED to prevent accidental splits
-# bind-key C-l split-window -h -c "#{pane_current_path}"
+# create new split window at path
+bind-key C-l split-window -h -c "#{pane_current_path}"
 
 ## Join windows: <prefix> s, <prefix> j
 # bind-key S-j command-prompt -p "join pane from:"  "join-pane -s '%%'"
@@ -247,7 +140,7 @@ set -g status-right '#[fg=yellow]#(cut -d " " -f 1-3 /proc/loadavg)#[default] #[
 # bind -T copy-mode-emacs C-WheelDownPane send-keys -X halfpage-down
 
 # # Use vim keybindings in copy mode
-# setw -g mode-keys vi  # duplicate - already set at line 33
+setw -g mode-keys vi
 
 # Update default binding of `Enter` to also use copy-pipe
 # unbind -T copy-mode-vi Enter
@@ -270,18 +163,10 @@ set -g @plugin 'tmux-plugins/tpm'
 
 
 # set -g @plugin 'catppuccin/tmux'
-## NOTE: This doesn't work in VS Code yet; Codex thinks the issue is xterm.js, unsure check in future
-# if-shell '[ "$TERM_PROGRAM" = "vscode" ]' {
-#   setw -g window-status-format ' #I:#W '
-#   setw -g window-status-current-format '#[bold]#I:#W#[default]'
-#   setw -g window-status-separator '  '
-# } {
 set -g @plugin 'niksingh710/minimal-tmux-status'
-# }
 set -g @plugin 'tmux-plugins/tmux-battery'
 
-# NOTE: doesn't work - see line 410
-# set -g @plugin 'xamut/tmux-network-bandwidth'
+set -g @plugin 'xamut/tmux-network-bandwidth'
 
 set -g @plugin 'tmux-plugins/tmux-sensible'
 
@@ -292,16 +177,12 @@ set -g @plugin 'tmux-plugins/tmux-yank'
 set -g @plugin 'tmux-plugins/tmux-resurrect'
 set -g @plugin 'tmux-plugins/tmux-continuum'
 set -g @plugin 'fcsonline/tmux-thumbs'
-# thumbs default is Space (hijacks our binding)
-# using t replaces clock-mode (C-a t) - use `date` command if needed
-set -g @thumbs-key t
-unbind t  # remove clock-mode to ensure thumbs gets it
 
 set -g @plugin 'sainnhe/tmux-fzf'
 set -g @plugin 'wfxr/tmux-fzf-url'
 
-# extrakto: prefix+tab to fuzzy-find URLs/paths/words from pane scrollback
-# set -g @plugin 'laktak/extrakto'  # disabled - not using atm
+# TODO what does this do?
+set -g @plugin 'laktak/extrakto'
 
 # catppuccin
 # set -g @catppuccin_flavour 'mocha' # or frappe, macchiato, mocha
@@ -340,7 +221,7 @@ set -g @plugin 'wfxr/tmux-fzf-url'
 # If getting strings cut in left status or right
 # Here k0 is the length of the characters in the string
 # set -g status-right-length 60
-set -g status-right-length 300
+set -g status-right-length 75
 set -g status-left-length 0
 # set -g status-left-length 100
 
@@ -464,7 +345,15 @@ set -g @batt_remain_short 'true'
 #[fg=#6E88B3]#(~/.config/tmux/morbid_year zodiac)\
 #{battery_icon}\
 
-set -g @minimal-tmux-status-right "#(~/.config/tmux/morbid_year all)"
+set -g @minimal-tmux-status-right " \
+#[fg=#7A9FDB]#(~/.config/tmux/morbid_year day_of_week) \
+#[fg=#8CB0DC]#(~/.config/tmux/morbid_year day_of_month) \
+#[fg=#9EC2DD]#(~/.config/tmux/morbid_year day_of_year) \
+#[fg=#AED0E7]#(~/.config/tmux/morbid_year week_of_year) \
+#[fg=#BFE3F1]#(~/.config/tmux/morbid_year current_month) \
+#[fg=#D0F0FA]#(~/.config/tmux/morbid_year year_week_based) \
+#[fg=#FFFFFF]#(~/.config/tmux/morbid_year time) \
+"
 
 # TODO battery?
 #{battery_icon} \
@@ -539,7 +428,7 @@ set -g @minimal-tmux-status-right "#(~/.config/tmux/morbid_year all)"
 # spacer
 set -g @minimal-tmux-status-right-extra ""
 
-# set -g @minimal-tmux-status-right " #[fg=#689DDA]#(~/.config/tmux/morbid_year zodiac) #[fg=#689DDA]#(~/.config/tmux/morbid_year day_of_week)|#[fg=#7A9FDB]#(~/.config/tmux/morbid_year day_of_month)|#[fg=#8CB0DC]#(~/.config/tmux/morbid_year day_of_year)|#[fg=#9EC2DD]#(~/.config/tmux/morbid_year week_of_year)|#[fg=#B0D3DE]#(~/.config/tmux/morbid_year current_month)|#[fg=#C3E5DF]#(~/.config/tmux/morbid_year year_week_based) #[fg=#FFFFFF]#(~/.config/tmux/morbid_year time)  "
+# set -g @minimal-tmux-status-right " #[fg=#689DDA]#(~/.config/tmux/morbid_year zodiac) #[fg=#689DDA]#(~/.config/tmux/morbid_year day_of_week)|#[fg=#7A9FDB]#(~/.config/tmux/morbid_year day_of_month)|#[fg=#8CB0DC]#(~/.config/tmux/morbid_year day_of_year)|#[fg=#9EC2DD]#(~/.config/tmux/morbid_year week_of_year)|#[fg=#B0D3DE]#(~/.config/tmux/morbid_year current_month)|#[fg=#C3E5DF]#(~/.config/tmux/morbid_year year_week_based) #[fg=#FFFFFF]#(~/.config/tmux/morbid_year time) "
 
 
 # ॐ \
@@ -591,18 +480,11 @@ set -g @minimal-tmux-expanded-icon " 󰊓 "
 # false will make it visible for the current tab only
 set -g @minimal-tmux-show-expanded-icons-for-all-tabs true
 
-## tmux-fzf
-# set -g @plugin 'sainnhe/tmux-fzf'  # Using custom fzf window search instead
 
-# Enhanced window search with rich context for MCP (prefix + Enter)
-# Using tmux-fzf plugin instead - invoke with prefix+F
-# bind-key Enter display-popup -w 88% -h 88% -E "~/.config/tmux/tmux.sh finder"
-
-
-# Optimized TPM loading - defer non-critical operations for faster startup
+run '~/.tmux/plugins/tpm/bin/update_plugins all'
+run '~/.tmux/plugins/tpm/bin/install_plugins'
+run '~/.tmux/plugins/tpm/bin/clean_plugins'
 run '~/.tmux/plugins/tpm/tpm'
-# Background plugin management - keeps startup fast
-run-shell 'tmux new-session -d -s tpm_update "~/.tmux/plugins/tpm/bin/update_plugins all; ~/.tmux/plugins/tpm/bin/clean_plugins" >/dev/null 2>&1 || true'
 }
 
 
@@ -611,54 +493,54 @@ run-shell 'tmux new-session -d -s tpm_update "~/.tmux/plugins/tpm/bin/update_plu
 # https://www.reddit.com/r/Ghostty/comments/1hoi3id/my_perfect_ghostty_tmux_nvim_configuration_on/
 ### # # Set terminal colors
 ### set-option -sa terminal-overrides ",xterm*:Tc"
-###
+### 
 ### # Enable mouse support
 ### set -g mouse on
-###
+### 
 ### # Start windows and panes at 1, not 0
 ### set -g base-index 1
 ### set -g pane-base-index 1
 ### set-window-option -g pane-base-index 1
 ### set-option -g renumber-windows on
-###
+### 
 ### # kill pane
 ### bind-key x kill-pane
-###
+### 
 ### # Pane resizing
 ### bind -n M-h resize-pane -L
 ### bind -n M-l resize-pane -R
 ### bind -n M-k resize-pane -U
 ### bind -n M-j resize-pane -D
-###
+### 
 ### # Move window to the left
 ### bind -n M-i swap-window -t -1
-###
+### 
 ### # Move window to the right
 ### bind -n M-o swap-window -t +1
-###
+### 
 ### # Set vi mode
 ### set-window-option -g mode-keys vi
-###
+### 
 ### # Use visual selection mode as vi
 ### bind-key -T copy-mode-vi v send-keys -X begin-selection
 ### bind-key -T copy-mode-vi C-v send-keys -X rectangle-toggle
 ### bind-key -T copy-mode-vi y send-keys -X copy-selection-and-cancel
-###
+### 
 ### # Save and restore session
 ### set -g @resurrect-save 'S'
 ### set -g @resurrect-restore 'R'
-###
+### 
 ### # Tmux theme
 ### set -g @catppuccin_flavour 'mocha'
 ### set -g @catppuccin_right_separator "█"
 ### set -g @catppuccin_left_separator "█"
-###
+### 
 ### TMUX_FZF_ORDER="session|window|pane|command|keybinding"
 ### TMUX_FZF_OPTIONS="-p -w 90% -h 70% -m"
-###
+### 
 ### # more options here: https://github.com/sainnhe/tmux-fzf/issues/6#issuecomment-578750879
 ### bind w run-shell -b "~/.config/tmux/plugins/tmux-fzf/scripts/window.sh switch"
-###
+### 
 ### # Plugins
 ### set -g @plugin 'tmux-plugins/tpm'
 ### set -g @plugin 'tmux-plugins/tmux-sensible'
@@ -668,5 +550,5 @@ run-shell 'tmux new-session -d -s tpm_update "~/.tmux/plugins/tpm/bin/update_plu
 ### set -g @plugin 'tmux-plugins/tmux-resurrect'
 ### set -g @plugin 'tmux-plugins/tmux-continuum'
 ### set -g @resurrect-strategy-nvim 'session'
-###
+### 
 ### run '~/.tmux/plugins/tpm/tpm'
