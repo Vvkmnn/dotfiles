@@ -3,6 +3,105 @@
 # Unified progress indicator: day-of-year timeline with current time
 # Format: 353━━━●──354 17:13
 
+# === Sunrise/Sunset Lookup (no API) ===
+TZ_CITY=$(readlink /etc/localtime | sed 's|.*/zoneinfo/||')
+MONTH=$(date +%-m)
+
+# Monthly lookup by city (~15min accuracy)
+case "$TZ_CITY" in
+    # Australia (Southern Hemisphere - reversed seasons)
+    Australia/Sydney|Australia/Melbourne)
+        case $MONTH in
+            12|1|2) SUNRISE_HOUR=6; SUNSET_HOUR=20 ;;  # Summer
+            3|4|5) SUNRISE_HOUR=7; SUNSET_HOUR=18 ;;   # Autumn
+            6|7|8) SUNRISE_HOUR=7; SUNSET_HOUR=17 ;;   # Winter
+            9|10|11) SUNRISE_HOUR=6; SUNSET_HOUR=19 ;; # Spring
+        esac ;;
+
+    # North America - East Coast
+    America/New_York|America/Toronto)
+        case $MONTH in
+            12|1|2) SUNRISE_HOUR=7; SUNSET_HOUR=17 ;;  # Winter
+            3|4|5) SUNRISE_HOUR=6; SUNSET_HOUR=19 ;;   # Spring
+            6|7|8) SUNRISE_HOUR=6; SUNSET_HOUR=20 ;;   # Summer
+            9|10|11) SUNRISE_HOUR=7; SUNSET_HOUR=18 ;; # Autumn
+        esac ;;
+
+    # North America - West Coast
+    America/Vancouver|America/Los_Angeles)
+        case $MONTH in
+            12|1|2) SUNRISE_HOUR=8; SUNSET_HOUR=16 ;;
+            3|4|5) SUNRISE_HOUR=6; SUNSET_HOUR=19 ;;
+            6|7|8) SUNRISE_HOUR=5; SUNSET_HOUR=21 ;;
+            9|10|11) SUNRISE_HOUR=7; SUNSET_HOUR=18 ;;
+        esac ;;
+
+    # North America - Mountain
+    America/Edmonton|America/Calgary)
+        case $MONTH in
+            12|1|2) SUNRISE_HOUR=8; SUNSET_HOUR=16 ;;
+            3|4|5) SUNRISE_HOUR=6; SUNSET_HOUR=19 ;;
+            6|7|8) SUNRISE_HOUR=5; SUNSET_HOUR=21 ;;
+            9|10|11) SUNRISE_HOUR=7; SUNSET_HOUR=18 ;;
+        esac ;;
+
+    # Mexico
+    America/Mexico_City)
+        case $MONTH in
+            12|1|2) SUNRISE_HOUR=7; SUNSET_HOUR=18 ;;
+            3|4|5) SUNRISE_HOUR=7; SUNSET_HOUR=19 ;;
+            6|7|8) SUNRISE_HOUR=7; SUNSET_HOUR=20 ;;
+            9|10|11) SUNRISE_HOUR=7; SUNSET_HOUR=19 ;;
+        esac ;;
+
+    # Europe - UK
+    Europe/London)
+        case $MONTH in
+            12|1|2) SUNRISE_HOUR=8; SUNSET_HOUR=16 ;;
+            3|4|5) SUNRISE_HOUR=6; SUNSET_HOUR=19 ;;
+            6|7|8) SUNRISE_HOUR=5; SUNSET_HOUR=21 ;;
+            9|10|11) SUNRISE_HOUR=7; SUNSET_HOUR=17 ;;
+        esac ;;
+
+    # Europe - Central (Paris, Berlin, Romania)
+    Europe/Paris|Europe/Berlin|Europe/Bucharest)
+        case $MONTH in
+            12|1|2) SUNRISE_HOUR=8; SUNSET_HOUR=16 ;;
+            3|4|5) SUNRISE_HOUR=6; SUNSET_HOUR=19 ;;
+            6|7|8) SUNRISE_HOUR=5; SUNSET_HOUR=21 ;;
+            9|10|11) SUNRISE_HOUR=7; SUNSET_HOUR=17 ;;
+        esac ;;
+
+    # Asia - East (Japan, Korea, China)
+    Asia/Tokyo|Asia/Seoul|Asia/Shanghai|Asia/Hong_Kong)
+        case $MONTH in
+            12|1|2) SUNRISE_HOUR=7; SUNSET_HOUR=17 ;;
+            3|4|5) SUNRISE_HOUR=6; SUNSET_HOUR=18 ;;
+            6|7|8) SUNRISE_HOUR=5; SUNSET_HOUR=19 ;;
+            9|10|11) SUNRISE_HOUR=6; SUNSET_HOUR=17 ;;
+        esac ;;
+
+    # Asia - South (India)
+    Asia/Kolkata|Asia/Calcutta)
+        case $MONTH in
+            12|1|2) SUNRISE_HOUR=7; SUNSET_HOUR=18 ;;
+            3|4|5) SUNRISE_HOUR=6; SUNSET_HOUR=18 ;;
+            6|7|8) SUNRISE_HOUR=6; SUNSET_HOUR=19 ;;
+            9|10|11) SUNRISE_HOUR=6; SUNSET_HOUR=18 ;;
+        esac ;;
+
+    # Asia - Equatorial (Singapore - minimal variation)
+    Asia/Singapore|Asia/Kuala_Lumpur)
+        SUNRISE_HOUR=7; SUNSET_HOUR=19 ;;
+
+    # Africa - Equatorial (Accra - minimal variation)
+    Africa/Accra)
+        SUNRISE_HOUR=6; SUNSET_HOUR=18 ;;
+
+    # Default fallback
+    *) SUNRISE_HOUR=6; SUNSET_HOUR=18 ;;
+esac
+
 # Get current day of year
 DAY_OF_YEAR=$(date '+%j')
 # Remove leading zeros
@@ -44,10 +143,22 @@ if [ $DOT_POS -gt 4 ]; then
     DOT_POS=4
 fi
 
+# Calculate which slots get half-moons
+SUNRISE_MINUTES=$((SUNRISE_HOUR * 60))
+SUNSET_MINUTES=$((SUNSET_HOUR * 60))
+SUNRISE_SLOT=$((SUNRISE_MINUTES * 5 / 1440))
+SUNSET_SLOT=$((SUNSET_MINUTES * 5 / 1440))
+
 TRACK=""
 for i in 0 1 2 3 4; do
 	if [ $i -eq $DOT_POS ]; then
-		TRACK="${TRACK}●"
+		if [ $i -eq $SUNRISE_SLOT ]; then
+			TRACK="${TRACK}◐"  # Sunrise slot
+		elif [ $i -eq $SUNSET_SLOT ]; then
+			TRACK="${TRACK}◑"  # Sunset slot
+		else
+			TRACK="${TRACK}●"  # Normal
+		fi
 	elif [ $i -lt $DOT_POS ]; then
 		TRACK="${TRACK}━"
 	else

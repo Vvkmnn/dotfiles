@@ -4,7 +4,12 @@
       "WebFetch(domain:ghostty.org)",
       "WebFetch(domain:www.reddit.com)",
       "WebFetch(domain:gist.github.com)",
-      "WebFetch(domain:fredrikaverpil.github.io)"
+      "WebFetch(domain:fredrikaverpil.github.io)",
+      "WebSearch",
+      "Bash(claude --version:*)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:blog.tymek.dev)",
+      "WebFetch(domain:medium.com)"
     ],
     "deny": []
   }

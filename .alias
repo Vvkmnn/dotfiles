@@ -44,7 +44,8 @@
 ####################################################
 
 # GUARD Prevent double-sourcing and skip in AI sandbox
-[ -n "$__ALIAS_SOURCED" ] && return; __ALIAS_SOURCED=1
+[ -n "$__ALIAS_SOURCED" ] && return
+__ALIAS_SOURCED=1
 [ -n "$AI_SANDBOX_ONLY" ] && return
 
 # NOTE Changed this
@@ -117,9 +118,9 @@ alias ,u=update_all
 
 # Claude
 alias ,ai='claude --model sonnet --print'
-alias ,c='claude'
+alias ,c='claude --continue'
 alias ,c.='claude --add-dir .'
-alias ,cl='claude --continue'
+alias ,cl='claude'
 alias ,clv='claude --verbose --continue'
 alias ,clr='claude --resume'
 alias ,cu='ccusage blocks --live'

@@ -107,17 +107,29 @@
                         ]
                     },
                     {
-                        "description": "Right Command: Alone=Screenshot+Resize (700px) | +Space=Paste | Ctrl+Cmd=Area Screenshot | Ctrl+Shift+Cmd=Screenshot Options",
+                        "description": "Right Command: Alone=Screenshot+Resize (700px) | +Space=Paste | Ctrl+Cmd=Area Screenshot | Shift+Cmd=Screenshot Options",
                         "manipulators": [
                             {
                                 "from": {
                                     "key_code": "right_command",
-                                    "modifiers": { "optional": ["any"] }
+                                    "modifiers": { "mandatory": ["shift"] }
                                 },
-                                "to": [{ "key_code": "right_command" }],
-                                "to_if_alone": [
+                                "to": [
                                     {
-                                        "shell_command": "~/.config/karabiner/scripts/smart-screenshot-resize.sh"
+                                        "key_code": "5",
+                                        "modifiers": ["left_command", "left_shift"]
+                                    }
+                                ],
+                                "type": "basic"
+                            },
+                            {
+                                "from": {
+                                    "key_code": "right_command",
+                                    "modifiers": { "mandatory": ["control"] }
+                                },
+                                "to": [
+                                    {
+                                        "shell_command": "~/.config/karabiner/scripts/smart-screenshot-resize.sh -i"
                                     }
                                 ],
                                 "type": "basic"
@@ -138,25 +150,12 @@
                             {
                                 "from": {
                                     "key_code": "right_command",
-                                    "modifiers": { "mandatory": ["control", "shift"] }
+                                    "modifiers": { "optional": ["any"] }
                                 },
-                                "to": [
+                                "to": [{ "key_code": "right_command" }],
+                                "to_if_alone": [
                                     {
-                                        "key_code": "5",
-                                        "modifiers": ["left_command", "left_shift"]
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "from": {
-                                    "key_code": "right_command",
-                                    "modifiers": { "mandatory": ["control"] }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "4",
-                                        "modifiers": ["left_command", "left_shift", "left_control"]
+                                        "shell_command": "~/.config/karabiner/scripts/smart-screenshot-resize.sh"
                                     }
                                 ],
                                 "type": "basic"

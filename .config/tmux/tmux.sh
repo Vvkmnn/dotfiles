@@ -37,6 +37,51 @@ smart_name() {
     echo "$cmd"
 }
 
+short_dir() {
+    local path="$1"
+    local basename="${path##*/}"
+
+    # Split by delimiters (-, _, .)
+    IFS='-_.' read -ra segments <<< "$basename"
+
+    # Skip common prefixes
+    local skip_words=("claude" "codex" "awesome" "cc")
+    local filtered_segments=()
+    local skip_first=0
+
+    # Check if first segment should be skipped
+    for skip_word in "${skip_words[@]}"; do
+        if [[ "${segments[0]}" == "$skip_word" ]]; then
+            skip_first=1
+            break
+        fi
+    done
+
+    # Build filtered list
+    for i in "${!segments[@]}"; do
+        if [[ $skip_first -eq 1 && $i -eq 0 ]]; then
+            continue
+        fi
+        filtered_segments+=("${segments[$i]}")
+    done
+
+    # If all segments were filtered out, fall back to basename
+    if [[ ${#filtered_segments[@]} -eq 0 ]]; then
+        echo "$basename"
+        return
+    fi
+
+    # Find longest segment
+    local longest=""
+    for segment in "${filtered_segments[@]}"; do
+        if [[ ${#segment} -gt ${#longest} ]]; then
+            longest="$segment"
+        fi
+    done
+
+    echo "$longest"
+}
+
 window_finder() {
     tmux list-windows -a -F '#{session_name}:#{window_index}-#{window_name}-#{pane_current_command}-#{pane_current_path}' | \
     while IFS=- read -r target win_name cmd path; do
@@ -108,8 +153,11 @@ case "$1" in
     "vscode")
         spawn_vscode_window "$2"
         ;;
+    "dir")
+        short_dir "$2"
+        ;;
     *)
-        echo "Usage: $0 {name|finder} [args...]"
+        echo "Usage: $0 {name|finder|dir} [args...]"
         exit 1
         ;;
 esac

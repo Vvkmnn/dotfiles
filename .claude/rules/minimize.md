@@ -82,6 +82,21 @@ When launching subagents: `model: "haiku"` for straightforward execution tasks
 - One change at a time, not batched surprises
 - Then execute after confirmation
 
+### Documentation for Future Work
+
+**Add comments that answer:**
+- What does this do? (one-line purpose for functions/classes)
+- Why this approach? (decisions, trade-offs, alternatives rejected)
+- What broke before? (comment out failed code with explanation)
+- What else depends on this? (cross-file references with file:line)
+- What are the edge cases? (race conditions, timing, quirks)
+
+**Format:**
+- LSP-friendly docstrings for functions/classes (helps tooling)
+- Inline comments for non-obvious logic
+- Section headers for major blocks (like yabai/sketchybar example)
+- Never create separate doc files (README per module, DESIGN.md, etc.)
+
 ### Code Quality Checklist
 
 Before considering code complete:
@@ -92,6 +107,7 @@ Before considering code complete:
 - [ ] Does it match existing patterns?
 - [ ] Would a new developer understand it?
 - [ ] Removed code commented out with brief explanation?
+- [ ] Added comments explaining what, why, decisions, edge cases?
 
 ### Anti-Patterns
 

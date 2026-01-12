@@ -56,16 +56,29 @@ async function processHook(hookInput) {
   // const sender = '-sender "com.anthropic.claudefordesktop"';  // Claude app
   // const sender = '-sender "com.mitchellh.ghostty"';  // Ghostty (unreliable)
   const sender = '-sender "com.apple.Terminal"';  // Terminal (reliable)
-  const notifyCmd = `terminal-notifier -title "${title}" -subtitle "${subtitle}" -message "${message}" ${sender} -sound default -timeout 30`;
+  const notifyCmd = `terminal-notifier -title "${title}" -subtitle "${subtitle}" -message "${message}" ${sender} -timeout 30`;
+
+  // Ring terminal bell for tmux window highlighting
+  // Get current pane's tty and write bell directly to it
+  exec(`/opt/homebrew/bin/tmux display-message -p '#{pane_tty}'`, (ttyError, ttyPath) => {
+    if (!ttyError && ttyPath) {
+      const tty = ttyPath.trim();
+      exec(`printf "\\a" > ${tty}`, (bellError) => {
+        if (bellError) {
+          console.error('❌ Bell to tty failed:', bellError);
+        }
+      });
+    }
+  });
 
   exec(notifyCmd, (error) => {
     if (error) {
-      console.error('❌ Notification failed:', error);
-      // Fallback to osascript
-      const fallback = `osascript -e 'display notification "${message}" with title "${title}" subtitle "${subtitle}" sound name "default"'`;
+      console.error('❌ terminal-notifier failed, trying osascript:', error);
+      // Fallback to osascript (no sound)
+      const fallback = `osascript -e 'display notification "${message}" with title "${title}" subtitle "${subtitle}"'`;
       exec(fallback, () => process.exit(0));
     } else {
-      console.log('✅ Notification sent');
+      console.log('✅ Notifications sent (bell + macOS)');
       process.exit(0);
     }
   });
@@ -104,7 +117,7 @@ function getDuration() {
 
 function getTmuxInfo() {
   return new Promise((resolve) => {
-    exec('tmux display-message -p "v#S:#I:#W"', (error, stdout) => {
+    exec('/opt/homebrew/bin/tmux display-message -p "v#S:#I:#W"', (error, stdout) => {
       if (error) {
         const fallback = `${process.env.TMUX_SESSION || 'unknown'}:${process.env.TMUX_WINDOW || process.env.TMUX_PANE || 'unknown'}`;
         resolve(fallback);

@@ -87,7 +87,7 @@ font-feature = calt=0
 # font-codepoint-map = U+E0B0=SF Mono
 
 # Adjust cell dimensions
-adjust-cell-height = 10%
+# adjust-cell-height = 10%  # DISABLED: Causes Neovim to not fill terminal (creates draggable gap)
 # adjust-cell-width = 0%
 
 # Fine-tune font positioning

@@ -33,10 +33,20 @@ sudo /opt/homebrew/bin/yabai --load-sa
 # This ensures focus shifts to another window when the current one is closed
 # https://github.com/koekeishiya/yabai/issues/1012
 #
-# When a window is destroyed, focus the most recently used window or the first one
-/opt/homebrew/bin/yabai -m signal --add event=window_destroyed action="/opt/homebrew/bin/yabai -m query --windows --window &> /dev/null || /opt/homebrew/bin/yabai -m window --focus recent || /opt/homebrew/bin/yabai -m window --focus first"
-# Same behavior when an application is terminated
-/opt/homebrew/bin/yabai -m signal --add event=application_terminated action="/opt/homebrew/bin/yabai -m query --windows --window &> /dev/null || /opt/homebrew/bin/yabai -m window --focus recent || /opt/homebrew/bin/yabai -m window --focus first"
+# When a window is destroyed, focus a window on the CURRENT space only (don't switch spaces)
+/opt/homebrew/bin/yabai -m signal --add event=window_destroyed action='
+  /opt/homebrew/bin/yabai -m query --windows --window &> /dev/null || {
+    window_id=$(/opt/homebrew/bin/yabai -m query --windows --space | jq -r "[.[] | select(.\"is-visible\" == true)][0].id // empty")
+    [ -n "$window_id" ] && /opt/homebrew/bin/yabai -m window --focus "$window_id"
+  }
+'
+# Same behavior when an application is terminated - focus current space only (don't switch spaces)
+/opt/homebrew/bin/yabai -m signal --add event=application_terminated action='
+  /opt/homebrew/bin/yabai -m query --windows --window &> /dev/null || {
+    window_id=$(/opt/homebrew/bin/yabai -m query --windows --space | jq -r "[.[] | select(.\"is-visible\" == true)][0].id // empty")
+    [ -n "$window_id" ] && /opt/homebrew/bin/yabai -m window --focus "$window_id"
+  }
+'
 
 ################################################################################
 # 3. WINDOW MANAGEMENT SIGNALS
@@ -46,19 +56,19 @@ sudo /opt/homebrew/bin/yabai --load-sa
 #
 # Focus the first VISIBLE window when switching spaces
 # Filters out minimized and hidden windows to prevent focusing invisible windows
+# Only focuses if a window exists (prevents errors on empty spaces)
 /opt/homebrew/bin/yabai -m signal --add event=space_changed action='
-  /opt/homebrew/bin/yabai -m window --focus $(
-    /opt/homebrew/bin/yabai -m query --windows --space |
-    jq -r "[.[] | select(.\"is-visible\" == true and .\"is-minimized\" == false)][0].id // empty"
-  )
+  window_id=$(/opt/homebrew/bin/yabai -m query --windows --space |
+    jq -r "[.[] | select(.\"is-visible\" == true and .\"is-minimized\" == false)][0].id // empty")
+  [ -n "$window_id" ] && /opt/homebrew/bin/yabai -m window --focus "$window_id"
 '
 
 # Focus the first VISIBLE window when changing displays
+# Only focuses if a window exists (prevents errors on empty spaces)
 /opt/homebrew/bin/yabai -m signal --add event=display_changed action='
-  /opt/homebrew/bin/yabai -m window --focus $(
-    /opt/homebrew/bin/yabai -m query --windows --space |
-    jq -r "[.[] | select(.\"is-visible\" == true and .\"is-minimized\" == false)][0].id // empty"
-  )
+  window_id=$(/opt/homebrew/bin/yabai -m query --windows --space |
+    jq -r "[.[] | select(.\"is-visible\" == true and .\"is-minimized\" == false)][0].id // empty")
+  [ -n "$window_id" ] && /opt/homebrew/bin/yabai -m window --focus "$window_id"
 '
 
 # Special handling for small floating windows
@@ -73,9 +83,9 @@ sudo /opt/homebrew/bin/yabai --load-sa
 # 4. GLOBAL CONFIGURATION SETTINGS
 ################################################################################
 # Focus and mouse behavior
-# 'autofocus' mode activates windows when the mouse enters them
+# 'autoraise' mode only focuses windows on the current space when mouse hovers (doesn't switch spaces)
 /opt/homebrew/bin/yabai -m config mouse_follows_focus on        # Move mouse cursor with window focus
-/opt/homebrew/bin/yabai -m config focus_follows_mouse autofocus # Focus windows when mouse hovers over them
+/opt/homebrew/bin/yabai -m config focus_follows_mouse autoraise # Focus windows on current space only when mouse hovers
 
 # Window placement and appearance
 /opt/homebrew/bin/yabai -m config window_origin_display default # Place new windows on the current display
@@ -170,6 +180,7 @@ sudo /opt/homebrew/bin/yabai --load-sa
 /opt/homebrew/bin/yabai -m rule --add app="^Dictionary$" manage=off
 /opt/homebrew/bin/yabai -m rule --add app="^Software Update$" manage=off
 /opt/homebrew/bin/yabai -m rule --add app="^Disk Utility$" manage=off
+/opt/homebrew/bin/yabai -m rule --add app="^Time Machine$" manage=off
 /opt/homebrew/bin/yabai -m rule --add app="^Archive Utility$" manage=off
 /opt/homebrew/bin/yabai -m rule --add app="^Installer$" manage=off
 /opt/homebrew/bin/yabai -m rule --add app="^Photo Booth$" manage=off
@@ -178,11 +189,19 @@ sudo /opt/homebrew/bin/yabai --load-sa
 # Specific window titles within apps that should float
 # Pattern from FelixKratz: https://github.com/FelixKratz/dotfiles
 # Note: Main Finder/Safari windows will still tile, only these dialogs float
-/opt/homebrew/bin/yabai -m rule --add app="^Finder$" title="(Copy|Move|Delete|Trash|Info|Connect|Preferences)" manage=off
+/opt/homebrew/bin/yabai -m rule --add app="^Finder$" title="(Copy|Move|Delete|Trash|Info|Connect|Preferences|Time Machine)" manage=off
+/opt/homebrew/bin/yabai -m rule --add app="^Finder$" subrole="^AXDialog$" manage=off
 /opt/homebrew/bin/yabai -m rule --add app="^Safari$" title="^(General|Password|Website|Extension|AutoFill|Search|Security|Privacy|Advanced)$" manage=off
 /opt/homebrew/bin/yabai -m rule --add app="^System Information$" title="About This Mac" manage=off
 
-# CATEGORY 3: OPTIONAL RULES (commented out - uncomment to enable)
+# CATEGORY 3: APPS TO FORCE TILING (override auto-float detection)
+# These apps may report can-resize=false but should be managed anyway
+/opt/homebrew/bin/yabai -m rule --add app="^Notes$" manage=on
+/opt/homebrew/bin/yabai -m rule --add app="^Reminders$" manage=on
+/opt/homebrew/bin/yabai -m rule --add app="^Calendar$" manage=on
+/opt/homebrew/bin/yabai -m rule --add app="^Steam$" manage=on
+
+# CATEGORY 4: OPTIONAL RULES (commented out - uncomment to enable)
 # Uncomment individual rules below to customize behavior for specific apps
 # SYSTEM APPLICATIONS
 # /opt/homebrew/bin/yabai -m rule --add app="^System Preferences$" manage=off
@@ -277,4 +296,93 @@ echo "yabai configuration loaded.."
 # borders "${options[@]}"
 /opt/homebrew/bin/yabai -m config debug_output on
 /opt/homebrew/bin/yabai -m config external_bar all:24:0
+
+# ============================================================================
+# SKETCHYBAR INTEGRATION - DYNAMIC SPACE SYNCHRONIZATION
+# ============================================================================
+#
+# PURPOSE:
+#   Keep sketchybar space indicators in sync with yabai spaces automatically.
+#   Eliminates need for manual sketchybar restarts when creating/destroying spaces.
+#
+# HOW IT WORKS:
+#   1. space_changed: Triggers sketchybar update when you switch between spaces
+#   2. space_created: Automatically adds new space indicator to sketchybar
+#   3. space_destroyed: Automatically removes space indicator from sketchybar
+#
+# HISTORY & DEBUGGING NOTES (2026-01-05):
+#   Problem 1: Duplicate ctrl+cmd+x keybindings caused spaces to disappear
+#     - One binding moved windows to empty spaces
+#     - Another binding switched displays
+#     - Both executing simultaneously caused race conditions
+#     - Fix: Removed display switch binding, kept move-to-empty-space only
+#
+#   Problem 2: Invalid event subscription "windows_on_spaces"
+#     - Original config subscribed to non-existent event
+#     - Caused space items to fail creation with errors
+#     - Fix: Changed to valid "space_windows_change" event
+#
+#   Problem 3: Race condition during service restart (ctrl+cmd+0)
+#     - Sketchybar would start before yabai was ready
+#     - Empty query result → no space items created
+#     - Fix: Added retry loop in sketchybarrc (10 attempts × 0.5s = 5s timeout)
+#
+# GENERALIZED FOR UNLIMITED SPACES:
+#   - Works for any number of spaces (1 to 100+)
+#   - Uses $YABAI_SPACE_ID environment variable (set by yabai during signal)
+#   - No hardcoded limits or assumptions
+#
+# ============================================================================
+
+# Trigger sketchybar update when switching spaces
 /opt/homebrew/bin/yabai -m signal --add event=space_changed action="sketchybar --trigger space_change"
+
+# ============================================================================
+# SIGNAL: space_created
+# ============================================================================
+# WHEN: Fires when you create a new space (yabai -m space --create)
+# WHAT: Automatically adds corresponding space indicator to sketchybar
+# WHY:  Without this, new spaces wouldn't appear until sketchybar restart
+#
+# ENVIRONMENT VARIABLES PROVIDED BY YABAI:
+#   $YABAI_SPACE_ID - The index of the newly created space
+#
+# EVENT SUBSCRIPTIONS:
+#   - space_change: Updates when you switch to/from this space
+#   - space_windows_change: Updates when windows are added/removed
+#
+# IMPORTANT: Must match the exact format in sketchybarrc:128-138 to ensure
+#            consistency between startup-created and dynamically-created spaces
+# ============================================================================
+/opt/homebrew/bin/yabai -m signal --add event=space_created action='
+  sid="$YABAI_SPACE_ID"
+  sketchybar --add space space.$sid left \
+    --set space.$sid space=$sid \
+      icon="$sid" \
+      icon.font="SF Pro:Medium:13.0" \
+      width=3 \
+      padding_left=0 \
+      padding_right=0 \
+      script="$HOME/.config/sketchybar/plugins/space.sh" \
+      click_script="/opt/homebrew/bin/yabai -m space --focus $sid" \
+    --subscribe space.$sid space_change space_windows_change
+  sketchybar --trigger space_change
+'
+
+# ============================================================================
+# SIGNAL: space_destroyed
+# ============================================================================
+# WHEN: Fires when a space is destroyed (yabai -m space N --destroy)
+# WHAT: Automatically removes corresponding space indicator from sketchybar
+# WHY:  Without this, destroyed spaces would remain visible until restart
+#
+# ENVIRONMENT VARIABLES PROVIDED BY YABAI:
+#   $YABAI_SPACE_ID - The index of the destroyed space
+#
+# NOTE: macOS Sequoia 15+ may restrict space destruction in some scenarios
+#       (e.g., can't destroy space if it has windows or is the only space)
+# ============================================================================
+/opt/homebrew/bin/yabai -m signal --add event=space_destroyed action='
+  sketchybar --remove space.$YABAI_SPACE_ID
+  sketchybar --trigger space_change
+'

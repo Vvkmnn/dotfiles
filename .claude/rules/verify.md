@@ -34,6 +34,7 @@ Request path:
 - "You should add validation" → WHERE exactly?
 - "This probably does Y" → READ IT and KNOW
 - "I believe the error is..." → FIND the error, don't guess
+- "The threshold is 80%" → READ file:line first, never assume config values
 
 ### Before Claiming Completion
 From `superpowers:verification-before-completion`:
@@ -48,6 +49,24 @@ From `superpowers:verification-before-completion`:
 <command> 2>&1 | tail -15 && echo "Exit: $?"
 ```
 *Commands: pytest, cargo build, go test, npm test, make, gcc -Wall, shellcheck*
+
+### After Configuration Changes
+
+**When modifying config files, the pattern is:**
+1. Apply/reload the config
+2. Verify it loaded without errors
+3. Confirm the specific setting changed
+4. Test the behavior that was broken
+
+**Why**: Config changes can fail silently (syntax errors, ignored sections, wrong reload mechanism).
+
+**General verification approaches:**
+- Check service logs for errors after reload
+- Query the running config to confirm setting applied
+- Test the specific feature that depends on the config
+- Look for confirmation messages or status indicators
+
+**Don't assume reload succeeded** - prove it with specific checks relevant to that config system.
 
 ### Token Efficiency
 - File:line references are cheaper than re-reading files

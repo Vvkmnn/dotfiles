@@ -16,13 +16,13 @@ if [ -z "$EMOJIS_DEFINED" ]; then
 EMOJIS=(
     "🐕"  # Dog
     "🐈"  # Cat
+    "🐈‍⬛"  # Black Cat
     "🐎"  # Horse
     "🦬"  # Bison
     "🐄"  # Cow
     "🐖"  # Pig
     "🐑"  # Sheep
     "🐐"  # Goat
-    "🐪"  # Camel with one hump
     "🐫"  # Camel with two humps
     "🦙"  # Llama
     "🦒"  # Giraffe
@@ -52,9 +52,6 @@ EMOJIS=(
     "🐋"  # Whale
     "🐬"  # Dolphin
     "🦭"  # Seal
-    "🐟"  # Fish
-    "🐠"  # Tropical Fish
-    "🐡"  # Blowfish
     "🦈"  # Shark
     "🐙"  # Octopus
     "🦀"  # Crab
@@ -69,25 +66,41 @@ EMOJIS=(
     "🦂"  # Scorpion
     "🐜"  # Ant
     "🕷️"  # Spider
-    "🐩"  # Poodle
     "🦥"  # Sloth
     "🦦"  # Otter
     "🦨"  # Skunk
     "🦩"  # Flamingo
     "🦫"  # Beaver
-    "🐧"  # Penguin
     "🦅"  # Eagle
-    "🐦"  # Bird
-    "🐥"  # Chick
     "🦆"  # Duck
-    "🦢"  # Swan
-    "🦉"  # Owl
-    "🦩"  # Flamingo
-    "🐕"  # Service Dog
-    "🐈"  # Black Cat
-    "🐿️"  # Squirrel
+    "🦓"  # Zebra
+    "🦌"  # Deer
+    "🐂"  # Ox
+    "🐃"  # Water Buffalo
+    "🐏"  # Ram
+    "🐁"  # Mouse
+    "🐀"  # Rat
+    "🐅"  # Tiger
+    "🐆"  # Leopard
+    "🐦‍⬛"  # Black Bird
+    "🐦‍🔥"  # Phoenix
+    "🕊️"  # Dove
+    "🪿"  # Goose
+    "🪼"  # Jellyfish
+    "🦐"  # Shrimp
+    "🐛"  # Caterpillar
 )
 
+    # "🪳"  # Cockroach
+    # "🐪"  # Camel with one hump
+    # "🐟"  # Fish
+    # "🐠"  # Tropical Fish
+    # "🐡"  # Blowfish
+    # "🐧"  # Penguin
+    # "🐦"  # Bird
+    # "🐩"  # Poodle
+    # "🐿️"  # Squirrel
+    # "🐥"  # Chick
     # "🦄"  # Unicorn
     # "🦝"  # Raccoon
     # "🐸"  # Frog

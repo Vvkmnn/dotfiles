@@ -43,6 +43,47 @@
 #
 # Displays only when: Terminal ≥50 cols, interactive
 #                     ($PS1 set), TTY output, tput works
+#
+#
+# Architecture: 
+#   Adapts display to terminal width to prevent overflow
+#   Polls for up to 0.5s to handle window manager resize timing
+#
+# TIER 1 (40-59 cols):  V logo only, no content
+# TIER 2 (60-97 cols):  V + name + website + 3 ultra-short quotes
+# TIER 3 (98-119 cols): V + name + website + 8 short quotes
+# TIER 4 (120-149 cols): V + name + website + 38 medium quotes
+# TIER 5 (150+ cols):   V + name + website + all 42 quotes
+#
+#   Quote Format:
+#     Non-English: 3 lines
+#       Line 1: Original text [Source]
+#       Line 2: "English translation"
+#       Line 3:   - Author, dates
+#
+#     English: 2 lines (no translation)
+#       Line 1: "Quote text" [Source]
+#       Line 2:   - Author, dates
+#
+#   How to Add/Modify Quotes:
+#     1. Add QUOTE_N variable (increment N)
+#     2. Update QUOTE_COUNT
+#     3. Add case in get_quote()
+#     4. Add case in get_translation() (if non-English)
+#     5. Add case in get_author()
+#     6. Add case in get_source()
+#     7. Add N to is_english() if English-only
+#     8. Add N to appropriate tier lists based on length:
+#        - ULTRA_SHORT_QUOTES: max 57 chars (line 1)
+#        - SHORT_QUOTES: max 67 chars (line 1)
+#        - MEDIUM_QUOTES: max 92 chars (line 1)
+#        - All quotes available in TIER 5 (150+ cols)
+#
+#   Debugging:
+#     Set LOGO_DEBUG=1 before sourcing to enable debug logs
+#     Logs written to /tmp/logo_debug_$$.log
+#     Activate with export LOGO_DEBUG=1 in ~/.rc
+#
 ####################################################
 
 # GUARD Prevent double-sourcing (self-checks display via $PS1)
@@ -100,14 +141,29 @@ QUOTE_41="ॐ भूर्भुवः स्वः तत्सवितुर�
 QUOTE_42="सत्यं हि परमं धर्मं"
 QUOTE_COUNT=42
 
+# Quote tiers for different terminal widths
+# ULTRA_SHORT: 3 quotes, max 57 chars (fits 60-97 cols)
+ULTRA_SHORT_QUOTES="8 9 15"
+ULTRA_SHORT_COUNT=3
+
+# SHORT: 8 quotes, max 67 chars (fits 98-119 cols)
+SHORT_QUOTES="5 8 9 13 15 20 21 37"
+SHORT_COUNT=8
+
+# MEDIUM: ~20 quotes, max 92 chars (fits 120-149 cols)
+# Excludes longest quotes: 32, 33, 40, 41
+MEDIUM_QUOTES="1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 34 35 36 37 38 39 42"
+MEDIUM_COUNT=38
+
 # Skip if shell is still initializing (common in tmux startup)
 if [ -z "$PS1" ]; then
 	return 2>/dev/null || :
 fi
 
 if [ -t 1 ] && command -v tput >/dev/null 2>&1; then
-	# Define quote access functions first (needed for filtering)
-	# Get quote by number using case statement
+	# get_quote: Returns original quote text in native language
+	# Param: $1 - quote number (1-42)
+	# Returns: quote text string
 	get_quote() {
 			case "$1" in
 				1)  echo "$QUOTE_1" ;;
@@ -156,50 +212,55 @@ if [ -t 1 ] && command -v tput >/dev/null 2>&1; then
 			esac
 		}
 
-		# Get translations for non-English quotes
-		get_translation() {
+	# get_translation: Returns English translation for non-English quotes
+	# Param: $1 - quote number (1-42)
+	# Returns: translation string (empty for English-only quotes)
+	get_translation() {
 			case "$1" in
-				1) echo "\"Om Ganapatayei Namah\"" ;;
-				2) echo "\"If it is endurable, endure it\"" ;;
-				3) echo "\"Never stray from the Way\"" ;;
-				4) echo "\"God bless mountains of gold ahead\"" ;;
-				5) echo "\"I think, therefore I am\"" ;;
-				6) echo "\"To himself\"" ;;
-				7) echo "\"Imagination is more important than knowledge\"" ;;
-				8) echo "\"Few, but ripe\"" ;;
-				9) echo "\"I frame no hypotheses\"" ;;
-				10) echo "\"To know is to know, not to know is not to know\"" ;;
-				11) echo "\"All conditioned things are impermanent\"" ;;
-				12) echo "\"I am the way and the truth\"" ;;
-				13) echo "\"Through hardships to the stars\"" ;;
-				14) echo "\"The Tao that can be spoken is not the eternal Tao\"" ;;
-				15) echo "\"Dare to know\"" ;;
-				18) echo "\"Philosophy is written in the language of mathematics\"" ;;
-				19) echo "\"Beauty is nothing but the beginning of terror\"" ;;
-				20) echo "\"To be is to be perceived\"" ;;
-				21) echo "\"This too shall pass\"" ;;
-				22) echo "\"Know thyself\"" ;;
-				23) echo "\"Non-violence is the highest dharma\"" ;;
-				24) echo "\"I went to the sea and became the sea\"" ;;
-				25) echo "\"Before my bed, the bright moonlight appears\"" ;;
-				26) echo "\"Ancient pond, frog jumps in, splash of water\"" ;;
-				27) echo "\"Know yourself and your enemy, never be defeated\"" ;;
-				28) echo "\"Speak such words without ego's sway\"" ;;
-				29) echo "\"Thou art That\"" ;;
-				30) echo "\"You have right to action, not to fruits\"" ;;
-				31) echo "\"Midway in the journey of our life\"" ;;
-				32) echo "\"Who reads much and walks much, sees much and knows much\"" ;;
-				33) echo "\"One must have chaos within to give birth to a dancing star\"" ;;
-				35) echo "\"I always imagined Paradise as a kind of library\"" ;;
-				36) echo "\"Learning to doubt is learning to think\"" ;;
-				37) echo "\"Existence precedes essence\"" ;;
-				41) echo "\"May that divine light illuminate our intellect\"" ;;
-				42) echo "\"Truth is the highest dharma\"" ;;
+				1) echo "Om Ganapatayei Namah" ;;
+				2) echo "If it is endurable, endure it" ;;
+				3) echo "Never stray from the Way" ;;
+				4) echo "God bless mountains of gold ahead" ;;
+				5) echo "I think, therefore I am" ;;
+				6) echo "To himself" ;;
+				7) echo "Imagination is more important than knowledge" ;;
+				8) echo "Few, but ripe" ;;
+				9) echo "I frame no hypotheses" ;;
+				10) echo "To know is to know, not to know is not to know" ;;
+				11) echo "All conditioned things are impermanent" ;;
+				12) echo "I am the way and the truth" ;;
+				13) echo "Through hardships to the stars" ;;
+				14) echo "The Tao that can be spoken is not the eternal Tao" ;;
+				15) echo "Dare to know" ;;
+				18) echo "Philosophy is written in the language of mathematics" ;;
+				19) echo "Beauty is nothing but the beginning of terror" ;;
+				20) echo "To be is to be perceived" ;;
+				21) echo "This too shall pass" ;;
+				22) echo "Know thyself" ;;
+				23) echo "Non-violence is the highest dharma" ;;
+				24) echo "I went to the sea and became the sea" ;;
+				25) echo "Before my bed, the bright moonlight appears" ;;
+				26) echo "Ancient pond, frog jumps in, splash of water" ;;
+				27) echo "Know yourself and your enemy, never be defeated" ;;
+				28) echo "Speak such words without ego's sway" ;;
+				29) echo "Thou art That" ;;
+				30) echo "You have right to action, not to fruits" ;;
+				31) echo "Midway in the journey of our life" ;;
+				32) echo "Who reads much and walks much, sees much and knows much" ;;
+				33) echo "One must have chaos within to give birth to a dancing star" ;;
+				35) echo "I always imagined Paradise as a kind of library" ;;
+				36) echo "Learning to doubt is learning to think" ;;
+				37) echo "Existence precedes essence" ;;
+				41) echo "May that divine light illuminate our intellect" ;;
+				42) echo "Truth is the highest dharma" ;;
 				*) echo "" ;;
 			esac
 		}
 
-		get_author() {
+	# get_author: Returns author name and dates for quote
+	# Param: $1 - quote number (1-42)
+	# Returns: author string with dates/era
+	get_author() {
 			case "$1" in
 				1) echo "Ganesh Mantra" ;;
 				2) echo "Epictetus, c. 50-135 CE" ;;
@@ -306,35 +367,104 @@ if [ -t 1 ] && command -v tput >/dev/null 2>&1; then
 		# Debug logging (set LOGO_DEBUG=1 to enable)
 		if [ "$LOGO_DEBUG" = "1" ]; then
 			debug_log="/tmp/logo_debug_$$.log"
-			echo "=== Logo Debug $(date '+%H:%M:%S.%3N') ===" >> "$debug_log"
+			echo "=== Logo Debug PID=$$ $(date '+%H:%M:%S.%3N') ===" >> "$debug_log"
+			echo "Environment: TMUX=${TMUX:-not set}, TERM=$TERM" >> "$debug_log"
 		fi
 
-		# Small delay to allow window managers (yabai, etc.) to finish resizing
-		sleep 0.05 2>/dev/null || :
-
-		# Get terminal width with timeout to prevent hanging
-		cols=$(timeout 0.1 tput cols 2>/dev/null || echo 0)
+		# Get terminal width - use tmux if available, otherwise tput
+		if [ -n "$TMUX" ]; then
+			# Inside tmux - use tmux's pane width (tput cols is unreliable in tmux)
+			cols=$(tmux display-message -p '#{pane_width}' 2>/dev/null || echo 0)
+		else
+			# Not in tmux - use tput
+			cols=$(timeout 0.1 tput cols 2>/dev/null || echo 0)
+		fi
 
 		# Debug: log initial width
-		[ "$LOGO_DEBUG" = "1" ] && echo "Initial cols: $cols" >> "$debug_log"
+		[ "$LOGO_DEBUG" = "1" ] && echo "Initial cols: $cols (tmux=${TMUX:+yes})" >> "$debug_log"
 
-		# Check width again after a tiny delay (yabai might still be resizing)
-		sleep 0.05 2>/dev/null || :
-		cols=$(timeout 0.1 tput cols 2>/dev/null || echo 0)
+		# Poll until size stabilizes (handles yabai/window manager resize timing)
+		# Maximum 0.5s total delay, breaks early if size is stable
+		for i in 1 2 3 4 5; do
+			sleep 0.1 2>/dev/null || :
+			if [ -n "$TMUX" ]; then
+				new_cols=$(tmux display-message -p '#{pane_width}' 2>/dev/null || echo "$cols")
+			else
+				new_cols=$(timeout 0.1 tput cols 2>/dev/null || echo "$cols")
+			fi
+			[ "$new_cols" = "$cols" ] && break
+			cols="$new_cols"
+		done
 
 		# Debug: log final width
-		[ "$LOGO_DEBUG" = "1" ] && echo "Final cols: $cols" >> "$debug_log"
+		[ "$LOGO_DEBUG" = "1" ] && echo "Final cols: $cols (tmux=${TMUX:+yes}, stable after polling)" >> "$debug_log"
 
-		# Always try to display if terminal has any reasonable width (40+ cols for V logo)
+		# Five-tier display system based on terminal width
 		if [ "$cols" -ge 40 ] 2>/dev/null; then
-			# Determine display mode based on width
-			# Available space for quotes = terminal width - ASCII prefix (29 chars) - margin (5 chars)
-			available_space=$((cols - 34))
+			# TIER 1: 40-59 cols - V only (no quotes, no name, no website)
+			if [ "$cols" -lt 60 ]; then
+				selected=""
+				[ "$LOGO_DEBUG" = "1" ] && echo "TIER 1: V only (cols=$cols < 60)" >> "$debug_log"
 
-			# Select quotes only if terminal is wide enough
-			# Conservative: require 120+ cols to avoid wrapping after window manager resize
-			if [ "$cols" -ge 120 ]; then
-				# Terminal wide enough - select 3 random quotes
+			# TIER 2: 60-97 cols - V + name + 3 ultra-short quotes
+			elif [ "$cols" -lt 98 ]; then
+				selected=$(echo "$ULTRA_SHORT_QUOTES" | awk -v count="$ULTRA_SHORT_COUNT" '{
+					srand()
+					split($0, pool)
+					for (i = 0; i < 3; i++) {
+						do {
+							idx = int(rand() * count) + 1
+							dup = 0
+							for (j = 0; j < i; j++) {
+								if (chosen[j] == idx) { dup = 1; break }
+							}
+						} while (dup)
+						chosen[i] = idx
+						printf "%s ", pool[idx]
+					}
+				}')
+				[ "$LOGO_DEBUG" = "1" ] && echo "TIER 2: 3 ultra-short quotes (cols=$cols, 60-97) - selected: $selected" >> "$debug_log"
+
+			# TIER 3: 98-119 cols - V + name + 8 short quotes
+			elif [ "$cols" -lt 120 ]; then
+				selected=$(echo "$SHORT_QUOTES" | awk -v count="$SHORT_COUNT" '{
+					srand()
+					split($0, pool)
+					for (i = 0; i < 3; i++) {
+						do {
+							idx = int(rand() * count) + 1
+							dup = 0
+							for (j = 0; j < i; j++) {
+								if (chosen[j] == idx) { dup = 1; break }
+							}
+						} while (dup)
+						chosen[i] = idx
+						printf "%s ", pool[idx]
+					}
+				}')
+				[ "$LOGO_DEBUG" = "1" ] && echo "TIER 3: 8 short quotes (cols=$cols, 98-119) - selected: $selected" >> "$debug_log"
+
+			# TIER 4: 120-149 cols - V + name + 38 medium quotes
+			elif [ "$cols" -lt 150 ]; then
+				selected=$(echo "$MEDIUM_QUOTES" | awk -v count="$MEDIUM_COUNT" '{
+					srand()
+					split($0, pool)
+					for (i = 0; i < 3; i++) {
+						do {
+							idx = int(rand() * count) + 1
+							dup = 0
+							for (j = 0; j < i; j++) {
+								if (chosen[j] == idx) { dup = 1; break }
+							}
+						} while (dup)
+						chosen[i] = idx
+						printf "%s ", pool[idx]
+					}
+				}')
+				[ "$LOGO_DEBUG" = "1" ] && echo "TIER 4: 38 medium quotes (cols=$cols, 120-149) - selected: $selected" >> "$debug_log"
+
+			# TIER 5: 150+ cols - V + name + ALL 42 quotes
+			else
 				selected=$(awk -v count="$QUOTE_COUNT" 'BEGIN {
 					srand()
 					for (i = 0; i < 3; i++) {
@@ -349,11 +479,7 @@ if [ -t 1 ] && command -v tput >/dev/null 2>&1; then
 						printf "%d ", r
 					}
 				}')
-				[ "$LOGO_DEBUG" = "1" ] && echo "Selected quotes: $selected (cols=$cols >= 120)" >> "$debug_log"
-			else
-				# Terminal too narrow for quotes
-				selected=""
-				[ "$LOGO_DEBUG" = "1" ] && echo "No quotes selected (cols=$cols < 120)" >> "$debug_log"
+				[ "$LOGO_DEBUG" = "1" ] && echo "TIER 5: all 42 quotes (cols=$cols >= 150) - selected: $selected" >> "$debug_log"
 			fi
 
 			# Convert to positional parameters (zsh needs ${=} for word splitting)
@@ -388,87 +514,70 @@ if [ -t 1 ] && command -v tput >/dev/null 2>&1; then
 
 		# Build display based on what's available
 		if [ -n "$1" ] && [ -n "$2" ] && [ -n "$3" ]; then
-			# Build quote lines with proper formatting (source in brackets, translation with quotes)
+			# Build quote lines - English: 2 lines, non-English: 3 lines
 			# Quote 1
 			s1=$(get_source "$1")
 			if is_english "$1"; then
 				q1_line1="\"$(get_quote "$1")\" [$s1]"
-				q1_line2="   $(get_author "$1")"
+				q1_line2="  - $(get_author "$1")"
 			else
 				q1_line1="$(get_quote "$1") [$s1]"
-				q1_line2="   $(get_translation "$1") - $(get_author "$1")"
+				q1_line2="\"$(get_translation "$1")\""
+				q1_line3="  - $(get_author "$1")"
 			fi
 
 			# Quote 2
 			s2=$(get_source "$2")
 			if is_english "$2"; then
 				q2_line1="\"$(get_quote "$2")\" [$s2]"
-				q2_line2="   $(get_author "$2")"
+				q2_line2="  - $(get_author "$2")"
 			else
 				q2_line1="$(get_quote "$2") [$s2]"
-				q2_line2="   $(get_translation "$2") - $(get_author "$2")"
+				q2_line2="\"$(get_translation "$2")\""
+				q2_line3="  - $(get_author "$2")"
 			fi
 
 			# Quote 3
 			s3=$(get_source "$3")
 			if is_english "$3"; then
 				q3_line1="\"$(get_quote "$3")\" [$s3]"
-				q3_line2="   $(get_author "$3")"
+				q3_line2="  - $(get_author "$3")"
 			else
 				q3_line1="$(get_quote "$3") [$s3]"
-				q3_line2="   $(get_translation "$3") - $(get_author "$3")"
+				q3_line2="\"$(get_translation "$3")\""
+				q3_line3="  - $(get_author "$3")"
 			fi
 
-			# Full display with quotes
+			# Optimized single display - works on all screen sizes
 			printf "\n
-                   ######
-                 ######      Vivek Menon <@v>
-                #####        $timestamp
-                #####        $sys_info
-                #####
-        ######  #####
-      ######    #####        $q1_line1
-    #######     #####        $q1_line2
-   ######        ####
-    ######        ###        $q2_line1
-      #####        ##        $q2_line2
-       #####        #
-        #####                $q3_line1
-         #####               $q3_line2
-          #####
-           #####
-            #####            http://vvkmnn.xyz
-             #####
 
-\n"
-		elif [ "$cols" -ge 70 ]; then
-			# Medium width - show logo with timestamp/info but no quotes
-			printf "\n
                    ######
-                 ######      Vivek Menon <@v>
-                #####        $timestamp
-                #####        $sys_info
-                #####
+                 ######     Vivek Menon <@v>
+                #####       http://vvkmnn.xyz
+                #####       $sys_info
+                #####       $timestamp
         ######  #####
-      ######    #####
-    #######     #####
-   ######        ####
+      ######    #####       $q1_line1
+    #######     #####       $q1_line2
+   ######        ####       $q1_line3
     ######        ###
-      #####        ##
-       #####        #
-        #####
+      #####        ##       $q2_line1
+       #####        #       $q2_line2
+        #####               $q2_line3
          #####
-          #####
-           #####
-            #####            http://vvkmnn.xyz
+          #####             $q3_line1
+           #####            $q3_line2
+            #####           $q3_line3
              #####
+              #####
 
 \n"
 		else
-			# Minimal display for narrow terminals (40-79 cols) - V always shows!
+			# TIER 1: V-only display for very narrow terminals (40-59 cols)
 			printf "\n
+
                    ######
-                 ######      Vivek Menon <@v>
+                 ######
                 #####
                 #####
                 #####
@@ -483,11 +592,13 @@ if [ -t 1 ] && command -v tput >/dev/null 2>&1; then
          #####
           #####
            #####
-            #####            http://vvkmnn.xyz
+            #####
              #####
 
 \n"
 		fi
+		# Removed medium/minimal display modes per user request
+		# Single optimized display now works on all screen sizes
 		# Set flag to avoid showing multiple times in subshells
 		# export LOGO_SHOWN=1
 	fi

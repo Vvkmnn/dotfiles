@@ -22,6 +22,50 @@ Before writing plans OR modifying code, explore and investigate first.
 | Refactor | Map all callers and dependents |
 | API change | Find all consumers |
 
+### Debugging Strategy
+
+**Gather context before investigating:**
+- **What changed?** Recent edits, commits, deploys, dependency updates
+- **When?** Started after what action? Gradual or sudden?
+- **How often?** Always, intermittent, specific trigger
+- **Scope?** Everywhere, specific environment, one machine
+
+**Investigation priority (most to least likely):**
+
+1. **Recent changes** (if "wasn't working before")
+   - Files modified in related area (check timestamps, git log)
+   - Recent commits, merges, or deployments
+   - System settings are unlikely if they've been stable
+
+2. **Direct dependencies** (if specific feature broken)
+   - Code/config directly related to symptom
+   - Services or files that feature depends on
+   - Error logs, stack traces
+
+3. **System state** (only if above ruled out)
+   - Environment variables, permissions
+   - Resource constraints
+   - Long-standing system configs
+
+**When to stop investigating:**
+- Checking 3+ unrelated systems without evidence linking them
+- User says "I don't think X is the issue" → stop checking X
+- Same approach attempted 3+ times → escalate, don't repeat
+
+### Subagent Usage
+
+**ALWAYS ask before launching subagents.** Subagents (Task tool with any subagent_type) consume significant usage.
+
+Before launching any subagent:
+1. State what you want to explore/plan
+2. Ask: "Should I launch a [type] agent for this, or should I explore directly?"
+3. Wait for approval
+
+**Default to direct exploration** using Glob, Grep, Read tools. Only use subagents when:
+- User explicitly requests it
+- Task genuinely requires autonomous multi-step exploration
+- Direct tools have proven insufficient
+
 ### Investigation Phase (Before Modifying)
 
 **Before touching ANY file:**
