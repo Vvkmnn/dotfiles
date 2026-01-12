@@ -5,7 +5,7 @@
       "repo": "wshobson/agents"
     },
     "installLocation": "/Users/v/.claude/plugins/marketplaces/claude-code-workflows",
-    "lastUpdated": "2026-01-12T08:41:04.707Z"
+    "lastUpdated": "2026-01-12T08:53:21.095Z"
   },
   "superpowers-marketplace": {
     "source": {
@@ -13,7 +13,7 @@
       "repo": "obra/superpowers-marketplace"
     },
     "installLocation": "/Users/v/.claude/plugins/marketplaces/superpowers-marketplace",
-    "lastUpdated": "2026-01-12T08:41:09.647Z"
+    "lastUpdated": "2026-01-12T08:53:26.601Z"
   },
   "thedotmack": {
     "source": {
@@ -21,7 +21,7 @@
       "repo": "thedotmack/claude-mem"
     },
     "installLocation": "/Users/v/.claude/plugins/marketplaces/thedotmack",
-    "lastUpdated": "2026-01-12T08:41:17.052Z"
+    "lastUpdated": "2026-01-12T08:53:34.371Z"
   },
   "repomix": {
     "source": {
@@ -29,7 +29,7 @@
       "repo": "yamadashy/repomix"
     },
     "installLocation": "/Users/v/.claude/plugins/marketplaces/repomix",
-    "lastUpdated": "2026-01-12T08:41:24.128Z"
+    "lastUpdated": "2026-01-12T08:53:41.862Z"
   },
   "every-marketplace": {
     "source": {
@@ -37,7 +37,7 @@
       "url": "https://github.com/EveryInc/compound-engineering-plugin.git"
     },
     "installLocation": "/Users/v/.claude/plugins/marketplaces/every-marketplace",
-    "lastUpdated": "2026-01-12T08:41:25.207Z"
+    "lastUpdated": "2026-01-12T08:53:42.842Z"
   },
   "cc_chrome_devtools_mcp_skill-plugin-marketplace": {
     "source": {
@@ -45,7 +45,7 @@
       "repo": "justfinethanku/cc_chrome_devtools_mcp_skill"
     },
     "installLocation": "/Users/v/.claude/plugins/marketplaces/cc_chrome_devtools_mcp_skill-plugin-marketplace",
-    "lastUpdated": "2026-01-12T08:41:30.402Z"
+    "lastUpdated": "2026-01-12T08:53:48.573Z"
   },
   "claude-plugins-official": {
     "source": {
@@ -53,7 +53,7 @@
       "repo": "anthropics/claude-plugins-official"
     },
     "installLocation": "/Users/v/.claude/plugins/marketplaces/claude-plugins-official",
-    "lastUpdated": "2026-01-12T08:41:40.267Z"
+    "lastUpdated": "2026-01-12T08:53:54.460Z"
   },
   "custom": {
     "source": {
@@ -61,6 +61,6 @@
       "path": "/Users/v/.claude/plugins/marketplaces/custom"
     },
     "installLocation": "/Users/v/.claude/plugins/marketplaces/custom",
-    "lastUpdated": "2026-01-12T08:41:40.268Z"
+    "lastUpdated": "2026-01-12T08:53:54.461Z"
   }
 }
