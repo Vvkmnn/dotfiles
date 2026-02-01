@@ -8,7 +8,7 @@ STATE_FILE="/tmp/sketchybar_state"
 get_macmon_data() {
     if [ -f "$CACHE" ]; then
         AGE=$(($(date +%s) - $(stat -f %m "$CACHE" 2>/dev/null || echo 0)))
-        [ $AGE -lt 3 ] && cat "$CACHE" && return
+        [ $AGE -lt 10 ] && cat "$CACHE" && return
     fi
 
     LINE=$(macmon pipe --interval 100 2>/dev/null | { IFS= read -r first_line || true; printf '%s' "$first_line"; })

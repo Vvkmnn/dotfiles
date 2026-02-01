@@ -22,7 +22,7 @@ export TRANSPARENT=0x00000000
 export MISTY_BLUE=0xffB0B7C0 # Misty Blue accent
 
 # --- Bar Configuration --- #
-sketchybar --bar height=32 \
+sketchybar --bar height=29 \
 	color=$BLACK \
 	padding_left=8 \
 	padding_right=20 \
@@ -155,7 +155,7 @@ sketchybar --add item ip left \
 
 # Network Stats - text with sparkline graphs
 sketchybar --add item network_down left \
-	--set network_down update_freq=3 \
+	--set network_down update_freq=10 \
 	icon.drawing=off \
 	label.font="SF Pro:Regular:13.0" \
 	label.color=$SILVER \
@@ -164,7 +164,7 @@ sketchybar --add item network_down left \
 	script="$PLUGIN_DIR/network_stats.sh down"
 
 sketchybar --add item network_up left \
-	--set network_up update_freq=3 \
+	--set network_up update_freq=10 \
 	icon.drawing=off \
 	label.font="SF Pro:Regular:13.0" \
 	label.color=$SILVER \
@@ -493,7 +493,8 @@ sketchybar --add item temp right \
 	update_freq=10 \
 	script="$PLUGIN_DIR/temp.sh"
 
-# Menu Anywhere - Temporarily commented out
+# Legacy menuanywhere - old binary at plugins/menuanywhere_new if needed
+# Now using Homebrew menuanywhere (ctrl+alt+m) - config at ~/.config/menuanywhere/config.json
 # sketchybar --add item menuanywhere right \
 # 	--set menuanywhere icon="􀍟" \
 # 	icon.font="SF Symbols:Regular:13.0" \

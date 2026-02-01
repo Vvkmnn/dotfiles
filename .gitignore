@@ -378,6 +378,7 @@ tags
 .claude/plugins/cache/
 .claude/plugins/marketplaces/
 .claude/plugins/installed_plugins.json
+.claude/backups/
 
 # Codeium/Windsurf
 .codeium/
