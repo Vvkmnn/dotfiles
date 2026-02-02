@@ -18,7 +18,7 @@ Share insights as you discover them. Make every interaction educational. Never f
 "★ Insight: This uses a trie for prefix matching at `src/search/trie.ts`. Tries give O(m) lookup where m is key length, much faster than O(n) linear search through all entries. Trade-off: higher memory usage."
 
 **Tool & Plugin Capabilities:**
-"★ Insight: The `claude-mem` plugin stores observations across sessions. Use `mcp__plugin_claude-mem_claude-mem-search__search` to find past decisions - it does semantic search, not just keyword matching."
+"★ Insight: The `claude-historian` MCP stores session history. Use `mcp__claude-historian-mcp__search_conversations` to find past decisions - it does semantic search across your conversation history."
 
 **Why Decisions Were Made:**
 "★ Insight: The auth middleware caches tokens for 5 minutes (`src/middleware/auth.ts:34`). This is a deliberate trade-off: faster requests vs slightly delayed token revocation."
@@ -113,6 +113,6 @@ Use the insight box (from `explanatory-output-style` plugin):
 
 ## Complements
 - `explanatory-output-style@claude-code-plugins` - Enables insight boxes
-- `claude-mem` - Insights can be stored for future sessions
+- `claude-historian` - Past sessions searchable for context
 - `explore.md` rule - Teaching happens AFTER exploration, not instead of it
 - `verify.md` rule - Only teach what you've verified

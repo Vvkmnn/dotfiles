@@ -9,10 +9,12 @@ Before writing plans OR modifying code, explore and investigate first.
 ### Exploration Phase (Before Planning)
 
 **Use Your Tools:**
-- **code-mode** (`mcp__code-mode__search_tools` or `list_tools`) - Check available integrations FIRST (Notion, GitHub, Google Drive; see `~/.utcp_config.json`)
-- **claude-mem** - Past decisions on similar problems
+- **code-mode** (`mcp__code-mode__search_tools` or `list_tools`) - Check available integrations FIRST (Notion, GitHub, Google Drive, Reddit, StackOverflow, HackerNews; see `~/.utcp_config.json`)
+- **claude-historian** - Past sessions and decisions on similar problems
 - **Explore agent** (`Task` with `subagent_type=Explore`) - Open-ended codebase questions
 - **Glob/Grep** - File pattern and content search
+- **dora** - If `.dora/` exists: `dora symbol`, `dora refs`, `dora deps` for fast code navigation. If not and exploring extensively, suggest `dora init && dora index`
+- **skills.sh** - Browse [skills.sh](https://skills.sh) periodically for useful community skills (install: `npx skills add <repo> --skill <name> --global --agent claude-code`)
 
 **Minimum Exploration by Task:**
 | Task | Before Planning |
@@ -54,12 +56,19 @@ Before writing plans OR modifying code, explore and investigate first.
 
 ### Subagent Usage
 
-**ALWAYS ask before launching subagents.** Subagents (Task tool with any subagent_type) consume significant usage.
+**Ask before launching subagents** - they consume significant usage. However, **proactively recommend** when subagents would add clear value.
 
-Before launching any subagent:
-1. State what you want to explore/plan
-2. Ask: "Should I launch a [type] agent for this, or should I explore directly?"
-3. Wait for approval
+**When to recommend subagents:**
+- Task involves 3+ independent areas to explore simultaneously
+- Context window is getting long (>50% used) and task needs fresh perspective
+- Domain-specific expertise needed (security-auditor, backend-architect, etc.)
+- Context-heavy operations (testing, docs generation, large code review)
+
+**Before launching any subagent:**
+1. State why a subagent would help vs direct exploration
+2. Recommend agent type and model (haiku for simple, sonnet for complex)
+3. Ask: "Should I launch [type] agent for this?"
+4. Wait for approval
 
 **Default to direct exploration** using Glob, Grep, Read tools. Only use subagents when:
 - User explicitly requests it
@@ -73,7 +82,7 @@ Before launching any subagent:
 2. **Check recent history**: `git log -3 --oneline -- path/to/file`
 3. **Look for comments** explaining WHY, not just what
 4. **Find related tests** that document expected behavior
-5. **Search claude-mem** for past work on this file
+5. **Search claude-historian** for past work on this file
 
 **Questions to Answer:**
 - Why was this written this way?
@@ -92,9 +101,22 @@ Before launching any subagent:
 **Data Retrieval:**
 - WebSearch for info available in MCP servers (Notion, GitHub, etc.)
 - WebFetch when structured API access exists (check code-mode tools first)
-- Re-reading files when claude-mem already has the answer
+- WebFetch for Reddit (blocked) - use `reddit.reddit_get_post_details` or `reddit.reddit_browse_subreddit` via code-mode instead
+- Re-reading files when claude-historian already has the answer
 - Manual extraction when MCP provides structured access
 - Searching for MCP config in `~/.claude.json` - code-mode servers are in `~/.utcp_config.json`
+
+### code-mode Syntax
+
+**Wrap in async IIFE** (top-level await not supported):
+```typescript
+(async () => {
+  const result = await server.server_tool_name({ param: "value" });
+  console.log(JSON.stringify(result, null, 2));
+})();
+```
+
+**Param errors?** Use `mcp__code-mode__tool_info("server.tool_name")` to see interface.
 
 ## Complements
 - `superpowers:brainstorming` skill - Use AFTER exploration to refine ideas

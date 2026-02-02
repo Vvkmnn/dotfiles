@@ -43,6 +43,14 @@ Know when to retry, when to escalate, and what requires approval. Never silently
 3. Fix the cause, don't just retry blindly
 4. After 2 failures, escalate
 
+### Context Management
+
+**When context gets polluted:**
+- After 2+ corrections on same issue → `/clear` and restart with better prompt
+- Between unrelated tasks → `/clear` to reset
+- Context >50% used → consider Explore subagent for investigation
+- Long exploration → delegate to subagent, get summary back
+
 ### When Stuck
 
 **Recognize stuck:**

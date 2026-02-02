@@ -4,9 +4,33 @@
     "pr": ""
   },
   "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch",
+      "Bash(npm run *)",
+      "Bash(npm test*)",
+      "Bash(npm install*)",
+      "Bash(git status*)",
+      "Bash(git log*)",
+      "Bash(git diff*)",
+      "Bash(git branch*)",
+      "Bash(git stash*)",
+      "Bash(git fetch*)",
+      "Bash(ls *)",
+      "Bash(wc *)",
+      "Bash(head *)",
+      "Bash(tail *)",
+      "Bash(cat *)",
+      "Bash(which *)",
+      "Bash(echo *)",
+      "Bash(pwd)",
+      "Bash(date *)",
+      "Bash(claude --version*)",
+      "Bash(node --check *)",
+      "Bash(jq *)"
+    ],
     "defaultMode": "plan"
   },
-  "model": "opusplan",
   "hooks": {
     "SessionStart": [
       {
@@ -15,6 +39,47 @@
           {
             "type": "command",
             "command": "node ~/.claude/hooks/session-start.js"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ~/.claude/hooks/pre-tool-use.js"
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/skills/continuous-learning/hooks/observe.sh"
+          }
+        ]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ~/.claude/hooks/permission-request.js"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ~/.claude/hooks/post-tool-use.js"
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/skills/continuous-learning/hooks/observe.sh"
           }
         ]
       }
@@ -55,7 +120,7 @@
     "superpowers@superpowers-marketplace": true,
     "superpowers-developing-for-claude-code@superpowers-marketplace": true,
     "elements-of-style@superpowers-marketplace": true,
-    "claude-mem@thedotmack": true,
+    "claude-mem@thedotmack": false,
     "tdd-workflows@claude-code-workflows": true,
     "git-pr-workflows@claude-code-workflows": true,
     "debugging-toolkit@claude-code-workflows": true,
@@ -74,9 +139,6 @@
     "systems-programming@claude-code-workflows": true,
     "backend-development@claude-code-workflows": true,
     "cc_chrome_devtools_mcp_skill@cc_chrome_devtools_mcp_skill-plugin-marketplace": true,
-    "automating@custom": true,
-    "coding@custom": true,
-    "writing@custom": true,
     "lua-lsp@claude-plugins-official": true,
     "code-simplifier@claude-plugins-official": true,
     "explanatory-output-style@claude-plugins-official": true,
@@ -89,10 +151,18 @@
     "pr-review-toolkit@claude-plugins-official": true,
     "agent-sdk-dev@claude-plugins-official": true,
     "ralph-loop@claude-plugins-official": true,
-    "github@claude-plugins-official": true,
+    "github@claude-plugins-official": false,
     "typescript-lsp@claude-plugins-official": true,
     "pyright-lsp@claude-plugins-official": true,
-    "rust-analyzer-lsp@claude-plugins-official": true
+    "rust-analyzer-lsp@claude-plugins-official": true,
+    "superpowers@claude-plugins-official": true,
+    "doc-tools@cc-skills": true,
+    "dotfiles-tools@cc-skills": true,
+    "quality-tools@cc-skills": true,
+    "shell-scripting@claude-code-workflows": true,
+    "interface-design@interface-design": true,
+    "swift-lsp@claude-plugins-official": true,
+    "everything-claude-code@everything-claude-code": true
   },
   "sandbox": {
     "allowUnsandboxedCommands": true,
@@ -109,7 +179,37 @@
         "npmjs.com",
         "registry.npmjs.org",
         "pypi.org",
-        "files.pythonhosted.org"
+        "files.pythonhosted.org",
+        "developer.mozilla.org",
+        "stackoverflow.com",
+        "docs.python.org",
+        "nodejs.org",
+        "typescriptlang.org",
+        "react.dev",
+        "nextjs.org",
+        "tailwindcss.com",
+        "vercel.com",
+        "medium.com",
+        "dev.to",
+        "hackernews.com",
+        "news.ycombinator.com",
+        "reddit.com",
+        "www.reddit.com",
+        "crates.io",
+        "docs.rs",
+        "go.dev",
+        "pkg.go.dev",
+        "docs.docker.com",
+        "kubernetes.io",
+        "terraform.io",
+        "aws.amazon.com",
+        "cloud.google.com",
+        "learn.microsoft.com",
+        "wiki.archlinux.org",
+        "man7.org",
+        "humanlayer.dev",
+        "www.humanlayer.dev",
+        "github.blog"
       ]
     },
     "mode": "auto-allow",

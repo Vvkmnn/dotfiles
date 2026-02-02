@@ -257,99 +257,49 @@ get_session_elapsed() {
 
 # Background refresh function (runs detached, never blocks statusline)
 # MUST be defined before get_weekly_active since it's called from there
-# Calculates TRUE wall-clock usage (matches Anthropic's view) by merging all timestamps globally
+# Calculates actual Claude processing time by summing durationMs from jsonl entries
 refresh_weekly_activity() {
 	local state_file="$HOME/.claude/status/weekly_activity.json"
 	local lockfile="$HOME/.claude/status/weekly_activity.lock"
-	local window_end reset_epoch window_start_epoch window_start
-	local state prev_window file mtime cached_mtime new_state
 
-	# Prevent concurrent updates
+	# Prevent concurrent updates (with stale lock detection)
 	if [ -f "$lockfile" ]; then
-		return 0
+		local lock_age=$(($(date +%s) - $(stat -f %m "$lockfile" 2>/dev/null || echo 0)))
+		if [ "$lock_age" -gt 600 ]; then
+			rm -f "$lockfile"  # Stale lock from crashed process (>10 min old)
+		else
+			return 0  # Recent lock, another process is running
+		fi
 	fi
 	touch "$lockfile" 2>/dev/null || return 0
+	trap 'rm -f "$lockfile" 2>/dev/null' EXIT
 
 	# Get billing window
-	window_end=$(cat "$HOME/.claude/status/rate_limit.json" 2>/dev/null | jq -r '.seven_day.resets_at // empty' 2>/dev/null)
-	if [ -z "$window_end" ]; then
-		rm -f "$lockfile"
-		return 0
-	fi
+	local window_end=$(jq -r '.seven_day.resets_at // empty' "$HOME/.claude/status/rate_limit.json" 2>/dev/null)
+	[ -z "$window_end" ] && { rm -f "$lockfile"; return 0; }
 
-	# Calculate window start
-	reset_epoch=$(date -j -u -f "%Y-%m-%dT%H:%M:%S" "${window_end%%.*}" "+%s" 2>/dev/null)
-	window_start_epoch=$((reset_epoch - 7*24*60*60))
-	window_start=$(date -u -r $window_start_epoch +%Y-%m-%dT%H:%M:%S 2>/dev/null)
+	local reset_epoch=$(date -j -u -f "%Y-%m-%dT%H:%M:%S" "${window_end%%.*}" "+%s" 2>/dev/null)
+	local window_start_epoch=$((reset_epoch - 7*24*60*60))
+	local window_start=$(date -u -r $window_start_epoch +%Y-%m-%dT%H:%M:%S 2>/dev/null)
 
-	# Load existing state
-	state='{}'
-	[ -f "$state_file" ] && state=$(cat "$state_file" 2>/dev/null || echo '{}')
-
-	# Check if billing window changed (reset)
-	prev_window=$(echo "$state" | jq -r '.window_start // empty' 2>/dev/null)
-	if [ "$prev_window" != "$window_start" ]; then
-		state='{"file_states":{},"global_timestamps":[]}'
-	fi
-
-	# Step 1: Collect timestamps from modified files only
-	local new_timestamps_file=$(mktemp)
+	# Sum durationMs from all files in billing window
+	local total_ms=0
 	for file in ~/.claude/projects/*/*.jsonl; do
 		[ ! -f "$file" ] && continue
-
-		mtime=$(stat -f %m "$file" 2>/dev/null || echo 0)
-		cached_mtime=$(echo "$state" | jq -r --arg f "$file" '.file_states[$f].mtime // empty' 2>/dev/null)
-
-		# Only extract timestamps from modified files
-		if [ "$cached_mtime" != "$mtime" ]; then
-			jq -r 'select(.timestamp) | .timestamp' "$file" 2>/dev/null >> "$new_timestamps_file"
-		fi
+		local file_ms=$(jq -r --arg start "$window_start" \
+			'select(.timestamp >= $start and .durationMs > 0) | .durationMs' \
+			"$file" 2>/dev/null | awk '{sum+=$1} END{print sum+0}')
+		total_ms=$((total_ms + file_ms))
 	done
+	local total_min=$((total_ms / 60000))
 
-	# Step 2: Merge with cached global timestamps, filter by window, deduplicate, sort
-	local merged_timestamps=$(mktemp)
-	{
-		echo "$state" | jq -r '.global_timestamps[]?' 2>/dev/null
-		cat "$new_timestamps_file" 2>/dev/null
-	} | awk -v start="$window_start" '$0 >= start' | sort -u > "$merged_timestamps"
-
-	# Step 3: Calculate wall-clock activity from merged stream
-	local total_sec=0 prev_epoch=""
-	while read -r ts; do
-		curr_epoch=$(date -j -u -f "%Y-%m-%dT%H:%M:%S" "${ts%%.*}" "+%s" 2>/dev/null)
-		if [ -n "$prev_epoch" ] && [ -n "$curr_epoch" ]; then
-			gap=$((curr_epoch - prev_epoch))
-			if [ "$gap" -lt 180 ] && [ "$gap" -ge 0 ]; then
-				total_sec=$((total_sec + gap))
-			fi
-		fi
-		prev_epoch="$curr_epoch"
-	done < "$merged_timestamps"
-
-	local total_min=$((total_sec / 60))
-
-	# Step 4: Build new state with global timestamps and updated file mtimes
-	new_state='{"file_states":{}}'
-	for file in ~/.claude/projects/*/*.jsonl; do
-		[ ! -f "$file" ] && continue
-		mtime=$(stat -f %m "$file" 2>/dev/null || echo 0)
-		new_state=$(echo "$new_state" | jq --arg f "$file" --argjson m "$mtime" \
-			'.file_states[$f] = {mtime: $m}' 2>/dev/null)
-	done
-
-	# Add global timestamps array
-	local timestamps_json=$(jq -R -s 'split("\n") | map(select(length > 0))' < "$merged_timestamps")
-	new_state=$(echo "$new_state" | jq --argjson ts "$timestamps_json" \
-		'.global_timestamps = $ts' 2>/dev/null)
-
-	# Save state atomically
+	# Save state
 	local now_epoch=$(date +%s)
-	new_state=$(echo "$new_state" | jq --arg ws "$window_start" --argjson t "$total_min" --argjson e "$now_epoch" \
-		'. + {window_start: $ws, total_activity_min: $t, last_update_epoch: $e, last_update: now | todate}' 2>/dev/null)
-	echo "$new_state" > "${state_file}.tmp" && mv "${state_file}.tmp" "$state_file"
+	jq -n --arg ws "$window_start" --argjson t "$total_min" --argjson e "$now_epoch" \
+		'{window_start: $ws, total_activity_min: $t, last_update_epoch: $e}' \
+		> "${state_file}.tmp" && mv "${state_file}.tmp" "$state_file"
 
-	# Cleanup
-	rm -f "$new_timestamps_file" "$merged_timestamps" "$lockfile"
+	rm -f "$lockfile"
 }
 
 weekly_str=""
@@ -382,9 +332,16 @@ get_weekly_active() {
 			weekly_str="${val}d"
 		fi
 
+		# Check for stale lock (>10 min old = crashed process) - always clean up
+		if [ -f "$lockfile" ]; then
+			local lock_age=$((now - $(stat -f %m "$lockfile" 2>/dev/null || echo 0)))
+			if [ "$lock_age" -gt 600 ]; then
+				rm -f "$lockfile"
+			fi
+		fi
+
 		# Trigger background refresh if stale (>5min) and not already running
 		if [ "$update_age" -gt 300 ] && [ ! -f "$lockfile" ]; then
-			# Spawn detached background job
 			(refresh_weekly_activity &) 2>/dev/null
 		fi
 	else
@@ -418,8 +375,8 @@ get_runways() {
 		reset_epoch=$(date -j -u -f "%Y-%m-%dT%H:%M:%S" "${seven_day_reset_sec%%.*}" "+%s" 2>/dev/null)
 		if [ -n "$reset_epoch" ] && [ "$reset_epoch" -gt "$now" ]; then
 			seconds_until=$((reset_epoch - now))
-			seven_day_reset=$(awk "BEGIN {printf \"%.1f\", $seconds_until / 86400}")
-			seven_day_reset=${seven_day_reset%.0}
+			# Always show 1 decimal for granularity (e.g., 6.9d not 7d)
+			seven_day_reset=$(awk "BEGIN { printf \"%.1f\", $seconds_until / 86400 }")
 		fi
 	fi
 
@@ -451,11 +408,18 @@ get_runways() {
 				seven_day_runway=$(awk "BEGIN {printf \"%.1f\", (100 - $weekly_pct) / $burn_rate}")
 				seven_day_runway=${seven_day_runway%.0}
 
-				# Sustainable pace (%/d)
-				local sustainable_pace=$(awk "BEGIN {printf \"%.2f\", (100 - $weekly_pct) / $seven_day_reset}")
-				# Pace ratio (current / sustainable)
-				seven_day_pace_ratio=$(awk "BEGIN {printf \"%.2f\", $burn_rate / $sustainable_pace}")
+				# Guard division when reset imminent
+				if [ "$(echo "$seven_day_reset > 0" | bc -l)" -eq 1 ]; then
+					local sustainable_pace=$(awk "BEGIN {printf \"%.2f\", (100 - $weekly_pct) / $seven_day_reset}")
+					seven_day_pace_ratio=$(awk "BEGIN {printf \"%.2f\", $burn_rate / $sustainable_pace}")
+				else
+					seven_day_pace_ratio="0.5"
+				fi
 			fi
+		else
+			# Just reset (days_into_week ≤ 0) - no burn rate yet, assume healthy
+			seven_day_runway="99"
+			seven_day_pace_ratio="0.5"
 		fi
 	fi
 }
@@ -464,25 +428,20 @@ get_daily_budget() {
 	local current_7d="$1"
 	local days_until_reset="$2"
 
-	# Calculate where we SHOULD be at this point in the 7d window
+	# Daily budget: what % can you use per day sustainably?
+	local daily_budget=$(awk "BEGIN { printf \"%.1f\", 100.0 / 7.0 }")  # 14.3%
+
+	# Today's usage: approximate from 7d total and days elapsed
 	local days_elapsed=$(awk "BEGIN { printf \"%.2f\", 7.0 - $days_until_reset }")
-	local ideal_position=$(awk "BEGIN { printf \"%.1f\", ($days_elapsed / 7.0) * 100 }")
 
-	# Budget = ideal position - actual position
-	# Positive = under budget (ahead of pace)
-	# Negative = over budget (behind ideal, need break)
-	local budget=$(awk "BEGIN { printf \"%.0f\", $ideal_position - $current_7d }")
+	# Daily budget remaining = ideal_usage - current_7d
+	# Include today (+1) so day 1 has 14.3% budget, cap at 100%
+	local days_including_today=$(awk "BEGIN { printf \"%.2f\", $days_elapsed + 1 }")
+	local ideal_usage=$(awk "BEGIN { x = $days_including_today * $daily_budget; printf \"%.1f\", (x > 100) ? 100 : x }")
+	local budget=$(awk "BEGIN { printf \"%.0f\", $ideal_usage - $current_7d }")
 
-	# If over budget, calculate hours of break needed
-	# Ideal advances at: 100% / 7d = 14.286%/day = 0.595%/hour
-	local break_hours=""
-	if [ "$budget" -lt 0 ] 2>/dev/null; then
-		local deficit=$(awk "BEGIN { printf \"%.1f\", -1 * $budget }")
-		break_hours=$(awk "BEGIN { printf \"%.0f\", $deficit / 0.595 }")
-	fi
-
-	# Output: budget hours_needed (space-separated for parsing)
-	echo "$budget $break_hours"
+	# Output: just the budget percentage (no break hours)
+	echo "$budget"
 }
 
 # ---- Fetch all data ----
@@ -494,9 +453,8 @@ get_runways
 
 # Get daily budget (7d only - 5h resets too frequently for daily tracking)
 seven_day_budget=""
-seven_day_break_hours=""
 if [ -n "$weekly_pct" ] && [ -n "$seven_day_reset" ]; then
-	read seven_day_budget seven_day_break_hours <<< "$(get_daily_budget "$weekly_pct" "$seven_day_reset")"
+	seven_day_budget=$(get_daily_budget "$weekly_pct" "$seven_day_reset")
 fi
 
 # ---- Render statusline ----
@@ -519,28 +477,23 @@ if [ -n "$rate_pct" ]; then
 	fi
 fi
 
-# Omega: Position vs ideal pace (7d only)
+# Omega: Daily budget remaining (7d only)
 if [ -n "$seven_day_budget" ]; then
 	omega_color=""
-	break_display=""
 
-	# Add break hours if over budget
-	if [ -n "$seven_day_break_hours" ]; then
-		break_display="[${seven_day_break_hours}h]"
-	fi
-
-	# Color based on deficit vs ideal
+	# Color based on daily budget status
+	# Positive = budget remaining today, negative = borrowed from future days
 	if [ "$seven_day_budget" -lt -10 ] 2>/dev/null; then
-		omega_color="$RED"      # Critical: >10% over ideal
-	elif [ "$seven_day_budget" -lt 0 ] 2>/dev/null; then
-		omega_color="$ORANGE"   # Warning: slightly over ideal
+		omega_color="$RED"      # Critical: borrowed >10% from future
+	elif [ "$seven_day_budget" -lt 5 ] 2>/dev/null; then
+		omega_color="$ORANGE"   # Warning: low daily budget or negative
 	fi
-	# else: on pace or ahead (white)
+	# else: healthy daily budget remaining (white)
 
 	if [ -n "$omega_color" ]; then
-		printf ' %b %b%s%% %s%b' "$ICON_OMEGA" "$omega_color" "$seven_day_budget" "$break_display" "$RESET"
+		printf ' %b %b%s%%%b' "$ICON_OMEGA" "$omega_color" "$seven_day_budget" "$RESET"
 	else
-		printf ' %b %s%% %s' "$ICON_OMEGA" "$seven_day_budget" "$break_display"
+		printf ' %b %s%%' "$ICON_OMEGA" "$seven_day_budget"
 	fi
 fi
 
@@ -559,33 +512,51 @@ fi
 # Old symbol logic (≪ < > ≫) commented out below for reference.
 
 if [ -n "$five_hour_runway" ] && [ -n "$five_hour_reset" ] && [ -n "$five_hour_pace_ratio" ]; then
-	# Determine color based on pace ratio (current burn rate vs sustainable pace)
-	five_hour_color=""
-	if [ "$(echo "$five_hour_pace_ratio > 1.5" | bc -l)" -eq 1 ]; then
-		five_hour_color="$RED"      # critical: burning >1.5× sustainable rate
-	elif [ "$(echo "$five_hour_pace_ratio > 1.0" | bc -l)" -eq 1 ]; then
-		five_hour_color="$ORANGE"   # warning: burning >1.0× sustainable rate
-	fi
-	# else: on track (pace <= sustainable), no color (white)
+	# Show superscript only when runway < reset (won't make it at current pace)
+	# Color based on pace ratio: white ≤0.8, orange 0.8-1.2, red >1.2
 
-	# Add superscript runway time
-	runway_super=$(to_superscript "$five_hour_runway")
-	printf ' %b %b%sh%s%b' "$ICON_RUNWAY" "$five_hour_color" "$five_hour_reset" "$runway_super" "$RESET"
+	runway_lt_reset=$(echo "$five_hour_runway < $five_hour_reset" | bc -l)
+
+	if [ "$runway_lt_reset" -eq 1 ]; then
+		# Runway < reset: show warning with superscript
+		five_hour_color=""
+		if [ "$(echo "$five_hour_pace_ratio > 1.2" | bc -l)" -eq 1 ]; then
+			five_hour_color="$RED"      # critical: pace >1.2× sustainable
+		elif [ "$(echo "$five_hour_pace_ratio > 0.8" | bc -l)" -eq 1 ]; then
+			five_hour_color="$ORANGE"   # warning: pace 0.8-1.2× sustainable
+		fi
+		# else: white (pace ≤0.8×)
+
+		runway_super=$(to_superscript "$five_hour_runway")
+		printf ' %b %b%sh%s%b' "$ICON_RUNWAY" "$five_hour_color" "$five_hour_reset" "$runway_super" "$RESET"
+	else
+		# Runway >= reset: all good, no superscript needed
+		printf ' %b %sh' "$ICON_RUNWAY" "$five_hour_reset"
+	fi
 fi
 
 if [ -n "$seven_day_runway" ] && [ -n "$seven_day_reset" ] && [ -n "$seven_day_pace_ratio" ]; then
-	# Determine color based on pace ratio (current burn rate vs sustainable pace)
-	seven_day_color=""
-	if [ "$(echo "$seven_day_pace_ratio > 1.5" | bc -l)" -eq 1 ]; then
-		seven_day_color="$RED"      # critical: burning >1.5× sustainable rate
-	elif [ "$(echo "$seven_day_pace_ratio > 1.0" | bc -l)" -eq 1 ]; then
-		seven_day_color="$ORANGE"   # warning: burning >1.0× sustainable rate
-	fi
-	# else: on track (pace <= sustainable), no color (white)
+	# Show superscript only when runway < reset (won't make it at current pace)
+	# Color based on pace ratio: white ≤0.8, orange 0.8-1.2, red >1.2
 
-	# Add superscript runway time
-	runway_super=$(to_superscript "$seven_day_runway")
-	printf ' %b%sd%s%b' "$seven_day_color" "$seven_day_reset" "$runway_super" "$RESET"
+	runway_lt_reset=$(echo "$seven_day_runway < $seven_day_reset" | bc -l)
+
+	if [ "$runway_lt_reset" -eq 1 ]; then
+		# Runway < reset: show warning with superscript
+		seven_day_color=""
+		if [ "$(echo "$seven_day_pace_ratio > 1.2" | bc -l)" -eq 1 ]; then
+			seven_day_color="$RED"      # critical: pace >1.2× sustainable
+		elif [ "$(echo "$seven_day_pace_ratio > 0.8" | bc -l)" -eq 1 ]; then
+			seven_day_color="$ORANGE"   # warning: pace 0.8-1.2× sustainable
+		fi
+		# else: white (pace ≤0.8×)
+
+		runway_super=$(to_superscript "$seven_day_runway")
+		printf ' %b%sd%s%b' "$seven_day_color" "$seven_day_reset" "$runway_super" "$RESET"
+	else
+		# Runway >= reset: all good, no superscript needed
+		printf ' %sd' "$seven_day_reset"
+	fi
 fi
 
 # OLD SYMBOL-BASED LOGIC (commented out 2026-01-09):

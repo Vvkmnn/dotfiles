@@ -1,0 +1,18 @@
+{
+  "$schema": "https://platform.claude.com/docs/schemas/claude-code/keybindings.json",
+  "$docs": "https://code.claude.com/docs/en/keybindings",
+  "bindings": [
+    {
+      "context": "Chat",
+      "bindings": {
+        "ctrl+shift+1": "input:/plan",
+        "ctrl+shift+2": "input:/tdd",
+        "ctrl+shift+3": "input:/code-review",
+        "ctrl+shift+4": "input:/build-fix",
+        "ctrl+shift+5": "input:/e2e",
+        "ctrl+shift+6": "input:/refactor-clean",
+        "ctrl+shift+7": "input:/commit"
+      }
+    }
+  ]
+}

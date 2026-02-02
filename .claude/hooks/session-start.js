@@ -23,7 +23,7 @@ try {
   const daysSinceCheck = (Date.now() - lastCheck.getTime()) / (1000 * 60 * 60 * 24);
 
   if (daysSinceCheck > 7) {
-    const reminder = `<system-reminder>It has been ${Math.floor(daysSinceCheck)} days since last Claude Code setup review. Consider running the update-claude skill to check for new features, best practices, and optimizations.</system-reminder>`;
+    const reminder = `<system-reminder>It has been ${Math.floor(daysSinceCheck)} days since last Claude Code setup review. Consider running the upgrade-claude skill to check for new features, best practices, and optimizations.</system-reminder>`;
     console.log(reminder);
   }
 } catch (err) {

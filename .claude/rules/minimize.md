@@ -61,12 +61,12 @@ When launching subagents: `model: "haiku"` for straightforward execution tasks
 
 **Build incrementally:**
 ```
-✅ Step 1: Add function stub → verify compiles
-✅ Step 2: Implement happy path → verify works
-✅ Step 3: Add error handling → verify handles edge cases
-✅ Step 4: Add tests → verify passes
+Step 1: Add function stub → verify compiles
+Step 2: Implement happy path → verify works
+Step 3: Add error handling → verify handles edge cases
+Step 4: Add tests → verify passes
 
-❌ Write everything at once → hope it works
+BAD: Write everything at once → hope it works
 ```
 
 **Validate as you go:**

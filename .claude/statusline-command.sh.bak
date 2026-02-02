@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-om="ॐ"
-morbidtime=$(date '+%-j/365 %-g/61 %a %d-%m-%y %T')
-cols=$(tput cols 2>/dev/null || echo 80)
-printf '%*s\r%s ' $((cols - 35)) "$morbidtime" "$om"
