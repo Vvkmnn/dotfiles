@@ -27,76 +27,29 @@
 ##################################################
 ##################################################
 
-####################################################
-# ~/.logo - Personalized ASCII art display
-####################################################
-# Purpose: Display logo on interactive shell startup
-#          with multilingual wisdom quotes
+# ┌──────────────────────────────────── ~/.logo ─ Startup display ─────────────┐
+#  Vivek Menon <mail@vvkmnn.xyz>
+# └────────────────────────────────────────────────────────────────────────────┘
+#  Purpose: Display logo on interactive shell startup with multilingual quotes
+#  Shows: Triangle logo, Sanskrit/Greek/Japanese wisdom, @v signature
+#  Displays only when: Terminal ≥50 cols, interactive, TTY output
 #
-# Loaded by: ~/.rc sources this last (visual only)
+#  Architecture: 5 tiers adapt to terminal width (40→150+ cols)
+#   TIER 1 (40-59):   V logo only
+#   TIER 2 (60-97):   V + name + website + 3 ultra-short quotes
+#   TIER 3 (98-119):  V + name + website + 8 short quotes
+#   TIER 4 (120-149): V + name + website + 38 medium quotes
+#   TIER 5 (150+):    V + name + website + all 42 quotes
 #
-# Shows: Triangle logo with @v signature
-#        Sanskrit: ॐ गणपतये नमः (Ganesh mantra)
-#        Greek: εἰφέρειν φέρε (Stoic endurance)
-#        Japanese: 常に兵法の道をはなれず (Musashi)
-#        Website: vvkmnn.xyz
-#
-# Displays only when: Terminal ≥50 cols, interactive
-#                     ($PS1 set), TTY output, tput works
-#
-#
-# Architecture: 
-#   Adapts display to terminal width to prevent overflow
-#   Polls for up to 0.5s to handle window manager resize timing
-#
-# TIER 1 (40-59 cols):  V logo only, no content
-# TIER 2 (60-97 cols):  V + name + website + 3 ultra-short quotes
-# TIER 3 (98-119 cols): V + name + website + 8 short quotes
-# TIER 4 (120-149 cols): V + name + website + 38 medium quotes
-# TIER 5 (150+ cols):   V + name + website + all 42 quotes
-#
-#   Quote Format:
-#     Non-English: 3 lines
-#       Line 1: Original text [Source]
-#       Line 2: "English translation"
-#       Line 3:   - Author, dates
-#
-#     English: 2 lines (no translation)
-#       Line 1: "Quote text" [Source]
-#       Line 2:   - Author, dates
-#
-#   How to Add/Modify Quotes:
-#     1. Add QUOTE_N variable (increment N)
-#     2. Update QUOTE_COUNT
-#     3. Add case in get_quote()
-#     4. Add case in get_translation() (if non-English)
-#     5. Add case in get_author()
-#     6. Add case in get_source()
-#     7. Add N to is_english() if English-only
-#     8. Add N to appropriate tier lists based on length:
-#        - ULTRA_SHORT_QUOTES: max 57 chars (line 1)
-#        - SHORT_QUOTES: max 67 chars (line 1)
-#        - MEDIUM_QUOTES: max 92 chars (line 1)
-#        - All quotes available in TIER 5 (150+ cols)
-#
-#   Debugging:
-#     Set LOGO_DEBUG=1 before sourcing to enable debug logs
-#     Logs written to /tmp/logo_debug_$$.log
-#     Activate with export LOGO_DEBUG=1 in ~/.rc
-#
-####################################################
+#  Debugging: Set LOGO_DEBUG=1 to enable logs at /tmp/logo_debug_$$.log
 
-# GUARD Prevent double-sourcing (self-checks display via $PS1)
-[ -n "$__LOGO_SOURCED" ] && return
-__LOGO_SOURCED=1
+# ┌───────────────────────────────────────────────────────────────── guard ────┐
+  [ -n "$__LOGO_SOURCED" ] && return
+  __LOGO_SOURCED=1
+# └────────────────────────────────────────────────────────────────────────────┘
 
-# Only show logo if:
-# 1. Terminal is wide enough (50+ columns)
-# 2. tput command exists and responds quickly
-# 3. Not in a non-interactive shell
-# 4. Not in a pipe or script
-
-# Wisdom quotes - 3 unique random quotes selected per shell startup (42 total)
+# ┌────────────────────────────────────────────────────────────────── quotes ──┐
+  # 42 multilingual wisdom quotes
 QUOTE_1="ॐ गणपतये नमः"
 QUOTE_2="εἰφέρειν φέρε"
 QUOTE_3="常に兵法の道をはなれず"
@@ -138,27 +91,27 @@ QUOTE_38="The first principle is that you must not fool yourself"
 QUOTE_39="An equation means nothing to me unless it expresses a thought of God"
 QUOTE_40="I learned that courage was not the absence of fear, but the triumph over it"
 QUOTE_41="ॐ भूर्भुवः स्वः तत्सवितुर्वरेण्यं भर्गो देवस्य धीमहि धियो यो नः प्रचोदयात्"
-QUOTE_42="सत्यं हि परमं धर्मं"
-QUOTE_COUNT=42
+  QUOTE_42="सत्यं हि परमं धर्मं"
+  QUOTE_COUNT=42
 
-# Quote tiers for different terminal widths
-# ULTRA_SHORT: 3 quotes, max 57 chars (fits 60-97 cols)
-ULTRA_SHORT_QUOTES="8 9 15"
-ULTRA_SHORT_COUNT=3
+  # tier pools by terminal width
+  ULTRA_SHORT_QUOTES="8 9 15"
+  ULTRA_SHORT_COUNT=3
+  SHORT_QUOTES="5 8 9 13 15 20 21 37"
+  SHORT_COUNT=8
+  MEDIUM_QUOTES="1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 34 35 36 37 38 39 42"
+  MEDIUM_COUNT=38
+# └────────────────────────────────────────────────────────────────────────────┘
 
-# SHORT: 8 quotes, max 67 chars (fits 98-119 cols)
-SHORT_QUOTES="5 8 9 13 15 20 21 37"
-SHORT_COUNT=8
-
-# MEDIUM: ~20 quotes, max 92 chars (fits 120-149 cols)
-# Excludes longest quotes: 32, 33, 40, 41
-MEDIUM_QUOTES="1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 34 35 36 37 38 39 42"
-MEDIUM_COUNT=38
-
-# Skip if shell is still initializing (common in tmux startup)
-if [ -z "$PS1" ]; then
-	return 2>/dev/null || :
-fi
+# ┌─────────────────────────────────────────────────────────────────── check ──┐
+  # skip if non-interactive
+  [ -z "$PS1" ] && { return 2>/dev/null || :; }
+  # Skip if tmux will autostart (avoids double flash - logo shows inside tmux)
+  # Show logo if: inside tmux OR in editor (where tmux won't start)
+  if [ -z "$TMUX" ] && [ -z "$INSIDE_EMACS" ] && [ -z "$VIM" ] && [ -z "$INTELLIJ_ENVIRONMENT_READER" ]; then
+      return 2>/dev/null || :
+  fi
+# └────────────────────────────────────────────────────────────────────────────┘
 
 if [ -t 1 ] && command -v tput >/dev/null 2>&1; then
 	# get_quote: Returns original quote text in native language

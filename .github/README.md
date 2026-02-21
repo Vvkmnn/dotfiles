@@ -123,8 +123,10 @@ xcode-select --install
 fonts
 
 ```zsh
-# brew homebrew/cask-fonts && brew install --cask font-jetbrains-mono-nerd-font
-brew homebrew/cask-fonts/font-hack-nerd-font
+brew tap homebrew/cask-fonts
+brew install --cask font-sf-mono-nerd-font
+brew install --cask font-jetbrains-mono-nerd-font
+brew install --cask font-hack-nerd-font
 ```
 
 apps
@@ -373,7 +375,7 @@ dotfiles submodule update # Update all folders to master branch
 │   ├── test.md        # Testing requirements
 │   ├── minimize.md    # Simplicity principles
 │   ├── teach.md       # Educational insights
-│   ├── improve.md     # Self-improvement
+│   ├── recover.md     # Error recovery and escalation
 │   └── avoid.md       # Context efficiency
 ├── hooks/             # Event hooks (JS)
 │   ├── session-start.js
