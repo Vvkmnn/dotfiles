@@ -159,6 +159,8 @@ dotfiles log --oneline -5
 dotfiles status
 ```
 
+**README staleness check:** If commits touched `.claude/` (rules, skills, commands, hooks, mcp) or category structure changed, verify `~/.github/README.md` tree counts still match reality (9 rules, 28 skills, 13 commands, 6 hooks, 36 servers, ~1126 files). Suggest update if stale.
+
 Report: "Committed as [hashes]. Push with `dotfiles push`"
 
 ## Commit Message Style
