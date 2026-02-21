@@ -21,8 +21,9 @@
 
 # Restart yabai and skhd services
 # Useful when you've modified configuration files and need to apply changes
+# NOTE: FluidNoti disabled (2026-02-02) - not actively using
 ctrl + cmd - 9 : yabai --restart-service && skhd --restart-service
-ctrl + cmd - 0 : brew services restart sketchybar && yabai --restart-service && skhd --restart-service && open -na /Applications/FluidNoti.app
+ctrl + cmd - 0 : brew services restart sketchybar && yabai --restart-service && skhd --restart-service # && open -na /Applications/FluidNoti.app
 
 ################################################################################
 # 2. APPLICATION SHORTCUTS
@@ -31,7 +32,8 @@ ctrl + cmd - 0 : brew services restart sketchybar && yabai --restart-service && 
 # === Favorite Applications ===
 
 # Open Mail.app
-ctrl + cmd - m : open -na /System/Applications/Mail.app
+# NOTE: Replaced by menuanyhwere
+# ctrl + cmd - m : open -na /System/Applications/Mail.app
 
 # Open Obsidian
 ctrl + cmd - o : open -na /Applications/Obsidian.app/
@@ -43,7 +45,7 @@ ctrl + cmd - o : open -na /Applications/Obsidian.app/
 # ctrl + cmd - return : windsurf -n
 
 # Open WezTerm terminal
-ctrl + cmd - space : open -Fn /Applications/Ghostty.app
+ctrl + cmd - space : open -na /Applications/Ghostty.app
 # ctrl + cmd - space : open -na /Applications/Wezterm.app
 
 # === Web Browsers ===
@@ -137,20 +139,31 @@ ctrl + cmd - right : yabai -m window --space next --focus || yabai -m window --s
 ctrl + cmd - j : yabai -m space --focus prev || yabai -m space --focus last
 ctrl + cmd - k : yabai -m space --focus next || yabai -m space --focus first
 
-# Navigate spaces with up/down (matches macOS default ctrl + left/right behavior)
-ctrl - up : yabai -m space --focus prev || yabai -m space --focus last
-ctrl - down : yabai -m space --focus next || yabai -m space --focus first
+# Navigate spaces with up/down
+# NOTE: Disabled - using ctrl-left/right instead
+# ctrl - up : yabai -m space --focus prev || yabai -m space --focus last
+# ctrl - down : yabai -m space --focus next || yabai -m space --focus first
 
-# Quick focus between desktops (fallbacks to macOS defaults)
-# ctrl - left : (yabai -m space --focus prev || yabai -m space --focus last) || skhd -k "ctrl + cmd - left"
-# ctrl - right : (yabai -m space --focus next || yabai -m space --focus first) || skhd -k "ctrl + cmd - right"
+# Reorder spaces - move entire space left/right with wraparound
+ctrl + alt - left : idx=$(yabai -m query --spaces --space | jq '.index'); \
+    if [ "$idx" -eq 1 ]; then yabai -m space --move last; else yabai -m space --move prev; fi; \
+    sketchybar -m --trigger space_change
+ctrl + alt - right : idx=$(yabai -m query --spaces --space | jq '.index'); \
+    last=$(yabai -m query --spaces | jq 'map(select(."is-native-fullscreen" == false)) | last | .index'); \
+    if [ "$idx" -eq "$last" ]; then yabai -m space --move first; else yabai -m space --move next; fi; \
+    sketchybar -m --trigger space_change
+
+# Navigate spaces with wraparound (replaces macOS default ctrl-left/right)
+ctrl - left : yabai -m space --focus prev || yabai -m space --focus last
+ctrl - right : yabai -m space --focus next || yabai -m space --focus first
 # Reorder spaces across the bar
 # ctrl + shift - left : (yabai -m space --move prev && sketchybar -m --trigger space_change; hs -c "hs.alert.show('Moved Space Left')") || (yabai -m space --swap last && sketchybar -m --trigger space_change; hs -c "hs.alert.show('Swapped With Last Space')")
 # ctrl + shift - right : (yabai -m space --move next && sketchybar -m --trigger space_change; hs -c "hs.alert.show('Moved Space Right')") || (yabai -m space --swap first && sketchybar -m --trigger space_change; hs -c "hs.alert.show('Swapped With First Space')")
 
 # Reorder spaces - physically move current space left/right in Mission Control (vim keys)
-ctrl + cmd - h : yabai -m space --move prev && sketchybar -m --trigger space_change
-ctrl + cmd - l : yabai -m space --move next && sketchybar -m --trigger space_change
+# NOTE: Disabled - using ctrl+alt+arrow instead (see above)
+# ctrl + cmd - h : yabai -m space --move prev && sketchybar -m --trigger space_change
+# ctrl + cmd - l : yabai -m space --move next && sketchybar -m --trigger space_change
 
 # Destroy/close current space (windows move to another space)
 # NOTE: yabai --destroy doesn't work on macOS 26 Tahoe - scripting addition not yet supported
@@ -173,22 +186,22 @@ ctrl + cmd - tab : yabai -m display --focus recent
 
 # Create new space at end of list and jump to it
 ctrl + cmd - n : yabai -m space --create && \
-                 index="$(yabai -m query --spaces --display | jq -r 'map(select(."is-native-fullscreen" == false))[-1].index')" && \
-                 yabai -m space --focus "${index}" && \
-                 sketchybar -m --trigger space_change
+	index="$(yabai -m query --spaces --display | jq -r 'map(select(."is-native-fullscreen" == false))[-1].index')" && \
+	yabai -m space --focus "${index}" && \
+	sketchybar -m --trigger space_change
 
 # Move current window to next empty space (0 windows) and follow it on current display
 # If no empty space exists, creates a new one at the end
 # Excludes current space from search (will be empty after window moves anyway)
-ctrl + cmd - x : current="$(yabai -m query --spaces | jq -r 'map(select(.["has-focus"] == true)) | .[0].index')"; \
-                 empty_space="$(yabai -m query --spaces --display | jq -r --arg cur "$current" 'map(select(."is-native-fullscreen" == false and ."windows" == [] and (.index | tostring) != $cur)) | .[0].index // empty')"; \
-                 if [ -z "$empty_space" ]; then \
-                   yabai -m space --create && \
-                   empty_space="$(yabai -m query --spaces --display | jq -r 'map(select(."is-native-fullscreen" == false))[-1].index')"; \
-                 fi; \
-                 yabai -m window --space "${empty_space}" && \
-                 yabai -m space --focus "${empty_space}" && \
-                 sketchybar -m --trigger space_change
+ctrl + cmd - x : current="$(yabai -m query --spaces | jq -r 'map(select(.["has-focus"] == true)) | .[0].index')" && \
+	empty_space="$(yabai -m query --spaces --display | jq -r --arg cur "$current" 'map(select(."is-native-fullscreen" == false and ."windows" == [] and (.index | tostring) != $cur)) | .[0].index // empty')" && \
+	if [ -z "$empty_space" ]; then \
+		yabai -m space --create && \
+		empty_space="$(yabai -m query --spaces --display | jq -r 'map(select(."is-native-fullscreen" == false))[-1].index')"; \
+	fi && \
+	yabai -m window --space "${empty_space}" && \
+	yabai -m space --focus "${empty_space}" && \
+	sketchybar -m --trigger space_change
 
 # OLD create space bindings (commented)
 # ctrl + alt - t : yabai -m space --create && focus it

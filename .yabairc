@@ -57,11 +57,15 @@ sudo /opt/homebrew/bin/yabai --load-sa
 # Focus the first VISIBLE window when switching spaces
 # Filters out minimized and hidden windows to prevent focusing invisible windows
 # Only focuses if a window exists (prevents errors on empty spaces)
-/opt/homebrew/bin/yabai -m signal --add event=space_changed action='
-  window_id=$(/opt/homebrew/bin/yabai -m query --windows --space |
-    jq -r "[.[] | select(.\"is-visible\" == true and .\"is-minimized\" == false)][0].id // empty")
-  [ -n "$window_id" ] && /opt/homebrew/bin/yabai -m window --focus "$window_id"
-'
+# DISABLED: Causes random space switching on empty spaces - leaves focus undefined
+#           which may trigger macOS to switch back to a space with windows.
+#           Trade-off: You may need to click a window after switching spaces.
+#           See: https://github.com/koekeishiya/yabai/issues/719
+# /opt/homebrew/bin/yabai -m signal --add event=space_changed action='
+#   window_id=$(/opt/homebrew/bin/yabai -m query --windows --space |
+#     jq -r "[.[] | select(.\"is-visible\" == true and .\"is-minimized\" == false)][0].id // empty")
+#   [ -n "$window_id" ] && /opt/homebrew/bin/yabai -m window --focus "$window_id"
+# '
 
 # Focus the first VISIBLE window when changing displays
 # Only focuses if a window exists (prevents errors on empty spaces)
