@@ -57,11 +57,7 @@ set_placeholder() {
 }
 
 if [ ! -d "$SESSION_DIR" ] || ! command -v jq >/dev/null 2>&1; then
-    if [ "$TARGET" = "combined" ]; then
-        set_placeholder "--% --%"
-    else
-        set_placeholder "--"
-    fi
+    hide_item
 fi
 
 NOW_EPOCH=$(date +%s)
@@ -93,34 +89,21 @@ while IFS='|' read -r _ filepath; do
 done < <(find "$SESSION_DIR" -type f -name "*.jsonl" -exec stat -f "%m|%N" {} \; | sort -rn)
 
 if [ -z "$LATEST_DATA" ]; then
-    if [ "$TARGET" = "combined" ]; then
-        set_placeholder "--% --%"
-    else
-        set_placeholder "--"
-    fi
+    hide_item
 fi
 
 PRIMARY_USED=$(echo "$LATEST_DATA" | awk '{print $1}')
 SECONDARY_USED=$(echo "$LATEST_DATA" | awk '{print $2}')
 
-# Validate raw values
 if [ -z "$PRIMARY_USED" ] || [ -z "$SECONDARY_USED" ] || [ "$PRIMARY_USED" = "null" ] || [ "$SECONDARY_USED" = "null" ]; then
-    if [ "$TARGET" = "combined" ]; then
-        set_placeholder "--% --%"
-    else
-        set_placeholder "--"
-    fi
+    hide_item
 fi
 
 PRIMARY_INT=$(printf "%.0f" "$PRIMARY_USED" 2>/dev/null)
 SECONDARY_INT=$(printf "%.0f" "$SECONDARY_USED" 2>/dev/null)
 
 if ! [ "$PRIMARY_INT" -ge 0 ] 2>/dev/null || ! [ "$SECONDARY_INT" -ge 0 ] 2>/dev/null; then
-    if [ "$TARGET" = "combined" ]; then
-        set_placeholder "--% --%"
-    else
-        set_placeholder "--"
-    fi
+    hide_item
 fi
 
 case "$TARGET" in

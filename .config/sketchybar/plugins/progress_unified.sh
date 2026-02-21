@@ -128,7 +128,7 @@ MINUTES_INTO_DAY=$((HOUR * 60 + MINUTE))
 PROGRESS=$((MINUTES_INTO_DAY * 100 / 1440))
 
 # Highlight for the first 10% of each segment
-SEGMENTS=5
+SEGMENTS=7
 SEGMENT_MINUTES=$((1440 / SEGMENTS))
 SEGMENT_OFFSET=$((MINUTES_INTO_DAY % SEGMENT_MINUTES))
 HIGHLIGHT_MINUTES=$((SEGMENT_MINUTES / 10))
@@ -137,20 +137,20 @@ if [ "$SEGMENT_OFFSET" -lt "$HIGHLIGHT_MINUTES" ]; then
 	TRACK_COLOR="0xffFFFFFF"
 fi
 
-# Render 5-position track for smooth progress
-DOT_POS=$((PROGRESS / 20))
-if [ $DOT_POS -gt 4 ]; then
-    DOT_POS=4
+# Render 7-position track for smooth progress
+DOT_POS=$((PROGRESS * 7 / 100))
+if [ $DOT_POS -gt 6 ]; then
+    DOT_POS=6
 fi
 
 # Calculate which slots get half-moons
 SUNRISE_MINUTES=$((SUNRISE_HOUR * 60))
 SUNSET_MINUTES=$((SUNSET_HOUR * 60))
-SUNRISE_SLOT=$((SUNRISE_MINUTES * 5 / 1440))
-SUNSET_SLOT=$((SUNSET_MINUTES * 5 / 1440))
+SUNRISE_SLOT=$((SUNRISE_MINUTES * 7 / 1440))
+SUNSET_SLOT=$((SUNSET_MINUTES * 7 / 1440))
 
 TRACK=""
-for i in 0 1 2 3 4; do
+for i in 0 1 2 3 4 5 6; do
 	if [ $i -eq $DOT_POS ]; then
 		if [ $i -eq $SUNRISE_SLOT ]; then
 			TRACK="${TRACK}◐"  # Sunrise slot

@@ -504,6 +504,7 @@ sketchybar --add item temp right \
 # 	icon.color=$MID_GRAY \
 # 	label.color=$MID_GRAY \
 # 	click_script="$PLUGIN_DIR/launch_menuanywhere.sh"
+# $PLUGIN_DIR/menuanywhere &
 
 # Force update
 sketchybar --update

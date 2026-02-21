@@ -54,49 +54,57 @@ if [ -f "$PREV_FILE" ]; then
         fi
     fi
     
-    # Convert to KB/s (2 second interval)
-    DOWN_KB=$((DIFF_DOWN / 2048))
-    UP_KB=$((DIFF_UP / 2048))
+    # Convert to KB/s (10 second interval)
+    DOWN_KB=$((DIFF_DOWN / 10240))
+    UP_KB=$((DIFF_UP / 10240))
     
-    # Update history - keep only 3 samples for cleaner display
+    # Update history - keep only 3 samples, prevent consecutive duplicates
+    NEW_ENTRY="$DOWN_KB $UP_KB"
     if [ -f "$HIST_FILE" ]; then
-        HISTORY=$(tail -2 "$HIST_FILE" 2>/dev/null)
-        echo "$HISTORY" > "$HIST_FILE"
-        echo "$DOWN_KB $UP_KB" >> "$HIST_FILE"
+        LAST_ENTRY=$(tail -1 "$HIST_FILE" 2>/dev/null)
+        # Only add if different from last entry (prevents duplicate sparklines)
+        if [ "$NEW_ENTRY" != "$LAST_ENTRY" ]; then
+            HISTORY=$(tail -2 "$HIST_FILE" 2>/dev/null)
+            echo "$HISTORY" > "$HIST_FILE"
+            echo "$NEW_ENTRY" >> "$HIST_FILE"
+        fi
     else
-        echo "$DOWN_KB $UP_KB" > "$HIST_FILE"
+        echo "$NEW_ENTRY" > "$HIST_FILE"
     fi
 
-    # Sparkline: 8 height levels
+    # Sparkline: 8-level height bars
+    # NOTE: Braille alternatives for future (align better but harder to read):
+    #   Bottom-up: ⢀⣀⣄⣤⣦⣶⣷⣿  Top-down: ⠁⠃⠇⡇⡏⡟⡿⣿
     SPARK=("▁" "▂" "▃" "▄" "▅" "▆" "▇" "█")
 
     DOWN_SPARK=""
     UP_SPARK=""
     SAMPLES=0
 
-    while read -r line; do
+    while read -r line && [ $SAMPLES -lt 3 ]; do
+        [ -z "$line" ] && continue
         D=$(echo $line | cut -d' ' -f1)
         U=$(echo $line | cut -d' ' -f2)
 
-        # Download: 8 levels (KB/s)
-        if [ $D -lt 10 ]; then D_IDX=0
-        elif [ $D -lt 50 ]; then D_IDX=1
-        elif [ $D -lt 150 ]; then D_IDX=2
-        elif [ $D -lt 400 ]; then D_IDX=3
-        elif [ $D -lt 800 ]; then D_IDX=4
-        elif [ $D -lt 2000 ]; then D_IDX=5
-        elif [ $D -lt 5000 ]; then D_IDX=6
-        else D_IDX=7; fi
+        # Download: 8 levels (more variety in normal range, extreme stays high)
+        if [ $D -lt 10 ]; then D_IDX=0        # ▁ idle
+        elif [ $D -lt 30 ]; then D_IDX=1      # ▂ minimal
+        elif [ $D -lt 80 ]; then D_IDX=2      # ▃ light
+        elif [ $D -lt 180 ]; then D_IDX=3     # ▄ normal browsing
+        elif [ $D -lt 400 ]; then D_IDX=4     # ▅ active
+        elif [ $D -lt 1000 ]; then D_IDX=5    # ▆ busy
+        elif [ $D -lt 5000 ]; then D_IDX=6    # ▇ heavy
+        else D_IDX=7; fi                       # █ extreme (>5M)
 
-        # Upload: 8 levels (more sensitive)
-        if [ $U -lt 5 ]; then U_IDX=0
-        elif [ $U -lt 25 ]; then U_IDX=1
-        elif [ $U -lt 75 ]; then U_IDX=2
-        elif [ $U -lt 200 ]; then U_IDX=3
-        elif [ $U -lt 500 ]; then U_IDX=4
-        elif [ $U -lt 1000 ]; then U_IDX=5
-        elif [ $U -lt 3000 ]; then U_IDX=6
-        else U_IDX=7; fi
+        # Upload: 8 levels (lower thresholds, extreme >2M)
+        if [ $U -lt 3 ]; then U_IDX=0         # ▁ idle
+        elif [ $U -lt 10 ]; then U_IDX=1      # ▂ minimal
+        elif [ $U -lt 30 ]; then U_IDX=2      # ▃ light
+        elif [ $U -lt 70 ]; then U_IDX=3      # ▄ normal
+        elif [ $U -lt 150 ]; then U_IDX=4     # ▅ active
+        elif [ $U -lt 400 ]; then U_IDX=5     # ▆ busy
+        elif [ $U -lt 2000 ]; then U_IDX=6    # ▇ heavy
+        else U_IDX=7; fi                       # █ extreme (>2M)
 
         DOWN_SPARK="${DOWN_SPARK}${SPARK[$D_IDX]}"
         UP_SPARK="${UP_SPARK}${SPARK[$U_IDX]}"
@@ -109,7 +117,7 @@ if [ -f "$PREV_FILE" ]; then
         UP_SPARK="${UP_SPARK}▁"
         SAMPLES=$((SAMPLES + 1))
     done
-    
+
     # Format: integers only (K=KB/s, M=MB/s)
     format_speed() {
         local kb=$1
@@ -121,16 +129,16 @@ if [ -f "$PREV_FILE" ]; then
     UP_STR=$(format_speed $UP_KB)
     
     # Colors: lavender→white→orange→red (down/up have different thresholds)
-    # Down: <100K lavender, 100K-5M white, 5M-20M orange, >20M red
-    if [ $DOWN_KB -lt 100 ]; then DOWN_COLOR=0xff8A869E
-    elif [ $DOWN_KB -lt 5000 ]; then DOWN_COLOR=0xffFFFFFF
-    elif [ $DOWN_KB -lt 20000 ]; then DOWN_COLOR=0xffFFA500
+    # Down: <50K lavender, 50K-500K white, 500K-5M orange, >5M red
+    if [ $DOWN_KB -lt 50 ]; then DOWN_COLOR=0xff8A869E
+    elif [ $DOWN_KB -lt 500 ]; then DOWN_COLOR=0xffFFFFFF
+    elif [ $DOWN_KB -lt 5000 ]; then DOWN_COLOR=0xffFFA500
     else DOWN_COLOR=0xffE74C3C; fi
 
-    # Up: <50K lavender, 50K-2M white, 2M-10M orange, >10M red
-    if [ $UP_KB -lt 50 ]; then UP_COLOR=0xff8A869E
-    elif [ $UP_KB -lt 2000 ]; then UP_COLOR=0xffFFFFFF
-    elif [ $UP_KB -lt 10000 ]; then UP_COLOR=0xffFFA500
+    # Up: <20K lavender, 20K-200K white, 200K-2M orange, >2M red
+    if [ $UP_KB -lt 20 ]; then UP_COLOR=0xff8A869E
+    elif [ $UP_KB -lt 200 ]; then UP_COLOR=0xffFFFFFF
+    elif [ $UP_KB -lt 2000 ]; then UP_COLOR=0xffFFA500
     else UP_COLOR=0xffE74C3C; fi
 
     sketchybar --set network_down label="↓${DOWN_STR} ${DOWN_SPARK}" \

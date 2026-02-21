@@ -2,11 +2,13 @@
 
 # Battery display with dynamic icons, cycle count, and unified color logic
 PERCENTAGE=$(pmset -g batt | grep -Eo "\d+%" | cut -d% -f1)
-AC_POWER=$(pmset -g batt | grep 'AC Power')
+# Check power connection via ExternalConnected (reliable even with BatFi)
+# FedExternalConnected is unreliable - reports phantom MagSafe state
+POWER_CONNECTED=$(ioreg -rn AppleSmartBattery | grep -q '"ExternalConnected" = Yes' && echo "yes")
 CYCLE_COUNT=$(system_profiler SPPowerDataType | grep "Cycle Count" | awk '{print $3}')
 
 # Determine battery icon based on percentage, with charging override
-if [ -n "$AC_POWER" ]; then
+if [ -n "$POWER_CONNECTED" ]; then
 	BATT_ICON="􀢋 "  # battery.bolt (charging)
 elif [ $PERCENTAGE -gt 60 ]; then
 	BATT_ICON="􀛨 "  # battery.100
@@ -16,8 +18,8 @@ else
 	BATT_ICON="􀛪 "  # battery.50
 fi
 
-# AC + ≥80% → cycles with dimming (full state)
-if [ -n "$AC_POWER" ] && [ "$PERCENTAGE" -ge 80 ]; then
+# Plugged in + ≥80% → cycles with dimming (full state)
+if [ -n "$POWER_CONNECTED" ] && [ "$PERCENTAGE" -ge 80 ]; then
 	DISPLAY="[${CYCLE_COUNT}]"
 	COLOR=0xff606060  # DIM_GRAY - fades into background
 else
