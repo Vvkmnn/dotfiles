@@ -154,3 +154,56 @@ npm view @utcp/code-mode peerDependencies.isolated-vm
 Add critical servers to native Claude Code MCP as fallback while keeping code-mode primary:
 - `notion`, `github`, `google_drive` - high-value, frequently used
 - Provides redundancy if code-mode has issues
+
+---
+
+## Plugin Recommendations (2026-02-02)
+
+### Trail of Bits Security Research
+
+Marketplace added but plugins not installed. Specialized for security research (not typical app security).
+
+```bash
+/plugin marketplace add trailofbits/skills  # Already done
+```
+
+**Available plugins** (install when doing security research):
+- `static-analysis` - CodeQL + Semgrep bindings
+- `variant-analysis` - Find code similar to known vulns
+- `constant-time-analysis` - Crypto timing side-channels
+- `property-based-testing` - Hypothesis-style fuzzing
+- `yara-authoring` - Malware detection rules
+- `dwarf-expert` - Binary/debug info analysis
+- `burpsuite-project-parser` - Web pentesting workflow
+- `building-secure-contracts` - Solidity/smart contracts
+
+**Note:** Repo may not follow Claude Code plugin format. Check structure if install fails.
+
+### Additional claude-code-workflows Plugins
+
+Already have: security-scanning, cicd-automation, database-design, python-development, javascript-typescript, systems-programming, backend-development, tdd-workflows, unit-testing.
+
+**Install when needed:**
+
+| Plugin | Use Case |
+|--------|----------|
+| `debugging-toolkit` | Systematic debugging agents |
+| `error-debugging` | Error pattern analysis |
+| `git-pr-workflows` | PR creation/review workflows |
+| `code-refactoring` | Structured refactoring |
+
+```bash
+/plugin install debugging-toolkit@claude-code-workflows
+/plugin install error-debugging@claude-code-workflows
+/plugin install git-pr-workflows@claude-code-workflows
+/plugin install code-refactoring@claude-code-workflows
+```
+
+### Cost Tracking (When Needed)
+
+```bash
+npm install -g ccusage
+ccusage  # Shows cost breakdown per session/project
+```
+
+Only relevant for API usage, not subscription.

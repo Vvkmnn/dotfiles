@@ -1,0 +1,51 @@
+# Claude Code context exclusions
+# Files matching these patterns are excluded from @-mentions and context
+
+# Dependencies
+node_modules/
+venv/
+.venv/
+__pycache__/
+vendor/
+
+# Build artifacts
+dist/
+build/
+out/
+target/
+.next/
+.nuxt/
+
+# IDE/tooling
+.idea/
+.vscode/
+.vs/
+
+# Git internals
+.git/
+
+# Logs and caches
+*.log
+logs/
+coverage/
+.nyc_output/
+.pytest_cache/
+.cache/
+
+# Large data files
+*.csv
+*.parquet
+*.db
+*.sqlite
+
+# Package locks (grep for specific packages if needed)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+Cargo.lock
+poetry.lock
+
+# Compiled/minified
+*.min.js
+*.min.css
+*.map

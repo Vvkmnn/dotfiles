@@ -1,4 +1,5 @@
 {
+  "cleanupPeriodDays": 77,
   "attribution": {
     "commit": "",
     "pr": ""
@@ -7,27 +8,104 @@
     "allow": [
       "WebSearch",
       "WebFetch",
-      "Bash(npm run *)",
-      "Bash(npm test*)",
-      "Bash(npm install*)",
+
+      "Bash(ls *)",
+      "Bash(pwd)",
+      "Bash(cat *)",
+      "Bash(head *)",
+      "Bash(tail *)",
+      "Bash(wc *)",
+      "Bash(find *)",
+      "Bash(stat *)",
+      "Bash(file *)",
+      "Bash(tree *)",
+      "Bash(diff *)",
+
+      "Bash(grep *)",
+      "Bash(rg *)",
+      "Bash(sort *)",
+      "Bash(uniq *)",
+      "Bash(cut *)",
+      "Bash(tr *)",
+      "Bash(jq *)",
+
+      "Bash(echo *)",
+      "Bash(which *)",
+      "Bash(type *)",
+      "Bash(date *)",
+      "Bash(uname *)",
+      "Bash(whoami)",
+      "Bash(hostname)",
+      "Bash(id)",
+      "Bash(env)",
+      "Bash(printenv *)",
+      "Bash(* --version)",
+      "Bash(* --help)",
+
       "Bash(git status*)",
       "Bash(git log*)",
       "Bash(git diff*)",
+      "Bash(git show*)",
+      "Bash(git blame*)",
       "Bash(git branch*)",
-      "Bash(git stash*)",
+      "Bash(git remote*)",
+      "Bash(git tag*)",
+      "Bash(git rev-parse*)",
+      "Bash(git shortlog*)",
+      "Bash(git stash list*)",
+      "Bash(git stash show*)",
       "Bash(git fetch*)",
-      "Bash(ls *)",
-      "Bash(wc *)",
-      "Bash(head *)",
-      "Bash(tail *)",
-      "Bash(cat *)",
-      "Bash(which *)",
-      "Bash(echo *)",
-      "Bash(pwd)",
-      "Bash(date *)",
+      "Bash(gh pr view*)",
+      "Bash(gh pr list*)",
+      "Bash(gh pr diff*)",
+      "Bash(gh pr checks*)",
+      "Bash(gh issue view*)",
+      "Bash(gh issue list*)",
+      "Bash(gh api *)",
+      "Bash(gh repo view*)",
+
+      "Bash(dotfiles status*)",
+      "Bash(dotfiles log*)",
+      "Bash(dotfiles diff*)",
+      "Bash(dotfiles show*)",
+      "Bash(dotfiles ls-files*)",
+      "Bash(dotfiles branch*)",
+      "Bash(dotfiles remote*)",
+
+      "Bash(brew list*)",
+      "Bash(brew info*)",
+      "Bash(brew bundle dump --dry-run*)",
+      "Bash(defaults read *)",
+
+      "Bash(npm test*)",
+      "Bash(npm run test*)",
+      "Bash(npm run lint*)",
+      "Bash(npm run check*)",
+      "Bash(pnpm store status*)",
+
+      "Bash(cargo check*)",
+      "Bash(cargo test*)",
+      "Bash(cargo clippy*)",
+
+      "Bash(pytest *)",
+      "Bash(python3 -m json.tool *)",
+      "Bash(python3 -m py_compile *)",
+      "Bash(python3 -c *)",
+
       "Bash(claude --version*)",
-      "Bash(node --check *)",
-      "Bash(jq *)"
+      "Bash(df *)",
+      "Bash(du *)",
+      "Bash(diskutil list*)",
+      "Bash(diskutil info*)",
+      "Bash(docker system df*)",
+      "Bash(docker images*)",
+      "Bash(docker ps*)",
+      "Bash(docker context*)",
+      "Bash(docker info*)",
+      "Bash(colima status*)",
+      "Bash(colima list*)",
+      "Bash(tmutil list*)",
+      "Bash(brew cleanup --dry-run*)"
     ],
     "defaultMode": "plan"
   },
@@ -50,10 +128,6 @@
           {
             "type": "command",
             "command": "node ~/.claude/hooks/pre-tool-use.js"
-          },
-          {
-            "type": "command",
-            "command": "~/.claude/skills/continuous-learning/hooks/observe.sh"
           }
         ]
       }
@@ -76,10 +150,6 @@
           {
             "type": "command",
             "command": "node ~/.claude/hooks/post-tool-use.js"
-          },
-          {
-            "type": "command",
-            "command": "~/.claude/skills/continuous-learning/hooks/observe.sh"
           }
         ]
       }
@@ -120,7 +190,7 @@
     "superpowers@superpowers-marketplace": true,
     "superpowers-developing-for-claude-code@superpowers-marketplace": true,
     "elements-of-style@superpowers-marketplace": true,
-    "claude-mem@thedotmack": false,
+    "compound-engineering@every-marketplace": true,
     "tdd-workflows@claude-code-workflows": true,
     "git-pr-workflows@claude-code-workflows": true,
     "debugging-toolkit@claude-code-workflows": true,
@@ -160,9 +230,7 @@
     "dotfiles-tools@cc-skills": true,
     "quality-tools@cc-skills": true,
     "shell-scripting@claude-code-workflows": true,
-    "interface-design@interface-design": true,
-    "swift-lsp@claude-plugins-official": true,
-    "everything-claude-code@everything-claude-code": true
+    "swift-lsp@claude-plugins-official": true
   },
   "sandbox": {
     "allowUnsandboxedCommands": true,
@@ -228,5 +296,7 @@
         "~/.Trash"
       ]
     }
-  }
+  },
+  "alwaysThinkingEnabled": true,
+  "effortLevel": "high"
 }

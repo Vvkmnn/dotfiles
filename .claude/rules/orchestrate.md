@@ -22,8 +22,22 @@ Delegate to subagents strategically. Each agent gets fresh context - use this to
 | Task Type | Model | Why |
 |-----------|-------|-----|
 | File search, pattern matching | haiku | Deterministic, can't fail |
-| Code analysis, exploration | sonnet | Good balance |
-| Architecture, complex reasoning | opus | Worth the cost |
+| Code analysis, exploration | haiku or sonnet | Haiku is 90% of Sonnet at 1/3 cost |
+| Architecture, complex reasoning | opus | Opus 4.6, worth the cost |
+
+**Session model:** Check `/claude-usage` skill for current mode (generous vs optimized).
+- `opusplan` = Opus for plan mode, Sonnet for execution (best ROI)
+- `opus` = full Opus everywhere (generous mode)
+- Effort levels: `/model` + arrow keys (low/medium/high)
+- Subagent routing: `CLAUDE_CODE_SUBAGENT_MODEL` env var
+
+### Context Window Strategy
+
+| Context Usage | Best For | Avoid |
+|---------------|----------|-------|
+| <50% | Multi-file refactors, cross-file debugging | — |
+| 50-80% | Single-file edits, utility creation, simple fixes | Starting complex new work |
+| >80% | Finishing current task only | Any new exploration |
 
 ### Parallelism Patterns
 
@@ -89,6 +103,25 @@ Don't explore: tests, mocks, or deprecated code.
 - `pr-test-analyzer` - Test coverage
 - `type-design-analyzer` - Type invariants
 
+### Agent Teams (Experimental)
+
+Multiple Claude Code instances coordinating via shared task list + mailbox.
+Enable per-session, NOT globally (high token cost):
+
+```bash
+CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1 claude
+```
+
+| Need | Use |
+|------|-----|
+| Focused task, result only | Subagent |
+| Agents must discuss/challenge | Agent Team |
+| Sequential dependencies | Neither (single session) |
+
+**Best for:** parallel code review, competing debug hypotheses, cross-layer features.
+**Controls:** `Shift+Up/Down` cycle teammates, `Shift+Tab` delegate mode, `Ctrl+T` task list.
+**Limitation:** Split panes not in Ghostty — use in-process mode or regular tmux.
+
 ### Red Flags
 
 - Launching agents for simple lookups (use Grep)
@@ -96,8 +129,10 @@ Don't explore: tests, mocks, or deprecated code.
 - Forgetting to specify model (defaults to sonnet)
 - Vague prompts that cause redundant exploration
 - More than 3 parallel agents (diminishing returns)
+- Using agent teams for tasks subagents can handle (token waste)
 
 ## Complements
 - `explore.md` - When to ask before launching
 - `minimize.md` - Keep agent prompts focused
 - `verify.md` - Verify agent outputs
+- `/claude-usage` skill - Toggle generous/optimized modes

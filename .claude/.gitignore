@@ -1,0 +1,19 @@
+# Credentials and tokens
+.claude.json
+.claude.json.backup
+
+# Conversation history (sensitive)
+history.jsonl
+projects/
+
+# Personal data
+file-history/
+plans/
+debug/
+
+# Status cache
+status/
+
+# Misc
+*.backup
+security_warnings_state_*.json

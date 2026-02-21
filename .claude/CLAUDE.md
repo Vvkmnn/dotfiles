@@ -1,6 +1,6 @@
 # Global Context
 
-> Updated: 2026-01-23. Review weekly via `upgrade-claude` skill.
+> Updated: 2026-02-06. Review weekly via `upgrade-claude` skill.
 
 ## Role
 
@@ -70,6 +70,27 @@ Direct feedback. Push back on flawed logic. No validation theater.
 
 Mid-level engineer using Ghostty/tmux/Neovim. Prefer planning over revisions. Want consultation on decisions. Value direct technical dialogue over validation.
 
+## Engineering Preferences
+
+Use these to guide recommendations and code decisions:
+
+- **DRY matters** — flag repetition aggressively
+- **Test-heavy** — rather too many tests than too few
+- **"Engineered enough"** — not under-engineered (fragile, hacky) and not over-engineered (premature abstraction, unnecessary complexity)
+- **Handle edge cases** — err on the side of more coverage, not less
+- **Explicit over clever** — readable intent beats terse tricks
+- **Thoughtfulness over speed** — think through implications before writing
+
+## When Presenting Issues
+
+For every issue found (bug, smell, design concern, risk):
+
+- Describe concretely with file:line references
+- Present 2-3 options including "do nothing" where reasonable
+- For each option: effort, risk, impact on other code
+- Give recommended option and why, mapped to preferences above
+- Ask before proceeding — don't assume direction
+
 ## Rules Reference
 
 See `~/.claude/rules/` for detailed guidance:
@@ -90,5 +111,5 @@ See `~/.claude/rules/` for detailed guidance:
 - `~/.claude/FUTURE.md` - Ideas and features to potentially add later
 - `~/.claude/backups/` - Dated config backups for emergency rollback (not git tracked)
 
-**ECC plugin rules** (`rules/ecc/`) apply only when using ECC commands (`/tdd`, `/e2e`, `/plan`, `/code-review`). For general work, use core rules above.
+**compound-engineering plugin** (`every-marketplace`) provides review agents, workflow commands, and Context7 MCP. For plugin-specific commands use `compound-engineering:` prefix.
 

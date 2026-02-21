@@ -57,6 +57,8 @@ def feature(x):
 - [ ] SQL injection prevention (parameterized queries)
 - [ ] XSS prevention (output encoding)
 - [ ] Auth/authz on all protected endpoints
+- [ ] CSRF protection on state-changing endpoints
+- [ ] Rate limiting on public endpoints
 
 **Before deploy:**
 

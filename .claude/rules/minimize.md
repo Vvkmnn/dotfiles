@@ -108,6 +108,11 @@ Before considering code complete:
 - [ ] Would a new developer understand it?
 - [ ] Removed code commented out with brief explanation?
 - [ ] Added comments explaining what, why, decisions, edge cases?
+- [ ] Immutable patterns used (spread `{ ...obj, key }` not mutation)
+- [ ] Functions small (<50 lines)
+- [ ] Files focused (<800 lines, 200-400 typical)
+- [ ] No deep nesting (>4 levels)
+- [ ] No console.log in production code
 
 ### Anti-Patterns
 

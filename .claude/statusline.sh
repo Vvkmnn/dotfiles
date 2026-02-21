@@ -1,6 +1,6 @@
 #!/bin/bash
 # High-performance Claude Code statusline
-# Output: ॐ O Ψ 55% λ 40% 30% Δ 2h 15m Σ 8.5h Θ 8|4h 9|6d
+# Output: ॐ Oᵀ+ Ψ 55% λ 40% 30% Δ 2h 15m Σ 8.5h Θ 8|4h 9|6d
 #
 # Error handling: Log errors but always show something (even if incomplete)
 set -o pipefail
@@ -9,15 +9,17 @@ trap 'log_error "Script failed at line $LINENO"' ERR
 # ============================================================================
 # FORMAT BREAKDOWN
 # ============================================================================
-# ॐ O Ψ 55% λ 40% 30% Δ 2h 15m Σ 8.5h Θ 8|4h 9|6d
-# │ │ │     │  │    │        │    │    │
-# │ │ │     │  │    │        │    │    └── 7d: runway|reset (days)
-# │ │ │     │  │    │        │    └── 5h: runway|reset (hours, floored)
-# │ │ │     │  │    │        └── weekly active total (45m → 8.5h → 1.8d)
-# │ │ │     │  │    └── session elapsed (resets after 30 min inactivity)
-# │ │ │     │  └── 7d used %
-# │ │ │     └── 5h used %
-# │ │ └── context %
+# ॐ Oᵀ+ Ψ 55% λ 40% 30% Δ 2h 15m Σ 8.5h Θ 8|4h 9|6d
+# │ ││││ │     │  │    │        │    │    │
+# │ ││││ │     │  │    │        │    │    └── 7d: runway|reset (days)
+# │ ││││ │     │  │    │        │    └── 5h: runway|reset (hours, floored)
+# │ ││││ │     │  │    │        └── weekly active total (45m → 8.5h → 1.8d)
+# │ ││││ │     │  │    └── session elapsed (resets after 30 min inactivity)
+# │ ││││ │     │  └── 7d used %
+# │ ││││ │     └── 5h used %
+# │ ││││ └── context %
+# │ ││└┘── effort (+high, -low, omit medium)
+# │ │└── thinking (ᵀ when on)
 # │ └── Model (O/S/H)
 # └── model icon
 #
@@ -32,7 +34,7 @@ trap 'log_error "Script failed at line $LINENO"' ERR
 #
 # DATA SOURCES:
 # - Model: stdin JSON
-# - Context %: transcript file
+# - Context %: native context_window.used_percentage (fallback: transcript)
 # - Rate limits: Anthropic API (/api/oauth/usage)
 # - Δ session: /tmp/claude_last_activity.cache + session_start.cache
 # - Σ weekly: ~/.claude/projects/*/*.jsonl (cached 5 min)
@@ -94,17 +96,36 @@ case "$full_model" in
 	*) model_name="${display_name:-Claude}" ;;
 esac
 
-# ---- Get context % from transcript ----
+# ---- Effort indicator (+/-) ----
+effort_indicator=""
+effort_level=$(jq -r '.effortLevel // "medium"' "$HOME/.claude/settings.json" 2>/dev/null)
+case "$effort_level" in
+	high)   effort_indicator="+" ;;
+	low)    effort_indicator="-" ;;
+esac
+
+# ---- Thinking mode (ᵀ) ----
+thinking_indicator=""
+thinking=$(jq -r '.alwaysThinkingEnabled // false' "$HOME/.claude/settings.json" 2>/dev/null)
+[ "$thinking" = "true" ] && thinking_indicator="ᵀ"
+
+# ---- Get context % (native first, transcript fallback) ----
 context_pct=""
 get_context() {
+	# Try native field first (v2.1.x+)
+	local native_pct
+	native_pct=$(echo "$input" | jq -r '.context_window.used_percentage // empty' 2>/dev/null)
+	if [ -n "$native_pct" ]; then
+		context_pct=$(printf '%.0f' "$native_pct")
+		return
+	fi
+
+	# Fallback: transcript parsing
 	local transcript_path latest_tokens
 	local MAX_CONTEXT=200000
-
 	transcript_path=$(echo "$input" | jq -r '.transcript_path // empty' 2>/dev/null)
 	[ -z "$transcript_path" ] || [ ! -f "$transcript_path" ] && return
-
 	latest_tokens=$(tail -20 "$transcript_path" 2>/dev/null | jq -r 'select(.message.usage) | .message.usage | ((.input_tokens // 0) + (.cache_read_input_tokens // 0) + (.cache_creation_input_tokens // 0))' 2>/dev/null | tail -1)
-
 	if [ -n "$latest_tokens" ] && [ "$latest_tokens" -gt 0 ]; then
 		context_pct=$((latest_tokens * 100 / MAX_CONTEXT))
 	else
@@ -282,15 +303,14 @@ refresh_weekly_activity() {
 	local window_start_epoch=$((reset_epoch - 7*24*60*60))
 	local window_start=$(date -u -r $window_start_epoch +%Y-%m-%dT%H:%M:%S 2>/dev/null)
 
-	# Sum durationMs from all files in billing window
-	local total_ms=0
-	for file in ~/.claude/projects/*/*.jsonl; do
-		[ ! -f "$file" ] && continue
-		local file_ms=$(jq -r --arg start "$window_start" \
-			'select(.timestamp >= $start and .durationMs > 0) | .durationMs' \
-			"$file" 2>/dev/null | awk '{sum+=$1} END{print sum+0}')
-		total_ms=$((total_ms + file_ms))
-	done
+	# Sum durationMs from files modified in billing window (single pipeline)
+	touch -t "$(date -r "$window_start_epoch" '+%Y%m%d%H%M.%S')" \
+		"$HOME/.claude/status/.window_marker" 2>/dev/null
+	local total_ms=$(/usr/bin/find "$HOME/.claude/projects" -maxdepth 2 -name "*.jsonl" -type f \
+		-newer "$HOME/.claude/status/.window_marker" -exec cat {} + 2>/dev/null | \
+		jq -r --arg start "$window_start" \
+			'select(.timestamp >= $start and .durationMs > 0) | .durationMs' 2>/dev/null | \
+		awk '{sum+=$1} END{print sum+0}')
 	local total_min=$((total_ms / 60000))
 
 	# Save state
@@ -458,7 +478,7 @@ if [ -n "$weekly_pct" ] && [ -n "$seven_day_reset" ]; then
 fi
 
 # ---- Render statusline ----
-printf '%b %s' "$ICON_MODEL" "$model_name"
+printf '%b %s%s%s' "$ICON_MODEL" "$model_name" "$thinking_indicator" "$effort_indicator"
 
 # Context
 if [ -n "$context_pct" ]; then

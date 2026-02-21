@@ -161,3 +161,60 @@ cp ~/.claude/backups/.claude.json.20260201-pre-native-mcp ~/.claude.json
   }
 }
 ```
+
+---
+
+## Community Research
+
+### 2026-02-02: Best-in-Class Claude Code Setup Comparison
+
+**Sources analyzed:**
+- Reddit r/ClaudeAI (V4 guide, 25 tips, 6-month retrospective posts)
+- GitHub awesome-claude-skills, VoltAgent, Trail of Bits, obra/superpowers
+- Dev blogs, Hacker News, Medium articles on Claude Code optimization
+
+**Current setup vs community best practices:**
+
+| Feature | Our Setup | Community Best | Status |
+|---------|-----------|----------------|--------|
+| `mcpToolSearch: "always"` | ✓ | ✓ 85% context reduction | Done |
+| Custom keybindings | ✓ 7 shortcuts | ✓ V4 feature | Done |
+| Comprehensive hooks | ✓ 5 types | ✓ Core workflow | Done |
+| superpowers plugin | ✓ | ✓ 27.9k stars | Done |
+| continuous-learning-v2 | ✓ | More advanced than Claudeception | Done |
+| claude-historian MCP | ✓ | ✓ Session memory | Done |
+| Privacy env vars | ✓ Added | ✓ | Done |
+
+**New additions (2026-02-02):**
+- Added to `~/.profile`:
+  ```sh
+  export CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY=1
+  export DISABLE_TELEMETRY=1
+  export DISABLE_ERROR_REPORTING=1
+  ```
+
+**Evaluated but skipped:**
+
+| Tool | Reason Skipped |
+|------|----------------|
+| claude-mem | Already tried, RAM issues (see 2025-12-26 entry) |
+| SuperClaude Framework | Heavy overlap with superpowers |
+| Claude-Flow | Overkill unless doing swarm orchestration |
+| ccusage | Optional cost tracking, install later if needed |
+| Maestro | Only if running 5+ parallel sessions |
+
+**Key community insights:**
+- Boris (Claude Code creator) runs "surprisingly vanilla" setup
+- Plugin stacking burns ~8k tokens on tool definitions before first prompt
+- Skill hot-reload (v2.1+): Skills in `~/.claude/skills/` auto-reload
+- Custom compaction: `/compact Focus on X` tells Claude what to preserve
+- `context: fork` in skill frontmatter for isolated sub-agent context
+
+**Resources discovered:**
+- [SkillsMP](https://skillsmp.com/) - 71K+ community skills
+- [skills.sh](https://skills.sh) - Skill browser
+- [Trail of Bits](https://github.com/trailofbits/skills) - 23 security plugins
+- [ccusage](https://ccusage.com/) - Cost tracking CLI
+- [AgentDepot](https://agentdepot.dev) - Searchable skills/plugins directory
+
+**Conclusion:** Setup already top-tier. Main gaps were privacy vars (now added).
