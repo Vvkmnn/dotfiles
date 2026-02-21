@@ -30,375 +30,317 @@
 
 [A](https://medium.com/@webprolific/getting-started-with-dotfiles-43c3602fd789) [dotfile](https://dotfiles.github.io) [repo](https://news.ycombinator.com/item?id=11070797)[.](https://www.atlassian.com/git/tutorials/dotfiles)
 
-## Pre Install
+[all](#all) · [macos](#macos) · [linux](#linux) · [windows](#windows)
 
-### Debian
+### tracked
 
-[testing](https://wiki.debian.org/LTS)
+```
+  shell ──────── .alias .functions .profile .rc .shell .zshrc .zshenv .zimrc .p10k.zsh
+  editor ─────── .vimrc .config/nvim (submodule → v.nvim)
+  claude ─────── .claude/ (9 rules, 28 skills, 13 commands, 6 hooks, 36 servers)
+  git ────────── .gitconfig .gitmessage .gitattributes .gitmodules
+  karabiner ──── .config/karabiner/ (json, scripts, automatic_backups)
+  sketchybar ─── .config/sketchybar/ (sketchybarrc, plugins)
+  wm ─────────── .skhdrc .yabairc .config/yabai/
+  terminal ───── .config/ (ghostty, tmux, kitty, alacritty, wezterm)
+  alfred ─────── .alfred/ (~400 files: prefs, workflows, themes)
+  fish ───────── .config/ (fish, fisher, omf)
+  docker ─────── .docker/
+  setup ──────── .setup/ (36 scripts, Brewfile)
+  meta ────────── .github/README.md .logo .theme .assets/
 
-```sh
-sudo apt-get update                      \
-&& sudo apt-get upgrade                  \
-&& sudo apt-get install git zsh curl vim \
-                        openssh-client   \
-                        aptitude         \
+  ~1126 files
 ```
 
-```sh
-# /etc/apt/sources.list
-deb http://deb.debian.org/debian bookworm main contrib non-free
-non-free-firmware
-deb-src http://deb.debian.org/debian bookworm main contrib non-free
-non-free-firmware
+### branches
 
-deb http://deb.debian.org/debian-security bookworm-security main contrib
-non-free non-free-firmware
-deb-src http://deb.debian.org/debian-security bookworm-security main contrib
-non-free non-free-firmware
-
-deb http://deb.debian.org/debian bookworm-updates main contrib non-free
-non-free-firmware
-deb-src http://deb.debian.org/debian bookworm-updates main contrib non-free
-non-free-firmware
-
-# w !sudo tee %                           # Vim Sudo (Emergencies)
-# sudo cp \
-#     /usr/share/doc/apt/examples/sources.list \
-#     /etc/apt/sources.list               # Default backup on Debian
+```
+  master ─────────── base
+  v-macos-macbook ── MacBook
+  v-macos-studio ─── Mac Studio
+  v-macos ────────── generic macOS
+  v-debian ────────── Debian
+  v-debian-wsl ───── WSL
 ```
 
-```sh
-sudo apt-get update \
-&& sudo apt-get dist-upgrade \
-&& sudo apt-get install --reinstall build-essential
+### commands
+
+```
+  dotfiles status            what changed
+  dotfiles diff              see changes
+  dotfiles add <file>        stage
+  dotfiles commit -m "..."   commit
+  dotfiles push              push
+  dotfiles log --oneline     history
+  dotfiles ls-files ~        tracked files
+  dotfiles branch -a         all branches
 ```
 
-```sh
-chsh -s $(which zsh)            # switch to zsh from bash
-```
+## all
 
-[neovim](https://neovim.io/)
+### [git](https://github.com/Vvkmnn/dotfiles)
 
 ```sh
-# optional, vim9 +huge default in Debian Testing
+  ssh ──────────────────────────────────────────────
 
-dotfiles submodule update --init         \
-                          --recursive    \
-&& cd .neovim                            \
-&& sudo aptitude update                  \
-&& sudo aptitude install ninja-build     \
-                         gettext cmake   \
-                         unzip curl      \
-&& make CMAKE_BUILD_TYPE=RelWithDebInfo  \
-&& make install                          \
+ssh-keygen -t rsa -b 4096 -C "you@example.com"
+cat ~/.ssh/id_rsa.pub
+
+  clone ────────────────────────────────────────────
+
+alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
+git clone --bare git@github.com:Vvkmnn/dotfiles.git --branch <os> $HOME/.dotfiles
+dotfiles stash
+dotfiles checkout
+dotfiles config status.showUntrackedFiles no
+
+  conflicts ────────────────────────────────────────
+
+mkdir -p .backup && \
+dotfiles checkout 2>&1 | egrep "\s+\." | awk {'print $1'} | \
+xargs -I{} mv {} .backup/{}
+
+  optional ─────────────────────────────────────────
+
+git config --global credential.helper 'cache --timeout=7777'
+git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
 ```
 
-[wsl](https://learn.microsoft.com/en-us/windows/wsl/install)
+### [nvim](https://github.com/Vvkmnn/v.nvim.git)
+
+`.config/nvim` → submodule
 
 ```sh
-winget install Debian.Debian    # Install Debian on W10 with WSL
+dotfiles submodule update --init --recursive
 ```
 
-[ahk](https://www.autohotkey.com/)
+### [tmux](https://github.com/tmux-plugins/tpm)
 
 ```sh
-cat .setup/capslock.ahk         # Capslock -> Esc + Ctrl on WSL
-explorer.exe .setup             # Explorer open
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 ```
 
-### macOS
+### [claude](https://docs.anthropic.com/en/docs/claude-code)
 
-[xcode](https://developer.apple.com/xcode/resources/)
+```sh
+  decrypt ──────────────────────────────────────────
+  code-mode servers restore automatically
+
+git-crypt unlock ~/dotfiles.key
+
+  verify ───────────────────────────────────────────
+
+dotfiles show HEAD:.utcp_config.json | head -1
+# → GITCRYPT header means still encrypted
+# → JSON content means decrypted, code-mode servers ready
+```
+
+```
+  .claude/ ─────────────────────────────────────────
+
+  ├── CLAUDE.md ─────── global instructions
+  ├── PAST.md ───────── changelog of config changes
+  ├── FUTURE.md ─────── ideas and future features
+  ├── settings.json ─── plugins, hooks, permissions
+  ├── statusline.sh ─── custom status bar
+  │
+  ├── rules/ ────────── 9 behavioral rules
+  │   ├── explore.md       investigate before acting
+  │   ├── verify.md        evidence-based claims
+  │   ├── test.md          testing requirements
+  │   ├── minimize.md      simplicity principles
+  │   ├── teach.md         educational insights
+  │   ├── recover.md       error recovery
+  │   ├── avoid.md         context efficiency
+  │   ├── orchestrate.md   subagent delegation
+  │   └── preview.md       preview before acting
+  │
+  ├── skills/ ───────── 28 custom skills
+  ├── commands/ ─────── 13 slash commands
+  │
+  ├── hooks/ ────────── 6 event hooks (JS)
+  │   ├── session-start.js      context + reminders
+  │   ├── pre-tool-use.js       safety guards
+  │   ├── post-tool-use.js      tracking
+  │   ├── permission-request.js approval flow
+  │   ├── notification.js       system alerts
+  │   └── stop.js               session cleanup
+  │
+  └── mcp/ ──────────── 36 MCP servers
+      ├── MCP.md            server inventory
+      └── mcp.json.bak     encrypted backup (native format)
+```
+
+```
+  secrets ──────────────────────────────────────────
+
+  .utcp_config.json ──────── code-mode servers   (git-crypt)
+  .claude.json ────────────── Claude config       (git-crypt)
+  .claude/mcp/mcp.json.bak ─ MCP backup          (git-crypt)
+
+  key: ~/Documents/key (also in 1Password)
+  new machine: git-crypt unlock ~/dotfiles.key
+  .utcp_config.json decrypts → code-mode servers ready
+  mcp.json.bak is portable backup in native mcpServers format
+```
+
+### setup
+
+```sh
+chmod +x ~/.setup/*.sh
+# ~/.setup/setup.sh     guided setup (runs others)
+# ~/.setup/brew.sh      packages (or use Brewfile)
+# ~/.setup/macos.sh     system defaults
+# ~/.setup/fonts.sh     nerd fonts
+# ~/.setup/mas.sh       Mac App Store apps
+# ~/.setup/zsh.sh       shell setup
+# ~/.setup/tmux.sh      tmux config
+# ~/.setup/nvim.sh      neovim setup
+# ~/.setup/debian.sh    debian packages
+```
+
+## macos
+
+### [xcode](https://developer.apple.com/xcode/resources/)
 
 ```sh
 xcode-select --install
 ```
 
-[brew.sh](https://brew.sh)
+### [brew](https://brew.sh)
 
 ```sh
+  install ──────────────────────────────────────────
+
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-```
 
-fonts
+  Brewfile ─────────────────────────────────────────
 
-```zsh
-brew tap homebrew/cask-fonts
-brew install --cask font-sf-mono-nerd-font
-brew install --cask font-jetbrains-mono-nerd-font
-brew install --cask font-hack-nerd-font
-```
+brew bundle install --file=~/.setup/Resources/Brewfile
 
-apps
+  individual ───────────────────────────────────────
 
-```zsh
-# window = keyboard manager
-brew install koekeishiya/formulae/skhd koekeishiya/formulae/yabai
-skhd --start-service && yabai --start-service
+brew install neovim gh jq fzf btop tmux bat        \
+             coreutils gnupg fnm
 
-# qol
-brew install neovim karabiner-elements    \
-  wezterm 1password mullvadvpn alfred nvm \
-  adguard gnupg ngrok obsidian gh jq fzf  \
-  render btop coreutils 1password-cli bat batfi \
+  window management ────────────────────────────────
 
-# pipx
+brew install koekeishiya/formulae/skhd              \
+             koekeishiya/formulae/yabai
+brew install FelixKratz/formulae/sketchybar
+
+  casks ────────────────────────────────────────────
+
+brew install --cask ghostty 1password alfred        \
+                    karabiner-elements discord      \
+                    chatgpt mullvadvpn
+
+  node ─────────────────────────────────────────────
+
+# nvm install node                                  # deprecated
+fnm install --lts
+
+  python ───────────────────────────────────────────
+
 brew install python3 pipx
 pipx install virtualenv
-
-
-# extra
-brew install discord ffmpeg lua sqlite3   \
-             mas mactex font-fontawesome  \
-             firefox git-lfs hg wget sox  \
-             spaceid docker contexts
-
-# git
-git install lfs
-
-# mas
-mas lucky xcode 1password vimari adguard \
-          stopthemadness canary docker
-
-# tmux
-git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
-
-# neovim
-TBD
-
-# maybe
-brew install emacs-plus --with-debug --with-xwidgets --with-imagemagick --with-ma
-ilutils --with-dbus --with-modern-doom3-icon
-
-# obsidian
-brew tap yakitrak/yakitrak
-brew install yakitrak/yakitrak/obsidian-cli
-
-
-# alfred
-## alfred-workflows/window-navigator # option+tab for wa
 ```
 
-post
+### defaults
 
 ```sh
-nvm install node                           # installs system node via brew nvm
-```
+  Dock ─────────────────────────────────────────────
 
-flavor
-
-```
-# yabai scripting
-# https://github.com/koekeishiya/yabai/wiki/Installing-yabai-(latest-release)#configure-scripting-addition
-echo "$(whoami) ALL=(root) NOPASSWD: sha256:$(shasum -a 256 $(which yabai) \
-| cut -d " " -f 1) $(which yabai) --load-sa" \
-| sudo tee /private/etc/sudoers.d/yabai
-# https://github.com/koekeishiya/yabai/issues/1333#issuecomment-1193128981
-# sudo nvram boot-args=-arm64e_preview_abi
-
-
-# yabai addons
-brew tap FelixKratz/formulae
-brew install svim
-brew install sketchybar
-brew install FelixKratz/formulae/borders # borders
-
-# svim and sketchybar
-brew install FelixKratz/formulae/svim && brew services start svim
-brew services start felixkratz/formulae/sketchybar && felixkratz/formulae/svim
-
-```
-
-defaults
-
-```zsh
-# Dock only shows active Files
-defaults write com.apple.dock static-only -bool true #; killall Dock
-
-# iCloud Files
-defaults write NSGlobalDomain "NSDocumentSaveNewDocumentsToCloud" -bool "false"
-
-# Dock
-defaults write com.apple.dock orientation right #my preference for main machine
+defaults write com.apple.dock static-only -bool true
+defaults write com.apple.dock orientation right
 defaults write com.apple.dock tilesize -int 27
 
-# Finder
+  Finder ───────────────────────────────────────────
+
 defaults write com.apple.Finder AppleShowAllFiles true
 defaults write com.apple.finder CreateDesktop false
 
-defaults write com.apple.loginwindow TALLogoutSavesState -bool false # Don't reopen applications on reboot
+  system ───────────────────────────────────────────
 
-# Highlight Color (svim)
+defaults write NSGlobalDomain NSDocumentSaveNewDocumentsToCloud -bool false
+defaults write com.apple.loginwindow TALLogoutSavesState -bool false
 defaults write NSGlobalDomain AppleHighlightColor -string "0.800000 0.200000 0.200000"
 ```
 
-## [emacs](https://github.com/doomemacs/doomemacs)
+### services
 
+```sh
+  yabai scripting addition ─────────────────────────
+
+echo "$(whoami) ALL=(root) NOPASSWD: sha256:$(shasum -a 256 $(which yabai) \
+| cut -d " " -f 1) $(which yabai) --load-sa" \
+| sudo tee /private/etc/sudoers.d/yabai
+
+  start ────────────────────────────────────────────
+
+skhd --start-service
+yabai --start-service
+brew services start felixkratz/formulae/sketchybar
 ```
-# emacs29
-brew install git ripgrep coreutils fd      \
-&& brew install railwaycat/emacsmacport/emacs-mac \
- --with-spacemacs-icon                     \
- --with-ctags                              \
- --with-native-compilation                 \
-  --with-mac-metal                         \
+
+### [nvim](https://neovim.io/)
+
+```sh
+brew install neovim
+```
+
+### [emacs](https://github.com/railwaycat/homebrew-emacsmacport)
+
+```sh
+brew tap railwaycat/emacsmacport
+brew install emacs-mac                              \
+  --with-spacemacs-icon --with-ctags                \
+  --with-native-compilation --with-mac-metal        \
   --with-starter
-
-
-# deprecated
-# brew install emacs-mac                   \
-#    --with-dbus                           \
-#    --with-dbus                           \
-#    --with-starter                        \
-#    --with-librsvg                        \
-#    --with-imagemagick                    \
-#    --with-xwidgets                       \
-#    --with-ctags                          \
-#    --with-native-comp                    \
-#    --with-mac-metal                      \
-#    --with-natural-title-bar              \
-#    --with-spacemacs-icon                 \
 ```
 
-casks
+## linux
+
+### [debian](https://wiki.debian.org/LTS)
 
 ```sh
-brew install --cask chatgpt
+sudo apt-get update && sudo apt-get upgrade
+sudo apt-get install git zsh curl vim openssh-client \
+                     aptitude build-essential         \
+                     ninja-build gettext cmake unzip
 ```
+
+### zsh
 
 ```sh
-brew install --cask protonmail-bridge protonvpn
+chsh -s $(which zsh)
 ```
+
+### [nvim](https://neovim.io/)
+
+build from source on older Debian
 
 ```sh
-brew install --cask 1password adguard
+cd .neovim                                          \
+&& make CMAKE_BUILD_TYPE=RelWithDebInfo             \
+&& make install
 ```
+
+## windows
+
+### [wsl](https://learn.microsoft.com/en-us/windows/wsl/install)
 
 ```sh
-brew install --cask karabiner-elements
+winget install Debian.Debian
 ```
+
+then follow [debian](#debian)
+
+### [autohotkey](https://www.autohotkey.com/)
 
 ```sh
-brew install --cask miniconda
+  capslock → Esc + Ctrl ────────────────────────────
+
+cat .setup/capslock.ahk
+explorer.exe .setup
 ```
-
-## Install
-
-[ssh](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)
-
-```sh
-ssh-keygen -t rsa -b 4096 -C "example@example.com"
-cat ~/.ssh/id_rsa.pub
-```
-
-[github](https://github.com/Vvkmnn/dotfiles)
-
-```
-alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
-git clone --bare git@github.com:Vvkmnn/dotfiles.git --branch <os> $HOME/.dotfiles
-dotfiles stash
-dotfiles checkout
-
-# optional
-git config --global credential.helper 'cache --timeout=7777'
-git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*" # use in .dotfiles to make git fetch --all work again
-dotfiles config status.showUntrackedFiles no
-
-```
-
-## Backup
-
-```sh
-cd
-mkdir -p .backup && \
-dotfiles checkout 2>&1 | egrep "\s+\." | awk {'print $1'} | \
-xargs -I{} mv {} .backup/{}
-```
-
-## Post Install
-
-[subtrees](https://www.atlassian.com/git/tutorials/git-subtree)
-
-```zsh
-dotfiles fetch v.nvim
-dotfiles subtree pull --prefix .config/nvim v.nvim master --squash
-
-```
-
-```sh
-# submodules
-dotfiles submodule init
-dotfiles submodule update
-
-# TODO guided
-./.setup/setup.sh
-
-# individual
-chmod +x ./setup/*.sh
-./.setup/<example>.sh
-
-# core
-vim.sh   # Editor
-zsh.sh   # Shell
-emacs.sh # IDE
-#brave.sh # Browser TODO Opera
-
-# utility
-debian.sh
-capslock.sh
-```
-
-## Update
-
-```sh
-# combined
-dotfiles submodule update --init --recursive
-
-# create + update
-dotfiles submodule init # Create all folders
-dotfiles submodule update # Update all folders to master branch
-```
-
-## Claude Code
-
-[Claude Code](https://docs.anthropic.com/en/docs/claude-code) AI assistant configuration.
-
-### Structure
-
-```
-.claude/
-├── CLAUDE.md          # Global instructions
-├── settings.json      # Plugins, hooks, statusline
-├── rules/             # Behavioral rules
-│   ├── explore.md     # Investigation before acting
-│   ├── verify.md      # Evidence-based claims
-│   ├── test.md        # Testing requirements
-│   ├── minimize.md    # Simplicity principles
-│   ├── teach.md       # Educational insights
-│   ├── recover.md     # Error recovery and escalation
-│   └── avoid.md       # Context efficiency
-├── hooks/             # Event hooks (JS)
-│   ├── session-start.js
-│   ├── notification.js
-│   └── pre-tool-use.js
-├── commands/          # Slash commands
-│   └── commit.md
-└── statusline.sh      # Custom statusline
-```
-
-### Secrets
-
-`.utcp_config.json` contains MCP server tokens (Notion, GitHub, Brave, etc.) and is **git-crypt encrypted**.
-
-```sh
-# On new machine, after clone:
-git-crypt unlock ~/dotfiles.key  # Key stored in 1Password
-```
-
-### Plugins
-
-Enabled plugins configured in `settings.json`:
-- `superpowers@superpowers-marketplace` - Skills and workflows
-- `claude-mem@thedotmack` - Cross-session memory
-- `repomix-mcp@repomix` - Codebase analysis
-- Various workflow plugins (tdd, security, debugging, etc.)
