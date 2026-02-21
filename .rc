@@ -31,7 +31,5 @@
 . ~/.profile
 . ~/.functions
 . ~/.alias
-. ~/.shell
 . ~/.logo
-
-alias claude-mem='bun "/Users/v/.claude/plugins/marketplaces/thedotmack/plugin/scripts/worker-service.cjs"'
+. ~/.shell

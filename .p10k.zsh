@@ -62,6 +62,11 @@ function prompt_morbidtime() {
   # Zsh >= 5.1 is required.
   [[ $ZSH_VERSION == (5.<1->*|<6->.*) ]] || return
 
+  # Instant prompt: quiet suppresses warning about console output during init
+  # (intentional output from ~/.logo banner and fnm LTS notification)
+  # To revert: change 'quiet' to 'verbose' to see the warning again
+  typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
+
   # Prompt colors.
   local grey='242'
   local red='1'

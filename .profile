@@ -27,236 +27,196 @@
 ##################################################
 ##################################################
 
-####################################################
-# ~/.profile - Environment variables and PATH setup
-####################################################
-# Purpose: Comprehensive environment for interactive
-#          and login shells, inherited by IDEs/GUIs
-#
-# Loaded by: ~/.zprofile → here (login shells)
-#            ~/.rc sources this second
-#
-# Sets: XDG dirs, locale, EDITOR, GPG/SSH auth
-#       Development PATH for Homebrew, Python,
-#       Node, Ruby, Go, Rust, LaTeX, Claude Code
-#       Platform-specific (macOS/Linux), Conda
-####################################################
+# ┌──────────────────────────────── ~/.profile ─ Environment variables ────────┐
+#  Vivek Menon <mail@vvkmnn.xyz>
+# └────────────────────────────────────────────────────────────────────────────┘
+#  Purpose: Set environment variables and PATH for all shells
+#  Contains: XDG, locale, editor, AI tools, security, platform-specific
+#  Architecture: Uses path_prepend() helper to dedupe PATH
 
-# GUARD Prevent double-sourcing and skip in AI sandbox
-[ -n "$__PROFILE_SOURCED" ] && return
-__PROFILE_SOURCED=1
-[ -n "$AI_SANDBOX_ONLY" ] && return
+# ┌───────────────────────────────────────────────────────────────── guard ────┐
+  [ -n "$__PROFILE_SOURCED" ] && return
+  __PROFILE_SOURCED=1
+  [ -n "$AI_SANDBOX_ONLY" ] && return
+# └────────────────────────────────────────────────────────────────────────────┘
 
-## Environment -------------------------------------
+# ┌────────────────────────────────────────────────────────────────── helper ──┐
+  # add to PATH only if not already present
+  path_prepend() { [[ ":$PATH:" != *":$1:"* ]] && PATH="$1:$PATH"; }
+# └────────────────────────────────────────────────────────────────────────────┘
 
-# XDG
-export XDG_CONFIG_HOME="$HOME/.config"
+# ┌───────────────────────────────────────────────────────────────────── xdg ──┐
+  export XDG_CONFIG_HOME="$HOME/.config"
+# └────────────────────────────────────────────────────────────────────────────┘
 
-# Params
-export LANG=en_US.UTF-8
-export LC_ALL=en_US.UTF-8
-export BROWSER=open
-# export TERM=xterm
-export TERM=xterm-256color
-export ARCHEY_LOGO_FILE=$HOME/.logo
+# ┌────────────────────────────────────────────────────────────────── locale ──┐
+  export LANG=en_US.UTF-8
+  export LC_ALL=en_US.UTF-8
+# └────────────────────────────────────────────────────────────────────────────┘
 
-# Home
-# export OPENCODE_CONFIG=/Users/v/.config/opencode/opencode.json
+# ┌────────────────────────────────────────────────────────────────── editor ──┐
+  export EDITOR='nvim'
+  export VISUAL=$EDITOR
+  export ALTERNATE_EDITOR='nvim'
+# └────────────────────────────────────────────────────────────────────────────┘
 
-# Editor
-export EDITOR='nvim'           # $EDITOR is the default for most shells
-export VISUAL=$EDITOR          # $VISUAL in case
-export ALTERNATE_EDITOR='nvim' # $EDITOR if all else fails
+# ┌─────────────────────────────────────────────────────────────── terminal ───┐
+  export BROWSER=open
+  export TERM=xterm-256color
+  export ARCHEY_LOGO_FILE=$HOME/.logo
+# └────────────────────────────────────────────────────────────────────────────┘
 
-# AI
-# export OPENAI_API_KEY=$(cat ~/.openai)
+# ┌───────────────────────────────────────────────────────────────────── ai ───┐
+  export NODE_OPTIONS="--max-old-space-size=8192"
+  export UTCP_CONFIG_FILE="$HOME/.utcp_config.json"
+  path_prepend "/Users/v/.opencode/bin"
 
-# Claude Code Optimization
-# TODO: Figure out what tehse do with claude code first
-# export MAX_THINKING_TOKENS=10000
-# export CLAUDE_CODE_MAX_OUTPUT_TOKENS=4000
-export UTCP_CONFIG_FILE="$HOME/.utcp_config.json"
+  # Claude Code privacy (2026-02-02)
+  export CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY=1
+  export DISABLE_TELEMETRY=1
+  export DISABLE_ERROR_REPORTING=1
+# └────────────────────────────────────────────────────────────────────────────┘
 
-# opencode
-export PATH=/Users/v/.opencode/bin:$PATH
+# ┌────────────────────────────────────────────────────────────────── docker ──┐
+  export COLIMA_HOME="/Volumes/vSSD/Sandbox/Colima"
+  export DOCKER_HOST="unix://$COLIMA_HOME/docker.sock"
+# └────────────────────────────────────────────────────────────────────────────┘
 
-# Node.js memory for Claude CLI
-export NODE_OPTIONS="--max-old-space-size=8192"
+# ┌─────────────────────────────────────────────────────────────── security ───┐
+  export GPG_TTY=$(tty)
+  export SSH_AUTH_SOCK=~/.gnupg/S.gpg-agent.ssh
+# └────────────────────────────────────────────────────────────────────────────┘
 
-# Prompt
-# FIX Not global
-# export RPROMPT='v@%M %(?,%F{green}[-_-]%f,%F{red}[ಠ_ಠ]%f)'
-# export PROMPT=' ॐ  '
+# ┌─────────────────────────────────────────────────────────────── platform ───┐
+  case "$(uname -s)" in
+  Darwin)
+      HOMEBREW_PREFIX="/opt/homebrew"
+      export HOMEBREW_CASK_OPTS="--appdir=/Applications"
 
-# GPG
-export GPG_TTY=$(tty)
-export SSH_AUTH_SOCK=~/.gnupg/S.gpg-agent.ssh
+      # ────────────────────────────────────────────────────────────────── bin ──
+      path_prepend "$HOME/Documents/bin"
+      path_prepend "$HOMEBREW_PREFIX/opt/postgresql@17/bin"
+      path_prepend "/Users/v/.codeium/windsurf/bin"
+      path_prepend "/Library/TeX/texbin"
+      path_prepend "/Applications/Alacritty.app/Contents/MacOS/"
 
-# OS=$(uname -s)
+      # ────────────────────────────────────────────────────────────── emacs ──
+      path_prepend "$HOME/.emacs.d/bin"
+      path_prepend "$HOME/.config/doom/bin"
+      path_prepend "$HOME/v.doom.d/bin"
 
-case "$(uname -s)" in
-Linux) ;;
+      # ─────────────────────────────────────────────────────────────── ruby ──
+      path_prepend "/usr/local/opt/ruby/bin"
 
-Darwin)
-	# Cache brew prefix (saves ~100ms per call)
-	HOMEBREW_PREFIX="/opt/homebrew"
+      # ────────────────────────────────────────────────────────────── build ──
+      # openssl
+      path_prepend "/usr/local/opt/openssl/bin"
+      export LDFLAGS="-L/usr/local/opt/openssl/lib"
+      export CPPFLAGS="-I/usr/local/opt/openssl/include"
+      export PKG_CONFIG_PATH="/usr/local/opt/openssl/lib/pkgconfig"
+      # llvm (append to openssl flags)
+      path_prepend "$HOMEBREW_PREFIX/opt/llvm/bin"
+      export LDFLAGS="$LDFLAGS -L$HOMEBREW_PREFIX/opt/llvm/lib"
+      export CPPFLAGS="$CPPFLAGS -I$HOMEBREW_PREFIX/opt/llvm/include"
+      # llvm intel (legacy)
+      path_prepend "/usr/local/opt/llvm/bin"
+      # xcode sdk
+      export CPATH=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include
 
-	# PostgreSQL (optimized with cached prefix)
-	export PATH="$HOMEBREW_PREFIX/opt/postgresql@17/bin:$PATH"
+      # ───────────────────────────────────────────────────────────────── go ──
+      export GOROOT=/usr/local/Cellar/go/1.13.4/libexec
+      export GOPATH=$HOME/Documents/dev/go
+      path_prepend "$GOPATH/bin"
+      path_prepend "$GOROOT/bin"
 
-	# windsurf
-	export PATH="/Users/v/.codeium/windsurf/bin:$PATH"
+      # ────────────────────────────────────────────────────────────── python ──
+      . "$HOME/.local/bin/env"
+      ;;
+  Linux) ;;
+  CYGWIN* | MINGW32* | MSYS* | MINGW*)
+      echo '[¬_¬] Loading Windows environment...'
+      ;;
+  esac
+# └────────────────────────────────────────────────────────────────────────────┘
 
-	# Prompt
-	# export PURE_PROMPT_SYMBOL="ॐ "
+# ┌──────────────────────────────────────────────────────────────── archive ───┐
+  # antigravity (conditional)
+  [ -d "$HOME/.antigravity/antigravity/bin" ] && export PATH="$HOME/.antigravity/antigravity/bin:$PATH"
 
-	# Homebrew (Apple Silicon optimized)
-	export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
-	export HOMEBREW_CASK_OPTS="--appdir=/Applications"
+  # openai api
+  # export OPENAI_API_KEY=$(cat ~/.openai)
 
-	# Legacy Intel brew paths (compatibility)
-	export PATH="/usr/local/bin:/usr/local/sbin:$PATH"
+  # claude code optimization (unknown purpose)
+  # export MAX_THINKING_TOKENS=10000
+  # export CLAUDE_CODE_MAX_OUTPUT_TOKENS=4000
 
-	# openSSL
-	export LDFLAGS="-L/usr/local/opt/openssl/lib"
-	export CPPFLAGS="-I/usr/local/opt/openssl/include"
-	export PKG_CONFIG_PATH="/usr/local/opt/openssl/lib/pkgconfig"
+  # opencode config
+  # export OPENCODE_CONFIG=/Users/v/.config/opencode/opencode.json
 
-	# llvm
-	export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
-	export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
-	export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
+  # prompt symbols
+  # export PURE_PROMPT_SYMBOL="ॐ "
+  # export RPROMPT='v@%M %(?,%F{green}[-_-]%f,%F{red}[ಠ_ಠ]%f)'
+  # export PROMPT=' ॐ  '
 
-	# emacs/pdf-tools
-	# export PKG_CONFIG_PATH=/usr/local/Cellar/zlib/1.2.8/lib/pkgconfig:/usr/local/lib/pkgconfig:/opt/X11/lib/pkgconfig
+  # term alternatives
+  # export TERM=xterm
 
-	## Personal ----------------------------------------
+  # homebrew paths (already in PATH via ~/.minimal)
+  # export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
+  # export PATH="/usr/local/bin:/usr/local/sbin:$PATH"
+  # export PATH="/usr/local/sbin:$PATH"
 
-	export PATH="$HOME/Documents/bin:$PATH"
+  # emacs pdf-tools
+  # export PKG_CONFIG_PATH=/usr/local/Cellar/zlib/1.2.8/lib/pkgconfig:/usr/local/lib/pkgconfig:/opt/X11/lib/pkgconfig
 
-	## brew
-	export PATH="/usr/local/sbin:$PATH"
+  # python pyenv
+  # export PATH="$HOMEBREW_PREFIX/opt/python@3.13/libexec/bin:$PATH"
+  # export PATH=/usr/local/share/python:$PATH
+  # export PYENV_ROOT="$HOME/.pyenv"
+  # command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
+  # eval "$(pyenv init -)"
 
-	## openSSL
-	export PATH="/usr/local/opt/openssl/bin:$PATH"
+  # python anaconda/conda
+  # export PATH="$HOME/.miniconda/bin:$PATH"
+  # export PATH="/usr/local/anaconda3/bin:$PATH"
+  # __conda_setup="$('/opt/homebrew/Caskroom/miniconda/base/bin/conda' 'shell.zsh' 'hook' 2>/dev/null)"
 
-	# Python (optimized with cached prefix)
-	# export PATH="$HOMEBREW_PREFIX/opt/python@3.13/libexec/bin:$PATH"
-	# export PATH=/usr/local/share/python:$PATH
-	# export PYENV_ROOT="$HOME/.pyenv"
-	# command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
-	# eval "$(pyenv init -)"
+  # rust cargo (on demand)
+  # . "$HOME/.cargo/env"
 
-	# Python (Anaconda)
-	# export PATH="$HOME/.miniconda/bin:$PATH"
-	# export PATH="/usr/local/anaconda3/bin:$PATH"
+  # node nvm
+  # export PATH="$HOME/.nvm/versions/node/v12.1.0/bin:$PATH"
 
-	# >>> conda initialize >>>
-	# !! Contents within this block are managed by 'conda init' !!
-	# __conda_setup="$('/opt/homebrew/Caskroom/miniconda/base/bin/conda' 'shell.zsh' 'hook' 2>/dev/null)"
-	# if [ $? -eq 0 ]; then
-	# 	eval "$__conda_setup"
-	# else
-	# 	if [ -f "/opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh" ]; then
-	# 		. "/opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh"
-	# 	else
-	# 		export PATH="/opt/homebrew/Caskroom/miniconda/base/bin:$PATH"
-	# 	fi
-	# fi
-	# unset __conda_setup
-	# <<< conda initialize <<<
+  # go alternative
+  # export GOROOT="$(brew --prefix golang)/libexec"
+  # export GOPATH=$HOME/Documents/dev/go
+  # export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
+  # export PATH="$HOME/go/bin:$PATH"
+  # export GOPATH=$HOME/go/bin
 
-	# Rust
-	#. "$HOME/.cargo/env"
+  # emacs macos app
+  # export PATH="/Applications/Emacs.app/Contents/MacOS/bin:$PATH"
 
-	# Ruby
-	export PATH="/usr/local/opt/ruby/bin:$PATH"
+  # local bin (already in PATH via ~/.minimal)
+  # export PATH="$HOME/.local/bin:$PATH"
+  # export PYTHONPATH=$HOME/.local/bin
 
-	# Node (NVM)
-	# export PATH="$HOME/.nvm/versions/node/v12.1.0/bin:$PATH"
+  # pnpm
+  # export PNPM_HOME="$HOME/Library/pnpm"
+  # case ":$PATH:" in
+  # *":$PNPM_HOME:"*) ;;
+  # *) export PATH="$PNPM_HOME:$PATH" ;;
+  # esac
 
-	# LaTeX
-	export PATH="/Library/TeX/texbin:$PATH"
+  # work lake-hydra
+  # PATH="$HOME/Documents/lake/lake-hydra/bin:$PATH"
 
-	# Emacs (Doom)
-	export PATH="$HOME/.emacs.d/bin:$PATH"
-	export PATH="$HOME/.config/doom/bin:$PATH"
-	export PATH="$HOME/v.doom.d/bin:$PATH"
+  # grit
+  # . "$HOME/.grit/bin/env"
 
-	# Clang
-	export CPATH=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include
+  # zsh theme
+  # [ -f ~/.theme ] && . ~/.theme
 
-	# Go
-	# export GOROOT="$(brew --prefix golang)/libexec"
-	# export GOPATH=$HOME/Documents/dev/go
-	# export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
-
-	# LLVM
-	export PATH="/usr/local/opt/llvm/bin:$PATH"
-
-	# Go
-	export GOROOT=/usr/local/Cellar/go/1.13.4/libexec
-	export GOPATH=$HOME/Documents/dev/go
-	export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
-
-	# MacOS (Brew) Emacs
-	# export PATH="/Applications/Emacs.app/Contents/MacOS/bin:$PATH"
-
-	# Local bin (prioritize for Claude Code, uv, pipx, etc.)
-	export PATH="$HOME/.local/bin:$PATH"
-
-	# PNPM
-	# export PNPM_HOME="$HOME/Library/pnpm"
-	# case ":$PATH:" in
-	# *":$PNPM_HOME:"*) ;;
-	# *) export PATH="$PNPM_HOME:$PATH" ;;
-	# esac
-
-	## Fun ---------------------------------------------
-	export PATH="/Applications/Alacritty.app/Contents/MacOS/:$PATH"
-
-	## Work --------------------------------------------
-	# PATH="$HOME/Documents/lake/lake-hydra/bin:$PATH"
-
-	# uv (Python package manager)
-	. "$HOME/.local/bin/env"
-
-	# . "$HOME/.cargo/env"
-
-	# . "$HOME/.grit/bin/env"
-
-	;;
-
-CYGWIN* | MINGW32* | MSYS* | MINGW*)
-	echo '[¬_¬] Loading Windows environment...'
-	;;
-
-esac
-
-# Zsh Theme
-# [ -f ~/.theme ] && . ~/.theme
-
-# Source Xorg settings
-# TODO Causes some dangerous bugs
-# [ -f ~/.xprofile ] && . ~/.xprofile
-
-# GO
-# export PATH="$HOME/go/bin:$PATH"
-# export GOPATH=$HOME/go/bin
-
-# # Python
-# export PATH="$HOME/.local/bin:$PATH"
-# export PYTHONPATH=$HOME/.local/bin
-
-# # Emacs (Doom)
-# export PATH="$HOME/.emacs.d/bin:$PATH"
-
-# Load
-# echo '[¬_¬]...'
-
-# . "$HOME/.cargo/env"
-
-# . "$HOME/.grit/bin/env"
-
-# Antigravity
-[ -d "$HOME/.antigravity/antigravity/bin" ] && export PATH="$HOME/.antigravity/antigravity/bin:$PATH"
+  # xorg settings (causes bugs)
+  # [ -f ~/.xprofile ] && . ~/.xprofile
+# └────────────────────────────────────────────────────────────────────────────┘

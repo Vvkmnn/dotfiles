@@ -27,798 +27,218 @@
 ##################################################
 ##################################################
 
-####################################################
-# ~/.shell - Shell-specific plugins and theming
-####################################################
-# Purpose: Interactive shell configuration for zsh,
-#          bash, and fish (TODO) with plugins
-#
-# Loaded by: ~/.rc sources this fifth
-#
-# Zsh: Zcomet plugin manager, Powerlevel10k theme
-#      Plugins (zsh-z, autosuggestions, highlighting)
-#      Vi mode, fzf, tmux auto-start, nvim server
-#      Conda, cargo, platform-specific (macOS/Linux)
-#
-# Bash: PS1 with ॐ, history, colors
-####################################################
-
-# GUARD Prevent double-sourcing and skip in AI sandbox
-[ -n "$__SHELL_SOURCED" ] && return; __SHELL_SOURCED=1
-[ -n "$AI_SANDBOX_ONLY" ] && return
-
-
-#
-# case "$(uname -s)" in
-#
-#     Linux | Darwin)
-
-        # Bash
-        if [ -n "$BASH_VERSION" ]; then
-        # [ -f ~/.fzf.bash ] && source ~/.fzf.bash
-            # no audio bell
-            # https://superuser.com/questions/163994/how-can-i-get-the-mac-terminal-to-not-beep
-            set bell-style visible
- 
-            # adaptive width
-                    export COLUMNS=200
-            shopt -s checkwinsize
-
-
-            # starship 
-            # https://starship.rs/guide/#🚀-installation
-            # eval "$(starship init bash)"
-
-            om="ॐ"
-                morbidtime=$(date '+%-j/365 %-g/61 %a %d-%m-%y %T')
-            # cols=$(tput cols)
-
-            # PS1=$(printf "%*s\r%s\n$om " "$(tput cols)" 'righty tighty' 'lefty loosey')
-            # PS1=$(printf "%*s\r%s " "$(($cols - 25))" '$morbidtime' '$om')
-            # PS1=$(printf "%*s\r%s " "$(($(tput cols) - 35))" '$(date '+%-j/365 %-g/61 %a %d-%m-%y %T')' '$om')
-            PS1="' \$(printf '%*s\r%s ' \$((\$(tput cols) - 35)) \"\$(date '+%-j/365 %-g/61 %a %d-%m-%y %T')\" \"\$om\")"
-
-            # PS1="\$(printf '%*s\r%s ' \$((\$(tput cols) - 35)) \"\$(date '+%-j/365 %-g/61 %a %d-%m-%y %T')\" \"\$om\")"
-            
-            # PS1="\$(printf \"%*s\r%s \" \"\$(($(tput cols) - $(echo '$(date '+%-j/365 %-g/61 %a %d-%m-%y %T')' | wc -c)))\" \"\$(date '+%-j/365 %-g/61 %a %d-%m-%y %T')\" \"\$om\")"
-            # PS1="\$(printf \"%*s\r%s \" \"\$(($(tput cols) - 20)))\" \"\$(date '+%-j/365 %-g/61 %a %d-%m-%y %T')\" \"\$om\")"
-
-
-
-
-            true
-
-        # ZSH
-        elif [ -n "$ZSH_VERSION" ]; then
-
-
-            # Scroll region - disabled in tmux to prevent wasted bottom space
-            # https://askubuntu.com/questions/1226840/is-there-a-way-to-prevent-the-cursor-from-reaching-the-bottom-of-the-terminal
-            # trap 'tput csr 1 $((LINES-3))' WINCH ; kill -s WINCH $$
-
-            # NOTE Marginal change in performance, but less buggy when below zcomet
-            # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-            # Initialization code that may require console input (password prompts, [y/n]
-            # confirmations, etc.) must go above this block; everything else may go below.
-            # if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-            #   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-            # fi
-
-            # zmodload zsh/zprof
-            # run `time  zsh -i -c exit | nvim` to profile into nvim
-            
-            # Save in case
-            # typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
-            #   ...
-            #   om                        # TODO fix, custom prompt
-            # )
-            #
-                # function prompt_om() {
-            #   # 214 is saffron
-            #   # 7 is grey
-            #   p10k segment -b 2 -f 214 -t 'ॐ '
-            # }
-            
-            ## Zcomet - plugin manager {{{
-
-            # Clone zcomet if necessary
-            if [[ ! -f ${ZDOTDIR:-${HOME}}/.zcomet/bin/zcomet.zsh ]]; then
-                command git clone https://github.com/agkozak/zcomet.git ${ZDOTDIR:-${HOME}}/.zcomet/bin
-            fi
-
-            source ${ZDOTDIR:-${HOME}}/.zcomet/bin/zcomet.zsh
-
-            # Load a prompt
-            # zcomet load agkozak/agkozak-zsh-prompt
-            zcomet load romkatv/powerlevel10k
-
-            # Load some plugins
-            zcomet load agkozak/zsh-z
-            zcomet load ohmyzsh plugins/gitfast
-
-            
-            # NVM configuration - lazy loading with global node path for MCP servers
-            # export NVM_LAZY_LOAD=true
-            # export NVM_COMPLETION=true
-            # export NVM_AUTO_USE=true  # Auto-use .nvmrc files
-            # Add default node to PATH for immediate access to npx/global modules
-            # export PATH="$HOME/.nvm/versions/node/$(ls $HOME/.nvm/versions/node | tail -1)/bin:$PATH"
-            # zcomet load lukechilds/zsh-nvm
-
-            # zcomet load jeffreytse/zsh-vi-mode
-            
-            # Load a code snippet - no need to download an entire repo
-            zcomet snippet https://github.com/jreese/zsh-titles/blob/master/titles.plugin.zsh
-
-            # Lazy-load some plugins
-            zcomet trigger zhooks agkozak/zhooks
-            zcomet trigger zsh-prompt-benchmark romkatv/zsh-prompt-benchmark
-
-            # Lazy-load Prezto's archive module without downloading all of Prezto's
-            # submodules
-            zcomet trigger --no-submodules archive unarchive lsarchive \
-                sorin-ionescu/prezto modules/archive
-
-            # Load popular plugins last - autosuggestions first, syntax highlighting last:
-            zcomet load zsh-users/zsh-autosuggestions
-            zcomet load zsh-users/zsh-syntax-highlighting
-
-
-            # ohmyzsh/tmux integration - optimized for Ghostty {{{
-            # Tmux settings - only when not in VSCode for better performance
-            # if [ "$TERM_PROGRAM" != "vscode" ]; then
-            ZSH_TMUX_AUTOSTART=true      # Auto-start tmux sessions
-            ZSH_TMUX_AUTOCONNECT=false   # Don't auto-connect to existing
-            ZSH_TMUX_AUTOQUIT=true       # Quit when tmux exits
-            ZSH_TMUX_DETACHED=true       # Start detached for stability
-            # fi
-            # }}}
-
-            # tmux
-            zcomet load ohmyzsh plugins/tmux
-
-            # nvim - start background server for instant editing
-            [[ ! -S /tmp/nvim ]] && nvim --listen /tmp/nvim --headless &>/dev/null &
-            zcomet load jeffreytse/zsh-vi-mode
-            
-            # QOL
-            zcomet load paulirish/git-open
-
-	    # Env
-	    zcomet load MichaelAquilina/zsh-autoswitch-virtualenv
-
-    ## fzf
-    zcomet load junegunn/fzf shell completion.zsh key-bindings.zsh
-
-            # Custom 
-            zcomet load Tarrasch/zsh-autoenv
-            zcomet load zsh-users/zsh-completions
-
-            # Run compinit and compile its cache
-            zcomet compinit
-            ##}}}
-
-            # fzf
-(( ${+commands[fzf]} )) || ~[fzf]/install --bin
-#
-            # claude env
-# source ~/.claude/.env'
-
-
-            # Claude {{{
-
-            # NOTE claude has new location now, but we may still need env later
-# Claude Code MCP Environment
-# alias claude="/Users/v/.claude/local/claude"
-# export CLAUDE_CONFIG_DIR=$HOME/.claude
-# [ -f ~/.claude/.env ] && . ~/.claude/.env
-            # }}}
-
-
-            # Powerlevel 10k {{{
-
-            # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-            # Initialization code that may require console input (password prompts, [y/n]
-            # confirmations, etc.) must go above this block; everything else may go below.
-            if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-                source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-            fi
-
-            # Vi Mode
-            bindkey -v
-
-            # p10k {{{
-            [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-            # }}}
-
-            # grit (for openai?)
-            # curl -fsSL https://docs.grit.io/install | bash
-            # source $HOME/.grit/bin/env (sh, bash, zsh)
-            # source $HOME/.grit/bin/env.fish (fish)
-
-            # zsh-nvm {{{
-            # Disable lazy loading to ensure next and other commands work immediately
-            # export NVM_LAZY_LOAD=false
-            # export NVM_COMPLETION=true
-            # export NVM_AUTO_USE=true
-            # }}}
-
-	    # Python3 VirtualEnv
-	    export AUTOSWITCH_DEFAULT_PYTHON="/opt/homebrew/bin/python3"   # or just "python3"
-
-            # open-ai
-            # NOTE 1password prompts everytime...
-            # export oi_api_key=$(op read "op://Personal/mhgs4auyjijxtrytbsqw3hucty/Other Fields/credential")
-            # export oi_api_key="op://Personal/mhgs4auyjijxtrytbsqw3hucty/Other Fields/credential"
-            
-            # }}}
-            
-            # if [ -z "$TMUX" ]; then
-            #   exec tmux new-session -A -s workspace
-            # fi
-
-            # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-            # Initialization code that may require console input (password prompts, [y/n]
-            # confirmations, etc.) must go above this block; everything else may go below.
-            # if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-            #   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-            # fi
-
-            # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-            # [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
-            ## Antigen {{{
-
-            #         # If no file, curl
-            #         # if [[ ! -f ~/.antigen.zsh ]]; then
-            #         #   echo "curling antigen"
-            #         #   curl -L git.io/antigen > ~/.antigen.zsh
-            #         # fi
-
-            #         # now, simply add these two lines in your ~/.zshrc
-
-            #         # # source antidote
-            #         # source ${ZDOTDIR:-~}/.antidote/antidote.zsh
-
-            #         # # initialize plugins statically with ${ZDOTDIR:-~}/.zsh_plugins.txt
-            #         # antidote load
-
-            #         # You can change the names/locations of these if you prefer.
-            #         antidote_dir=${ZDOTDIR:-~}/.antidote
-            #         plugins_txt=${ZDOTDIR:-~}/.zsh_plugins.txt
-            #         static_file=${ZDOTDIR:-~}/.zsh_plugins.zsh
-
-            #         # Clone antidote if necessary and generate a static plugin file.
-            #         if [[ ! $static_file -nt $plugins_txt ]]; then
-            #           [[ -e $antidote_dir ]] ||
-            #             git clone --depth=1 https://github.com/mattmc3/antidote.git $antidote_dir
-            #           (
-            #             source $antidote_dir/antidote.zsh
-            #             [[ -e $plugins_txt ]] || touch $plugins_txt
-            #             antidote bundle <$plugins_txt >$static_file
-            #           )
-            #         fi
-
-            #         # Uncomment this if you want antidote commands like `antidote update` available
-            #         # in your interactive shell session:
-            #         autoload -Uz $antidote_dir/functions/antidote
-
-            #         # source the static plugins file
-            #         source $static_file
-
-            #         # cleanup
-            #         unset antidote_dir plugins_txt static_file
-
-            #         # antidote bundle <~/.zsh_plugins.txt >~/.zsh_plugins.zsh
-            #         # source ~/.zsh_plugins.zsh
-
-            #         # Powerlevel 10k
-            #         # If not in tmux, start tmux: reads and writes the TTY.
-            #         # if [[ -z ${TMUX+X}${ZSH_SCRIPT+X}${ZSH_EXECUTION_STRING+X} ]]; then
-            #         #   exec tmux
-            #         # fi
-
-            #         # Clone git repos that don't exist: prints and may take unpredictably long time to execute.
-            #         # if [[ ! -e ~/zsh-autosuggestions ]]; then
-            #         #   print -r -- 'installing zsh-autosuggestions ...'
-            #         #   git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions.git ~/zsh-autosuggestions
-            #         # fi
-
-            # Prints.
-            # print -Pr -- 'Hello, %n. Today is %D{%A}.'
-
-            # ... and so on
-            # Print the first prompt and redirect standard file descriptors.
-            # if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-            #   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-            # fi
-
-            # TODO Fix this, instant prompt from Powerlevel10k
-            # autoload -Uz compinit && compinit
-            # source ~/zsh-autosuggestions/zsh-autosuggestions.zsh
-            # ... and so on
-            # https://github.com/romkatv/zsh-bench#instant-prompt
-
-            # Essential
-            # [ -f  .antigen.zsh ] && . .antigen.zsh
-            # source ~/.antigen.zsh
-
-            # # Load the oh-my-zsh's library.
-            # # antigen use oh-my-zsh
-
-            # # Bundles from the default repo (robbyrussell's oh-my-zsh).
-            # # antigen bundle git
-            # # antigen bundle heroku
-            # # antigen bundle pip
-            # # antigen bundle lein
-            # # antigen bundle command-not-found
-            # # Use nvm from zsh
-            # # Syntax highlighting bundle.
-            # # antigen bundle zsh-users/zsh-syntax-highlighting
-            # antigen bundle agkozak/zsh-z
-
-            # # Load the theme.
-            # # antigen theme robbyrussell
-            # antigen theme romkatv/powerlevel10k
-
-            # # Tell Antigen that you're done.
-            # antigen apply
-            # # }}}
-            
-
-            # p10k config already loaded in Powerlevel 10k section above
-            # }}}}
-
-            # TODO
-            # bounjourr safari
-
-            # export ZSH_TMUX_AUTOQUIT=false
-
-            # /* * #analogClock { margin-bottom: 1em } */
-            # /* * #time #time-container { font-size: 1.1em } */
-            # /* * #interface #time #date { font-size: 0.8em } */
-            # /* * #interface #weather { font-size: 0.6em } */
-            # /* * #widgets #quotes_container { font-size: 0.6em } */
-            #
-            # /* * #clock { */
-            # /* line-height: 1.1em */
-            # /* } */
-            #
-            # /* #interface { height: 80vh; padding-top: 10vh } */
-            # /* #interface #time {justify-content: flex-end} */
-            # /* #interface #main {justify-content: flex-start} */
-            # /* #interface #widgets {justify-content: flex-start} */
-
-            # conda - defer heavy initialization for faster shell startup {{{
-            # >>> conda initialize >>>
-            # !! Contents within this block are managed by 'conda init' !!
-            __conda_setup="$('/Users/v/.miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-            if [ $? -eq 0 ]; then
-                eval "$__conda_setup"
-            else
-                if [ -f "/Users/v/.miniconda3/etc/profile.d/conda.sh" ]; then
-                    . "/Users/v/.miniconda3/etc/profile.d/conda.sh"
-                else
-                    export PATH="/Users/v/.miniconda3/bin:$PATH"
-                fi
-            fi
-
-            unset __conda_setup
-            # <<< conda initialize <<<
-
-            # go {{{
-            export GOPATH=/opt/homebrew/bin/go
-            export GOROOT=/opt/homebrew/bin/go
-            # }}}
-
-            # rust {{{
-            # . "$HOME/.cargo/env"
-                [ -d "$HOME/.cargo" ] && . "$HOME/.cargo/env"
-            # . "$HOME/.cargo/env"
-            # }}}
-
-            # z {{{
-            # ZSHZ_DATA=" $HOME/.vz "
-            # }}}
-
-            # Zim {{{
-            # Define Zim location
-            # : ${ZIM_HOME=${ZDOTDIR:-${HOME}}/.zim}
-            # }}} End configuration added by Zim install
-            # }}}
-
-            # zinit {{{
-            # ### Preload
-            # source ~/.zinit/bin/zinit.zsh
-
-            # ### Packages
-            # # regular plugins loaded without investigating.
-            # zinit light zsh-users/zsh-autosuggestions
-            # zinit light zdharma/fast-syntax-highlighting
-
-            # # Completions
-            # zinit ice blockf
-            # zinit light zsh-users/zsh-completions
-
-            # # Fun
-            # zinit light paulirish/git-open # TODO Fix; not working
-            # zinit load knu/z
-
-            # # zinit light denysdovhan/spaceship-prompt
-
-            # # Plugin history-search-multi-word loaded with investigating.
-            # zinit load zdharma/history-search-multi-word
-
-            # # After automatic unpacking it provides program "fzf".
-            # zinit ice from"gh-r" as"program"
-            # zinit load junegunn/fzf-bin
-
-            # # fast async ++ spaceship?
-            # zinit load agkozak/agkozak-zsh-prompt
-
-            # # Load the pure theme, with zsh-async library that's bundled with it.
-            # # zinit ice pick"async.zsh" src"pure.zsh"
-            # # zinit light sindresorhus/pure
-
-            # # TODO https://zdharma.org/zinit/wiki/GALLERY/
-            # # zinit ice wait'!' lucid nocompletions \
-            # #              compile"{zinc_functions/*,segments/*,zinc.zsh}" \
-            # #                       atload'!prompt_zinc_setup; prompt_zinc_precmd'
-            # # zinit load robobenklein/zinc
-
-            # # coreutils package from Homebrew; you can also use
-            # # https://github.com/ogham/exa)
-            # zinit ice atclone"dircolors -b LS_COLORS > c.zsh" atpull'%atclone' pick"c.zsh" nocompile'!'
-            # zinit light trapd00r/LS_COLORS
-
-            # # make'!...' -> run make before atclone & atpull
-            # # zinit ice as"program" make'!' atclone'./direnv hook zsh > zhook.zsh' atpull'%atclone' src"zhook.zsh"
-            # # zinit light direnv/direnv
-
-            # ### post load
-            # autoload -Uz _zinit
-            # (( ${+_comps} )) && _comps[zinit]=_zinit
-
-            # ### variables
-            # # TODO not working? https://github.com/marlonrichert/zsh-autocomplete
-            # zstyle ':autocomplete:tab:*' fzf yes
-            # zstyle ':completion:*' verbose no
-            # zstyle ':autocomplete:list-choices:*' max-lines 1
-
-            # bindkey $key[Up] up-line-or-history
-            # bindkey $key[Down] down-line-or-history
-
-            # # Exit status
-            # # AGKOZAK_CUSTOM_PROMPT='%(!!?@?..%B%F{red}(%?%)%f%b )'
-            # # Command execution time
-            # # AGKOZAK_CUSTOM_PROMPT+='%(9V.%9v .)'
-            # # Username and hostname
-            # AGKOZAK_CUSTOM_PROMPT+='%(!.%S%B.%B%F{green})%n%1v%(!.%b%s.%f%b) '
-            # # Path
-            # AGKOZAK_CUSTOM_PROMPT+=$'%B%F{blue}%2v%f%b\n'
-            # # Prompt character
-            # AGKOZAK_CUSTOM_PROMPT+=' ॐ    ' #'%(4V.:.%#) '
-            # # Git status
-            # AGKOZAK_CUSTOM_RPROMPT+='%(3V.%F{yellow}%3v%f.) '
-            # # Bot face status
-            # AGKOZAK_CUSTOM_RPROMPT+='v@%M %(?,%F{green}[-_-]%f,%F{red}[ಠ_ಠ]%f) '
-            #  }}}
-
-            # # zplug {{{
-
-            # Check if zplug is installed
-            # if [[ ! -d ~/.zplug ]]; then
-            #   git clone https://github.com/zplug/zplug ~/.zplug
-            #   source ~/.zplug/init.zsh && zplug update --self
-            # fi
-
-            # Essential
-            # source ~/.zplug/init.zsh
-
-            # zplug "plugins/git",   from:oh-my-zsh
-            # zplug "paulirish/git-open", as:plugin
-            # zplug "zsh-users/zsh-syntax-highlighting"
-            # zplug "zsh-users/zsh-history-substring-search"
-            # zplug "zsh-users/zsh-completions"
-            # # zplug "zpm-zsh/autoenv"
-            # # zplug "zpm-zsh/colors"
-            # zplug "knu/z", use:z.sh
-            # zplug "denysdovhan/spaceship-prompt", use:spaceship.zsh, from:github, as:theme
-
-            # # Install packages that have not been installed yet
-            # if ! zplug check --verbose; then
-            #     printf "Install? [y/N]: "
-            #     if read -q; then
-            #         echo; zplug install
-            #     else
-            #         echo
-            #     fi
-            # fi
-
-            # zplug load
-            # }}}
-
-            ## ngrok
-          if command -v ngrok &>/dev/null; then
-            eval "$(ngrok completion)"
+# ┌────────────────────────────────── ~/.shell ─ Shell configuration ──────────┐
+#  Vivek Menon <mail@vvkmnn.xyz>
+# └────────────────────────────────────────────────────────────────────────────┘
+#  Purpose: Zsh/Bash specific settings, plugins, keybindings
+#  Contains: Zsh (zcomet, powerlevel10k, vi mode), Bash (prompt, history)
+#  Archive: Old plugin managers (zinit, antigen, zplug) at bottom
+
+# ┌───────────────────────────────────────────────────────────────── guard ────┐
+  [ -n "$__SHELL_SOURCED" ] && return
+  __SHELL_SOURCED=1
+  [ -n "$AI_SANDBOX_ONLY" ] && return
+# └────────────────────────────────────────────────────────────────────────────┘
+
+# ┌──────────────────────────────────────────────────────────────────── bash ──┐
+  if [ -n "$BASH_VERSION" ]; then
+      # ─────────────────────────────────────────────────────────────── options ──
+      set bell-style visible
+      export COLUMNS=200
+      shopt -s checkwinsize
+
+      # ────────────────────────────────────────────────────────────── prompt ──
+      om="ॐ"
+      PS1="' \$(printf '%*s\r%s ' \$((\$(tput cols) - 35)) \"\
+\$(date '+%-j/365 %-g/61 %a %d-%m-%y %T')\" \"\$om\")"
+# └────────────────────────────────────────────────────────────────────────────┘
+
+# ┌───────────────────────────────────────────────────────────────────── zsh ──┐
+  elif [ -n "$ZSH_VERSION" ]; then
+      # ──────────────────────────────────────────────────────────────── tmux ──
+      # MUST be set before plugin loads AND before instant prompt
+      # AUTOSTART: run tmux automatically when shell starts (if not already in tmux)
+      ZSH_TMUX_AUTOSTART=true
+      # AUTOCONNECT: true=attach to existing session, false=always create new session
+      ZSH_TMUX_AUTOCONNECT=false
+      # AUTOQUIT: true=close terminal when tmux exits/detaches, false=return to shell
+      ZSH_TMUX_AUTOQUIT=true
+      # DETACHED: true=adds -d flag (kicks other clients out), false=allow multiple clients
+      ZSH_TMUX_DETACHED=false
+
+      # ────────────────────────────────────────────────────────────── zcomet ──
+      if [[ ! -f ${ZDOTDIR:-${HOME}}/.zcomet/bin/zcomet.zsh ]]; then
+          command git clone https://github.com/agkozak/zcomet.git ${ZDOTDIR:-${HOME}}/.zcomet/bin
+      fi
+      source ${ZDOTDIR:-${HOME}}/.zcomet/bin/zcomet.zsh
+
+      # tmux plugin (must load before instant prompt - produces console output)
+      zcomet load ohmyzsh plugins/tmux
+
+      # ───────────────────────────────────────────────────────────────── fnm ──
+      # deferred LTS notification (output before instant prompt = no warnings)
+      [[ -f "$HOME/.cache/fnm-lts-notify" ]] && { cat "$HOME/.cache/fnm-lts-notify"; rm -f "$HOME/.cache/fnm-lts-notify"; }
+
+      # ────────────────────────────────────────────────────────────── instant ──
+      if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+          source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+      fi
+
+      # ─────────────────────────────────────────────────────────────── theme ──
+      zcomet load romkatv/powerlevel10k
+
+      # ─────────────────────────────────────────────────────────────── plugin ──
+      # directory jumping
+      zcomet load agkozak/zsh-z
+      # vi mode
+      zcomet load jeffreytse/zsh-vi-mode
+      # fuzzy finder with completion and key bindings
+      zcomet load junegunn/fzf shell completion.zsh key-bindings.zsh
+      # auto-switch python virtualenv
+      zcomet load MichaelAquilina/zsh-autoswitch-virtualenv
+      # git aliases
+      zcomet load ohmyzsh plugins/gitfast
+      # tmux integration (moved before instant prompt)
+      # zcomet load ohmyzsh plugins/tmux
+      # open git repos in browser
+      zcomet load paulirish/git-open
+      # auto source .env files
+      zcomet load Tarrasch/zsh-autoenv
+      # autosuggestions (load before syntax highlighting)
+      zcomet load zsh-users/zsh-autosuggestions
+      # completions
+      zcomet load zsh-users/zsh-completions
+      # syntax highlighting (load last)
+      zcomet load zsh-users/zsh-syntax-highlighting
+      # window titles
+      zcomet snippet https://github.com/jreese/zsh-titles/blob/master/titles.plugin.zsh
+
+      # ──────────────────────────────────────────────────────────────── lazy ──
+      # lazy-load plugins for faster startup
+      zcomet trigger zhooks agkozak/zhooks
+      zcomet trigger zsh-prompt-benchmark romkatv/zsh-prompt-benchmark
+      zcomet trigger --no-submodules archive unarchive lsarchive sorin-ionescu/prezto modules/archive
+
+      # ────────────────────────────────────────────────────────────── compinit ──
+      zcomet compinit
+      (( ${+commands[fzf]} )) || ~[fzf]/install --bin
+
+      # ──────────────────────────────────────────────────────────────── p10k ──
+      # vi mode keybindings
+      bindkey -v
+      # load p10k config
+      [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+      # ────────────────────────────────────────────────────────────── python ──
+      export AUTOSWITCH_DEFAULT_PYTHON="/opt/homebrew/bin/python3"
+
+      # ─────────────────────────────────────────────────────────────── ngrok ──
+      command -v ngrok &>/dev/null && eval "$(ngrok completion)"
+
+      # ──────────────────────────────────────────────────────────────── rust ──
+      [ -d "$HOME/.cargo" ] && . "$HOME/.cargo/env"
+
+      # ──────────────────────────────────────────────────────────────── node ──
+      # NOTE: fnm manages Node via .node-version/.nvmrc, but brew shellenv
+      # (below) prepends /opt/homebrew/bin to PATH, shadowing fnm's node
+      # if Homebrew has node installed. Run `brew unlink node` to fix -
+      # keeps node for brew deps (gemini-cli, ccusage-monitor) but lets
+      # fnm's LTS win. Re-run after `brew upgrade` reinstalls node.
+      if command -v fnm &>/dev/null; then
+        eval "$(fnm env --use-on-cd --shell zsh)"
+        # LTS check - only in Oct-Nov (release window), once per year
+        local _fc="$HOME/.cache/fnm-lts-check" _m=$(date +%m) _y=$(date +%Y)
+        [[ ($_m == 10 || $_m == 11) && "$(<"$_fc" 2>/dev/null)" != "$_y" ]] && (_fnm_lts_check &)
+      fi
+
+      # ──────────────────────────────────────────────────────────── platform ──
+      case "$(uname -s)" in
+      Darwin)
+          # GPG: ensure GUI + VS Code shells can reach the agent and tty
+          export GPG_TTY=$(tty)
+          export SSH_AUTH_SOCK="$HOME/.gnupg/S.gpg-agent.ssh"
+          # Homebrew
+          eval "$(/opt/homebrew/bin/brew shellenv)"
+          ;;
+      Linux)
+          # install lazygit if not present
+          if ! command -v lazygit &>/dev/null; then
+              LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
+              curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"
+              tar xf lazygit.tar.gz lazygit
+              [ -w /usr/local/bin ] && install lazygit /usr/local/bin || sudo install lazygit /usr/local/bin
+              rm lazygit.tar.gz lazygit
           fi
-
-
-
-
-
-            ## nvm - handled by zcomet above with lazy loading
-            
-            # NVM already configured above with lazy loading and global PATH
-            # Redundant loading removed for better performance
-#
-
-            # Old lazy loading implementations - removed since zcomet handles this better
-
-            # More old NVM implementations removed - zcomet handles all this
-
-
-            # All old NVM configurations cleaned up
-            # Old homebrew NVM loading - now using zcomet instead
-
-            # if [ -z "$TMUX" ]; then
-            #   exec tmux new-session -A -s workspace
-            # fi
-            
-
-            # tmux
-            # if [ -z "$TMUX" ]; then
-            #   exec tmux new-session -A -s workspace
-            # fi
-
-
-
-
-
-
-
-            case "$(uname -s)" in
-              Linux )
-
-            ## lazygit
-            if ! command -v lazygit &> /dev/null; then
-                LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
-                curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"
-                tar xf lazygit.tar.gz lazygit
-
-                # Check if /usr/local/bin is writable
-                if [ -w /usr/local/bin ]; then
-                    install lazygit /usr/local/bin
-                else
-                    echo "[-_-] /usr/local/bin is not writable. Attempting to use sudo..."
-                    sudo install lazygit /usr/local/bin
-                fi
-
-                rm lazygit.tar.gz && rm -rf lazygit
-            fi
-
-
-
-            ;;
-              Darwin )
-
-            # GPG: ensure GUI + VS Code shells can reach the agent and tty
-            export GPG_TTY=$(tty)
-            export SSH_AUTH_SOCK="$HOME/.gnupg/S.gpg-agent.ssh"
-
-            # Brew
-            eval "$(/opt/homebrew/bin/brew shellenv)"
-            
-            ## nvm
-            # [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
-            # [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
-            ;;
-
-
-
-            esac
-
-        
-        # zprof
-        
-        # Bash
-        elif [ -n "$BASH_VERSION" ]; then
-
-            # ~/.bashrc: executed by bash(1) for non-login shells.
-
-            # If not running interactively, don't do anything
-            case $- in
-                *i*) ;;
-                *) return ;;
-            esac
-
-            # don't put duplicate lines or lines starting with space in the history.
-            # See bash(1) for more options
-            HISTCONTROL=ignoreboth
-
-            # append to the history file, don't overwrite it
-            shopt -s histappend
-
-            # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-            HISTSIZE=1000
-            HISTFILESIZE=2000
-
-            # check the window size after each command and, if necessary,
-            # update the values of LINES and COLUMNS.
-            shopt -s checkwinsize
-
-            # If set, the pattern "**" used in a pathname expansion context will
-            # match all files and zero or more directories and subdirectories.
-            #shopt -s globstar
-
-            # make less more friendly for non-text input files, see lesspipe(1)
-            #[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
-
-            # set variable identifying the chroot you work in (used in the prompt below)
-            if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
-                debian_chroot=$(cat /etc/debian_chroot)
-            fi
-
-            # set a fancy prompt (non-color, unless we know we "want" color)
-            case "$TERM" in
-                xterm-color | *-256color) color_prompt=yes ;;
-            esac
-
-            # uncomment for a colored prompt, if the terminal has the capability; turned
-            # off by default to not distract the user: the focus in a terminal window
-            # should be on the output of commands, not on the prompt
-            #force_color_prompt=yes
-
-            if [ -n "$force_color_prompt" ]; then
-                if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
-                    # We have color support; assume it's compliant with Ecma-48
-                    # (ISO/IEC-6429). (Lack of such support is extremely rare, and such
-                    # a case would tend to support setf rather than setaf.)
-                    color_prompt=yes
-                else
-                    color_prompt=
-                fi
-            fi
-
-            if [ "$color_prompt" = yes ]; then
-                PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
-            else
-                PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
-            fi
-            unset color_prompt force_color_prompt
-
-            # If this is an xterm set the title to user@host:dir
-            # case "$TERM" in
-            #     xterm* | rxvt*)
-            #         PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-            #         ;;
-            #     *) ;;
-            # esac
-
-            # enable color support of ls and also add handy aliases
-            if [ -x /usr/bin/dircolors ]; then
-                test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-                alias ls='ls --color=auto'
-                #alias dir='dir --color=auto'
-                #alias vdir='vdir --color=auto'
-
-                #alias grep='grep --color=auto'
-                #alias fgrep='fgrep --color=auto'
-                #alias egrep='egrep --color=auto'
-            fi
-
-            # colored GCC warnings and errors
-            #export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
-
-            # some more ls aliases
-            #alias ll='ls -l'
-            #alias la='ls -A'
-            #alias l='ls -CF'
-
-            # Alias definitions.
-            # You may want to put all your additions into a separate file like
-            # ~/.bash_aliases, instead of adding them here directly.
-            # See /usr/share/doc/bash-doc/examples in the bash-doc package.
-
-            # if [ -f ~/.bash_aliases ]; then
-            #     . ~/.bash_aliases
-            # fi
-
-            # enable programmable completion features (you don't need to enable
-            # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
-            # sources /etc/bash.bashrc).
-            # if ! shopt -oq posix; then
-            #   if [ -f /usr/share/bash-completion/bash_completion ]; then
-            #     . /usr/share/bash-completion/bash_completion
-            #   elif [ -f /etc/bash_completion ]; then
-            #     . /etc/bash_completion
-            #   fi
-            # fi
-
-        # FiSH
-        elif [ -n "$FISH_VERSION" ]; then
-            echo "TODO fish"
-        #   set fish_greeting
-
-        else
-            echo "TODO .shell"
-        #   # asume something else
-        fi
-
-        # Darwin)
-        # echo '[¬_¬] Loading Darwin shell...'
-    # autoenv
-    # source $(brew --prefix autoenv)/activate.sh
-
-    ## gcloud
-    # if [ -f "${HOME}/.google/path.zsh.inc" ]; then source "${HOME}/.google/path.zsh.inc"; fi
-    # if [ -f "${HOME}/.google/completion.zsh.inc" ]; then source "${HOME}/.google/completion.zsh.inc"; fi
-
-    ## z
-    # . /usr/local/etc/profile.d/z.sh
-
-    ## nvm
-    # export NVM_DIR="$HOME/.nvm"
-    # [ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
-
-    # conda
-    # !! Contents within this block are managed by 'conda init' !!
-    # __conda_setup="$('/usr/local/anaconda3/bin/conda' 'shell.zsh' 'hook' 2>/dev/null)"
-    # if [ $? -eq 0 ]; then
-    #         eval "$__conda_setup"
-    # else
-    #         if [ -f "/usr/local/anaconda3/etc/profile.d/conda.sh" ]; then
-    #                 . "/usr/local/anaconda3/etc/profile.d/conda.sh"
-    #         else
-    #                 export PATH="/usr/local/anaconda3/bin:$PATH"
-    #         fi
-    # fi
-    # unset __conda_setup
-
-    # Zim (Framework)
-    # export ZIM_HOME=${ZDOTDIR:-${HOME}}/.zim                     # Define zim location
-    # [[ -s ${ZIM_HOME}/init.zsh ]] && source ${ZIM_HOME}/init.zsh # Start zim
-
-    # elif [ -n "$BASH_VERSION" ]; then
-    # 	# assume Bash
-    # 	echo "fuckbash"
-
-    # FiSH
-    # elif [ -n "$FISH_VERSION" ]; then
-    # 	set fish_greeting
-
-    # else
-    # 	echo "fuckthis"
-    # 	# asume something else
-    # fi
-
-    # conda
-    # !! Contents within this block are managed by 'conda init' !!
-    # __conda_setup="$('/usr/local/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-    # if [ $? -eq 0 ]; then
-    #     eval "$__conda_setup"
-    # else
-    #     if [ -f "/usr/local/anaconda3/etc/profile.d/conda.sh" ]; then
-    #         . "/usr/local/anaconda3/etc/profile.d/conda.sh"
-    #     else
-    #         export PATH="/usr/local/anaconda3/bin:$PATH"
-    #     fi
-    # fi
-    # unset __conda_setup
-
-    # # Zim (Framework)
-    # export ZIM_HOME=${ZDOTDIR:-${HOME}}/.zim # Define zim location
-    # [[ -s ${ZIM_HOME}/init.zsh ]] && source ${ZIM_HOME}/init.zsh # Start zim
-    # ;;
-
-    # Linux)
-    #  echo '[¬_¬] Loading Linux shell...'
-    #  ;;
-#
-#     CYGWIN* | MINGW32* | MSYS* | MINGW*)
-#         echo '[¬_¬] TODO DOS shell'
-#         ;;
-#
-# esac
-#
-#
+          ;;
+      esac
+# └────────────────────────────────────────────────────────────────────────────┘
+
+# ┌──────────────────────────────────────────────────────────────────── fish ──┐
+  elif [ -n "$FISH_VERSION" ]; then
+      echo "TODO fish"
+# └────────────────────────────────────────────────────────────────────────────┘
+
+# ┌─────────────────────────────────────────────────────────────────── other ──┐
+  else
+      echo "TODO .shell"
+  fi
+# └────────────────────────────────────────────────────────────────────────────┘
+
+# ┌──────────────────────────────────────────────────────────────── archive ───┐
+  # Historical code preserved for reference. All replaced by zcomet (2024-06).
+  # Full removed code saved in ~/.shell.bak if restoration needed.
+
+  # ═══════════════════════════════════════════════════════════════════ summary
+  # Removed 343 lines of old plugin manager configurations
+  # - antigen/antidote setup (~120 lines)
+  # - zinit configuration (~100 lines)
+  # - zplug configuration (~40 lines)
+  # - zim framework setup
+  # - duplicate conda blocks
+  # - UNREACHABLE bash elif (114 lines of dead code, lines 603-714)
+  # - duplicate instant prompt blocks
+  # - duplicate platform sections
+  # - various TODOs and debugging comments
+
+  # ═══════════════════════════════════════════════════════════════════ configs
+
+  # scroll region (disabled - caused issues in tmux)
+  # trap 'tput csr 1 $((LINES-3))' WINCH ; kill -s WINCH $$
+
+  # nvim background server (disabled 2026-01-20 - caused job warnings on exit)
+  # [[ ! -S /tmp/nvim ]] && nvim --listen /tmp/nvim --headless &>/dev/null &
+
+  # custom p10k om prompt (saved for future reference)
+  # typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
+  #   ...
+  #   om                        # custom prompt
+  # )
+  # function prompt_om() {
+  #   p10k segment -b 2 -f 214 -t 'ॐ '
+  # }
+
+  # zprof profiling (uncomment to profile zsh startup time)
+  # zmodload zsh/zprof
+  # zprof
+
+  # conda (not used - commented out for faster shell startup)
+  # __conda_setup="$('/usr/local/anaconda3/bin/conda' 'shell.zsh' 'hook' 2>/dev/null)"
+  # if [ $? -eq 0 ]; then
+  #     eval "$__conda_setup"
+  # else
+  #     if [ -f "/usr/local/anaconda3/etc/profile.d/conda.sh" ]; then
+  #         . "/usr/local/anaconda3/etc/profile.d/conda.sh"
+  #     else
+  #         export PATH="/usr/local/anaconda3/bin:$PATH"
+  #     fi
+  # fi
+  # unset __conda_setup
+
+  # zim framework (replaced by zcomet)
+  # export ZIM_HOME=${ZDOTDIR:-${HOME}}/.zim
+  # [[ -s ${ZIM_HOME}/init.zsh ]] && source ${ZIM_HOME}/init.zsh
+
+  # Full archive of removed plugin managers available in ~/.shell.bak
+  # To view: sed -n '151,493p' ~/.shell.bak
+  # Includes: antigen, antidote, zinit, zplug complete configurations
+# └────────────────────────────────────────────────────────────────────────────┘

@@ -1,507 +1,244 @@
 #!/usr/bin/env bash
 # Vivek Menon - vvkmnn.xyz
 
-####################################################
-# ~/.functions - Reusable shell functions
-####################################################
-# Purpose: Interactive workflow functions for
-#          complex operations requiring logic
-#
-# Loaded by: ~/.rc sources this third
-#
-# Includes: debugger_chrome() - Chrome debugging
-#           vc() - VS Code smart window management
-#           update_all() - System-wide updates
-#           claude-plugin-update() - Plugin refresh
-#           get_colored_face() - [¬_¬] color helper
-#           vd/vstatus/vkill() - Vim utilities
-####################################################
+# ┌─────────────────────────────── ~/.functions ─ Shell functions ─────────────┐
+#  Vivek Menon <mail@vvkmnn.xyz>
+# └────────────────────────────────────────────────────────────────────────────┘
+#  Purpose: Complex operations that need logic/loops
+#  Contains: get_colored_face(), _fnm_lts_check(), _claude_config_backup(), c(), cl(), cc(), update_all(), coffee(), pokemonif_patch()
+#  Archive: Disabled functions preserved at bottom
 
-# GUARD Prevent double-sourcing and skip in AI sandbox
-[ -n "$__FUNCTIONS_SOURCED" ] && return; __FUNCTIONS_SOURCED=1
-[ -n "$AI_SANDBOX_ONLY" ] && return
+# ┌───────────────────────────────────────────────────────────────── guard ────┐
+  [ -n "$__FUNCTIONS_SOURCED" ] && return
+  __FUNCTIONS_SOURCED=1
+  [ -n "$AI_SANDBOX_ONLY" ] && return
+# └────────────────────────────────────────────────────────────────────────────┘
 
-#
-#
-# {{{
+# ┌────────────────────────────────────────────────────────────────── helper ──┐
+  # random colored face for status output
+  get_colored_face() {
+    local faces=('[¬_¬]' '[^_^]' '[-_-]' '[o_o]' '[>_<]' '[T_T]' '[u_u]' '[n_n]' '[x_x]' '[~_~]' '[$_$]' '[+_+]' '[v_v]')
+    local idx=$(( (RANDOM % ${#faces[@]}) + 1 ))  # zsh arrays are 1-indexed
+    local face="${faces[$idx]}"
+    local colors=(31 32 33 34 35 36 91 92 93 94 95 96)
+    local color=${colors[$((RANDOM % ${#colors[@]} + 1))]}
+    echo -e "\033[${color}m${face}\033[0m"
+  }
+# └────────────────────────────────────────────────────────────────────────────┘
 
-debugger_chrome() {
-	# macOS
-	open -n -a "Google Chrome" --args --remote-debugging-port=9222 --user-data-dir=/tmp/chrome-debug-profile
+# ┌──────────────────────────────────────────────────────────────────── fnm ────┐
+  # weekly background LTS check - writes notification for NEXT shell startup
+  _fnm_lts_check() {
+    echo "$(date +%Y)" > "$HOME/.cache/fnm-lts-check"  # mark checked this year
+    local current=$(fnm current 2>/dev/null)
+    local latest=$(fnm list-remote --lts 2>/dev/null | tail -1 | awk '{print $1}')
+    [[ -n "$latest" && "$current" != "$latest" ]] && \
+      echo -e "$(get_colored_face) [fnm] LTS $latest available → fnm install --lts" \
+        > "$HOME/.cache/fnm-lts-notify"
+  }
+# └────────────────────────────────────────────────────────────────────────────┘
 
-	# Windows
-	# "C:\Program Files\Google\Chrome\Application\chrome.exe" --remote-debugging-port=9222 --user-data-dir=%TEMP%\chrome-debug-profile
+# ┌───────────────────────────────────────────────────────────── claude-backup ──┐
+  # weekly config backup - called silently from c/cl/cc
+  _claude_config_backup() {
+    local dir marker
+    dir="$HOME/.claude/backups"
+    marker="$dir/.last-backup"
+    [[ -f "$marker" ]] && (( ($(date +%s) - $(<"$marker")) < 604800 )) && return
+    mkdir -p "$dir"
+    cp "$HOME/.claude/.claude.json" "$dir/.claude.json.$(date +%Y%m%d)"
+    date +%s > "$marker"
+    ls -t "$dir"/.claude.json.* 2>/dev/null | tail -n +4 | xargs rm -f
+  } 2>/dev/null
+# └────────────────────────────────────────────────────────────────────────────┘
 
-	# Linux
-	# google-chrome --remote-debugging-port=9222 --user-data-dir=/tmp/chrome-debug-profile
-}
+# ┌─────────────────────────────────────────────────────────────────── claude ──┐
+  # crab status message: crab eyes, action, color
+  __claude_msg() {
+    local r='\033[0m'
+    local color="$3"
+    local action="${2%...}"
+    echo -e "${color}(\/) ($1) (\/)${r} ${action}${color}...${r}"
+  }
 
-# VS Code launcher — minimal wrapper to include the project folder up front.
-vc() {
-	local code_bin
-	code_bin=$(command -v code || command -v code-insiders)
-	if [ -z "$code_bin" ]; then
-		printf 'v: VS Code CLI (code) not found\n' >&2
-		return 127
-	fi
+  # smart continue - fallback to new only if no session
+  c() {
+    (_claude_config_backup &)
+    local gold='\033[38;5;214m'
+    local terra='\033[38;5;173m'
+    __claude_msg '-,,-' 'continuing...' "$gold"
+    claude --continue "$@" || {
+      __claude_msg '°,,°' 'creating...' "$terra"
+      claude "$@"
+    }
+  }
 
-	if [ $# -eq 0 ]; then
-		"$code_bin"
-		return
-	fi
+  # always new session
+  cl() {
+    (_claude_config_backup &)
+    local terra='\033[38;5;173m'
+    __claude_msg '°,,°' 'creating...' "$terra"
+    claude "$@"
+  }
 
-	local -a args=("$@")
-	local -a pass_args=()
-	local target=""
-	local awaiting=0
-	local seen_double_dash=0
-	local force_same=0
+  # force continue (no fallback)
+  cc() {
+    (_claude_config_backup &)
+    local gold='\033[38;5;214m'
+    __claude_msg '-,,-' 'continuing...' "$gold"
+    claude --continue "$@"
+  }
+# └─────────────────────────────────────────────────────────────────────────────┘
 
-	for arg in "${args[@]}"; do
-		if [ $awaiting -eq 1 ]; then
-			pass_args+=("$arg")
-			awaiting=0
-			if [ -z "$target" ]; then
-				target="$arg"
-			fi
-			continue
-		fi
-		if [ "$arg" = "--" ]; then
-			seen_double_dash=1
-			pass_args+=("$arg")
-			continue
-		fi
-		if [ $seen_double_dash -eq 0 ]; then
-			case "$arg" in
-			-s | --same)
-				force_same=1
-				continue
-				;;
-			--*=*)
-				pass_args+=("$arg")
-				continue
-				;;
-			--user-data-dir | --extensions-dir | --locale | --profile | --log | --category | --command | \
-				--file-write | --file-chmod | --folder-uri | --file-uri | --proxy-server | --proxy-bypass-list | \
-				--install-extension | --uninstall-extension | --app-port | --enable-proposed-api | -g)
-				pass_args+=("$arg")
-				awaiting=1
-				continue
-				;;
-			-*)
-				pass_args+=("$arg")
-				continue
-				;;
-			esac
-		fi
-		pass_args+=("$arg")
-		if [ -z "$target" ]; then
-			target="$arg"
-		fi
-	done
+# ┌────────────────────────────────────────────────────────────────── update ──┐
+  # update all: mas, brew, apt, fnm, uv, rustup, nvim
+  update_all() {
+    local log="/tmp/update_all.log"
+    local start_time=$SECONDS warnings=0 errors=0
+    local dim='\033[2m' bold='\033[1m' r='\033[0m'
 
-	if [ -z "$target" ]; then
-		"$code_bin" "$@"
-		return
-	fi
+    # section helper: face, title, revert_hint, command...
+    __section() {
+      local title="$1" revert="$2" warn="$3"; shift 3
+      local sec_start=$SECONDS
+      echo -e "\n$(get_colored_face) ${bold}$(date +%s)${r} ─── ${title} ───"
+      if "$@" 2>&1 | sed 's/^/  │ /'; then
+        local elapsed=$(( SECONDS - sec_start ))
+        if [[ "$warn" == "warn" ]]; then
+          echo -e "  └─ ${dim}⚠ done in ${elapsed}s (revert: ${revert})${r}"
+          (( warnings++ ))
+        else
+          echo -e "  └─ ${dim}✓ done in ${elapsed}s (revert: ${revert})${r}"
+        fi
+      else
+        local elapsed=$(( SECONDS - sec_start ))
+        echo -e "  └─ ${dim}✗ failed in ${elapsed}s (revert: ${revert})${r}"
+        (( errors++ ))
+      fi
+    }
 
-	local path_hint="$target"
-	if [ ! -e "$path_hint" ]; then
-		local trimmed=${target%%:*}
-		if [ -n "$trimmed" ] && [ -e "$trimmed" ]; then
-			path_hint="$trimmed"
-		fi
-	fi
+    # header with randomly colored cat
+    local colors=(31 32 33 34 35 36 91 92 93 94 95 96)
+    local cat_color=${colors[$((RANDOM % ${#colors[@]} + 1))]}
+    echo -e "╭──────────────────────────────────────────────────────────────────────────────╮"
+    echo -e "│  \033[${cat_color}mᓚᘏᗢ${r}  update_all started at $(date '+%Y-%m-%d %H:%M:%S')                            │"
+    echo -e "│       Log: ${log} (pipe to claude if issues)                   │"
+    echo -e "╰──────────────────────────────────────────────────────────────────────────────╯"
 
-	local project_dir
-	if [ -d "$path_hint" ]; then
-		project_dir="$path_hint"
-	else
-		project_dir=$(dirname -- "$path_hint")
-		[ -z "$project_dir" ] && project_dir="."
-	fi
-	[[ "$project_dir" == ~* ]] && project_dir="${project_dir/#\~/$HOME}"
-	if ! project_dir=$(cd -- "$project_dir" 2>/dev/null && pwd -P); then
-		"$code_bin" "$@"
-		return
-	fi
+    # Linux: prompt for sudo early
+    if [[ -f /etc/debian_version ]]; then
+      read -r -p "This will use sudo. Continue? [Y/n] " answer
+      [[ ! "${answer:-Y}" =~ ^[Yy] ]] && echo "Aborted." && return 1
+      sudo -v
+    fi
 
-	local window_flag="--new-window"
-	if [ $force_same -eq 1 ]; then
-		window_flag="--reuse-window"
-	else
-		local status_lines=""
-		local now
-		now=$(date +%s)
-		if [ -n "${__V_STATUS_CACHE_AT:-}" ] && [ -n "${__V_STATUS_CACHE:-}" ]; then
-			if [ $((now - __V_STATUS_CACHE_AT)) -le 2 ]; then
-				status_lines="$__V_STATUS_CACHE"
-			fi
-		fi
-		if [ -z "$status_lines" ]; then
-			status_lines=$("$code_bin" --status 2>/dev/null | sed -n -e 's/^[[:space:]]*Folder URI: //p' -e 's/^[[:space:]]*Workspace: //p') || status_lines=""
-			__V_STATUS_CACHE="$status_lines"
-			__V_STATUS_CACHE_AT=$now
-		fi
-		if [ -n "$status_lines" ]; then
-			local line path
-			while IFS= read -r line; do
-				[ -z "$line" ] && continue
-				path="$line"
-				if [[ "$path" == file://* ]]; then
-					path=${path#file://}
-					if [[ "$path" == *%* ]]; then
-						path=$(printf '%b' "${path//%/\\x}")
-					fi
-				fi
-				[[ "$path" == ~* ]] && path="${path/#\~/$HOME}"
-				if path=$(cd -- "$path" 2>/dev/null && pwd -P); then
-					case "$project_dir" in
-					"$path" | "$path"/*)
-						window_flag="--reuse-window"
-						break
-						;;
-					esac
-				fi
-			done <<<"$status_lines"
-		fi
-	fi
+    # macOS
+    if [[ "$OSTYPE" == darwin* ]]; then
+      __section "Mac App Store" "mas install <app-id>" "" mas upgrade
+      __section "Homebrew" "brew install <pkg>@<version>" "" brew update
+      __section "Homebrew packages" "brew pin <pkg>" "" brew upgrade
+      __section "Homebrew casks" "brew install --cask <pkg>" "" brew upgrade --cask --greedy
+      __section "Homebrew cleanup" "n/a" "" brew cleanup
+    fi
 
-	local have_dir=0
-	for arg in "${pass_args[@]}"; do
-		[ "$arg" = "--" ] && break
-		case "$arg" in
-		-*)
-			continue
-			;;
-		esac
-		local candidate="$arg"
-		[[ "$candidate" == ~* ]] && candidate="${candidate/#\~/$HOME}"
-		if candidate=$(cd -- "$candidate" 2>/dev/null && pwd -P 2>/dev/null); then
-			if [ "$candidate" = "$project_dir" ]; then
-				have_dir=1
-				break
-			fi
-		fi
-	done
+    # Linux
+    if [[ -f /etc/debian_version ]]; then
+      __section "APT update" "n/a" "" sudo apt update
+      __section "APT upgrade" "sudo apt install <pkg>=<version>" "" sudo apt upgrade -y
+      __section "APT autoremove" "sudo apt install <pkg>" "" sudo apt autoremove -y
+    fi
 
-	local -a final_cmd=("$code_bin")
-	final_cmd+=("$window_flag")
-	if [ $have_dir -eq 0 ]; then
-		final_cmd+=("$project_dir")
-	fi
-	final_cmd+=("${pass_args[@]}")
+    # Cross-platform tools
+    __section "fnm (Node LTS)" "fnm use <old-version>" "" fnm install --lts
+    __section "uv (Python)" "uv self update --version <old>" "" uv self update
+    __section "rustup (Rust)" "rustup default <old-version>" "warn" rustup update
+    __section "Neovim plugins" "cd ~/.local/share/nvim/lazy/<plugin> && git checkout" "" \
+      nvim --headless "+Lazy! sync" +qa
 
-	"${final_cmd[@]}"
-}
+    # footer
+    local total=$(( SECONDS - start_time ))
+    local summary="${warnings} warning(s), ${errors} error(s)"
+    echo -e "\n╭──────────────────────────────────────────────────────────────────────────────╮"
+    echo -e "│  ✓ update_all completed in ${total}s (${summary})                      │"
+    echo -e "│  Issues? Run: cat ${log} | claude \"analyze errors\"                 │"
+    echo -e "╰──────────────────────────────────────────────────────────────────────────────╯"
 
-# Helper: Returns the fixed face [¬_¬] with a random ANSI color (red–cyan)
-get_colored_face() {
-	local face="[¬_¬]"
-	local color=$(((RANDOM % 6) + 31))
-	echo -e "\033[${color}m${face}\033[0m"
-}
+    # macOS notification
+    [[ "$OSTYPE" == darwin* ]] && osascript -e "display notification \"${summary}\" with title \"update_all ✓\" sound name \"Glass\"" &>/dev/null
 
-update_all() {
-	local bold="\033[1m"
-	local reset="\033[0m"
+  } 2>&1 | tee /tmp/update_all.log
+# └────────────────────────────────────────────────────────────────────────────┘
 
-	# For Linux systems that use sudo (Debian-based), prompt early.
-	if [[ "$(uname -s)" == "Linux" && -f /etc/debian_version ]]; then
-		read -r -p "This update process will make system changes using sudo. Do you want to continue? [Y/n] " answer
-		answer=${answer:-Y}
-		if [[ ! "$answer" =~ ^[Yy] ]]; then
-			echo "Aborting update."
-			return 1
-		fi
-		# Prompt for sudo password now so it caches the credentials.
-		sudo -v
-	fi
+# ┌────────────────────────────────────────────────────────────────── coffee ──┐
+  # prevent sleep with lid closed (Ctrl+C to restore)
+  coffee() {
+    [[ "$OSTYPE" != darwin* ]] && echo "macOS only" && return 1
+    echo -e "$(get_colored_face) Disabling lid sleep..."
+    sudo pmset -a disablesleep 1
+    echo -e "$(get_colored_face) Lid sleep disabled. Ctrl+C to restore."
+    trap '_coffee_restore' INT
+    cat
+  }
+  _coffee_restore() {
+    echo ""
+    echo -e "$(get_colored_face) Restoring lid sleep..."
+    sudo pmset -a disablesleep 0
+    echo -e "$(get_colored_face) Sleep restored."
+    trap - INT
+  }
+# └────────────────────────────────────────────────────────────────────────────┘
 
-	if [[ "$OSTYPE" == darwin* ]]; then
-		# Mac App Store (MAS)
+# ┌────────────────────────────────────────────────────────────────── yabai ───┐
+  # toggle yabai on/off
+  ,,y() {
+    if pgrep -x yabai >/dev/null; then
+      echo -e "$(get_colored_face) Stopping yabai..."
+      yabai --stop-service
+    else
+      echo -e "$(get_colored_face) Starting yabai..."
+      yabai --start-service
+    fi
+  }
+# └────────────────────────────────────────────────────────────────────────────┘
 
-		# Check for outdated MAS apps
-		local ts=$(date +%s)
-		local colored_face
-		colored_face=$(get_colored_face)
-		local bold_ts="${bold}${ts}${reset}"
-		echo -ne "${colored_face} ${bold_ts} Checking Mac App Store via \`mas outdated\` ... "
-		local outdated_mas
-		outdated_mas=$(mas outdated)
-		if [ -z "$outdated_mas" ]; then
-			echo "no updates found."
-		else
-			echo ""
-			echo "$outdated_mas"
-		fi
+# ┌──────────────────────────────────────────────────────────────── games ────┐
+  # patch pokemon infinite fusion: enable debug mode (F9) without Magic Boots
+  # re-run after every update since INSTALL_OR_UPDATE.bat does git reset --hard
+  pokemonif_patch() {
+    local script="/Users/v/Documents/games/InfiniteFusion/Data/Scripts/001_Settings.rb"
+    if [[ ! -f "$script" ]]; then
+      echo "Not found: $script" && return 1
+    fi
+    if head -1 "$script" | grep -q '^\$DEBUG = true'; then
+      echo -e "$(get_colored_face) Debug mode already patched"
+      return 0
+    fi
+    sed -i '' '1i\
+$DEBUG = true  # enable debug mode (F9) without Magic Boots
+' "$script"
+    echo -e "$(get_colored_face) Debug mode patched → F9 works without Magic Boots"
+  }
+# └────────────────────────────────────────────────────────────────────────────┘
 
-		# Upgrade MAS apps
-		ts=$(date +%s)
-		colored_face=$(get_colored_face)
-		bold_ts="${bold}${ts}${reset}"
-		echo -e "${colored_face} ${bold_ts} Upgrading Mac App Store via \`mas upgrade\` ..."
-		mas upgrade
+# ┌──────────────────────────────────────────────────────────────── archive ───┐
+  # claude plugin update (replaced by native `claude plugin marketplace update`)
+  # claude-plugin-update() {
+  #   local bold="\033[1m" reset="\033[0m" ts colored_face bold_ts
+  #   ts=$(date +%s); colored_face=$(get_colored_face); bold_ts="${bold}${ts}${reset}"
+  #   echo -e "${colored_face} ${bold_ts} Updating Claude plugin marketplaces ..."
+  #   claude plugin marketplace update 2>&1 || echo "Warning: Marketplace update failed"
+  #   ts=$(date +%s); colored_face=$(get_colored_face); bold_ts="${bold}${ts}${reset}"
+  #   echo -e "${colored_face} ${bold_ts} Done! Plugin caches refreshed."
+  # }
 
-		# Homebrew
+  # vim diff
+  # vd() { vim -d -- "$1" "$2"; }
 
-		# Check for outdated Homebrew packages
-		ts=$(date +%s)
-		colored_face=$(get_colored_face)
-		bold_ts="${bold}${ts}${reset}"
-		echo -ne "${colored_face} ${bold_ts} Checking Homebrew via \`brew outdated\` ... "
-		local outdated_brew
-		outdated_brew=$(brew outdated)
-		if [ -z "$outdated_brew" ]; then
-			echo "no updates found."
-		else
-			echo ""
-			echo "$outdated_brew"
-		fi
+  # neovim client-server
+  # v() { nvim --listen /tmp/nvim "$@"; }
+  # vstatus() { [[ -S /tmp/nvim ]] && echo "Server running" || echo "No server"; }
+  # vkill() { pkill -f "nvim.*--listen /tmp/nvim"; }
 
-		# Update Homebrew (verbose)
-		ts=$(date +%s)
-		colored_face=$(get_colored_face)
-		bold_ts="${bold}${ts}${reset}"
-		echo -e "${colored_face} ${bold_ts} Updating Homebrew via \`brew update --verbose\` ..."
-		brew update --verbose
-
-		# Upgrade Homebrew packages (verbose)
-		ts=$(date +%s)
-		colored_face=$(get_colored_face)
-		bold_ts="${bold}${ts}${reset}"
-		echo -e "${colored_face} ${bold_ts} Upgrading Homebrew via \`brew upgrade --verbose\` ..."
-		brew upgrade --verbose
-
-		# Upgrade Homebrew casks (greedy, verbose)
-		ts=$(date +%s)
-		colored_face=$(get_colored_face)
-		bold_ts="${bold}${ts}${reset}"
-		echo -e "${colored_face} ${bold_ts} Upgrading Homebrew Casks via \`brew upgrade --cask --greedy --verbose\` ..."
-		brew upgrade --cask --greedy --verbose
-
-		# Cleanup Homebrew
-		ts=$(date +%s)
-		colored_face=$(get_colored_face)
-		bold_ts="${bold}${ts}${reset}"
-		echo -e "${colored_face} ${bold_ts} Cleaning up Homebrew via \`brew cleanup\` ..."
-		brew cleanup
-
-		# Run Homebrew doctor
-		ts=$(date +%s)
-		colored_face=$(get_colored_face)
-		bold_ts="${bold}${ts}${reset}"
-		echo -e "${colored_face} ${bold_ts} Running Homebrew doctor via \`brew doctor\` ..."
-		brew doctor
-
-	elif [[ "$(uname -s)" == "Linux" && -f /etc/debian_version ]]; then
-		# APT (Debian-based)
-
-		# Check for outdated APT packages
-		local ts=$(date +%s)
-		local colored_face
-		colored_face=$(get_colored_face)
-		local bold_ts="${bold}${ts}${reset}"
-		echo -ne "${colored_face} ${bold_ts} Checking APT via \`apt list --upgradable\` ... "
-		local outdated_apt
-		outdated_apt=$(apt list --upgradable 2>/dev/null | tail -n +2)
-		if [ -z "$outdated_apt" ]; then
-			echo "no updates found."
-		else
-			echo ""
-			echo "$outdated_apt"
-		fi
-
-		# Update APT (verbose, greedy)
-		ts=$(date +%s)
-		colored_face=$(get_colored_face)
-		bold_ts="${bold}${ts}${reset}"
-		echo -e "${colored_face} ${bold_ts} Updating APT via \`sudo apt update -o Debug::Acquire::http=true\` ..."
-		sudo apt update -o Debug::Acquire::http=true
-
-		ts=$(date +%s)
-		colored_face=$(get_colored_face)
-		bold_ts="${bold}${ts}${reset}"
-		echo -e "${colored_face} ${bold_ts} Upgrading APT via \`sudo apt upgrade -y -V\` ..."
-		sudo apt upgrade -y -V
-
-		ts=$(date +%s)
-		colored_face=$(get_colored_face)
-		bold_ts="${bold}${ts}${reset}"
-		echo -e "${colored_face} ${bold_ts} Removing unused packages via \`sudo apt autoremove -y\` ..."
-		sudo apt autoremove -y
-
-		ts=$(date +%s)
-		colored_face=$(get_colored_face)
-		bold_ts="${bold}${ts}${reset}"
-		echo -e "${colored_face} ${bold_ts} Cleaning up via \`sudo apt autoclean\` ..."
-		sudo apt autoclean
-	fi
-
-	# Claude Code Plugins
-	ts=$(date +%s)
-	colored_face=$(get_colored_face)
-	bold_ts="${bold}${ts}${reset}"
-	echo -e "${colored_face} ${bold_ts} Updating Claude Code plugins via \`claude-plugin-update\` ..."
-	claude-plugin-update
-}
-
-# }}}
-
-# Claude CLI {{{
-
-# Claude CLI - bypass NVM lazy loading
-# claude() {
-#     ~/.claude/local/claude "$@"
-# }
-
-# Claude Update Plugins - updates all installed Claude Code plugins
-claude-plugin-update() {
-	local bold="\033[1m"
-	local reset="\033[0m"
-	local ts colored_face bold_ts
-
-	# Update marketplace indexes (prevents stale cache issues)
-	ts=$(date +%s)
-	colored_face=$(get_colored_face)
-	bold_ts="${bold}${ts}${reset}"
-	echo -e "${colored_face} ${bold_ts} Updating Claude plugin marketplaces via \`claude plugin marketplace update\` ..."
-	if ! claude plugin marketplace update 2>&1; then
-		echo "Warning: Marketplace update failed, continuing anyway..."
-	fi
-
-	ts=$(date +%s)
-	colored_face=$(get_colored_face)
-	bold_ts="${bold}${ts}${reset}"
-	echo -e "${colored_face} ${bold_ts} Done! Plugin caches refreshed. Restart Claude Code if needed."
-}
-
-# }}}
-
-# Vim {{{
-# Vim Diff
-vd() {
-	vim -d -- "$1" "$2"
-}
-
-# }}}
-
-# Neovim Client-Server {{{
-
-# Connect to server or start new instance
-# v() {
-#     nvim --listen /tmp/nvim "$@"
-# }
-#
-# Server management
-vstatus() {
-	[[ -S /tmp/nvim ]] && echo "Server running" || echo "No server"
-}
-
-vkill() {
-	pkill -f "nvim.*--listen /tmp/nvim"
-}
-
-# }}}
-
-# Hydra {{{
-
-call_chatblade_ai() {
-	local force_expensive=false
-	local cb_args=()
-
-	# Process wrapper flags:
-	while [[ $# -gt 0 ]]; do
-		case "$1" in
-		-ex | --expensive)
-			force_expensive=true
-			;;
-		-ch | --cheap)
-			# ignore: default is cheap
-			;;
-		-t | --tokens)
-			# ignore, token estimation always runs
-			;;
-		*)
-			cb_args+=("$1")
-			;;
-		esac
-		shift
-	done
-
-	# Set model: default to cheap mode (o1-mini), unless forced expensive.
-	local model
-	local model_label
-	if $force_expensive; then
-		model="o1"
-		model_label="o1 (expensive)"
-	else
-		model="o1-mini"
-		model_label="o1-mini (cheap)"
-	fi
-
-	# Append piped input (if any) to the query.
-	if [ ! -t 0 ]; then
-		local input
-		input=$(cat)
-		[ -n "$input" ] && cb_args+=("$input")
-	fi
-
-	# Ensure the "-e" flag (execution mode) is present.
-	local has_e=false
-	for arg in "${cb_args[@]}"; do
-		if [ "$arg" = "-e" ]; then
-			has_e=true
-			break
-		fi
-	done
-	if [ "$has_e" = "false" ]; then
-		cb_args+=("-e")
-	fi
-
-	# Remove any user-provided temperature parameters.
-	local filtered_args=()
-	local i=0
-	while [ $i -lt "${#cb_args[@]}" ]; do
-		if [ "${cb_args[$i]}" = "--temperature" ]; then
-			i=$((i + 2))
-			continue
-		else
-			filtered_args+=("${cb_args[$i]}")
-		fi
-		i=$((i + 1))
-	done
-
-	# Build a query string for logging.
-	local query
-	query=$(printf "%s " "${filtered_args[@]}")
-
-	# Read API key from file.
-	local api_key
-	api_key=$(cat ~/.openai)
-
-	# Bold timestamp (e.g., **1740119698**)
-	local timestamp
-	timestamp=$(printf "\033[1m%s\033[0m" "$(date +%s)")
-
-	# --- TOKEN ESTIMATION ---
-	echo "$(get_colored_face) $timestamp Calling ${model_label} to estimate tokens using \`chatblade --openai-api-key <API_KEY> -c $model -s -i -t --temperature 1 -- ${filtered_args[@]}\`"
-	chatblade --openai-api-key "$api_key" -c "$model" -s -i -t --temperature "1" -- "${filtered_args[@]}"
-	local token_status=$?
-	if [ $token_status -ne 0 ]; then
-		timestamp=$(printf "\033[1m%s\033[0m" "$(date +%s)")
-		echo "$(get_colored_face) $timestamp ERROR: Token estimation call failed with exit code $token_status."
-		return $token_status
-	fi
-
-	# --- FINAL CALL ---
-	timestamp=$(printf "\033[1m%s\033[0m" "$(date +%s)")
-	echo "$(get_colored_face) $timestamp Calling ${model_label} to answer \`chatblade --openai-api-key <API_KEY> -c $model -s -i --temperature 1 -- ${filtered_args[@]}\`"
-	chatblade --openai-api-key "$api_key" -c "$model" -s -i --temperature "1" -- "${filtered_args[@]}"
-	local final_status=$?
-	if [ $final_status -ne 0 ]; then
-		timestamp=$(printf "\033[1m%s\033[0m" "$(date +%s)")
-		echo "$(get_colored_face) $timestamp ERROR: Final Chatblade call failed with exit code $final_status."
-		return $final_status
-	fi
-}
+  # chatblade (replaced by claude)
+  # call_chatblade_ai() { ... }
+# └────────────────────────────────────────────────────────────────────────────┘
