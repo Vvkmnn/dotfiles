@@ -140,6 +140,7 @@
                                     "modifiers": { "mandatory": ["right_command"] }
                                 },
                                 "to": [
+                                    { "set_variable": { "name": "rcmd_solo", "value": 0 } },
                                     {
                                         "key_code": "v",
                                         "modifiers": ["left_control"]
@@ -152,11 +153,18 @@
                                     "key_code": "right_command",
                                     "modifiers": { "optional": ["any"] }
                                 },
-                                "to": [{ "key_code": "right_command" }],
-                                "to_if_alone": [
+                                "to": [
+                                    { "set_variable": { "name": "rcmd_solo", "value": 1 } },
+                                    { "key_code": "right_command", "lazy": true }
+                                ],
+                                "to_after_key_up": [
                                     {
-                                        "shell_command": "~/.config/karabiner/scripts/smart-screenshot-resize.sh"
-                                    }
+                                        "shell_command": "~/.config/karabiner/scripts/smart-screenshot-resize.sh",
+                                        "conditions": [
+                                            { "type": "variable_if", "name": "rcmd_solo", "value": 1 }
+                                        ]
+                                    },
+                                    { "set_variable": { "name": "rcmd_solo", "value": 0 } }
                                 ],
                                 "type": "basic"
                             },

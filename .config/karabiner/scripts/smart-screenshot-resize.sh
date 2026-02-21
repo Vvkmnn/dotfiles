@@ -5,29 +5,45 @@
 #
 # DESCRIPTION:
 # Takes screenshot to temp file, resizes to 700px max dimension, copies to clipboard.
-# No leftover files - temp file cleaned up immediately after clipboard copy.
+# Shows notification with dimensions via terminal-notifier.
+# No leftover files - temp files cleaned up immediately after clipboard copy.
 #
 # USAGE:
 # - No parameter: Fullscreen screenshot
 # - -i parameter: Interactive area selection
 #
 # KEYBOARD SHORTCUTS (configured in Karabiner-Elements):
-# - right_cmd alone      → Fullscreen screenshot + auto-resize to 700px
-# - ctrl + right_cmd     → Area screenshot + auto-resize to 700px
+# - right_cmd alone      → Fullscreen screenshot + auto-resize to 700px + notification
+# - ctrl + right_cmd     → Area screenshot + auto-resize to 700px + notification
 # - shift + right_cmd    → Screenshot options menu (video/other options)
 # - right_cmd + space    → Paste (Ctrl+V for Claude Code terminal)
 #
+# MECHANISM:
+# Uses to_after_key_up + rcmd_solo variable instead of to_if_alone.
+# to_if_alone is canceled by mouse/trackpad events during the key hold,
+# which silently breaks screenshots when switching windows. to_after_key_up
+# fires on every physical key release regardless of mouse events.
+# The rcmd_solo variable (set on press, cleared by spacebar/paste rule)
+# prevents screenshot when right_cmd was used as a modifier for paste.
+#
 # WHY THIS APPROACH:
 # - Screenshot to file is synchronous (no race condition with clipboard)
-# - Resize happens before clipboard, so image is ready instantly
+# - Resize to separate file avoids sips in-place corruption risk
 # - Temp files auto-cleaned (no artifacts left behind)
 # - 700px allows 10-12 screenshots in Claude Code conversation
+# - Notification confirms capture with dimensions (runs in background)
+#
+# DEPENDENCIES:
+# - terminal-notifier (brew install terminal-notifier)
+# - pngpaste (brew install pngpaste) — for verification/testing
+# - impbcopy (compiled below) — clipboard copy
+# - Karabiner-Elements v15.4+ (per-event conditions in to_after_key_up)
 #
 # SETUP ON NEW COMPUTER:
 # ----------------------
 #
-# 1. Install pngpaste:
-#    brew install pngpaste
+# 1. Install pngpaste and terminal-notifier:
+#    brew install pngpaste terminal-notifier
 #
 # 2. Compile impbcopy (clipboard copy tool):
 #    Create /tmp/impbcopy.m with this content:
@@ -96,13 +112,23 @@
 #            },
 #            {
 #                "from": {"key_code": "spacebar", "modifiers": {"mandatory": ["right_command"]}},
-#                "to": [{"key_code": "v", "modifiers": ["left_control"]}],
+#                "to": [
+#                    {"set_variable": {"name": "rcmd_solo", "value": 0}},
+#                    {"key_code": "v", "modifiers": ["left_control"]}
+#                ],
 #                "type": "basic"
 #            },
 #            {
 #                "from": {"key_code": "right_command", "modifiers": {"optional": ["any"]}},
-#                "to": [{"key_code": "right_command"}],
-#                "to_if_alone": [{"shell_command": "~/.config/karabiner/scripts/smart-screenshot-resize.sh"}],
+#                "to": [
+#                    {"set_variable": {"name": "rcmd_solo", "value": 1}},
+#                    {"key_code": "right_command", "lazy": true}
+#                ],
+#                "to_after_key_up": [
+#                    {"shell_command": "~/.config/karabiner/scripts/smart-screenshot-resize.sh",
+#                     "conditions": [{"type": "variable_if", "name": "rcmd_solo", "value": 1}]},
+#                    {"set_variable": {"name": "rcmd_solo", "value": 0}}
+#                ],
 #                "type": "basic"
 #            }
 #        ]
@@ -151,9 +177,13 @@
 #
 ################################################################################
 
+export PATH="/usr/bin:/opt/homebrew/bin:$PATH"
+
 MAX_DIM=700
 TMP_FILE="/tmp/screenshot-$$.png"
+RESIZED_FILE="${TMP_FILE%.png}-resized.png"
 IMPBCOPY="$HOME/.config/karabiner/scripts/impbcopy"
+SENDER="org.pqrs.Karabiner-Elements.Settings"
 
 # Take screenshot to file (synchronous - no race condition)
 # -i for interactive area selection, -x for fullscreen
@@ -163,9 +193,33 @@ else
     screencapture -x "$TMP_FILE"
 fi
 
-# Resize and copy to clipboard if screenshot succeeded
+# Resize, copy to clipboard, notify
 if [ -f "$TMP_FILE" ]; then
-    sips --resampleHeightWidthMax "$MAX_DIM" "$TMP_FILE" --out "$TMP_FILE" >/dev/null 2>&1
-    "$IMPBCOPY" "$TMP_FILE"
-    rm -f "$TMP_FILE"
+    if sips --resampleHeightWidthMax "$MAX_DIM" "$TMP_FILE" --out "$RESIZED_FILE" >/dev/null 2>&1; then
+        # Read dimensions and file size
+        OW=$(sips -g pixelWidth "$TMP_FILE" | awk '/pixelWidth/{print $2}')
+        OH=$(sips -g pixelHeight "$TMP_FILE" | awk '/pixelHeight/{print $2}')
+        W=$(sips -g pixelWidth "$RESIZED_FILE" | awk '/pixelWidth/{print $2}')
+        H=$(sips -g pixelHeight "$RESIZED_FILE" | awk '/pixelHeight/{print $2}')
+        SIZE=$(stat -f%z "$RESIZED_FILE")
+        if [ "$SIZE" -ge 1048576 ]; then
+            SIZE_FMT="$(( SIZE / 1048576 )) MB"
+        else
+            SIZE_FMT="$(( SIZE / 1024 )) KB"
+        fi
+        if [ "$1" = "-i" ]; then MODE="Area"; else MODE="Fullscreen"; fi
+        "$IMPBCOPY" "$RESIZED_FILE"
+        terminal-notifier \
+            -title "Copied to clipboard" \
+            -message "$MODE ${OW}×${OH} → ${W}×${H} ($SIZE_FMT)" \
+            -sender "$SENDER" \
+            -timeout 3 &
+    else
+        terminal-notifier \
+            -title "Screenshot failed" \
+            -message "sips resize error" \
+            -sender "$SENDER" \
+            -timeout 5 &
+    fi
+    rm -f "$TMP_FILE" "$RESIZED_FILE"
 fi
