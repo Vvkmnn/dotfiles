@@ -1,7 +1,7 @@
 ---
 name: dotfiles-update
 description: Use when user says "update dotfiles", "commit dotfiles", "sync dotfiles", "push dotfiles", or asks to save/backup their config. Manages bare git repo at ~/.dotfiles with logical commits, security checks, and config discovery.
-version: 0.2.0
+version: 0.3.0
 ---
 
 # Dotfiles Update
@@ -30,7 +30,7 @@ Always commit to the current branch. Never switch branches without asking.
 | Category | Scope | Key Files |
 |----------|-------|-----------|
 | Shell | `shell` | `.alias`, `.functions`, `.profile`, `.rc`, `.shell`, `.bashrc`, `.zshrc`, `.zshenv`, `.zimrc`, `.p10k.zsh`, `.fishrc` |
-| Claude Code | `claude` | `.claude/CLAUDE.md`, `PAST.md`, `FUTURE.md`, `settings.json`, `keybindings.json`, `statusline.sh`, `rules/*`, `commands/*`, `hooks/*`, `plugins/*` |
+| Claude Code | `claude` | `.claude/CLAUDE.md`, `PAST.md`, `FUTURE.md`, `settings.json`, `statusline.sh`, `rules/*`, `commands/*`, `hooks/*`, `skills/*`, `mcp/MCP.md`, `mcp/mcp.json.bak` (encrypted), `.claudeignore`, `.gitignore` |
 | Karabiner | `karabiner` | `.config/karabiner/karabiner.json`, `KARABINER.md`, `scripts/*`, `automatic_backups/*` |
 | Sketchybar | `sketchybar` | `.config/sketchybar/sketchybarrc`, `plugins/*` |
 | WM | `wm` | `.skhdrc`, `.yabairc`, `.config/yabai/*` |
@@ -73,8 +73,9 @@ dotfiles diff --name-only | grep -iE '(token|secret|credential|password|\.env|\.
 | `.env*` | Environment secrets | NEVER stage |
 | `*.pem`, `*.key`, `*.p12` | Certificates | NEVER stage |
 | `.utcp_config.json` | MCP tokens | OK — git-crypt encrypted |
+| `.claude/mcp/mcp.json.bak` | MCP tokens backup | OK — git-crypt encrypted |
 | `.claude/settings.json` | May reference API config | Inspect before staging |
-| `.docker/config.json` | May contain registry auth | Inspect before staging |
+| `.docker/config.json` | Docker Hub auth tokens | NEVER stage (untracked) |
 
 **Verify git-crypt:** `dotfiles show HEAD:.utcp_config.json | head -1` → should show `GITCRYPT`
 
@@ -205,9 +206,45 @@ dotfiles add ~/.setup/Resources/Brewfile
 
 ### Git-Crypt
 - Key: `/Users/v/Documents/key` (also in 1Password)
-- Encrypted: `.utcp_config.json`
+- Encrypted files (see `.gitattributes`):
+  - `.utcp_config.json` — code-mode MCP servers with tokens
+  - `.claude.json` — Claude Code config (may have native mcpServers)
+  - `.claude/mcp/mcp.json.bak` — portable MCP backup (all servers)
 - New machine: `git-crypt unlock ~/dotfiles.key`
-- Verify: `dotfiles show HEAD:.utcp_config.json` → `GITCRYPT` header
+- Verify: `dotfiles show HEAD:.utcp_config.json | head -1` → `GITCRYPT` header
+
+### MCP Backup (`mcp.json.bak`)
+
+**Source of truth** for all MCP server definitions in Claude's native `mcpServers` format.
+
+**On every dotfiles update**, capture and merge servers from:
+1. `~/.utcp_config.json` (code-mode UTCP — primary, always used)
+2. `.claude.json` `mcpServers` section (native MCPs — rare, backup if configured)
+
+```bash
+# Merge UTCP servers into backup (existing entries take precedence for real tokens)
+jq -s '
+  .[0].mcpServers as $existing |
+  [.[1].manual_call_templates[] |
+    .config.mcpServers | to_entries[] |
+    {key: .key, value: (
+      if .value.transport == "http" then
+        {type: "url", url: .value.url} +
+        (if .value.headers then {headers: .value.headers} else {} end)
+      else
+        {type: "stdio", command: .value.command, args: .value.args} +
+        (if .value.env then {env: .value.env} else {} end)
+      end
+    )}
+  ] | from_entries as $utcp |
+  {mcpServers: ($utcp + $existing)}
+' ~/.claude/mcp/mcp.json.bak ~/.utcp_config.json > /tmp/merged-mcp.json \
+  && mv /tmp/merged-mcp.json ~/.claude/mcp/mcp.json.bak
+```
+
+**On new machine**, decrypt and register servers in `~/.utcp_config.json` for code-mode.
+
+See `~/.claude/mcp/MCP.md` for full server inventory (36 servers).
 
 ## Quick Reference
 
