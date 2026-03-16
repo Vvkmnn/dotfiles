@@ -1,5 +1,6 @@
 ---
 name: upgrade-claude
+author: Vvkmnn
 description: Use after Claude Code binary updates, weekly maintenance, or when optimizing setup. Comprehensive self-improvement system reviewing settings, hooks, plugins, rules, CLAUDE.md against changelog and community best practices.
 version: 1.0.0
 ---
@@ -215,7 +216,7 @@ Find: workflow optimizations, context efficiency tricks, integration patterns."
 - Hook patterns (auto-format, branch protection, context injection)
 - Context optimization techniques (lazy loading, MCP deferral)
 - Multi-model strategies (Opus for planning, Sonnet for execution)
-- Plan-based model optimization (`claude-usage` skill: pro/5x/20x modes)
+- Plan-based model optimization (`switch-claude` skill: pro/5x/20x modes)
 - Custom commands for common workflows
 
 ### Phase 5: Analyze Against Best Practices
@@ -243,7 +244,7 @@ Find: workflow optimizations, context efficiency tricks, integration patterns."
 | Dotfiles sync | Check setup | Cross-machine consistency |
 | HANDOFF.md pattern | Document it | Context transfer |
 | Model switching | Opus→Sonnet at 50% | Cost optimization |
-| claude-usage modes | `/claude-usage pro/5x/20x` | Plan-based model optimization |
+| switch-claude modes | `/switch-claude pro/5x/20x` | Plan-based model optimization |
 
 ### Phase 6: Gap Analysis
 
@@ -257,7 +258,7 @@ Find: workflow optimizations, context efficiency tricks, integration patterns."
 | Rules | Missing topics? (error handling, boundaries, verification) Outdated refs? |
 | CLAUDE.md | >300 lines? Missing sections? (Commands, Stack, Boundaries) |
 | Skills | Stale patterns? Missing for common tasks? |
-| Model config | Using plan-appropriate mode? (`/claude-usage` skill: pro/5x/20x) |
+| Model config | Using plan-appropriate mode? (`/switch-claude` skill: pro/5x/20x) |
 
 ### Phase 7: Generate Report
 

@@ -1,5 +1,6 @@
 ---
-name: Configuring Neovim
+name: configure-neovim
+author: Vvkmnn
 description: This skill guides working with Neovim configuration including testing changes headlessly, managing plugins with lazy.nvim, configuring LSP servers, and troubleshooting startup errors. Use this when modifying nvim config files or debugging nvim issues.
 allowed-tools: [Bash, Read, Write, Edit]
 ---

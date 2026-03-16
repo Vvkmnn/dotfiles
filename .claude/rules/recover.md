@@ -18,6 +18,8 @@ Know when to retry, when to escalate, and what requires approval. Never silently
 - Architectural decisions affecting multiple files
 - Adding/removing dependencies
 - Deleting files or public APIs
+- Any `rm` command — each command individually, never blanket approval
+- Any destructive command (truncate, overwrite, `> file`, `dd`, etc.)
 - Git commits, pushes, merges
 - Changes to settings.json or hooks
 
@@ -26,6 +28,8 @@ Know when to retry, when to escalate, and what requires approval. Never silently
 - Commit secrets, credentials, .env files
 - Skip verification hooks (--no-verify)
 - Delete without backup strategy
+- Run any `rm` command without explicit per-command approval
+- Run any destructive file/directory operation without confirming exact path with user first
 
 ### Error Recovery
 

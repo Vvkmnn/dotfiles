@@ -22,19 +22,13 @@ Gate all work with appropriate tests, security checks, and scope verification.
 - One-off scripts
 - Pure documentation changes
 
-**TDD pattern (adapt to your framework):**
-```python
-# 1. RED - Write failing test first
-def test_feature():
-    assert feature(input) == expected
+**Greenfield TDD:** Use `tdd-workflows:tdd-cycle` skill for full red-green-refactor with agent orchestration.
 
-# 2. GREEN - Minimal code to pass
-def feature(x):
-    return expected
-
-# 3. REFACTOR - Improve without changing behavior
-```
-*Frameworks: pytest, cargo test, go test, npm test, make test, busted (lua)*
+**Legacy code TDD** (untested code you need to change):
+1. **Characterization test** — capture current behavior as safety net (even if buggy)
+2. **Refactor for testability** — smallest changes to isolate: extract functions, inject dependencies
+3. **Unit tests** — test the newly extracted components
+4. **TDD for new behavior** — now follow standard red-green-refactor
 
 **Testing layers:**
 | Layer | Tests | When Required |

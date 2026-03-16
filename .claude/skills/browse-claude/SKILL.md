@@ -1,5 +1,6 @@
 ---
 name: browse-claude
+author: Vvkmnn
 description: This skill should be used when needing Chrome browser access, before using browser automation tools, when `mcp__claude-in-chrome__*` tools return "extension not connected", or when user asks to "open Chrome", "use browser", "browse to", "navigate to", "claude in chrome", or any web interaction task. Creates fresh, isolated browser sessions per task.
 version: 0.1.0
 ---

@@ -5,9 +5,62 @@
     "pr": ""
   },
   "permissions": {
+    "deny": [
+      "Bash(git push --force*)",
+      "Bash(git push -f *)",
+      "Bash(git push *--force*)",
+      "Bash(git reset --hard*)",
+      "Bash(git clean -f*)",
+      "Bash(git checkout -- .)",
+      "Bash(git restore .)",
+      "Bash(rm -rf /*)",
+      "Bash(rm -rf /)",
+      "Bash(sudo *)"
+    ],
     "allow": [
+      "Read",
+      "Glob",
+      "Grep",
       "WebSearch",
       "WebFetch",
+
+      "mcp__code-mode__list_tools",
+      "mcp__code-mode__search_tools",
+      "mcp__code-mode__tool_info",
+      "mcp__code-mode__tools_info",
+      "mcp__code-mode__get_required_keys_for_tool",
+
+      "mcp__ide__getDiagnostics",
+
+      "mcp__plugin_claude-historian_historian__search_conversations",
+      "mcp__plugin_claude-historian_historian__find_file_context",
+      "mcp__plugin_claude-historian_historian__find_similar_queries",
+      "mcp__plugin_claude-historian_historian__get_error_solutions",
+      "mcp__plugin_claude-historian_historian__list_recent_sessions",
+      "mcp__plugin_claude-historian_historian__extract_compact_summary",
+      "mcp__plugin_claude-historian_historian__find_tool_patterns",
+      "mcp__plugin_claude-historian_historian__search_plans",
+      "mcp__plugin_claude-historian_historian__search_config",
+      "mcp__plugin_claude-historian_historian__search_tasks",
+
+      "mcp__plugin_claude-oracle_oracle__search",
+      "mcp__plugin_claude-oracle_oracle__browse",
+      "mcp__plugin_claude-oracle_oracle__sources",
+
+      "mcp__plugin_claude-praetorian_praetorian__praetorian_restore",
+
+      "mcp__plugin_claude-vigil_vigil__vigil_list",
+      "mcp__plugin_claude-vigil_vigil__vigil_diff",
+
+      "mcp__plugin_repomix-mcp_repomix__read_repomix_output",
+      "mcp__plugin_repomix-mcp_repomix__grep_repomix_output",
+      "mcp__plugin_repomix-mcp_repomix__file_system_read_file",
+      "mcp__plugin_repomix-mcp_repomix__file_system_read_directory",
+
+      "mcp__plugin_compound-engineering_context7__resolve-library-id",
+      "mcp__plugin_compound-engineering_context7__query-docs",
+
+      "mcp__plugin_claude-gladiator_gladiator__gladiator_reflect",
 
       "Bash(ls *)",
       "Bash(pwd)",
@@ -20,41 +73,103 @@
       "Bash(file *)",
       "Bash(tree *)",
       "Bash(diff *)",
-
       "Bash(grep *)",
       "Bash(rg *)",
       "Bash(sort *)",
       "Bash(uniq *)",
       "Bash(cut *)",
       "Bash(tr *)",
+      "Bash(sed -n *)",
+      "Bash(awk *)",
       "Bash(jq *)",
-
+      "Bash(strings *)",
+      "Bash(xxd *)",
+      "Bash(hexdump *)",
+      "Bash(od *)",
+      "Bash(base64 *)",
+      "Bash(shasum *)",
+      "Bash(md5 *)",
+      "Bash(cksum *)",
       "Bash(echo *)",
       "Bash(which *)",
       "Bash(type *)",
+      "Bash(command -v *)",
       "Bash(date *)",
       "Bash(uname *)",
       "Bash(whoami)",
       "Bash(hostname)",
+      "Bash(uptime)",
       "Bash(id)",
       "Bash(env)",
       "Bash(printenv *)",
+      "Bash(sw_vers*)",
+      "Bash(system_profiler *)",
       "Bash(* --version)",
       "Bash(* --help)",
+      "Bash(ps *)",
+      "Bash(pgrep *)",
+      "Bash(lsof *)",
+      "Bash(mdfind *)",
+      "Bash(mdls *)",
+      "Bash(otool *)",
+      "Bash(nm *)",
+      "Bash(readlink *)",
+      "Bash(realpath *)",
+      "Bash(basename *)",
+      "Bash(dirname *)",
+      "Bash(tput *)",
+      "Bash(compgen *)",
+      "Bash(whence *)",
+      "Bash(functions)",
+      "Bash(netstat *)",
+      "Bash(sysctl *)",
+      "Bash(pmset -g*)",
+      "Bash(ioreg *)",
+      "Bash(plutil -p *)",
+      "Bash(plutil -lint *)",
+      "Bash(xcode-select -p*)",
+      "Bash(xcode-select --print-path*)",
+      "Bash(log show *)",
+      "Bash(istats*)",
+      "Bash(top -l *)",
+      "Bash(launchctl list*)",
 
       "Bash(git status*)",
       "Bash(git log*)",
       "Bash(git diff*)",
       "Bash(git show*)",
       "Bash(git blame*)",
-      "Bash(git branch*)",
+      "Bash(git branch)",
+      "Bash(git branch -a)",
+      "Bash(git branch -r)",
+      "Bash(git branch -v*)",
+      "Bash(git branch --list*)",
+      "Bash(git branch --show-current)",
+      "Bash(git branch --contains*)",
+      "Bash(git branch --merged*)",
+      "Bash(git branch --no-merged*)",
       "Bash(git remote*)",
-      "Bash(git tag*)",
+      "Bash(git tag)",
+      "Bash(git tag -l*)",
+      "Bash(git tag --list*)",
       "Bash(git rev-parse*)",
       "Bash(git shortlog*)",
       "Bash(git stash list*)",
       "Bash(git stash show*)",
       "Bash(git fetch*)",
+      "Bash(git ls-files*)",
+      "Bash(git ls-tree*)",
+      "Bash(git cat-file*)",
+      "Bash(git config --list*)",
+      "Bash(git config --get*)",
+      "Bash(git config --get-all*)",
+      "Bash(git reflog*)",
+      "Bash(git worktree list*)",
+      "Bash(git describe*)",
+      "Bash(git count-objects*)",
+      "Bash(git name-rev*)",
+      "Bash(git cherry -v*)",
+
       "Bash(gh pr view*)",
       "Bash(gh pr list*)",
       "Bash(gh pr diff*)",
@@ -63,6 +178,17 @@
       "Bash(gh issue list*)",
       "Bash(gh api *)",
       "Bash(gh repo view*)",
+      "Bash(gh run view*)",
+      "Bash(gh run list*)",
+      "Bash(gh run watch*)",
+      "Bash(gh release view*)",
+      "Bash(gh release list*)",
+      "Bash(gh workflow view*)",
+      "Bash(gh workflow list*)",
+      "Bash(gh label list*)",
+      "Bash(gh search *)",
+      "Bash(gh status*)",
+      "Bash(gh browse*)",
 
       "Bash(dotfiles status*)",
       "Bash(dotfiles log*)",
@@ -72,27 +198,76 @@
       "Bash(dotfiles branch*)",
       "Bash(dotfiles remote*)",
 
+      "Bash(tmux list-sessions*)",
+      "Bash(tmux list-windows*)",
+      "Bash(tmux list-panes*)",
+      "Bash(tmux display-message*)",
+      "Bash(tmux show-options*)",
+      "Bash(tmux show-window-options*)",
+      "Bash(tmux show-environment*)",
+
       "Bash(brew list*)",
       "Bash(brew info*)",
       "Bash(brew bundle dump --dry-run*)",
+      "Bash(brew search*)",
+      "Bash(brew deps*)",
+      "Bash(brew outdated*)",
+      "Bash(brew leaves*)",
+      "Bash(brew cleanup --dry-run*)",
       "Bash(defaults read *)",
+      "Bash(defaults find *)",
 
       "Bash(npm test*)",
       "Bash(npm run test*)",
       "Bash(npm run lint*)",
       "Bash(npm run check*)",
+      "Bash(npm list*)",
+      "Bash(npm view*)",
+      "Bash(npm outdated*)",
+      "Bash(pnpm list*)",
       "Bash(pnpm store status*)",
+
+      "Bash(pip3 list*)",
+      "Bash(pip3 show *)",
+      "Bash(pip3 index*)",
+      "Bash(uv pip list*)",
+      "Bash(uv pip show*)",
+      "Bash(uv python list*)",
+      "Bash(uv tool list*)",
+      "Bash(uv version*)",
 
       "Bash(cargo check*)",
       "Bash(cargo test*)",
       "Bash(cargo clippy*)",
+      "Bash(cargo tree*)",
 
       "Bash(pytest *)",
       "Bash(python3 -m json.tool *)",
       "Bash(python3 -m py_compile *)",
       "Bash(python3 -c *)",
+      "Bash(go version*)",
+      "Bash(go env*)",
+      "Bash(go list *)",
+      "Bash(go mod graph*)",
+      "Bash(shellcheck *)",
+
+      "Bash(fnm list*)",
+      "Bash(fnm current*)",
+      "Bash(fnm list-remote*)",
+      "Bash(rustup show*)",
+      "Bash(rustup toolchain list*)",
+      "Bash(rustup component list*)",
+      "Bash(rustup target list*)",
+      "Bash(rustup check*)",
+      "Bash(rustup which*)",
 
       "Bash(claude --version*)",
+      "Bash(claude --help*)",
+      "Bash(claude plugin list*)",
+      "Bash(ghostty +*)",
+      "Bash(yabai -m config*)",
+      "Bash(yabai -m query*)",
+
       "Bash(df *)",
       "Bash(du *)",
       "Bash(diskutil list*)",
@@ -102,10 +277,39 @@
       "Bash(docker ps*)",
       "Bash(docker context*)",
       "Bash(docker info*)",
+      "Bash(docker logs*)",
+      "Bash(docker inspect*)",
       "Bash(colima status*)",
       "Bash(colima list*)",
       "Bash(tmutil list*)",
-      "Bash(brew cleanup --dry-run*)"
+
+      "Bash(less *)",
+      "Bash(more *)",
+      "Bash(column *)",
+      "Bash(expand *)",
+      "Bash(unexpand *)",
+      "Bash(fold *)",
+      "Bash(rev *)",
+      "Bash(paste *)",
+      "Bash(nl *)",
+      "Bash(fmt *)",
+      "Bash(comm *)",
+      "Bash(join *)",
+      "Bash(tac *)",
+
+      "Bash(arch)",
+      "Bash(nproc)",
+      "Bash(vm_stat)",
+      "Bash(vm_stat *)",
+
+      "Bash(dig *)",
+      "Bash(nslookup *)",
+      "Bash(host *)",
+      "Bash(ifconfig)",
+      "Bash(ifconfig *)",
+      "Bash(scutil --dns)",
+      "Bash(scutil --proxy)",
+      "Bash(networksetup -get*)"
     ],
     "defaultMode": "plan"
   },
@@ -128,17 +332,6 @@
           {
             "type": "command",
             "command": "node ~/.claude/hooks/pre-tool-use.js"
-          }
-        ]
-      }
-    ],
-    "PermissionRequest": [
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node ~/.claude/hooks/permission-request.js"
           }
         ]
       }
@@ -179,6 +372,17 @@
           }
         ]
       }
+    ],
+    "PreCompact": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ~/.claude/hooks/pre-compact.js"
+          }
+        ]
+      }
     ]
   },
   "statusLine": {
@@ -208,7 +412,7 @@
     "javascript-typescript@claude-code-workflows": true,
     "systems-programming@claude-code-workflows": true,
     "backend-development@claude-code-workflows": true,
-    "cc_chrome_devtools_mcp_skill@cc_chrome_devtools_mcp_skill-plugin-marketplace": true,
+    "cc_chrome_devtools_mcp_skill@cc_chrome_devtools_mcp_skill-plugin-marketplace": false,
     "lua-lsp@claude-plugins-official": true,
     "code-simplifier@claude-plugins-official": true,
     "explanatory-output-style@claude-plugins-official": true,
@@ -225,12 +429,34 @@
     "typescript-lsp@claude-plugins-official": true,
     "pyright-lsp@claude-plugins-official": true,
     "rust-analyzer-lsp@claude-plugins-official": true,
-    "superpowers@claude-plugins-official": true,
+    "superpowers@claude-plugins-official": false,
     "doc-tools@cc-skills": true,
     "dotfiles-tools@cc-skills": true,
     "quality-tools@cc-skills": true,
     "shell-scripting@claude-code-workflows": true,
-    "swift-lsp@claude-plugins-official": true
+    "swift-lsp@claude-plugins-official": true,
+    "audit-context-building@trailofbits": true,
+    "static-analysis@trailofbits": true,
+    "semgrep-rule-creator@trailofbits": true,
+    "semgrep-rule-variant-creator@trailofbits": true,
+    "variant-analysis@trailofbits": true,
+    "insecure-defaults@trailofbits": true,
+    "property-based-testing@trailofbits": true,
+    "testing-handbook-skills@trailofbits": true,
+    "constant-time-analysis@trailofbits": true,
+    "differential-review@trailofbits": true,
+    "sharp-edges@trailofbits": true,
+    "spec-to-code-compliance@trailofbits": true,
+    "dwarf-expert@trailofbits": true,
+    "yara-authoring@trailofbits": true,
+    "ask-questions-if-underspecified@trailofbits": true,
+    "interface-design@interface-design": true,
+    "claude-praetorian@claude-emporium": true,
+    "claude-orator@claude-emporium": true,
+    "claude-gladiator@claude-emporium": true,
+    "claude-historian@claude-emporium": true,
+    "claude-oracle@claude-emporium": true,
+    "claude-vigil@claude-emporium": true
   },
   "sandbox": {
     "allowUnsandboxedCommands": true,
@@ -280,22 +506,8 @@
         "github.blog"
       ]
     },
-    "mode": "auto-allow",
-    "filesystem": {
-      "deniedReadPaths": [
-        "~/Library",
-        "~/Applications",
-        "~/Documents",
-        "~/Downloads",
-        "~/Desktop",
-        "~/Music",
-        "~/Movies",
-        "~/Pictures",
-        "~/.npm",
-        "~/.cache",
-        "~/.Trash"
-      ]
-    }
+    "filesystem": {},
+    "mode": "auto-allow"
   },
   "alwaysThinkingEnabled": true,
   "effortLevel": "high"

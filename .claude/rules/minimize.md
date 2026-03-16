@@ -51,6 +51,12 @@ When launching subagents: `model: "haiku"` for straightforward execution tasks
 - Side effects are obvious
 - Testable without complex setup
 
+**No disk artifacts for state:**
+- No tmpfiles, lockfiles, cooldown files, or PID files for internal state
+- Keep state in code, variables, or process environment — not on disk
+- If state must persist across processes, use existing mechanisms (git, env vars, CLI flags)
+- Every file on disk is a cleanup liability
+
 ### The Iteration Principles
 
 **Small steps:**
@@ -58,6 +64,13 @@ When launching subagents: `model: "haiku"` for straightforward execution tasks
 - Commit frequently at stable points
 - Validate each step before continuing
 - Easier to review, easier to revert
+
+**Commit messages match the repo:**
+- Run `git log --oneline -10` before every commit — match the existing format exactly
+- Single-line history → single-line message (NO body, NO bullets)
+- Multi-line history → multi-line message matching that style
+- Match casing, scope conventions, and level of detail
+- Never default to verbose; let the repo's history dictate
 
 **Build incrementally:**
 ```
@@ -113,6 +126,21 @@ Before considering code complete:
 - [ ] Files focused (<800 lines, 200-400 typical)
 - [ ] No deep nesting (>4 levels)
 - [ ] No console.log in production code
+
+### Branch-Scope Refactoring
+
+When refactoring on a feature branch, auto-detect scope from git:
+```bash
+git diff main...HEAD --name-only  # Files changed since branching
+git diff main...HEAD              # All changes since branching
+git log main..HEAD --oneline      # Commits since branching
+```
+
+Prioritize refactoring by ROI:
+- **Immediate**: Code being actively modified in this branch
+- **Future**: Code likely to change soon based on roadmap
+- **Team**: Code that confuses multiple developers
+- **Maintenance**: Code with frequent bugs
 
 ### Anti-Patterns
 

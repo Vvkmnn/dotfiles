@@ -9,7 +9,7 @@
  * - Trigger notifications for long operations
  *
  * Output options:
- * - { "additionalContext": "text" } - Add context to conversation
+ * - { "hookSpecificOutput": { "hookEventName": "PostToolUse", "additionalContext": "text" } }
  * - {} or nothing - No action
  */
 
@@ -35,6 +35,15 @@ process.stdin.on('end', () => {
   }
 });
 
+function context(text) {
+  return {
+    hookSpecificOutput: {
+      hookEventName: 'PostToolUse',
+      additionalContext: text
+    }
+  };
+}
+
 function processToolResult(result) {
   const { tool_name, tool_input, output, duration_ms, error } = result;
 
@@ -52,37 +61,69 @@ function processToolResult(result) {
   }
 
   // ========================================
-  // Context injection based on tool results
+  // Error research reminders
   // ========================================
-
-  // If a test command failed, suggest debugging
   if (tool_name === 'Bash' && error) {
     const command = tool_input?.command || '';
-    if (/npm\s+test|pytest|cargo\s+test|go\s+test/.test(command)) {
-      return {
-        additionalContext: '<system-reminder>Tests failed. Consider using the debugging-toolkit:debugger agent or superpowers:systematic-debugging skill to investigate.</system-reminder>'
-      };
+    const errorStr = typeof error === 'string' ? error : JSON.stringify(error);
+
+    // Skip noise (grep/find/test exit 1, empty errors)
+    if (/\b(grep|rg|find|test)\b.*exit code 1/i.test(`${errorStr} ${command}`) ||
+        /No files? matched/i.test(errorStr) || !errorStr.trim()) {
+      return {};
+    }
+
+    // All errors: remind to research before retrying
+    return context('<system-reminder>Command failed. Read the full error. If this is a repeat failure or unfamiliar error, follow the research protocol in orchestrate.md before retrying. Never attempt the same approach twice without new information.</system-reminder>');
+  }
+
+  // ========================================
+  // Plan checkbox flip → remind TaskUpdate
+  // ========================================
+  if (tool_name === 'Edit' && !error) {
+    const filePath = tool_input?.file_path || '';
+    const oldStr = tool_input?.old_string || '';
+    const newStr = tool_input?.new_string || '';
+    if (/plans\/.*\.md$/.test(filePath) && /\[ \]/.test(oldStr) && /\[x\]/.test(newStr)) {
+      const flipped = (newStr.match(/\[x\]/g) || []).length - (oldStr.match(/\[x\]/g) || []).length;
+      if (flipped > 0) {
+        return context(`<system-reminder>You just marked ${flipped} plan item(s) [x]. Did you also call TaskUpdate → completed for each? The Flowing display only updates via TaskUpdate.</system-reminder>`);
+      }
     }
   }
 
-  // If build failed, suggest checking errors
-  if (tool_name === 'Bash' && error) {
-    const command = tool_input?.command || '';
-    if (/npm\s+run\s+build|cargo\s+build|go\s+build|make/.test(command)) {
-      return {
-        additionalContext: '<system-reminder>Build failed. Check the error output above and fix the issues before proceeding.</system-reminder>'
-      };
+  // ========================================
+  // File creation → remind about pending tasks
+  // ========================================
+  if (tool_name === 'Write' && !error) {
+    const filePath = tool_input?.file_path || '';
+    // Skip plan/hook/rule files — only trigger for implementation files
+    if (!/plans\/.*\.md$|\.claude\/hooks\/|\.claude\/rules\//.test(filePath)) {
+      const planDir = path.join(os.homedir(), '.claude', 'plans');
+      try {
+        const plans = fs.readdirSync(planDir).filter(f => f.endsWith('.md'));
+        if (plans.length > 0) {
+          const content = fs.readFileSync(path.join(planDir, plans[0]), 'utf8');
+          const pending = (content.match(/^- \[ \] .+$/gm) || []).length;
+          if (pending > 0) {
+            return context(`<system-reminder>You just created a new file. ${pending} plan items are still pending — if this work completes one, call TaskUpdate → completed before moving on.</system-reminder>`);
+          }
+        }
+      } catch (e) { /* no plans, skip */ }
     }
   }
 
-  // If git push failed, check for common issues
-  if (tool_name === 'Bash' && error) {
-    const command = tool_input?.command || '';
-    if (/git\s+push/.test(command)) {
-      return {
-        additionalContext: '<system-reminder>Git push failed. Common causes: remote has new commits (pull first), branch protection rules, or authentication issues.</system-reminder>'
-      };
-    }
+  // ========================================
+  // Subagent completion → remind TaskUpdate
+  // ========================================
+  if (tool_name === 'Agent' && !error) {
+    const planDir = path.join(os.homedir(), '.claude', 'plans');
+    try {
+      const plans = fs.readdirSync(planDir).filter(f => f.endsWith('.md'));
+      if (plans.length > 0) {
+        return context('<system-reminder>A subagent just completed. If it finished a plan item, call TaskUpdate → completed for that task NOW — subagents cannot update the parent task list, only you can.</system-reminder>');
+      }
+    } catch (e) { /* no plans dir, skip */ }
   }
 
   // No additional context needed

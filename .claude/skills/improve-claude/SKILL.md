@@ -1,5 +1,6 @@
 ---
 name: improve-claude
+author: Vvkmnn
 description: Use after major conversations, when user expresses frustration, when stuck in retry loops, or when task completion took too long - analyzes conversation to suggest improvements to CLAUDE.md, rules, skills, and plugins
 ---
 

@@ -14,6 +14,7 @@ Delegate to subagents strategically. Each agent gets fresh context - use this to
 | Context >50% used | Yes | Avoid context rot |
 | Domain expertise needed | Yes | security-auditor, backend-architect, etc. |
 | Context-heavy ops (testing, docs) | Yes | Isolate token-hungry work |
+| Novel problem or persistent error | Yes | Research protocol — local/docs/online |
 | Simple targeted lookup | No | Direct tools faster |
 | Sequential dependencies | No | Agents can't see each other |
 
@@ -25,7 +26,7 @@ Delegate to subagents strategically. Each agent gets fresh context - use this to
 | Code analysis, exploration | haiku or sonnet | Haiku is 90% of Sonnet at 1/3 cost |
 | Architecture, complex reasoning | opus | Opus 4.6, worth the cost |
 
-**Session model:** Check `/claude-usage` skill for current mode (generous vs optimized).
+**Session model:** Check `/switch-claude` skill for current mode (generous vs optimized).
 - `opusplan` = Opus for plan mode, Sonnet for execution (best ROI)
 - `opus` = full Opus everywhere (generous mode)
 - Effort levels: `/model` + arrow keys (low/medium/high)
@@ -53,6 +54,41 @@ Task("Find API patterns", prompt, "Explore")
 - Only parallelize truly independent work
 - Agents can't see each other's changes
 - Reconvene and verify after parallel execution
+
+### Research Protocol
+
+**When facing something novel or an error persists, research before planning or retrying.**
+
+**Triggers:**
+- Unfamiliar library, API, framework, or config
+- Error persists after one informed fix attempt
+- User asks for "best practice" or "elegant approach"
+- Design decision with unclear trade-offs
+- About to plan a feature using patterns not yet in the codebase
+
+**Skip when:** Routine patterns already in codebase, obvious typos/syntax, already researched this session, user says "just do it."
+
+**3 parallel Explore subagents** (single message, all at once):
+
+| Agent | Focus | Sources |
+|-------|-------|---------|
+| Local | Past solutions + codebase patterns | historian, Grep, existing implementations |
+| Docs | Library docs + version/migration notes | Context7, changelogs, READMEs |
+| Online | Community solutions + best practices | StackOverflow, web search, HackerNews |
+
+**Model selection by usage plan:**
+- **Generous** (`opus`): sonnet for all 3
+- **Optimized** (`opusplan`): haiku for Local + Docs, sonnet for Online
+
+**Quick research** (one direct tool call, no subagents) when the question is narrow and one source suffices. Escalate to 3-subagent protocol when quick research yields nothing or user wants thoroughness.
+
+**Priority:** Favour online best-in-class solutions over local workarounds. The goal is usually the most elegant, well-established approach — not the quickest hack.
+
+**After results:**
+1. Synthesize — don't dump raw results
+2. Present 2-3 approaches with effort/risk/source
+3. Recommend the best-in-class solution with reasoning
+4. Proceed if clearly superior, ask if trade-offs exist
 
 ### Prompting Agents Effectively
 
@@ -94,6 +130,7 @@ Don't explore: tests, mocks, or deprecated code.
 | CI/CD pipeline work | `cicd-automation:deployment-engineer` |
 | Legacy code modernization | `code-refactoring:legacy-modernizer` |
 | PR needs review | `pr-review-toolkit:code-reviewer` |
+| Novel library/API or persistent error | Research protocol (3 Explore agents) |
 
 **Naming patterns:** `*-architect` for architecture, `*-pro` for language expertise (python-pro, typescript-pro, rust-pro, golang-pro, bash-pro).
 
@@ -135,4 +172,4 @@ CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1 claude
 - `explore.md` - When to ask before launching
 - `minimize.md` - Keep agent prompts focused
 - `verify.md` - Verify agent outputs
-- `/claude-usage` skill - Toggle generous/optimized modes
+- `/switch-claude` skill - Toggle generous/optimized modes

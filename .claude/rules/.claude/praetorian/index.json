@@ -1,0 +1,1664 @@
+{
+  "words": {
+    "129": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "170": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "900": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "13744": [
+      "cpt_1771772286318_m687w"
+    ],
+    "17356": [
+      "cpt_1771827580751_040lup"
+    ],
+    "18160": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "19298": [
+      "cpt_1771772286318_m687w"
+    ],
+    "24327": [
+      "cpt_1771772286318_m687w"
+    ],
+    "26923": [
+      "cpt_1771772286318_m687w"
+    ],
+    "claude": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771772347618_gcpo3",
+      "cpt_1771827580751_040lup",
+      "cpt_1772099461082_0c5niwj",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "code": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771772347618_gcpo3",
+      "cpt_1771827580751_040lup",
+      "cpt_1772099461082_0c5niwj",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "hooks": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771772347618_gcpo3",
+      "cpt_1771827580751_040lup",
+      "cpt_1772099461082_0c5niwj",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "api": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771772347618_gcpo3"
+    ],
+    "return": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771772347618_gcpo3"
+    ],
+    "values": [
+      "cpt_1771772286318_m687w"
+    ],
+    "exit": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771772347618_gcpo3",
+      "cpt_1771827580751_040lup"
+    ],
+    "codes": [
+      "cpt_1771772286318_m687w"
+    ],
+    "and": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771772347618_gcpo3",
+      "cpt_1772099461082_0c5niwj",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "decision": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771772347618_gcpo3",
+      "cpt_1771827580751_040lup"
+    ],
+    "control": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771772347618_gcpo3",
+      "cpt_1771827580751_040lup"
+    ],
+    "success": [
+      "cpt_1771772286318_m687w"
+    ],
+    "blocking": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771772347618_gcpo3"
+    ],
+    "error": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771827580751_040lup"
+    ],
+    "any": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771827580751_040lup"
+    ],
+    "other": [
+      "cpt_1771772286318_m687w"
+    ],
+    "non": [
+      "cpt_1771772286318_m687w"
+    ],
+    "pretooluse": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771772347618_gcpo3",
+      "cpt_1771827580751_040lup"
+    ],
+    "uses": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771772347618_gcpo3",
+      "cpt_1771827580751_040lup",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "hookspecificoutput": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771772347618_gcpo3"
+    ],
+    "with": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771772347618_gcpo3",
+      "cpt_1771827580751_040lup",
+      "cpt_1772099461082_0c5niwj",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "permissiondecision": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771772347618_gcpo3",
+      "cpt_1771827580751_040lup"
+    ],
+    "allow": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771772347618_gcpo3",
+      "cpt_1771827580751_040lup",
+      "cpt_1772099461082_0c5niwj",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "deny": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771772347618_gcpo3",
+      "cpt_1771827580751_040lup",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "ask": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771772347618_gcpo3",
+      "cpt_1771827580751_040lup",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "not": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771772347618_gcpo3",
+      "cpt_1771827580751_040lup",
+      "cpt_1772099461082_0c5niwj",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "top": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771772347618_gcpo3",
+      "cpt_1771827580751_040lup"
+    ],
+    "level": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771772347618_gcpo3",
+      "cpt_1771827580751_040lup"
+    ],
+    "field": [
+      "cpt_1771772286318_m687w"
+    ],
+    "permissionrequest": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771772347618_gcpo3",
+      "cpt_1771827580751_040lup"
+    ],
+    "behavior": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771772347618_gcpo3"
+    ],
+    "can": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771827580751_040lup",
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "also": [
+      "cpt_1771772286318_m687w",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "modify": [
+      "cpt_1771772286318_m687w"
+    ],
+    "updatedinput": [
+      "cpt_1771772286318_m687w"
+    ],
+    "json": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771772347618_gcpo3",
+      "cpt_1771827580751_040lup",
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "output": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771827580751_040lup"
+    ],
+    "only": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771772347618_gcpo3",
+      "cpt_1771827580751_040lup",
+      "cpt_1772099461082_0c5niwj",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "processed": [
+      "cpt_1771772286318_m687w"
+    ],
+    "ignores": [
+      "cpt_1771772286318_m687w"
+    ],
+    "stderr": [
+      "cpt_1771772286318_m687w"
+    ],
+    "message": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771772347618_gcpo3"
+    ],
+    "when": [
+      "cpt_1771772286318_m687w"
+    ],
+    "hook": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771772347618_gcpo3",
+      "cpt_1771827580751_040lup"
+    ],
+    "errors": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771827580751_040lup"
+    ],
+    "crashes": [
+      "cpt_1771772286318_m687w"
+    ],
+    "documentation": [
+      "cpt_1771772286318_m687w"
+    ],
+    "default": [
+      "cpt_1771772286318_m687w",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "appears": [
+      "cpt_1771772286318_m687w"
+    ],
+    "event": [
+      "cpt_1771772286318_m687w"
+    ],
+    "specific": [
+      "cpt_1771772286318_m687w",
+      "cpt_1772099461082_0c5niwj",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "bugs": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771772347618_gcpo3",
+      "cpt_1771827580751_040lup"
+    ],
+    "built": [
+      "cpt_1771772286318_m687w",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "force": [
+      "cpt_1771772286318_m687w"
+    ],
+    "approval": [
+      "cpt_1771772286318_m687w",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "mechanism": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771827580751_040lup"
+    ],
+    "patterns": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771772347618_gcpo3",
+      "cpt_1771827580751_040lup",
+      "cpt_1772099461082_0c5niwj",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "cannot": [
+      "cpt_1771772286318_m687w"
+    ],
+    "skipped": [
+      "cpt_1771772286318_m687w"
+    ],
+    "once": [
+      "cpt_1771772286318_m687w"
+    ],
+    "previously": [
+      "cpt_1771772286318_m687w"
+    ],
+    "allowed": [
+      "cpt_1771772286318_m687w",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "three": [
+      "cpt_1771772286318_m687w"
+    ],
+    "types": [
+      "cpt_1771772286318_m687w"
+    ],
+    "command": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771772347618_gcpo3",
+      "cpt_1771827580751_040lup"
+    ],
+    "shell": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771772347618_gcpo3",
+      "cpt_1771827580751_040lup"
+    ],
+    "script": [
+      "cpt_1771772286318_m687w"
+    ],
+    "prompt": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771772347618_gcpo3",
+      "cpt_1771827580751_040lup",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "single": [
+      "cpt_1771772286318_m687w"
+    ],
+    "llm": [
+      "cpt_1771772286318_m687w"
+    ],
+    "turn": [
+      "cpt_1771772286318_m687w"
+    ],
+    "agent": [
+      "cpt_1771772286318_m687w"
+    ],
+    "multi": [
+      "cpt_1771772286318_m687w"
+    ],
+    "tools": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771772347618_gcpo3",
+      "cpt_1772099461082_0c5niwj",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "haiku": [
+      "cpt_1771772286318_m687w"
+    ],
+    "model": [
+      "cpt_1771772286318_m687w",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "spawn": [
+      "cpt_1771772286318_m687w"
+    ],
+    "full": [
+      "cpt_1771772286318_m687w"
+    ],
+    "subagent": [
+      "cpt_1771772286318_m687w"
+    ],
+    "60s": [
+      "cpt_1771772286318_m687w"
+    ],
+    "timeout": [
+      "cpt_1771772286318_m687w"
+    ],
+    "https": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771827580751_040lup",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "com": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771827580751_040lup",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "docs": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771827580751_040lup",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "official": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771827580751_040lup",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "comprehensive": [
+      "cpt_1771772286318_m687w"
+    ],
+    "reference": [
+      "cpt_1771772286318_m687w"
+    ],
+    "github": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771827580751_040lup",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "anthropics": [
+      "cpt_1771772286318_m687w",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "issues": [
+      "cpt_1771772286318_m687w",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "causes": [
+      "cpt_1771772286318_m687w"
+    ],
+    "stop": [
+      "cpt_1771772286318_m687w"
+    ],
+    "doesn": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771772347618_gcpo3",
+      "cpt_1771827580751_040lup"
+    ],
+    "block": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771772347618_gcpo3",
+      "cpt_1771827580751_040lup"
+    ],
+    "write": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771772347618_gcpo3",
+      "cpt_1771827580751_040lup",
+      "cpt_1772099461082_0c5niwj",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "edit": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771772347618_gcpo3",
+      "cpt_1771827580751_040lup",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "task": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771772347618_gcpo3",
+      "cpt_1771827580751_040lup"
+    ],
+    "ignored": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771827580751_040lup"
+    ],
+    "use": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771772347618_gcpo3",
+      "cpt_1771827580751_040lup",
+      "cpt_1772099461082_0c5niwj",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "for": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771772347618_gcpo3",
+      "cpt_1771827580751_040lup",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "rich": [
+      "cpt_1771772286318_m687w"
+    ],
+    "simple": [
+      "cpt_1771772286318_m687w"
+    ],
+    "test": [
+      "cpt_1771772286318_m687w"
+    ],
+    "thoroughly": [
+      "cpt_1771772286318_m687w"
+    ],
+    "show": [
+      "cpt_1771772286318_m687w",
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "failures": [
+      "cpt_1771772286318_m687w"
+    ],
+    "has": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771772347618_gcpo3",
+      "cpt_1771827580751_040lup",
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "known": [
+      "cpt_1771772286318_m687w",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "race": [
+      "cpt_1771772286318_m687w"
+    ],
+    "condition": [
+      "cpt_1771772286318_m687w"
+    ],
+    "means": [
+      "cpt_1771772286318_m687w"
+    ],
+    "dialog": [
+      "cpt_1771772286318_m687w",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "may": [
+      "cpt_1771772286318_m687w"
+    ],
+    "appear": [
+      "cpt_1771772286318_m687w"
+    ],
+    "despite": [
+      "cpt_1771772286318_m687w"
+    ],
+    "returning": [
+      "cpt_1771772286318_m687w"
+    ],
+    "always": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771772347618_gcpo3"
+    ],
+    "require": [
+      "cpt_1771772286318_m687w"
+    ],
+    "past": [
+      "cpt_1771772286318_m687w"
+    ],
+    "prior": [
+      "cpt_1771772286318_m687w"
+    ],
+    "sessionstart": [
+      "cpt_1771772286318_m687w"
+    ],
+    "set": [
+      "cpt_1771772286318_m687w"
+    ],
+    "env": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771827580751_040lup"
+    ],
+    "file": [
+      "cpt_1771772286318_m687w"
+    ],
+    "persist": [
+      "cpt_1771772286318_m687w"
+    ],
+    "environment": [
+      "cpt_1771772286318_m687w"
+    ],
+    "variables": [
+      "cpt_1771772286318_m687w"
+    ],
+    "all": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771772347618_gcpo3",
+      "cpt_1771827580751_040lup",
+      "cpt_1772099461082_0c5niwj",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "bash": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771772347618_gcpo3",
+      "cpt_1771827580751_040lup",
+      "cpt_1772099461082_0c5niwj",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "commands": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771827580751_040lup",
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "async": [
+      "cpt_1771772286318_m687w"
+    ],
+    "true": [
+      "cpt_1771772286318_m687w"
+    ],
+    "side": [
+      "cpt_1771772286318_m687w"
+    ],
+    "effects": [
+      "cpt_1771772286318_m687w"
+    ],
+    "like": [
+      "cpt_1771772286318_m687w",
+      "cpt_1771772347618_gcpo3",
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "logging": [
+      "cpt_1771772286318_m687w"
+    ],
+    "testing": [
+      "cpt_1771772286318_m687w"
+    ],
+    "destructive": [
+      "cpt_1771772347618_gcpo3",
+      "cpt_1771827580751_040lup",
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "protection": [
+      "cpt_1771772347618_gcpo3",
+      "cpt_1771827580751_040lup"
+    ],
+    "correct": [
+      "cpt_1771772347618_gcpo3"
+    ],
+    "format": [
+      "cpt_1771772347618_gcpo3"
+    ],
+    "hookeventname": [
+      "cpt_1771772347618_gcpo3"
+    ],
+    "permissiondecisionreason": [
+      "cpt_1771772347618_gcpo3",
+      "cpt_1771827580751_040lup"
+    ],
+    "forces": [
+      "cpt_1771772347618_gcpo3",
+      "cpt_1771827580751_040lup"
+    ],
+    "manual": [
+      "cpt_1771772347618_gcpo3",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "every": [
+      "cpt_1771772347618_gcpo3"
+    ],
+    "time": [
+      "cpt_1771772347618_gcpo3"
+    ],
+    "bypassing": [
+      "cpt_1771772347618_gcpo3"
+    ],
+    "exactly": [
+      "cpt_1771772347618_gcpo3",
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "what": [
+      "cpt_1771772347618_gcpo3"
+    ],
+    "needed": [
+      "cpt_1771772347618_gcpo3"
+    ],
+    "instead": [
+      "cpt_1771772347618_gcpo3",
+      "cpt_1771827580751_040lup",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "support": [
+      "cpt_1771772347618_gcpo3"
+    ],
+    "community": [
+      "cpt_1771772347618_gcpo3",
+      "cpt_1771827580751_040lup",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "safety": [
+      "cpt_1771772347618_gcpo3",
+      "cpt_1771827580751_040lup"
+    ],
+    "net": [
+      "cpt_1771772347618_gcpo3",
+      "cpt_1771827580751_040lup"
+    ],
+    "semantic": [
+      "cpt_1771772347618_gcpo3",
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "analysis": [
+      "cpt_1771772347618_gcpo3",
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "recursive": [
+      "cpt_1771772347618_gcpo3"
+    ],
+    "unwrapping": [
+      "cpt_1771772347618_gcpo3"
+    ],
+    "damage": [
+      "cpt_1771772347618_gcpo3",
+      "cpt_1771827580751_040lup"
+    ],
+    "path": [
+      "cpt_1771772347618_gcpo3",
+      "cpt_1771827580751_040lup"
+    ],
+    "based": [
+      "cpt_1771772347618_gcpo3"
+    ],
+    "tiers": [
+      "cpt_1771772347618_gcpo3"
+    ],
+    "boost": [
+      "cpt_1771772347618_gcpo3"
+    ],
+    "auto": [
+      "cpt_1771772347618_gcpo3",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "approve": [
+      "cpt_1771772347618_gcpo3"
+    ],
+    "safe": [
+      "cpt_1771772347618_gcpo3",
+      "cpt_1771827580751_040lup",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "ops": [
+      "cpt_1771772347618_gcpo3",
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "current": [
+      "cpt_1771772347618_gcpo3",
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "permission": [
+      "cpt_1771772347618_gcpo3",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "request": [
+      "cpt_1771772347618_gcpo3"
+    ],
+    "old": [
+      "cpt_1771772347618_gcpo3"
+    ],
+    "which": [
+      "cpt_1771772347618_gcpo3",
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "still": [
+      "cpt_1771772347618_gcpo3",
+      "cpt_1771827580751_040lup"
+    ],
+    "works": [
+      "cpt_1771772347618_gcpo3",
+      "cpt_1771827580751_040lup",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "don": [
+      "cpt_1771772347618_gcpo3",
+      "cpt_1771827580751_040lup"
+    ],
+    "fix": [
+      "cpt_1771772347618_gcpo3"
+    ],
+    "broken": [
+      "cpt_1771772347618_gcpo3"
+    ],
+    "put": [
+      "cpt_1771772347618_gcpo3"
+    ],
+    "are": [
+      "cpt_1771772347618_gcpo3",
+      "cpt_1772099461082_0c5niwj",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "valid": [
+      "cpt_1771772347618_gcpo3"
+    ],
+    "wrapper": [
+      "cpt_1771772347618_gcpo3"
+    ],
+    "rely": [
+      "cpt_1771772347618_gcpo3",
+      "cpt_1771827580751_040lup"
+    ],
+    "solely": [
+      "cpt_1771772347618_gcpo3"
+    ],
+    "regex": [
+      "cpt_1771772347618_gcpo3",
+      "cpt_1771827580751_040lup"
+    ],
+    "wrappers": [
+      "cpt_1771772347618_gcpo3",
+      "cpt_1771827580751_040lup"
+    ],
+    "evade": [
+      "cpt_1771772347618_gcpo3"
+    ],
+    "pattern": [
+      "cpt_1771772347618_gcpo3",
+      "cpt_1771827580751_040lup"
+    ],
+    "matching": [
+      "cpt_1771772347618_gcpo3",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "keep": [
+      "cpt_1771772347618_gcpo3",
+      "cpt_1771827580751_040lup"
+    ],
+    "backup": [
+      "cpt_1771772347618_gcpo3",
+      "cpt_1771827580751_040lup"
+    ],
+    "layer": [
+      "cpt_1771772347618_gcpo3"
+    ],
+    "decisions": [
+      "cpt_1771772347618_gcpo3",
+      "cpt_1771827580751_040lup"
+    ],
+    "most": [
+      "cpt_1771772347618_gcpo3",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "reliable": [
+      "cpt_1771772347618_gcpo3",
+      "cpt_1771827580751_040lup"
+    ],
+    "consider": [
+      "cpt_1771772347618_gcpo3",
+      "cpt_1771827580751_040lup"
+    ],
+    "detection": [
+      "cpt_1771772347618_gcpo3"
+    ],
+    "disler": [
+      "cpt_1771827580751_040lup"
+    ],
+    "27bslash6": [
+      "cpt_1771827580751_040lup"
+    ],
+    "schlock": [
+      "cpt_1771827580751_040lup"
+    ],
+    "kenryu42": [
+      "cpt_1771827580751_040lup"
+    ],
+    "steeef": [
+      "cpt_1771827580751_040lup"
+    ],
+    "fires": [
+      "cpt_1771827580751_040lup"
+    ],
+    "but": [
+      "cpt_1771827580751_040lup",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "bug": [
+      "cpt_1771827580751_040lup",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "shown": [
+      "cpt_1771827580751_040lup"
+    ],
+    "user": [
+      "cpt_1771827580751_040lup",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "normal": [
+      "cpt_1771827580751_040lup"
+    ],
+    "cli": [
+      "cpt_1771827580751_040lup"
+    ],
+    "view": [
+      "cpt_1771827580751_040lup"
+    ],
+    "visible": [
+      "cpt_1771827580751_040lup"
+    ],
+    "debug": [
+      "cpt_1771827580751_040lup"
+    ],
+    "mode": [
+      "cpt_1771827580751_040lup",
+      "cpt_1772099461082_0c5niwj",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "ctrl": [
+      "cpt_1771827580751_040lup"
+    ],
+    "consensus": [
+      "cpt_1771827580751_040lup"
+    ],
+    "tiered": [
+      "cpt_1771827580751_040lup"
+    ],
+    "approach": [
+      "cpt_1771827580751_040lup",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "hard": [
+      "cpt_1771827580751_040lup"
+    ],
+    "worst": [
+      "cpt_1771827580751_040lup"
+    ],
+    "drop": [
+      "cpt_1771827580751_040lup"
+    ],
+    "table": [
+      "cpt_1771827580751_040lup"
+    ],
+    "terraform": [
+      "cpt_1771827580751_040lup"
+    ],
+    "destroy": [
+      "cpt_1771827580751_040lup"
+    ],
+    "moderate": [
+      "cpt_1771827580751_040lup"
+    ],
+    "git": [
+      "cpt_1771827580751_040lup",
+      "cpt_1772099461082_0c5niwj",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "stash": [
+      "cpt_1771827580751_040lup"
+    ],
+    "branch": [
+      "cpt_1771827580751_040lup"
+    ],
+    "bashlex": [
+      "cpt_1771827580751_040lup"
+    ],
+    "ast": [
+      "cpt_1771827580751_040lup"
+    ],
+    "parsing": [
+      "cpt_1771827580751_040lup"
+    ],
+    "catches": [
+      "cpt_1771827580751_040lup"
+    ],
+    "fail": [
+      "cpt_1771827580751_040lup"
+    ],
+    "exception": [
+      "cpt_1771827580751_040lup"
+    ],
+    "var": [
+      "cpt_1771827580751_040lup"
+    ],
+    "paranoid": [
+      "cpt_1771827580751_040lup"
+    ],
+    "extra": [
+      "cpt_1771827580751_040lup"
+    ],
+    "check": [
+      "cpt_1771827580751_040lup"
+    ],
+    "smart": [
+      "cpt_1771827580751_040lup"
+    ],
+    "gate": [
+      "cpt_1771827580751_040lup"
+    ],
+    "that": [
+      "cpt_1771827580751_040lup"
+    ],
+    "allows": [
+      "cpt_1771827580751_040lup",
+      "cpt_1772099461082_0c5niwj",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "files": [
+      "cpt_1771827580751_040lup",
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "blocks": [
+      "cpt_1771827580751_040lup"
+    ],
+    "others": [
+      "cpt_1771827580751_040lup"
+    ],
+    "example": [
+      "cpt_1771827580751_040lup"
+    ],
+    "deprecated": [
+      "cpt_1771827580751_040lup"
+    ],
+    "maps": [
+      "cpt_1771827580751_040lup"
+    ],
+    "internally": [
+      "cpt_1771827580751_040lup"
+    ],
+    "the": [
+      "cpt_1771827580751_040lup"
+    ],
+    "stdout": [
+      "cpt_1771827580751_040lup"
+    ],
+    "must": [
+      "cpt_1771827580751_040lup"
+    ],
+    "pure": [
+      "cpt_1771827580751_040lup"
+    ],
+    "profiles": [
+      "cpt_1771827580751_040lup"
+    ],
+    "print": [
+      "cpt_1771827580751_040lup"
+    ],
+    "startup": [
+      "cpt_1771827580751_040lup"
+    ],
+    "corrupt": [
+      "cpt_1771827580751_040lup"
+    ],
+    "open": [
+      "cpt_1771827580751_040lup"
+    ],
+    "best": [
+      "cpt_1771827580751_040lup"
+    ],
+    "practice": [
+      "cpt_1771827580751_040lup"
+    ],
+    "being": [
+      "cpt_1771827580751_040lup"
+    ],
+    "mix": [
+      "cpt_1771827580751_040lup",
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "pick": [
+      "cpt_1771827580751_040lup"
+    ],
+    "one": [
+      "cpt_1771827580751_040lup",
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "per": [
+      "cpt_1771827580751_040lup"
+    ],
+    "alone": [
+      "cpt_1771827580751_040lup"
+    ],
+    "evaded": [
+      "cpt_1771827580751_040lup"
+    ],
+    "even": [
+      "cpt_1771827580751_040lup"
+    ],
+    "reason": [
+      "cpt_1771827580751_040lup"
+    ],
+    "isn": [
+      "cpt_1771827580751_040lup"
+    ],
+    "sees": [
+      "cpt_1771827580751_040lup"
+    ],
+    "exact": [
+      "cpt_1771827580751_040lup"
+    ],
+    "change": [
+      "cpt_1771827580751_040lup"
+    ],
+    "handling": [
+      "cpt_1771827580751_040lup"
+    ],
+    "from": [
+      "cpt_1771827580751_040lup",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "following": [
+      "cpt_1771827580751_040lup"
+    ],
+    "absolute": [
+      "cpt_1771827580751_040lup"
+    ],
+    "case": [
+      "cpt_1771827580751_040lup"
+    ],
+    "fails": [
+      "cpt_1771827580751_040lup"
+    ],
+    "over": [
+      "cpt_1771827580751_040lup"
+    ],
+    "home": [
+      "cpt_1771827580751_040lup"
+    ],
+    "paths": [
+      "cpt_1771827580751_040lup"
+    ],
+    "explain": [
+      "cpt_1771827580751_040lup"
+    ],
+    "first": [
+      "cpt_1771827580751_040lup",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "settings": [
+      "cpt_1772099461082_0c5niwj",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "whitelist": [
+      "cpt_1772099461082_0c5niwj",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "audit": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "state": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "broad": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "zsh": [
+      "cpt_1772099461082_0c5niwj",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "python3": [
+      "cpt_1772099461082_0c5niwj",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "dangerous": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "arbitrary": [
+      "cpt_1772099461082_0c5niwj",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "execution": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "curl": [
+      "cpt_1772099461082_0c5niwj",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "post": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "upload": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "should": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "whitelisted": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "broadly": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "osascript": [
+      "cpt_1772099461082_0c5niwj",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "applescript": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "anything": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "fnm": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "include": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "install": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "uninstall": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "need": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "read": [
+      "cpt_1772099461082_0c5niwj",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "subcommands": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "too": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "main": [
+      "cpt_1772099461082_0c5niwj",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "already": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "brew": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "cleanup": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "removes": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "cached": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "downloads": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "dotfiles": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "add": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "operation": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "mem": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "mcp": [
+      "cpt_1772099461082_0c5niwj",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "entries": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "stale": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "plugin": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "removed": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "ghostty": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "version": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "help": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "list": [
+      "cpt_1772099461082_0c5niwj",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "fonts": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "keybinds": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "themes": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "actions": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "config": [
+      "cpt_1772099461082_0c5niwj",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "two": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "syntaxes": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "cmd": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "space": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "colon": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "both": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "work": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "well": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "organized": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "local": [
+      "cpt_1772099461082_0c5niwj",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "useful": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "session": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "cruft": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "ide": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "oracle": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "webfetch": [
+      "cpt_1772099461082_0c5niwj",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "domain": [
+      "cpt_1772099461082_0c5niwj",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "skill": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "apple": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "notes": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "reminders": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "update": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "identified": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "off": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "loop": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "constructs": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "security": [
+      "cpt_1772099461082_0c5niwj",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "investigation": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "disk": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "liners": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "duplicates": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "cat": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "echo": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "etc": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "syntax": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "covered": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "wildcard": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "diskutil": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "diff": [
+      "cpt_1772099461082_0c5niwj",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "status": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "wifi": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "rev": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "parse": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "users": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "plugins": [
+      "cpt_1772099461082_0c5niwj"
+    ],
+    "sandbox": [
+      "cpt_1772099461082_0c5niwj",
+      "cpt_1772271248064_kbqghc"
+    ],
+    "research": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "anthropic": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "examples": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "minimal": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "lax": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "just": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "disables": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "bypass": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "strict": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "puts": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "denies": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "websearch": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "trail": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "bits": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "rules": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "credentials": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "secrets": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "push": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "thegeosman": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "extremely": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "permissive": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "sudo": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "docker": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "exec": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "kill": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "glob": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "grep": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "plan": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "everything": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "needs": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "explicit": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "without": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "parentheses": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "gitignore": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "have": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "double": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "warn": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "fragile": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "recommending": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "tool": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "whitelisting": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "uncommon": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "configs": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "because": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "people": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "whitelists": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "call": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "chain": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "effectively": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "executes": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "calls": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "permissions": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "tree": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "trailofbits": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "focused": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "very": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "global": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "universally": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "tmux": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "register": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "purely": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "flag": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "power": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "choice": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "praetorian": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "compact": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "gladiator": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "observe": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "append": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "writes": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "deliberate": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "remove": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "holes": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "confirmed": [
+      "cpt_1772271248064_kbqghc"
+    ],
+    "sources": [
+      "cpt_1772271248064_kbqghc"
+    ]
+  },
+  "compactions": {
+    "cpt_1771772286318_m687w": {
+      "id": "cpt_1771772286318_m687w",
+      "type": "web_research",
+      "title": "Claude Code Hooks API: Return Values, Exit Codes, and Decision Control",
+      "created": "2026-02-22T14:58:06.318Z",
+      "updated": "2026-02-22T14:58:06.318Z"
+    },
+    "cpt_1771772347618_gcpo3": {
+      "id": "cpt_1771772347618_gcpo3",
+      "type": "web_research",
+      "title": "Claude Code hooks API for destructive command protection",
+      "created": "2026-02-22T14:59:07.618Z",
+      "updated": "2026-02-22T14:59:07.618Z"
+    },
+    "cpt_1771827580751_040lup": {
+      "id": "cpt_1771827580751_040lup",
+      "type": "web_research",
+      "title": "Claude Code hooks community patterns for destructive commands",
+      "created": "2026-02-23T06:19:40.751Z",
+      "updated": "2026-02-23T06:19:40.751Z"
+    },
+    "cpt_1772099461082_0c5niwj": {
+      "id": "cpt_1772099461082_0c5niwj",
+      "type": "flow_analysis",
+      "title": "Settings whitelist audit - current state analysis",
+      "created": "2026-02-26T09:51:01.082Z",
+      "updated": "2026-02-26T09:51:01.082Z"
+    },
+    "cpt_1772271248064_kbqghc": {
+      "id": "cpt_1772271248064_kbqghc",
+      "type": "web_research",
+      "title": "Claude Code permission whitelist research",
+      "created": "2026-02-28T09:34:08.064Z",
+      "updated": "2026-02-28T09:34:08.064Z"
+    }
+  }
+}

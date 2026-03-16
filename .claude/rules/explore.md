@@ -16,6 +16,16 @@ Before writing plans OR modifying code, explore and investigate first.
 - **dora** - If `.dora/` exists: `dora symbol`, `dora refs`, `dora deps` for fast code navigation. If not and exploring extensively, suggest `dora init && dora index`
 - **skills.sh** - Browse [skills.sh](https://skills.sh) periodically for useful community skills (install: `npx skills add <repo> --skill <name> --global --agent claude-code`)
 
+**Symptom → Skill Lookup (invoke BEFORE investigating):**
+| Symptom | Invoke First |
+|---------|-------------|
+| Plugin errors, stale hooks, cache issues | `refresh-claude` |
+| Claude Code binary updated | `upgrade-claude` |
+| Confused about ~/.claude structure | `cleanup-claude` |
+| Disk space issues | `save-space` |
+| Dotfiles changed | `update-dotfiles` |
+| Neovim config issues | `configure-neovim` |
+
 **Minimum Exploration by Task:**
 | Task | Before Planning |
 |------|-----------------|

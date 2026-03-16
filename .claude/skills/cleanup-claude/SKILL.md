@@ -1,5 +1,6 @@
 ---
 name: cleanup-claude
+author: Vvkmnn
 description: Use when confused about ~/.claude contents, to understand what files/folders are for, or to safely clean up accumulated artifacts. Explains before deleting.
 version: 1.0.0
 ---

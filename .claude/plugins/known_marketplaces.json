@@ -5,7 +5,7 @@
       "repo": "wshobson/agents"
     },
     "installLocation": "/Users/v/.claude/plugins/marketplaces/claude-code-workflows",
-    "lastUpdated": "2026-02-21T02:12:38.748Z",
+    "lastUpdated": "2026-03-16T09:15:21.465Z",
     "autoUpdate": true
   },
   "superpowers-marketplace": {
@@ -14,7 +14,7 @@
       "repo": "obra/superpowers-marketplace"
     },
     "installLocation": "/Users/v/.claude/plugins/marketplaces/superpowers-marketplace",
-    "lastUpdated": "2026-02-21T02:12:43.473Z",
+    "lastUpdated": "2026-03-16T09:15:25.770Z",
     "autoUpdate": true
   },
   "repomix": {
@@ -23,7 +23,7 @@
       "repo": "yamadashy/repomix"
     },
     "installLocation": "/Users/v/.claude/plugins/marketplaces/repomix",
-    "lastUpdated": "2026-02-21T02:12:50.156Z",
+    "lastUpdated": "2026-03-16T09:15:34.736Z",
     "autoUpdate": true
   },
   "every-marketplace": {
@@ -31,17 +31,8 @@
       "source": "git",
       "url": "https://github.com/EveryInc/compound-engineering-plugin.git"
     },
-    "installLocation": "/Users/v/.claude/plugins/marketplaces/every-marketplace",
-    "lastUpdated": "2026-02-21T02:12:51.320Z",
-    "autoUpdate": true
-  },
-  "cc_chrome_devtools_mcp_skill-plugin-marketplace": {
-    "source": {
-      "source": "github",
-      "repo": "justfinethanku/cc_chrome_devtools_mcp_skill"
-    },
-    "installLocation": "/Users/v/.claude/plugins/marketplaces/cc_chrome_devtools_mcp_skill-plugin-marketplace",
-    "lastUpdated": "2026-02-21T02:12:56.012Z",
+    "installLocation": "/Users/v/.claude/plugins/marketplaces/compound-engineering-plugin",
+    "lastUpdated": "2026-03-16T09:15:36.580Z",
     "autoUpdate": true
   },
   "claude-plugins-official": {
@@ -50,7 +41,7 @@
       "repo": "anthropics/claude-plugins-official"
     },
     "installLocation": "/Users/v/.claude/plugins/marketplaces/claude-plugins-official",
-    "lastUpdated": "2026-02-21T02:13:02.260Z",
+    "lastUpdated": "2026-03-16T09:15:45.534Z",
     "autoUpdate": true
   },
   "cc-skills": {
@@ -59,7 +50,7 @@
       "repo": "terrylica/cc-skills"
     },
     "installLocation": "/Users/v/.claude/plugins/marketplaces/cc-skills",
-    "lastUpdated": "2026-02-21T02:27:03.313Z",
+    "lastUpdated": "2026-03-16T09:15:53.951Z",
     "autoUpdate": true
   },
   "trailofbits": {
@@ -68,7 +59,33 @@
       "repo": "trailofbits/skills"
     },
     "installLocation": "/Users/v/.claude/plugins/marketplaces/trailofbits",
-    "lastUpdated": "2026-02-21T02:13:13.594Z",
+    "lastUpdated": "2026-03-16T09:16:01.825Z",
     "autoUpdate": true
+  },
+  "claude-emporium": {
+    "source": {
+      "source": "github",
+      "repo": "Vvkmnn/claude-emporium-beta"
+    },
+    "installLocation": "/Users/v/.claude/plugins/marketplaces/claude-emporium",
+    "lastUpdated": "2026-03-16T09:16:09.223Z",
+    "autoUpdate": true
+  },
+  "interface-design": {
+    "source": {
+      "source": "github",
+      "repo": "dusskapark/interface-design"
+    },
+    "installLocation": "/Users/v/.claude/plugins/marketplaces/interface-design",
+    "lastUpdated": "2026-02-23T00:00:00.000Z",
+    "autoUpdate": true
+  },
+  "axiom-marketplace": {
+    "source": {
+      "source": "github",
+      "repo": "CharlesWiltgen/Axiom"
+    },
+    "installLocation": "/Users/v/.claude/plugins/marketplaces/axiom-marketplace",
+    "lastUpdated": "2026-03-16T09:16:27.142Z"
   }
 }

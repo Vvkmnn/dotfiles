@@ -1,0 +1,8 @@
+type: web_research
+title: Claude Code hooks API for destructive command protection
+key_insights[6]: "PreToolUse correct return format: { hookSpecificOutput: { hookEventName: 'PreToolUse', permissionDecision: 'deny'|'allow'|'ask', permissionDecisionReason: '...' } } — NOT top-level { decision: ... }","permissionDecision 'ask' in PreToolUse forces manual prompt every time, bypassing 'always allow' patterns — exactly what's needed for rm -rf","Exit code 2 has bugs: doesn't block Write/Edit/Task tools. Use JSON with permissionDecision on exit 0 instead","PermissionRequest hooks only support 'allow' and 'deny' (NOT 'ask') — format: { hookSpecificOutput: { hookEventName: 'PermissionRequest', decision: { behavior: 'deny', message: '...' } } }","Community tools: claude-code-safety-net (semantic analysis, recursive shell unwrapping), claude-code-damage-control (path-based tiers), claude-code-boost (auto-approve safe ops)","Current permission-request.js uses old format { decision: 'deny' } which still works — don't fix what's not broken"
+anti_patterns[4]: Don't use exit code 2 for blocking — has bugs with Write/Edit/Task tools,Don't put 'ask' in PermissionRequest hooks — only 'allow' and 'deny' are valid,"Don't use top-level { decision: ... } in PreToolUse — use hookSpecificOutput wrapper",Don't rely solely on regex — shell wrappers like bash -c 'rm -rf /' evade pattern matching
+recommendations[4]: "Use PreToolUse with permissionDecision: 'ask' for recursive rm — forces prompt every time",Keep PermissionRequest deny as backup layer,Use exit 0 + JSON for all hook decisions (most reliable),Consider semantic command analysis for shell wrapper detection
+id: cpt_1771772347618_gcpo3
+created: "2026-02-22T14:59:07.618Z"
+updated: "2026-02-22T14:59:07.618Z"

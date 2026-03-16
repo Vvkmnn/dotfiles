@@ -1,6 +1,6 @@
 #!/bin/bash
 # High-performance Claude Code statusline
-# Output: ॐ Oᵀ+ Ψ 55% λ 40% 30% Δ 2h 15m Σ 8.5h Θ 8|4h 9|6d
+# Output: ॐ Oᵀ+ π feat/auth +45 -12 ψ 55% λ 40% 30% μ 5% δ 2h 15m σ 8.5h θ 0.8h 6.5d
 #
 # Error handling: Log errors but always show something (even if incomplete)
 set -o pipefail
@@ -9,25 +9,33 @@ trap 'log_error "Script failed at line $LINENO"' ERR
 # ============================================================================
 # FORMAT BREAKDOWN
 # ============================================================================
-# ॐ Oᵀ+ Ψ 55% λ 40% 30% Δ 2h 15m Σ 8.5h Θ 8|4h 9|6d
-# │ ││││ │     │  │    │        │    │    │
-# │ ││││ │     │  │    │        │    │    └── 7d: runway|reset (days)
-# │ ││││ │     │  │    │        │    └── 5h: runway|reset (hours, floored)
-# │ ││││ │     │  │    │        └── weekly active total (45m → 8.5h → 1.8d)
-# │ ││││ │     │  │    └── session elapsed (resets after 30 min inactivity)
-# │ ││││ │     │  └── 7d used %
-# │ ││││ │     └── 5h used %
-# │ ││││ └── context %
+# ॐ Oᵀ+ π feat/auth +45 -12 ψ 55% λ 40% 30% μ 5% δ 2h 15m σ 8.5h θ 0.8h 6.5d
+# │ ││││ │ │         │   │  │     │  │    │        │       │    │
+# │ ││││ │ │         │   │  │     │  │    │        │       │    └── θ runway (5h·7d)
+# │ ││││ │ │         │   │  │     │  │    │        │       └── σ weekly active
+# │ ││││ │ │         │   │  │     │  │    │        └── δ session elapsed
+# │ ││││ │ │         │   │  │     │  │    └── μ pace budget (linear)
+# │ ││││ │ │         │   │  │     │  └── 7d used %
+# │ ││││ │ │         │   │  │     └── 5h used %
+# │ ││││ │ │         │   │  └── ψ context %
+# │ ││││ │ │         │   └── deletions (red, hidden when clean)
+# │ ││││ │ │         └── insertions (green, hidden when clean)
+# │ ││││ │ └── git branch (truncated 16 chars)
+# │ ││││ └── π git section (hidden when not in git repo)
 # │ ││└┘── effort (+high, -low, omit medium)
 # │ │└── thinking (ᵀ when on)
 # │ └── Model (O/S/H)
 # └── model icon
 #
+# μ: Linear pace budget = (days_elapsed / 7) × 100 - weekly%
+#    1:1 sensitivity (1% util = 1% μ). No amplification.
+#    Positive = under budget, negative = over. Orange <3%, Red <-5%.
+#
 # COLOR CODING (warning colors for approaching/critical limits):
-# - Context (Ψ): orange 60-80%, red >80%
+# - Context (ψ): orange 60-80%, red >80%
 # - 5h used (λ): orange 70-90%, red >90%
 # - 7d used (λ): orange 50-75%, red >75%
-# - Runway (Θ): PACE-BASED coloring (early warning system)
+# - Runway (θ): PACE-BASED coloring (early warning system)
 #   * white: pace ≤ sustainable (on track to make it to reset)
 #   * orange: pace >1.0× sustainable (need to slow down)
 #   * red: pace >1.5× sustainable (way too fast, adjust now)
@@ -41,25 +49,85 @@ trap 'log_error "Script failed at line $LINENO"' ERR
 # - Θ runway: calculated from API data
 #
 # PERFORMANCE:
-# - < 100ms typical (cached path)
-# - < 1s worst case (API call)
-# - Aggressive caching, graceful degradation
+# - < 100ms typical (cached path, always taken — never blocks on network)
+# - Background refresh: curl runs in detached subshell, writes cache when done
+# - Next statusline render picks up fresh data from cache
+#
+# API RATE LIMITING (evolution of fixes, 2026-03):
+# Problem: Original code called /api/oauth/usage on EVERY statusline invocation.
+# With Claude Code calling statusline after each assistant turn + tmux refresh,
+# this produced 100+ calls/hour → 429 rate limit → 1000+ errors → stale data.
+#
+# Fix 1 — Touch-before-call (prevents concurrent + provides backoff):
+#   touch "$cache_file" BEFORE curl. Second invocation sees fresh mtime → skips.
+#   On failure, mtime is still fresh → no retry for TTL period. No lockfiles needed.
+#
+# Fix 2 — Dual age tracking (mtime for TTL, _fetched_at for staleness):
+#   mtime controls WHEN to retry (touch refreshes it). _fetched_at embedded in JSON
+#   controls WHEN to show stale indicators (only successful fetch updates it).
+#   These MUST be separate: touch refreshes mtime without updating content.
+#
+# Fix 3 — Background refresh (prevents silent crash):
+#   Claude Code / tmux may kill the statusline process if it takes too long.
+#   Curl blocks for up to 5s → process killed mid-curl → touch happened but no
+#   result written → no error log → silent failure. Fix: main process ALWAYS reads
+#   cache and returns immediately. Spawns (_refresh_rate_limit &) in background.
+#   Background subshell survives parent exit, completes curl, writes cache.
+#
+# Fix 4 — Threshold separation (TTL=900s, strikethrough=7200s):
+#   When TTL = strikethrough threshold, race at boundary: touch updates mtime,
+#   concurrent render reads stale content → strikethrough flickers every TTL cycle.
+#   Fix: strikethrough threshold (7200s) >> TTL (900s). Content age at refresh
+#   boundary (~900s) is well under 7200s → zero flicker. Strikethrough only after
+#   2 HOURS of consecutive failures (8 missed refresh cycles) — genuinely broken.
+#   TTL history: 30s→120s→300s→900s. /api/oauth/usage rate-limits at ~10/hour.
+#   900s = 4 calls/hour, safely under the limit. Rate data changes over hours anyway.
+#   Community tool claudeline uses 10-min TTL — our 15-min is more conservative.
+#
+# KNOWN ISSUES (2026-03):
+# - /api/oauth/usage returns persistent 429 for some users (GitHub #30930, OPEN)
+#   Even 30s/60s/120s intervals fail. retry-after: 0 is misleading. Intermittent.
+# - Claude Code parses anthropic-ratelimit-unified-* headers internally on every
+#   API call but does NOT expose them to statusline scripts via stdin JSON.
+#   Feature request #19385 (OPEN) tracks adding this. When implemented, the
+#   separate /api/oauth/usage call becomes unnecessary — piggybacking on every
+#   Claude message would give real-time data with zero extra API calls.
+#
+# STRIKETHROUGH RULES:
+# Applied ONLY to utilization values that change with every API call:
+#   λ 5h%, 7d%, Ω% — these are stale undercounts when data is old
+# NOT applied to (even when API data is old):
+#   Reset timestamps (Θ) — fixed future dates, remain valid
+#   Ψ context, Δ elapsed, Σ weekly — local data, always fresh
+# Threshold: 7200s (2h). Stale data is still directionally correct — better to
+# show slightly outdated values than to strikethrough and make them unreadable.
+#
+# Result: 4 calls/hour max, zero concurrent, automatic backoff, non-blocking,
+# stale data dimmed not hidden. /api/oauth/usage is the ONLY source for Max plan
+# utilization % until Claude Code exposes headers (feature request #19385).
 # ============================================================================
 
 input=$(cat)
 
+# DEBUG: Dump JSON input to discover transcript_path location (remove after investigation)
+# echo "$input" > /tmp/statusline_debug.json
+
 # ---- Colors ----
 ORANGE='\033[33m'
 RED='\033[31m'
+DIM='\033[2m'
+STRIKE='\033[9m'
 RESET='\033[0m'
 B='\033[34m' # blue for icons
 ICON_MODEL="${B}ॐ${RESET}"
 ICON_RATE="${B}λ${RESET}"
-ICON_ELAPSED="${B}Δ${RESET}"
-ICON_WEEKLY="${B}Σ${RESET}"
-ICON_RUNWAY="${B}Θ${RESET}"
-ICON_CTX="${B}Ψ${RESET}"
-ICON_OMEGA="${B}Ω${RESET}"
+ICON_ELAPSED="${B}δ${RESET}"
+ICON_WEEKLY="${B}σ${RESET}"
+ICON_RUNWAY="${B}θ${RESET}"
+ICON_CTX="${B}ψ${RESET}"
+ICON_OMEGA="${B}μ${RESET}"
+ICON_GIT="${B}π${RESET}"
+GREEN='\033[32m'
 
 # ---- Cache paths ----
 DAILY_BUDGET_CACHE="$HOME/.claude/status/daily_budget.json"
@@ -147,81 +215,212 @@ color_value() {
 }
 
 # ---- Get rate limits from API with caching ----
+# Architecture: non-blocking read from cache + async background refresh.
+# Main process (get_rate_limit): reads cache, returns instantly, spawns background if stale.
+# Background (_refresh_rate_limit): touch → credentials → curl → validate → write cache.
+#
+# Key invariants:
+# - Main process NEVER blocks on network (caller may kill slow statuslines)
+# - Touch before spawn prevents concurrent refreshes (mtime = "don't retry until TTL")
+# - _fetched_at in JSON = content freshness (only success writes it)
+# - Strikethrough threshold (7200s) >> TTL (900s) — only when genuinely broken (2h)
+# - Null utilization in response = rate-limited garbage → don't overwrite good stale data
+# - Token expiration pre-check avoids wasted curl on expired OAuth tokens
 rate_pct="" weekly_pct=""
 five_hour_reset_sec="" seven_day_reset_sec=""
+rate_content_age=0  # content freshness for stale indicators (separate from mtime TTL)
 
-get_rate_limit() {
+# Helper: extract all fields from JSON in a single jq call (5→1 jq invocations)
+_parse_rate_json() {
+	local json="$1"
+	local parsed
+	# Sentinel "~" prevents bash read from collapsing consecutive empty tab fields.
+	# With "" (empty), read treats "\t\t" as one delimiter → fields shift left.
+	parsed=$(echo "$json" | jq -r '[
+		(.five_hour.utilization // "~"),
+		(.seven_day.utilization // "~"),
+		(.five_hour.resets_at // "~"),
+		(.seven_day.resets_at // "~"),
+		(._fetched_at // "~")
+	] | join("\t")' 2>/dev/null) || return
+
+	IFS=$'\t' read -r rate_pct weekly_pct five_hour_reset_sec seven_day_reset_sec _fetched_at <<< "$parsed"
+	[ "$rate_pct" = "~" ] && rate_pct=""
+	[ "$weekly_pct" = "~" ] && weekly_pct=""
+	[ "$five_hour_reset_sec" = "~" ] && five_hour_reset_sec=""
+	[ "$seven_day_reset_sec" = "~" ] && seven_day_reset_sec=""
+	[ "$_fetched_at" = "~" ] && _fetched_at=""
+
+	# Content age: how old is the data itself (not the file mtime)
+	# Missing _fetched_at = old cache format = age unknown = assume stale
+	if [ -n "$_fetched_at" ]; then
+		rate_content_age=$(( $(date +%s) - _fetched_at ))
+	else
+		rate_content_age=999
+	fi
+}
+
+# Background API refresh (runs detached, never blocks statusline)
+# Called as: (_refresh_rate_limit &) 2>/dev/null — subshell survives parent exit.
+# Curl timeout 5s (was 3s when synchronous — can afford more since non-blocking).
+# On success: writes cache with _fetched_at, clears error log.
+# On failure: tries Haiku probe fallback before giving up.
+#
+# Data sources (in priority order):
+# 1. /api/oauth/usage — direct endpoint, returns JSON with utilization %
+# 2. Haiku probe fallback (429 only) — sends max_tokens:1 to Haiku, reads
+#    rate limit headers from response. Only fires when usage API returns 429.
+#    Cost: ~$0.00001/probe. Headers: anthropic-ratelimit-unified-{5h,7d}-*
+_refresh_rate_limit() {
 	local cache_file="$HOME/.claude/status/rate_limit.json"
-	local cache_age now cache_time usage creds token
+	local now creds token_json token expires_at usage
 
-	# Ensure status directory exists
-	mkdir -p "$HOME/.claude/status" 2>/dev/null
+	now=$(date +%s)
 
-	# Check cache freshness
-	if [ -f "$cache_file" ]; then
-		now=$(date +%s)
-		cache_time=$(stat -f %m "$cache_file" 2>/dev/null || echo 0)
-		cache_age=$((now - cache_time))
+	# Get credentials (macOS keychain)
+	creds=$(security find-generic-password -s "Claude Code-credentials" -w 2>/dev/null) || return
 
-		# Fresh cache (< 30s)
-		if [ "$cache_age" -lt 30 ]; then
-			usage=$(cat "$cache_file" 2>/dev/null)
-			if [ -n "$usage" ]; then
-				rate_pct=$(echo "$usage" | jq -r '.five_hour.utilization // empty' 2>/dev/null)
-				weekly_pct=$(echo "$usage" | jq -r '.seven_day.utilization // empty' 2>/dev/null)
-				five_hour_reset_sec=$(echo "$usage" | jq -r '.five_hour.resets_at // empty' 2>/dev/null)
-				seven_day_reset_sec=$(echo "$usage" | jq -r '.seven_day.resets_at // empty' 2>/dev/null)
-				return
-			fi
+	# Extract token + check expiration
+	token_json=$(echo "$creds" | jq -r '.claudeAiOauth // empty' 2>/dev/null)
+	[ -z "$token_json" ] && return
+	token=$(echo "$token_json" | jq -r '.accessToken // empty' 2>/dev/null)
+	[ -z "$token" ] && return
+	expires_at=$(echo "$token_json" | jq -r '.expiresAt // empty' 2>/dev/null)
+	if [ -n "$expires_at" ]; then
+		local expires_sec=$((expires_at / 1000))
+		if [ "$now" -gt "$expires_sec" ]; then
+			log_error "OAuth token expired ($(( (now - expires_sec) / 60 ))min ago), skipping API call"
+			# Retry in 60s not 900s. No API call is made when token is expired —
+			# this just re-checks the keychain. Once Claude Code refreshes the
+			# token, the next check picks it up within a minute.
+			touch -t "$(date -j -f %s $((now - 840)) +%Y%m%d%H%M.%S)" "$cache_file" 2>/dev/null
+			return
 		fi
 	fi
 
-	# Stale or missing cache - try API
-	creds=$(security find-generic-password -s "Claude Code-credentials" -w 2>/dev/null) || {
-		# No credentials - use stale cache if available
-		[ -f "$cache_file" ] && usage=$(cat "$cache_file" 2>/dev/null)
-		if [ -n "$usage" ]; then
-			rate_pct=$(echo "$usage" | jq -r '.five_hour.utilization // empty' 2>/dev/null)
-			weekly_pct=$(echo "$usage" | jq -r '.seven_day.utilization // empty' 2>/dev/null)
-			five_hour_reset_sec=$(echo "$usage" | jq -r '.five_hour.resets_at // empty' 2>/dev/null)
-			seven_day_reset_sec=$(echo "$usage" | jq -r '.seven_day.resets_at // empty' 2>/dev/null)
-		fi
-		return
-	}
-
-	token=$(echo "$creds" | jq -r '.claudeAiOauth.accessToken // empty' 2>/dev/null)
-	[ -z "$token" ] && return
-
-	# Fetch from API
-	usage=$(curl -s --max-time 2 "https://api.anthropic.com/api/oauth/usage" \
+	# ── Source 1: /api/oauth/usage (preferred — returns full JSON) ──
+	usage=$(curl -s --max-time 5 "https://api.anthropic.com/api/oauth/usage" \
 		-H "Authorization: Bearer $token" \
 		-H "anthropic-beta: oauth-2025-04-20" 2>/dev/null)
 
-	if [ -n "$usage" ] && ! echo "$usage" | jq -e '.error' >/dev/null 2>&1; then
-		# Valid response - cache it
+	# Validate: no .error AND utilization is non-null
+	if [ -n "$usage" ] && \
+	   ! echo "$usage" | jq -e '.error' >/dev/null 2>&1 && \
+	   [ "$(echo "$usage" | jq -r '.seven_day.utilization // "null"')" != "null" ]; then
+		usage=$(echo "$usage" | jq --argjson t "$now" '. + {_fetched_at: $t}')
 		echo "$usage" > "$cache_file" 2>/dev/null || log_error "Failed to write cache file"
-		rate_pct=$(echo "$usage" | jq -r '.five_hour.utilization // empty' 2>/dev/null)
-		weekly_pct=$(echo "$usage" | jq -r '.seven_day.utilization // empty' 2>/dev/null)
-		five_hour_reset_sec=$(echo "$usage" | jq -r '.five_hour.resets_at // empty' 2>/dev/null)
-		seven_day_reset_sec=$(echo "$usage" | jq -r '.seven_day.resets_at // empty' 2>/dev/null)
-	else
-		# API failed - use stale cache
-		if [ -z "$usage" ]; then
-			log_error "API timeout or connection failed"
-		else
-			log_error "API returned error: $(echo "$usage" | jq -r '.error.message // "unknown"' 2>/dev/null)"
-		fi
+		: > "$ERROR_LOG" 2>/dev/null
+		return
+	fi
 
-		[ -f "$cache_file" ] && usage=$(cat "$cache_file" 2>/dev/null)
-		if [ -n "$usage" ]; then
-			log_error "Using stale cache (age: ${cache_age}s)"
-			rate_pct=$(echo "$usage" | jq -r '.five_hour.utilization // empty' 2>/dev/null)
-			weekly_pct=$(echo "$usage" | jq -r '.seven_day.utilization // empty' 2>/dev/null)
-			five_hour_reset_sec=$(echo "$usage" | jq -r '.five_hour.resets_at // empty' 2>/dev/null)
-			seven_day_reset_sec=$(echo "$usage" | jq -r '.seven_day.resets_at // empty' 2>/dev/null)
-		else
-			log_error "No cache available, statusline will be incomplete"
+	# Log the primary failure
+	if [ -z "$usage" ]; then
+		log_error "API timeout or connection failed"
+	else
+		log_error "API error: $(echo "$usage" | jq -r '.error.message // "null response"' 2>/dev/null)"
+	fi
+
+	# ── Source 2: Haiku probe fallback (429 only) ──
+	# Send minimal 1-token request to Haiku, read rate limit headers from response.
+	# Works even when /api/oauth/usage is returning persistent 429 (GitHub #30930).
+	# ONLY used when usage API returns 429 — not for auth errors, timeouts, etc.
+	# Uses the same OAuth token Claude Code uses for model calls.
+	# ToS note: this makes a real (minimal) model API call. Only fires as fallback
+	# when the dedicated usage endpoint is broken, ~4 times/hour max (TTL-gated).
+
+	# Guard: only fall back on 429 rate limit errors, not other failures
+	local is_rate_limited=""
+	if [ -n "$usage" ] && echo "$usage" | jq -e '.error.type == "rate_limit_error"' >/dev/null 2>&1; then
+		is_rate_limited=1
+	fi
+	[ -z "$is_rate_limited" ] && return
+	local headers h5_util h5_reset h7_util h7_reset
+	headers=$(curl -sD- --max-time 8 -o /dev/null \
+		-H "Authorization: Bearer $token" \
+		-H "Content-Type: application/json" \
+		-H "anthropic-beta: oauth-2025-04-20" \
+		-H "anthropic-version: 2023-06-01" \
+		-d '{"model":"claude-haiku-4-5-20251001","max_tokens":1,"messages":[{"role":"user","content":"h"}]}' \
+		"https://api.anthropic.com/v1/messages" 2>/dev/null)
+
+	[ -z "$headers" ] && { log_error "Haiku probe: no response"; return; }
+
+	h5_util=$(echo "$headers" | grep -i 'anthropic-ratelimit-unified-5h-utilization' | tr -d '\r' | awk '{print $2}')
+	h7_util=$(echo "$headers" | grep -i 'anthropic-ratelimit-unified-7d-utilization' | tr -d '\r' | awk '{print $2}')
+	h5_reset=$(echo "$headers" | grep -i 'anthropic-ratelimit-unified-5h-reset' | tr -d '\r' | awk '{print $2}')
+	h7_reset=$(echo "$headers" | grep -i 'anthropic-ratelimit-unified-7d-reset' | tr -d '\r' | awk '{print $2}')
+
+	# Need at least one utilization value
+	[ -z "$h5_util" ] && [ -z "$h7_util" ] && { log_error "Haiku probe: no utilization headers"; return; }
+
+	# Convert header format → cache JSON format
+	# Headers: utilization as 0.0-1.0 decimal, reset as epoch seconds
+	# Cache:   utilization as 0-100 percentage, reset as ISO timestamp
+	local pct5 pct7 iso5 iso7
+	[ -n "$h5_util" ] && pct5=$(awk "BEGIN{printf \"%.1f\", $h5_util * 100}")
+	[ -n "$h7_util" ] && pct7=$(awk "BEGIN{printf \"%.1f\", $h7_util * 100}")
+	[ -n "$h5_reset" ] && iso5=$(date -u -r "$h5_reset" "+%Y-%m-%dT%H:%M:%S+00:00" 2>/dev/null)
+	[ -n "$h7_reset" ] && iso7=$(date -u -r "$h7_reset" "+%Y-%m-%dT%H:%M:%S+00:00" 2>/dev/null)
+
+	# Build JSON matching /api/oauth/usage format for _parse_rate_json compatibility
+	local json
+	json=$(jq -n \
+		--argjson t "$now" \
+		--argjson h5 "${pct5:-null}" \
+		--arg r5 "${iso5:-}" \
+		--argjson h7 "${pct7:-null}" \
+		--arg r7 "${iso7:-}" \
+		'{
+			five_hour: {utilization: $h5, resets_at: (if $r5 == "" then null else $r5 end)},
+			seven_day: {utilization: $h7, resets_at: (if $r7 == "" then null else $r7 end)},
+			_fetched_at: $t,
+			_source: "haiku_probe"
+		}' 2>/dev/null)
+
+	[ -z "$json" ] && { log_error "Haiku probe: failed to build JSON"; return; }
+
+	echo "$json" > "$cache_file" 2>/dev/null || { log_error "Failed to write cache file"; return; }
+	: > "$ERROR_LOG" 2>/dev/null
+}
+
+get_rate_limit() {
+	local cache_file="$HOME/.claude/status/rate_limit.json"
+	local now usage
+
+	mkdir -p "$HOME/.claude/status" 2>/dev/null
+	now=$(date +%s)
+
+	# ── Always read from cache first (never block on network) ──
+	# After cold boot: cache is hours old → first render shows stale + strikethrough.
+	# Background refresh completes in ~1-5s → next render picks up fresh data.
+	# This is the correct tradeoff: fast render > blocking on network.
+	if [ -f "$cache_file" ]; then
+		local cache_time mtime_age
+		cache_time=$(stat -f %m "$cache_file" 2>/dev/null || echo 0)
+		mtime_age=$((now - cache_time))
+
+		usage=$(cat "$cache_file" 2>/dev/null)
+		[ -n "$usage" ] && _parse_rate_json "$usage"
+
+		# Spawn background refresh if TTL (900s / 15min) expired
+		# Touch BEFORE spawn — concurrent invocations see fresh mtime → skip
+		# 900s = 4 calls/hour. /api/oauth/usage rate-limits at ~10/hour.
+		# Previous TTLs: 30s (hammered API), 120s (still too much), 300s (still 429'd).
+		if [ "$mtime_age" -ge 900 ]; then
+			touch "$cache_file" 2>/dev/null
+			(_refresh_rate_limit &) 2>/dev/null
+
+			# Sleep/wake: roll back mtime so next render retries in 60s not 900s.
+			# Same pattern as token expiry (line 289). First render shows stale data
+			# immediately; background refresh lands in 1-5s; if it fails, rapid retry.
+			if [ "$mtime_age" -ge 3600 ]; then
+				touch -t "$(date -j -f %s $((now - 840)) +%Y%m%d%H%M.%S)" "$cache_file" 2>/dev/null
+			fi
 		fi
+	else
+		# No cache at all (first run or deleted) — spawn refresh
+		touch "$cache_file" 2>/dev/null
+		(_refresh_rate_limit &) 2>/dev/null
 	fi
 }
 
@@ -255,18 +454,13 @@ get_session_elapsed() {
 		if [ -n "$session_start" ]; then
 			elapsed_min=$(((now - session_start) / 60))
 
-			# Format: 45m, 2h 15m, 1d 5h 30m
+			# Format: single value — 45m, 1.1h, 1.2d
 			if [ "$elapsed_min" -lt 60 ]; then
 				elapsed_str="${elapsed_min}m"
 			elif [ "$elapsed_min" -lt 1440 ]; then
-				local h=$((elapsed_min / 60))
-				local m=$((elapsed_min % 60))
-				elapsed_str="${h}h ${m}m"
+				elapsed_str=$(awk "BEGIN { printf \"%.1fh\", $elapsed_min / 60 }")
 			else
-				local d=$((elapsed_min / 1440))
-				local h=$(((elapsed_min % 1440) / 60))
-				local m=$((elapsed_min % 60))
-				elapsed_str="${d}d ${h}h ${m}m"
+				elapsed_str=$(awk "BEGIN { printf \"%.1fd\", $elapsed_min / 1440 }")
 			fi
 		fi
 	fi
@@ -278,7 +472,7 @@ get_session_elapsed() {
 
 # Background refresh function (runs detached, never blocks statusline)
 # MUST be defined before get_weekly_active since it's called from there
-# Calculates actual Claude processing time by summing durationMs from jsonl entries
+# Calculates wall clock session time by detecting 30-min gaps in timestamps
 refresh_weekly_activity() {
 	local state_file="$HOME/.claude/status/weekly_activity.json"
 	local lockfile="$HOME/.claude/status/weekly_activity.lock"
@@ -296,26 +490,43 @@ refresh_weekly_activity() {
 	trap 'rm -f "$lockfile" 2>/dev/null' EXIT
 
 	# Get billing window
-	local window_end=$(jq -r '.seven_day.resets_at // empty' "$HOME/.claude/status/rate_limit.json" 2>/dev/null)
+	local window_end
+	window_end=$(jq -r '.seven_day.resets_at // empty' "$HOME/.claude/status/rate_limit.json" 2>/dev/null)
 	[ -z "$window_end" ] && { rm -f "$lockfile"; return 0; }
 
-	local reset_epoch=$(date -j -u -f "%Y-%m-%dT%H:%M:%S" "${window_end%%.*}" "+%s" 2>/dev/null)
-	local window_start_epoch=$((reset_epoch - 7*24*60*60))
-	local window_start=$(date -u -r $window_start_epoch +%Y-%m-%dT%H:%M:%S 2>/dev/null)
+	local reset_epoch window_start_epoch window_start
+	reset_epoch=$(date -j -u -f "%Y-%m-%dT%H:%M:%S" "${window_end%%.*}" "+%s" 2>/dev/null)
+	window_start_epoch=$((reset_epoch - 7*24*60*60))
+	window_start=$(date -u -r $window_start_epoch +%Y-%m-%dT%H:%M:%S 2>/dev/null)
 
-	# Sum durationMs from files modified in billing window (single pipeline)
+	# Wall clock session time: extract timestamps → epoch via jq → detect 30-min gaps
+	# jq converts ISO to epoch (macOS awk lacks mktime), sort -n, awk sums sessions
 	touch -t "$(date -r "$window_start_epoch" '+%Y%m%d%H%M.%S')" \
 		"$HOME/.claude/status/.window_marker" 2>/dev/null
-	local total_ms=$(/usr/bin/find "$HOME/.claude/projects" -maxdepth 2 -name "*.jsonl" -type f \
+	local total_min
+	total_min=$(/usr/bin/find "$HOME/.claude/projects" -maxdepth 2 -name "*.jsonl" -type f \
 		-newer "$HOME/.claude/status/.window_marker" -exec cat {} + 2>/dev/null | \
 		jq -r --arg start "$window_start" \
-			'select(.timestamp >= $start and .durationMs > 0) | .durationMs' 2>/dev/null | \
-		awk '{sum+=$1} END{print sum+0}')
-	local total_min=$((total_ms / 60000))
+			'select(.timestamp != null and .timestamp >= $start) |
+			 .timestamp | sub("\\.[0-9]+Z$"; "") | strptime("%Y-%m-%dT%H:%M:%S") | mktime' 2>/dev/null | \
+		sort -n | awk '
+		{
+			if (NR == 1) { session_start = $1; prev = $1; next }
+			if ($1 - prev > 1800) {
+				total += prev - session_start
+				session_start = $1
+			}
+			prev = $1
+		}
+		END {
+			total += prev - session_start
+			printf "%d", total / 60
+		}')
 
 	# Save state
-	local now_epoch=$(date +%s)
-	jq -n --arg ws "$window_start" --argjson t "$total_min" --argjson e "$now_epoch" \
+	local now_epoch
+	now_epoch=$(date +%s)
+	jq -n --arg ws "$window_start" --argjson t "${total_min:-0}" --argjson e "$now_epoch" \
 		'{window_start: $ws, total_activity_min: $t, last_update_epoch: $e}' \
 		> "${state_file}.tmp" && mv "${state_file}.tmp" "$state_file"
 
@@ -323,6 +534,7 @@ refresh_weekly_activity() {
 }
 
 weekly_str=""
+weekly_dim=""
 get_weekly_active() {
 	local state_file="$HOME/.claude/status/weekly_activity.json"
 	local lockfile="$HOME/.claude/status/weekly_activity.lock"
@@ -338,6 +550,11 @@ get_weekly_active() {
 		total_min=$(jq -r '.total_activity_min // 0' "$state_file" 2>/dev/null || echo 0)
 		last_update=$(jq -r '.last_update_epoch // 0' "$state_file" 2>/dev/null || echo 0)
 		update_age=$((now - last_update))
+
+		# Dim when data source is stale (>10min without update)
+		if [ "$update_age" -gt 600 ]; then
+			weekly_dim="$STRIKE"
+		fi
 
 		# Format and return immediately
 		if [ "$total_min" -lt 60 ]; then
@@ -372,7 +589,11 @@ get_weekly_active() {
 }
 
 # ---- Runway calculation (Θ) ----
-five_hour_runway="" five_hour_reset=""
+# Bug fix (2026-03): Θ icon was inside 5h printf block. When 5h resets_at was
+# in the past (stale cache), entire 5h block skipped → icon disappeared.
+# Fix: runway_icon_printed flag — Θ prints before whichever block renders first.
+# Also: fallback when 5h reset is past but utilization exists (window just reset).
+five_hour_runway="" five_hour_reset="" five_hour_reset_stale=""
 seven_day_runway="" seven_day_reset=""
 five_hour_pace_ratio="" seven_day_pace_ratio=""
 
@@ -383,10 +604,19 @@ get_runways() {
 	# 5h reset time (decimal hours)
 	if [ -n "$five_hour_reset_sec" ]; then
 		reset_epoch=$(date -j -u -f "%Y-%m-%dT%H:%M:%S" "${five_hour_reset_sec%%.*}" "+%s" 2>/dev/null)
-		if [ -n "$reset_epoch" ] && [ "$reset_epoch" -gt "$now" ]; then
-			seconds_until=$((reset_epoch - now))
-			five_hour_reset=$(awk "BEGIN {printf \"%.1f\", $seconds_until / 3600}")
-			five_hour_reset=${five_hour_reset%.0}
+		if [ -n "$reset_epoch" ]; then
+			if [ "$reset_epoch" -gt "$now" ]; then
+				seconds_until=$((reset_epoch - now))
+				five_hour_reset=$(awk "BEGIN {printf \"%.1f\", $seconds_until / 3600}")
+				five_hour_reset=${five_hour_reset%.0}
+			elif [ -n "$_fetched_at" ] && [ "$reset_epoch" -gt "$_fetched_at" ]; then
+				# Stale: reset was future when fetched, now past (e.g., >5h sleep)
+				# Show what value was at fetch time — real API data, strikethrough
+				seconds_until=$((reset_epoch - _fetched_at))
+				five_hour_reset=$(awk "BEGIN {printf \"%.1f\", $seconds_until / 3600}")
+				five_hour_reset=${five_hour_reset%.0}
+				five_hour_reset_stale=1
+			fi
 		fi
 	fi
 
@@ -401,7 +631,7 @@ get_runways() {
 	fi
 
 	# 5h runway and pace (decimal hours)
-	if [ -n "$rate_pct" ] && [ -n "$five_hour_reset" ]; then
+	if [ -n "$rate_pct" ] && [ -n "$five_hour_reset" ] && [ -z "$five_hour_reset_stale" ]; then
 		local hours_into_5h=$(awk "BEGIN {printf \"%.2f\", 5 - $five_hour_reset}")
 		if [ "$(echo "$hours_into_5h > 0" | bc -l)" -eq 1 ]; then
 			# Current burn rate (%/h)
@@ -415,7 +645,9 @@ get_runways() {
 				# Pace ratio (current / sustainable)
 				five_hour_pace_ratio=$(awk "BEGIN {printf \"%.2f\", $burn_rate / $sustainable_pace}")
 			fi
+			# else: 0% utilization — no burn rate, runway/pace stay empty (reset time still shows)
 		fi
+		# else: just reset (hours_into_5h ≤ 0) — no burn rate yet, reset time still shows
 	fi
 
 	# 7d runway and pace (decimal days)
@@ -436,11 +668,9 @@ get_runways() {
 					seven_day_pace_ratio="0.5"
 				fi
 			fi
-		else
-			# Just reset (days_into_week ≤ 0) - no burn rate yet, assume healthy
-			seven_day_runway="99"
-			seven_day_pace_ratio="0.5"
+			# else: 0% utilization — no burn rate, runway/pace stay empty (reset time still shows)
 		fi
+		# else: just reset (days_into_week ≤ 0) — no burn rate yet, reset time still shows
 	fi
 }
 
@@ -448,20 +678,20 @@ get_daily_budget() {
 	local current_7d="$1"
 	local days_until_reset="$2"
 
-	# Daily budget: what % can you use per day sustainably?
-	local daily_budget=$(awk "BEGIN { printf \"%.1f\", 100.0 / 7.0 }")  # 14.3%
+	# Linear pace comparison: am I on track for the week?
+	# Formula: ideal_pace - current_7d
+	#   ideal_pace = (days_elapsed / 7) × 100
+	# Positive = under budget, negative = over budget
+	# 1:1 sensitivity: 1% utilization change = 1% budget change (no amplification)
+	#
+	# Previous formula used adaptive rate (remaining/days_left) which had a
+	# growing amplification factor: -(days_elapsed+1)/days_left - 1.
+	# By day 4.5 of 7: 3.3× amplification. By day 6.5: 14×.
+	# API rounding noise (71% vs 70%) caused 3-4% Ω swings → unreadable.
+	local days_elapsed
+	days_elapsed=$(awk "BEGIN { printf \"%.4f\", 7.0 - $days_until_reset }")
 
-	# Today's usage: approximate from 7d total and days elapsed
-	local days_elapsed=$(awk "BEGIN { printf \"%.2f\", 7.0 - $days_until_reset }")
-
-	# Daily budget remaining = ideal_usage - current_7d
-	# Include today (+1) so day 1 has 14.3% budget, cap at 100%
-	local days_including_today=$(awk "BEGIN { printf \"%.2f\", $days_elapsed + 1 }")
-	local ideal_usage=$(awk "BEGIN { x = $days_including_today * $daily_budget; printf \"%.1f\", (x > 100) ? 100 : x }")
-	local budget=$(awk "BEGIN { printf \"%.0f\", $ideal_usage - $current_7d }")
-
-	# Output: just the budget percentage (no break hours)
-	echo "$budget"
+	awk "BEGIN { printf \"%d\", sprintf(\"%.0f\", ($days_elapsed / 7.0) * 100.0 - $current_7d) }"
 }
 
 # ---- Fetch all data ----
@@ -480,101 +710,136 @@ fi
 # ---- Render statusline ----
 printf '%b %s%s%s' "$ICON_MODEL" "$model_name" "$thinking_indicator" "$effort_indicator"
 
-# Context
+# ψ Context
 if [ -n "$context_pct" ]; then
 	ctx_colored=$(color_value "${context_pct}%" "$context_pct" 50 67)
 	printf ' %b %s' "$ICON_CTX" "$ctx_colored"
 fi
 
-# Rate limits
-if [ -n "$rate_pct" ]; then
-	rate_colored=$(color_value "$(printf '%.0f' "$rate_pct")%" "${rate_pct%.*}" 69 90)
-	printf ' %b %s' "$ICON_RATE" "$rate_colored"
-
-	if [ -n "$weekly_pct" ]; then
-		weekly_colored=$(color_value "$(printf '%.0f' "$weekly_pct")%" "${weekly_pct%.*}" 50 75)
-		printf ' %s' "$weekly_colored"
+# μ Pace budget (am I on track for the week?)
+# Positive = under budget, negative = over budget for today
+# Strikethrough stale utilization values (>2h = genuinely broken)
+# 7200s = 8 missed refresh cycles at 900s TTL. Known issue:
+# /api/oauth/usage returns intermittent 429s (GitHub #30930).
+rate_stale=""
+if [ "$rate_content_age" -gt 7200 ]; then
+	# Suppress strikethrough if staleness is caused by expired token.
+	# Token expiry is benign (computer sleep) — 60s retry picks it up fast.
+	# Strikethrough only for genuine API failures (429s, network errors).
+	if ! grep -q "token expired" "$ERROR_LOG" 2>/dev/null; then
+		rate_stale="$STRIKE"
 	fi
 fi
 
-# Omega: Daily budget remaining (7d only)
 if [ -n "$seven_day_budget" ]; then
 	omega_color=""
 
-	# Color based on daily budget status
-	# Positive = budget remaining today, negative = borrowed from future days
-	if [ "$seven_day_budget" -lt -10 ] 2>/dev/null; then
-		omega_color="$RED"      # Critical: borrowed >10% from future
-	elif [ "$seven_day_budget" -lt 5 ] 2>/dev/null; then
-		omega_color="$ORANGE"   # Warning: low daily budget or negative
+	if [ "$seven_day_budget" -lt -5 ] 2>/dev/null; then
+		omega_color="$RED"      # Significantly over today's budget
+	elif [ "$seven_day_budget" -lt 3 ] 2>/dev/null; then
+		omega_color="$ORANGE"   # Low or over budget
 	fi
-	# else: healthy daily budget remaining (white)
+	# else: healthy budget remaining (white)
 
-	if [ -n "$omega_color" ]; then
+	if [ -n "$rate_stale" ]; then
+		printf ' %b %b%s%%%b' "$ICON_OMEGA" "$rate_stale" "$seven_day_budget" "$RESET"
+	elif [ -n "$omega_color" ]; then
 		printf ' %b %b%s%%%b' "$ICON_OMEGA" "$omega_color" "$seven_day_budget" "$RESET"
 	else
 		printf ' %b %s%%' "$ICON_OMEGA" "$seven_day_budget"
 	fi
 fi
 
-# Session elapsed
-if [ -n "$elapsed_str" ]; then
-	printf ' %b %s' "$ICON_ELAPSED" "$elapsed_str"
+# λ Rate limits (5h%, 7d%)
+if [ -n "$rate_pct" ]; then
+	rate_colored=$(color_value "$(printf '%.0f' "$rate_pct")%" "${rate_pct%.*}" 69 90)
+	printf ' %b %b%s%b' "$ICON_RATE" "$rate_stale" "$rate_colored" "$RESET"
+
+	if [ -n "$weekly_pct" ]; then
+		weekly_colored=$(color_value "$(printf '%.0f' "$weekly_pct")%" "${weekly_pct%.*}" 50 75)
+		printf ' %b%s%b' "$rate_stale" "$weekly_colored" "$RESET"
+	fi
 fi
 
-# Weekly active
-if [ -n "$weekly_str" ]; then
-	printf ' %b %s' "$ICON_WEEKLY" "$weekly_str"
+# σ Time (session / weekly active)
+if [ -n "$elapsed_str" ]; then
+	if [ -n "$weekly_str" ]; then
+		printf ' %b%b %s %s%b' "$weekly_dim" "$ICON_WEEKLY" "$elapsed_str" "$weekly_str" "$RESET"
+	else
+		printf ' %b %s' "$ICON_WEEKLY" "$elapsed_str"
+	fi
+elif [ -n "$weekly_str" ]; then
+	printf ' %b%b %s%b' "$weekly_dim" "$ICON_WEEKLY" "$weekly_str" "$RESET"
 fi
 
 # Runways and resets (color-coded, decimal precision)
 # Replaced symbol-based display with color-only for cleaner look and smooth transitions.
 # Old symbol logic (≪ < > ≫) commented out below for reference.
+# Θ icon is printed once before whichever runway renders first (decoupled from 5h block).
 
-if [ -n "$five_hour_runway" ] && [ -n "$five_hour_reset" ] && [ -n "$five_hour_pace_ratio" ]; then
-	# Show superscript only when runway < reset (won't make it at current pace)
-	# Color based on pace ratio: white ≤0.8, orange 0.8-1.2, red >1.2
+runway_icon_printed=""
 
-	runway_lt_reset=$(echo "$five_hour_runway < $five_hour_reset" | bc -l)
+if [ -n "$five_hour_reset" ]; then
+	runway_icon_printed=1
 
-	if [ "$runway_lt_reset" -eq 1 ]; then
-		# Runway < reset: show warning with superscript
-		five_hour_color=""
-		if [ "$(echo "$five_hour_pace_ratio > 1.2" | bc -l)" -eq 1 ]; then
-			five_hour_color="$RED"      # critical: pace >1.2× sustainable
-		elif [ "$(echo "$five_hour_pace_ratio > 0.8" | bc -l)" -eq 1 ]; then
-			five_hour_color="$ORANGE"   # warning: pace 0.8-1.2× sustainable
+	if [ -n "$five_hour_runway" ] && [ -n "$five_hour_pace_ratio" ]; then
+		# Have runway data — show superscript warning when runway < reset
+		runway_lt_reset=$(echo "$five_hour_runway < $five_hour_reset" | bc -l)
+
+		if [ "$runway_lt_reset" -eq 1 ]; then
+			# Runway < reset: show warning with superscript
+			# Color based on pace ratio: white ≤0.8, orange 0.8-1.2, red >1.2
+			five_hour_color=""
+			if [ "$(echo "$five_hour_pace_ratio > 1.2" | bc -l)" -eq 1 ]; then
+				five_hour_color="$RED"      # critical: pace >1.2× sustainable
+			elif [ "$(echo "$five_hour_pace_ratio > 0.8" | bc -l)" -eq 1 ]; then
+				five_hour_color="$ORANGE"   # warning: pace 0.8-1.2× sustainable
+			fi
+
+			runway_super=$(to_superscript "$five_hour_runway")
+			printf ' %b %b%sh%s%b' "$ICON_RUNWAY" "$five_hour_color" "$five_hour_reset" "$runway_super" "$RESET"
+		else
+			# Runway >= reset: all good, no superscript needed
+			printf ' %b %sh' "$ICON_RUNWAY" "$five_hour_reset"
 		fi
-		# else: white (pace ≤0.8×)
-
-		runway_super=$(to_superscript "$five_hour_runway")
-		printf ' %b %b%sh%s%b' "$ICON_RUNWAY" "$five_hour_color" "$five_hour_reset" "$runway_super" "$RESET"
 	else
-		# Runway >= reset: all good, no superscript needed
-		printf ' %b %sh' "$ICON_RUNWAY" "$five_hour_reset"
+		# No runway data (0% usage or window just reset) — show reset time only
+		if [ -n "$five_hour_reset_stale" ]; then
+			printf ' %b %b%sh%b' "$ICON_RUNWAY" "$STRIKE" "$five_hour_reset" "$RESET"
+		else
+			printf ' %b %sh' "$ICON_RUNWAY" "$five_hour_reset"
+		fi
 	fi
 fi
 
-if [ -n "$seven_day_runway" ] && [ -n "$seven_day_reset" ] && [ -n "$seven_day_pace_ratio" ]; then
-	# Show superscript only when runway < reset (won't make it at current pace)
-	# Color based on pace ratio: white ≤0.8, orange 0.8-1.2, red >1.2
+if [ -n "$seven_day_reset" ]; then
+	# Print θ icon if 5h didn't already
+	if [ -z "$runway_icon_printed" ]; then
+		printf ' %b' "$ICON_RUNWAY"
+	fi
 
-	runway_lt_reset=$(echo "$seven_day_runway < $seven_day_reset" | bc -l)
+	if [ -n "$seven_day_runway" ] && [ -n "$seven_day_pace_ratio" ]; then
+		# Have runway data — show superscript warning when runway < reset
+		runway_lt_reset=$(echo "$seven_day_runway < $seven_day_reset" | bc -l)
 
-	if [ "$runway_lt_reset" -eq 1 ]; then
-		# Runway < reset: show warning with superscript
-		seven_day_color=""
-		if [ "$(echo "$seven_day_pace_ratio > 1.2" | bc -l)" -eq 1 ]; then
-			seven_day_color="$RED"      # critical: pace >1.2× sustainable
-		elif [ "$(echo "$seven_day_pace_ratio > 0.8" | bc -l)" -eq 1 ]; then
-			seven_day_color="$ORANGE"   # warning: pace 0.8-1.2× sustainable
+		if [ "$runway_lt_reset" -eq 1 ]; then
+			# Runway < reset: show warning with superscript
+			# Color based on pace ratio: white ≤0.8, orange 0.8-1.2, red >1.2
+			seven_day_color=""
+			if [ "$(echo "$seven_day_pace_ratio > 1.2" | bc -l)" -eq 1 ]; then
+				seven_day_color="$RED"      # critical: pace >1.2× sustainable
+			elif [ "$(echo "$seven_day_pace_ratio > 0.8" | bc -l)" -eq 1 ]; then
+				seven_day_color="$ORANGE"   # warning: pace 0.8-1.2× sustainable
+			fi
+
+			runway_super=$(to_superscript "$seven_day_runway")
+			printf ' %b%sd%s%b' "$seven_day_color" "$seven_day_reset" "$runway_super" "$RESET"
+		else
+			# Runway >= reset: all good, no superscript needed
+			printf ' %sd' "$seven_day_reset"
 		fi
-		# else: white (pace ≤0.8×)
-
-		runway_super=$(to_superscript "$seven_day_runway")
-		printf ' %b%sd%s%b' "$seven_day_color" "$seven_day_reset" "$runway_super" "$RESET"
 	else
-		# Runway >= reset: all good, no superscript needed
+		# No runway data (0% usage or window just reset) — show reset time only
 		printf ' %sd' "$seven_day_reset"
 	fi
 fi
@@ -614,5 +879,30 @@ fi
 # 	fi
 # 	printf ' %b%sd' "$symbol_7d" "$seven_day_reset"
 # fi
+
+# Π Git: branch +lines -lines (hidden when not in a git repo)
+# Disable ERR trap for this section — grep returns 1 on no-match which is normal
+cwd=$(echo "$input" | jq -r '.cwd // empty' 2>/dev/null)
+if [ -n "$cwd" ]; then
+	branch=$(git -C "$cwd" branch --show-current 2>/dev/null | cut -c1-16) || true
+	if [ -n "$branch" ]; then
+		printf ' %b %s' "$ICON_GIT" "$branch"
+		# Diff stats: tracked changes + untracked file count
+		diffstat=$(git -C "$cwd" diff --shortstat HEAD 2>/dev/null) || true
+		untracked=$(git -C "$cwd" ls-files --others --exclude-standard 2>/dev/null | wc -l | tr -d ' ') || true
+		if [ -n "$diffstat" ] || [ "${untracked:-0}" -gt 0 ]; then
+			ins=$(echo "$diffstat" | grep -oE '[0-9]+ insertion' | grep -oE '[0-9]+') || true
+			del=$(echo "$diffstat" | grep -oE '[0-9]+ deletion' | grep -oE '[0-9]+') || true
+			# Add untracked files to insertion count (new content)
+			if [ "${untracked:-0}" -gt 0 ] && [ -n "$ins" ]; then
+				ins=$((ins + untracked))
+			elif [ "${untracked:-0}" -gt 0 ]; then
+				ins=$untracked
+			fi
+			[ -n "$ins" ] && printf ' %b+%s%b' "$GREEN" "$ins" "$RESET"
+			[ -n "$del" ] && printf ' %b-%s%b' "$RED" "$del" "$RESET"
+		fi
+	fi
+fi
 
 printf '\n'
