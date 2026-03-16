@@ -5,6 +5,100 @@
             "complex_modifications": {
                 "rules": [
                     {
+                        "description": "WASD movement + E/R/F/Tab for lost bindings (Wine Crossover only)",
+                        "enabled": false,
+                        "manipulators": [
+                            {
+                                "conditions": [
+                                    {
+                                        "file_paths": ["wine-preloader"],
+                                        "type": "frontmost_application_if"
+                                    }
+                                ],
+                                "from": { "key_code": "w" },
+                                "to": [{ "key_code": "up_arrow" }],
+                                "type": "basic"
+                            },
+                            {
+                                "conditions": [
+                                    {
+                                        "file_paths": ["wine-preloader"],
+                                        "type": "frontmost_application_if"
+                                    }
+                                ],
+                                "from": { "key_code": "a" },
+                                "to": [{ "key_code": "left_arrow" }],
+                                "type": "basic"
+                            },
+                            {
+                                "conditions": [
+                                    {
+                                        "file_paths": ["wine-preloader"],
+                                        "type": "frontmost_application_if"
+                                    }
+                                ],
+                                "from": { "key_code": "s" },
+                                "to": [{ "key_code": "down_arrow" }],
+                                "type": "basic"
+                            },
+                            {
+                                "conditions": [
+                                    {
+                                        "file_paths": ["wine-preloader"],
+                                        "type": "frontmost_application_if"
+                                    }
+                                ],
+                                "from": { "key_code": "d" },
+                                "to": [{ "key_code": "right_arrow" }],
+                                "type": "basic"
+                            },
+                            {
+                                "conditions": [
+                                    {
+                                        "file_paths": ["wine-preloader"],
+                                        "type": "frontmost_application_if"
+                                    }
+                                ],
+                                "from": { "key_code": "e" },
+                                "to": [{ "key_code": "a" }],
+                                "type": "basic"
+                            },
+                            {
+                                "conditions": [
+                                    {
+                                        "file_paths": ["wine-preloader"],
+                                        "type": "frontmost_application_if"
+                                    }
+                                ],
+                                "from": { "key_code": "r" },
+                                "to": [{ "key_code": "s" }],
+                                "type": "basic"
+                            },
+                            {
+                                "conditions": [
+                                    {
+                                        "file_paths": ["wine-preloader"],
+                                        "type": "frontmost_application_if"
+                                    }
+                                ],
+                                "from": { "key_code": "f" },
+                                "to": [{ "key_code": "d" }],
+                                "type": "basic"
+                            },
+                            {
+                                "conditions": [
+                                    {
+                                        "file_paths": ["wine-preloader"],
+                                        "type": "frontmost_application_if"
+                                    }
+                                ],
+                                "from": { "key_code": "tab" },
+                                "to": [{ "key_code": "w" }],
+                                "type": "basic"
+                            }
+                        ]
+                    },
+                    {
                         "description": "Arrow keys + Spacebar combinations only",
                         "enabled": false,
                         "manipulators": [
@@ -107,11 +201,30 @@
                         ]
                     },
                     {
-                        "description": "Right Command: Alone=Screenshot+Resize (700px) | +Space=Paste | Ctrl+Cmd=Area Screenshot | Shift+Cmd=Screenshot Options",
+                        "description": "Right Command: tmux prefix (Ctrl+A)",
                         "manipulators": [
                             {
                                 "from": {
                                     "key_code": "right_command",
+                                    "modifiers": { "optional": ["any"] }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "a",
+                                        "modifiers": ["left_control"],
+                                        "repeat": false
+                                    }
+                                ],
+                                "type": "basic"
+                            }
+                        ]
+                    },
+                    {
+                        "description": "Right Option: Alone=Screenshot+Resize (700px) | +Space=Paste | Ctrl+Opt=Area Screenshot | Shift+Opt=Screenshot Options",
+                        "manipulators": [
+                            {
+                                "from": {
+                                    "key_code": "right_option",
                                     "modifiers": { "mandatory": ["shift"] }
                                 },
                                 "to": [
@@ -124,23 +237,24 @@
                             },
                             {
                                 "from": {
-                                    "key_code": "right_command",
+                                    "key_code": "right_option",
                                     "modifiers": { "mandatory": ["control"] }
                                 },
-                                "to": [
-                                    {
-                                        "shell_command": "~/.config/karabiner/scripts/smart-screenshot-resize.sh -i"
-                                    }
-                                ],
+                                "to": [{ "shell_command": "~/.config/karabiner/scripts/smart-screenshot-resize.sh -i" }],
                                 "type": "basic"
                             },
                             {
                                 "from": {
                                     "key_code": "spacebar",
-                                    "modifiers": { "mandatory": ["right_command"] }
+                                    "modifiers": { "mandatory": ["right_option"] }
                                 },
                                 "to": [
-                                    { "set_variable": { "name": "rcmd_solo", "value": 0 } },
+                                    {
+                                        "set_variable": {
+                                            "name": "ropt_solo",
+                                            "value": 0
+                                        }
+                                    },
                                     {
                                         "key_code": "v",
                                         "modifiers": ["left_control"]
@@ -150,34 +264,37 @@
                             },
                             {
                                 "from": {
-                                    "key_code": "right_command",
-                                    "modifiers": { "optional": ["any"] }
-                                },
-                                "to": [
-                                    { "set_variable": { "name": "rcmd_solo", "value": 1 } },
-                                    { "key_code": "right_command", "lazy": true }
-                                ],
-                                "to_after_key_up": [
-                                    {
-                                        "shell_command": "~/.config/karabiner/scripts/smart-screenshot-resize.sh",
-                                        "conditions": [
-                                            { "type": "variable_if", "name": "rcmd_solo", "value": 1 }
-                                        ]
-                                    },
-                                    { "set_variable": { "name": "rcmd_solo", "value": 0 } }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "from": {
                                     "key_code": "right_option",
                                     "modifiers": { "optional": ["any"] }
                                 },
-                                "to": [{ "key_code": "right_option" }],
-                                "to_if_alone": [
+                                "to": [
                                     {
-                                        "key_code": "5",
-                                        "modifiers": ["left_command", "left_shift"]
+                                        "set_variable": {
+                                            "name": "ropt_solo",
+                                            "value": 1
+                                        }
+                                    },
+                                    {
+                                        "key_code": "right_option",
+                                        "lazy": true
+                                    }
+                                ],
+                                "to_after_key_up": [
+                                    {
+                                        "conditions": [
+                                            {
+                                                "name": "ropt_solo",
+                                                "type": "variable_if",
+                                                "value": 1
+                                            }
+                                        ],
+                                        "shell_command": "~/.config/karabiner/scripts/smart-screenshot-resize.sh"
+                                    },
+                                    {
+                                        "set_variable": {
+                                            "name": "ropt_solo",
+                                            "value": 0
+                                        }
                                     }
                                 ],
                                 "type": "basic"
