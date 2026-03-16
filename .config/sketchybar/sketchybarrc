@@ -1,11 +1,17 @@
 #!/bin/bash
 # Modern minimal sketchybar configuration - Optimized for MacBook Air 2024 (M3)
 
-# Clean up old cache and averaging files on startup
-rm -f /tmp/sketchybar* /tmp/macmon* 2>/dev/null
+# Kill stale background helpers from previous reloads
+pkill -f "helpers/bar-daemon" 2>/dev/null
+pkill -f "macmon pipe" 2>/dev/null
+# Superseded daemons (kept for reference):
+# pkill -f "helpers/net-monitor" 2>/dev/null
+# pkill -f "helpers/net-stats" 2>/dev/null
+# pkill -f "helpers/progress-clock" 2>/dev/null
+# pkill -f "helpers/metrics-daemon" 2>/dev/null
 
-# Clean up stale state files older than 1 hour periodically
-find /tmp -name "sketchybar*" -mmin +60 -delete 2>/dev/null &
+# Clean up stale state files older than 1 hour
+find /tmp -name "sketchybar_*" -not -name "sketchybar_cache" -mmin +60 -delete 2>/dev/null &
 
 # --- Environment Variables --- #
 export PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
@@ -16,10 +22,26 @@ export LIGHT_GRAY=0xffE0E0E0
 export SILVER=0xffB0B7C0 # Silver accent
 export MID_GRAY=0xffA0A0A0
 export DIM_GRAY=0xff606060
+export DIM=0xff8A869E        # Standard dim — used across all items
 export ORANGE=0xffFFA500 # Orange for warnings
 export BLACK=0xff000000
 export TRANSPARENT=0x00000000
 export MISTY_BLUE=0xffB0B7C0 # Misty Blue accent
+
+# --- Custom Events --- #
+sketchybar --add event network_change
+
+# NWPathMonitor (superseded — now handled by bar-daemon inline)
+# (
+# 	LAST=0
+# 	"$HOME/.config/sketchybar/helpers/net-monitor" | while read -r line; do
+# 		NOW=$(date +%s)
+# 		[ $((NOW - LAST)) -lt 3 ] && continue
+# 		LAST=$NOW
+# 		sleep 1
+# 		sketchybar --trigger network_change
+# 	done
+# ) &
 
 # --- Bar Configuration --- #
 sketchybar --bar height=29 \
@@ -37,12 +59,13 @@ sketchybar --bar height=29 \
 	display=main
 
 # --- Defaults --- #
-sketchybar --default icon.font="SF Pro:Medium:13.0" \
+# Fonts: was SF Pro/SF Symbols, switched to SFMono Nerd Font (no sf-symbols dependency)
+sketchybar --default icon.font="SFMono Nerd Font:Medium:16.0" \
 	icon.color=$MID_GRAY \
 	icon.padding_left=2 \
-	icon.padding_right=2 \
+	icon.padding_right=3 \
 	icon.y_offset=0 \
-	label.font="SF Pro:Regular:13.0" \
+	label.font="SFMono Nerd Font:Regular:13.0" \
 	label.color=$MID_GRAY \
 	label.padding_left=2 \
 	label.padding_right=2 \
@@ -126,51 +149,102 @@ done
 
 # Create space indicators for all existing spaces
 for sid in $SPACE_IDS; do
-	sketchybar --add space space.$sid left \
-		--set space.$sid space=$sid \
+	sketchybar --add item space.$sid left \
+		--set space.$sid \
 		icon="$sid" \
-		icon.font="SF Pro:Medium:13.0" \
+		icon.font="SFMono Nerd Font:Medium:12.0" \
 		width=3 \
 		padding_left=0 \
 		padding_right=0 \
-		script="$PLUGIN_DIR/space.sh" \
-		click_script="/opt/homebrew/bin/yabai -m space --focus $sid" \
-		--subscribe space.$sid space_change space_windows_change
+		click_script="/opt/homebrew/bin/yabai -m space --focus $sid"
 done
+
+# Single space handler — runs space.sh ONCE per event (not N times)
+sketchybar --add item space_handler left \
+	--set space_handler drawing=off \
+	script="$PLUGIN_DIR/space.sh" \
+	--subscribe space_handler space_change space_windows_change
 
 # NOTE: New spaces created after startup are handled by yabai's space_created
 # signal handler (see .yabairc:283-296). Destroyed spaces are handled by the
 # space_destroyed signal handler (see .yabairc:298-302).
 
-# IP Address
-sketchybar --add item ip left \
-	--set ip script="$PLUGIN_DIR/ip.sh" \
-	icon="􀤆" \
-	icon.font="SF Symbols:Regular:13.0" \
+# Old IP display (replaced by location + connection):
+# sketchybar --add item ip left \
+# 	--set ip script="$PLUGIN_DIR/ip.sh" \
+# 	icon="󰖟" icon.font="SFMono Nerd Font:Regular:16.0" \
+# 	icon.padding_right=3 icon.color=$SILVER \
+# 	label.font="SFMono Nerd Font:Regular:13.0" \
+# 	padding_left=-2 padding_right=3 \
+# 	--subscribe ip wifi_change
+
+# Location (updated by bar-daemon — NWPathMonitor-triggered, URLSession geo lookup)
+sketchybar --add item location left \
+	--set location \
+	icon="󰖟" \
+	icon.font="SFMono Nerd Font:Regular:16.0" \
+	icon.padding_right=3 \
 	icon.color=$SILVER \
-	label.font="SF Pro:Regular:13.0" \
+	label.font="SFMono Nerd Font:Regular:13.0" \
+	label.color=$SILVER \
 	padding_left=-2 \
-	padding_right=-1 \
-	--subscribe ip wifi_change
+	padding_right=3
+
+# Connection (updated by bar-daemon — NWConnection latency, CoreWLAN RSSI, 30s timer)
+sketchybar --add item connection left \
+	--set connection \
+	icon="󰤨" \
+	icon.font="SFMono Nerd Font:Regular:16.0" \
+	icon.padding_right=3 \
+	icon.color=$SILVER \
+	label.font="SFMono Nerd Font:Regular:12.0" \
+	label.color=$SILVER \
+	padding_left=3 \
+	padding_right=3
 
 # Network Stats - text with sparkline graphs
 sketchybar --add item network_down left \
-	--set network_down update_freq=10 \
-	icon.drawing=off \
-	label.font="SF Pro:Regular:13.0" \
+	--set network_down \
+	icon="↓" \
+	icon.font="SFMono Nerd Font:Regular:16.0" \
+	icon.padding_right=1 \
+	label.font="SFMono Nerd Font:Regular:13.0" \
 	label.color=$SILVER \
-	padding_left=0 \
-	padding_right=1 \
-	script="$PLUGIN_DIR/network_stats.sh down"
+	label.width=24 \
+	label.align=right \
+	padding_left=3 \
+	padding_right=0
+
+sketchybar --add graph graph_down left 50 \
+	--set graph_down graph.color=0xff8A869E \
+	graph.fill_color=0x338A869E \
+	graph.line_width=1.0 \
+	background.height=12 \
+	background.color=0x00000000 \
+	y_offset=-1 \
+	padding_left=1 \
+	padding_right=3
 
 sketchybar --add item network_up left \
-	--set network_up update_freq=10 \
-	icon.drawing=off \
-	label.font="SF Pro:Regular:13.0" \
+	--set network_up \
+	icon="↑" \
+	icon.font="SFMono Nerd Font:Regular:16.0" \
+	icon.padding_right=1 \
+	label.font="SFMono Nerd Font:Regular:13.0" \
 	label.color=$SILVER \
-	padding_left=0 \
-	padding_right=4 \
-	script="$PLUGIN_DIR/network_stats.sh up"
+	label.width=24 \
+	label.align=right \
+	padding_left=3 \
+	padding_right=0
+
+sketchybar --add graph graph_up left 50 \
+	--set graph_up graph.color=0xff8A869E \
+	graph.fill_color=0x338A869E \
+	graph.line_width=1.0 \
+	background.height=12 \
+	background.color=0x00000000 \
+	y_offset=-1 padding_left=1 \
+	padding_right=4
 
 # Codex Usage Limits (compact)
 sketchybar --add item codex_logo left \
@@ -187,7 +261,7 @@ sketchybar --add item codex_logo left \
 	padding_right=6
 
 sketchybar --add item codex_usage left \
-	--set codex_usage label.font="SF Pro:Regular:13.0" \
+	--set codex_usage label.font="SFMono Nerd Font:Regular:13.0" \
 	icon.drawing=off \
 	label.padding_left=0 \
 	label.padding_right=0 \
@@ -404,94 +478,109 @@ sketchybar --add item codex_usage left \
 
 # Clock time (white, separate)
 sketchybar --add item clock_time right \
-	--set clock_time update_freq=1 \
+	--set clock_time update_freq=0 \
 	icon.drawing=off \
-	label.font="SF Pro:Regular:13.0" \
+	label.font="SFMono Nerd Font:Regular:13.0" \
 	label.color=$WHITE \
 	label.padding_left=0 \
 	label.padding_right=0 \
-	padding_left=0 \
+	padding_left=4 \
 	padding_right=12 \
 	script=""
 
-# Unified progress bar (day + progress + day)
-sketchybar --add item progress right \
-	--set progress update_freq=1 \
+# Day progress slider — separate clock icon + slider with day numbers
+# progress_icon: clock face (◐ sunrise, ◑ sunset, 󱑂-󱑍 hour clocks)
+# progress: slider with icon=day-of-year, label=next-day
+# Colors set by bar-daemon: gray normal, gold at sunrise, blue at sunset, white flash on hour
+sketchybar --add slider progress right 60 \
+	--set progress \
+	slider.highlight_color=$MID_GRAY \
+	slider.background.height=4 \
+	slider.background.color=$DIM \
+	slider.background.corner_radius=2 \
+	slider.knob.drawing=off \
 	icon.drawing=on \
-	icon="􀐬" \
-	icon.font="SF Symbols:Regular:13.0" \
+	icon.font="SFMono Nerd Font:Regular:12.5" \
 	icon.color=$MID_GRAY \
-	icon.padding_right=3 \
-	label.font="SF Pro:Regular:13.0" \
-	label.color=$WHITE \
-	label.padding_left=0 \
+	icon.padding_left=2 \
+	icon.padding_right=6 \
+	label.drawing=on \
+	label.font="SFMono Nerd Font:Regular:12.5" \
+	label.color=$DIM_GRAY \
+	label.padding_left=4 \
 	label.padding_right=0 \
 	padding_left=0 \
 	padding_right=4 \
-	script="$PLUGIN_DIR/progress_unified.sh"
+	script=""
 
-# Battery
+# Clock/sunrise/sunset icon (left of slider, updated by bar-daemon)
+sketchybar --add item progress_icon right \
+	--set progress_icon \
+	icon.drawing=on \
+	icon.font="SFMono Nerd Font:Regular:16.0" \
+	icon.color=$MID_GRAY \
+	icon.padding_left=2 \
+	icon.padding_right=2 \
+	label.drawing=off \
+	padding_left=3 \
+	padding_right=0 \
+	script=""
+
+# Battery (updated by bar-daemon — IOKit 1s change detection)
 sketchybar --add item battery right \
-	--set battery script="$PLUGIN_DIR/battery.sh" \
-	update_freq=120 \
-	icon.font="SF Pro:Regular:13.0" \
-	label.font="SF Pro:Regular:13.0" \
-	padding_right=1 \
-	--subscribe battery system_woke power_source_change
+	--set battery \
+	icon.font="SFMono Nerd Font:Regular:16.0" \
+	icon.padding_right=4 \
+	label.font="SFMono Nerd Font:Regular:13.0" \
+	padding_right=4
 
-# Disk
+# Disk (updated by bar-daemon — statvfs 1s change detection)
 sketchybar --add item disk right \
-	--set disk label.font="SF Pro:Regular:13.0" \
-	icon="􀨪" \
-	icon.font="SF Symbols:Regular:13.0" \
-	padding_right=3 \
-	update_freq=60 \
-	script="$PLUGIN_DIR/disk.sh"
+	--set disk label.font="SFMono Nerd Font:Regular:13.0" \
+	icon="󰋊" \
+	icon.font="SFMono Nerd Font:Regular:16.0" \
+	icon.padding_right=4 \
+	padding_right=4
 
-# Memory
+# Memory (updated by metrics-daemon)
 sketchybar --add item memory right \
-	--set memory label.font="SF Pro:Regular:13.0" \
-	icon="􀫦" \
-	icon.font="SF Symbols:Regular:13.0" \
-	padding_right=3 \
-	update_freq=30 \
-	script="$PLUGIN_DIR/memory.sh"
+	--set memory label.font="SFMono Nerd Font:Regular:13.0" \
+	icon="󰍛" \
+	icon.font="SFMono Nerd Font:Regular:16.0" \
+	icon.padding_right=4 \
+	padding_right=4
 
-# CPU
+# CPU (updated by metrics-daemon)
 sketchybar --add item cpu right \
-	--set cpu label.font="SF Pro:Regular:13.0" \
-	icon="􀫥" \
-	icon.font="SF Symbols:Regular:13.0" \
-	padding_right=3 \
-	update_freq=10 \
-	script="$PLUGIN_DIR/cpu.sh"
+	--set cpu label.font="SFMono Nerd Font:Regular:13.0" \
+	icon="󰘚" \
+	icon.font="SFMono Nerd Font:Regular:16.0" \
+	icon.padding_right=4 \
+	padding_right=4
 
-# GPU Usage
+# GPU Usage (updated by metrics-daemon)
 sketchybar --add item gpu right \
-	--set gpu label.font="SF Pro:Regular:13.0" \
-	icon="􀬨" \
-	icon.font="SF Symbols:Regular:13.0" \
-	padding_right=3 \
-	update_freq=10 \
-	script="$PLUGIN_DIR/gpu.sh"
+	--set gpu label.font="SFMono Nerd Font:Regular:13.0" \
+	icon="󰡷" \
+	icon.font="SFMono Nerd Font:Regular:16.0" \
+	icon.padding_right=4 \
+	padding_right=4
 
-# Total System Power
+# Total System Power (updated by metrics-daemon)
 sketchybar --add item power right \
-	--set power label.font="SF Pro:Regular:13.0" \
-	icon="􀙬" \
-	icon.font="SF Symbols:Regular:13.0" \
-	padding_right=3 \
-	update_freq=30 \
-	script="$PLUGIN_DIR/power.sh"
+	--set power label.font="SFMono Nerd Font:Regular:13.0" \
+	icon="󱐋" \
+	icon.font="SFMono Nerd Font:Regular:16.0" \
+	icon.padding_right=4 \
+	padding_right=4
 
-# Temperature
+# Temperature (updated by metrics-daemon)
 sketchybar --add item temp right \
-	--set temp label.font="SF Pro:Regular:13.0" \
-	icon="􀇬" \
-	icon.font="SF Symbols:Regular:13.0" \
-	padding_right=3 \
-	update_freq=10 \
-	script="$PLUGIN_DIR/temp.sh"
+	--set temp label.font="SFMono Nerd Font:Regular:13.0" \
+	icon="󰔏" \
+	icon.font="SFMono Nerd Font:Regular:16.0" \
+	icon.padding_right=4 \
+	padding_right=4
 
 # Legacy menuanywhere - old binary at plugins/menuanywhere_new if needed
 # Now using Homebrew menuanywhere (ctrl+alt+m) - config at ~/.config/menuanywhere/config.json
@@ -508,5 +597,11 @@ sketchybar --add item temp right \
 
 # Force update
 sketchybar --update
+
+# Single unified daemon: handles all 15 items (network, progress, battery, disk,
+# connection, location, cpu, gpu, temp, memory, power). Spawns macmon internally.
+# Replaces: metrics-daemon + net-stats + progress-clock + net-monitor shell loop
+#           + battery.sh + disk.sh + connection.sh + location.sh
+"$HOME/.config/sketchybar/helpers/bar-daemon" &
 
 echo "Sketchybar loaded - optimized configuration"
