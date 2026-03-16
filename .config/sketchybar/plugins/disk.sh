@@ -4,15 +4,12 @@
 source "$HOME/.config/sketchybar/plugins/macmon_shared.sh"
 
 # Get current disk usage
+# APFS container % — reflects all volumes (system + data + swap) sharing the pool
+# This is the number that determines when macOS starts struggling (~85%+)
 RAW_USAGE=$(diskutil apfs list 2>/dev/null | grep "Capacity In Use By Volumes" | head -1 | sed -n 's/.*(\([0-9]*\.[0-9]*\)%.*/\1/p' | cut -d. -f1)
 
-# Fallback
 if [ -z "$RAW_USAGE" ]; then
     RAW_USAGE=$(df -h /System/Volumes/Data 2>/dev/null | awk 'NR==2 {print $5}' | sed 's/%//')
-fi
-
-if [ -z "$RAW_USAGE" ]; then
-    RAW_USAGE=$(df -h / | awk 'NR==2 {print $5}' | sed 's/%//')
 fi
 
 # Smooth it (10 samples since disk changes slowly)

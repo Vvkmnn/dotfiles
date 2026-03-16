@@ -246,29 +246,29 @@ sketchybar --add graph graph_up left 50 \
 	y_offset=-1 padding_left=1 \
 	padding_right=4
 
-# Codex Usage Limits (compact)
-sketchybar --add item codex_logo left \
-	--set codex_logo drawing=on \
-	background.image="$HOME/.config/sketchybar/assets/openai.png" \
-	background.image.scale=0.014 \
-	background.color=$TRANSPARENT \
-	background.drawing=on \
-	background.height=14 \
-	width=14 \
-	label.drawing=off \
-	icon.drawing=off \
-	padding_left=0 \
-	padding_right=6
-
-sketchybar --add item codex_usage left \
-	--set codex_usage label.font="SFMono Nerd Font:Regular:13.0" \
-	icon.drawing=off \
-	label.padding_left=0 \
-	label.padding_right=0 \
-	padding_left=0 \
-	padding_right=6 \
-	update_freq=180 \
-	script="$PLUGIN_DIR/codex_usage.sh"
+# Codex Usage Limits — hidden for now
+# sketchybar --add item codex_logo left \
+# 	--set codex_logo drawing=on \
+# 	background.image="$HOME/.config/sketchybar/assets/openai.png" \
+# 	background.image.scale=0.014 \
+# 	background.color=$TRANSPARENT \
+# 	background.drawing=on \
+# 	background.height=14 \
+# 	width=14 \
+# 	label.drawing=off \
+# 	icon.drawing=off \
+# 	padding_left=0 \
+# 	padding_right=6
+#
+# sketchybar --add item codex_usage left \
+# 	--set codex_usage label.font="SFMono Nerd Font:Regular:13.0" \
+# 	icon.drawing=off \
+# 	label.padding_left=0 \
+# 	label.padding_right=0 \
+# 	padding_left=0 \
+# 	padding_right=6 \
+# 	update_freq=180 \
+# 	script="$PLUGIN_DIR/codex_usage.sh"
 # Network Box Indicators - Commented out for now (will fix later)
 # sketchybar --add item network_down_box left \
 # 	--set network_down_box update_freq=2 \

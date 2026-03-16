@@ -4,22 +4,11 @@
 CACHE="/tmp/sketchybar_cache"
 STATE_FILE="/tmp/sketchybar_state"
 
-# Get macmon data (5s cache for better performance)
+# Read macmon data from daemon-maintained cache (no spawn, no TTL check)
+# Cache written by persistent macmon pipe in sketchybarrc
 get_macmon_data() {
-    if [ -f "$CACHE" ]; then
-        AGE=$(($(date +%s) - $(stat -f %m "$CACHE" 2>/dev/null || echo 0)))
-        [ $AGE -lt 10 ] && cat "$CACHE" && return
-    fi
-
-    LINE=$(macmon pipe --interval 100 2>/dev/null | { IFS= read -r first_line || true; printf '%s' "$first_line"; })
-
-    if [ -n "$LINE" ]; then
-        printf '%s\n' "$LINE" > "$CACHE.tmp"
-        mv "$CACHE.tmp" "$CACHE"
-        printf '%s\n' "$LINE"
-    else
-        echo "{}"
-    fi
+    [ -f "$CACHE" ] && cat "$CACHE" && return
+    echo "{}"
 }
 
 # Efficient smoothing - single state file
