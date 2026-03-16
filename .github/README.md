@@ -35,12 +35,12 @@
 ### tracked
 
 ```
-  shell ──────── .alias .functions .profile .rc .shell .zshrc .zshenv .zimrc .p10k.zsh
+  shell ──────── .alias .functions .minimal .profile .rc .shell .zshrc .zshenv .zimrc .p10k.zsh
   editor ─────── .vimrc .config/nvim (submodule → v.nvim)
-  claude ─────── .claude/ (9 rules, 28 skills, 13 commands, 6 hooks, 36 servers)
+  claude ─────── .claude/ (10 rules, 29 skills, 6 hooks, 36 servers)
   git ────────── .gitconfig .gitmessage .gitattributes .gitmodules
-  karabiner ──── .config/karabiner/ (json, scripts, automatic_backups)
-  sketchybar ─── .config/sketchybar/ (sketchybarrc, plugins)
+  karabiner ──── .config/karabiner/ (json, scripts, assets, automatic_backups)
+  sketchybar ─── .config/sketchybar/ (sketchybarrc, helpers, plugins)
   wm ─────────── .skhdrc .yabairc .config/yabai/
   terminal ───── .config/ (ghostty, tmux, kitty, alacritty, wezterm)
   alfred ─────── .alfred/ (~400 files: prefs, workflows, themes)
@@ -49,7 +49,7 @@
   setup ──────── .setup/ (36 scripts, Brewfile)
   meta ────────── .github/README.md .logo .theme .assets/
 
-  ~1126 files
+  ~1136 files
 ```
 
 ### branches
@@ -83,8 +83,8 @@
 ```sh
   ssh ──────────────────────────────────────────────
 
-ssh-keygen -t rsa -b 4096 -C "you@example.com"
-cat ~/.ssh/id_rsa.pub
+ssh-keygen -t ed25519 -C "you@example.com"
+cat ~/.ssh/id_ed25519.pub
 
   clone ────────────────────────────────────────────
 
@@ -106,34 +106,81 @@ git config --global credential.helper 'cache --timeout=7777'
 git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
 ```
 
-### [nvim](https://github.com/Vvkmnn/v.nvim.git)
+#### [git-crypt](https://github.com/AGWA/git-crypt)
+
+```sh
+brew install git-crypt
+git-crypt unlock ~/dotfiles.key
+# key: ~/Documents/key (also in 1Password)
+
+  verify ───────────────────────────────────────────
+
+dotfiles show HEAD:.utcp_config.json | head -1
+# → GITCRYPT header = still encrypted
+# → JSON content = decrypted
+```
+
+### shell
+
+#### [zcomet](https://github.com/agkozak/zcomet)
+
+```sh
+git clone https://github.com/agkozak/zcomet.git ~/.zcomet/bin
+```
+
+#### [fzf](https://github.com/junegunn/fzf)
+
+```sh
+brew install fzf
+# shell integration loaded via .shell
+# Ctrl-R ── fzf history search (vi-mode compatible)
+# Ctrl-T ── fzf file finder
+# Alt-C ─── fzf cd
+```
+
+#### zsh
+
+```sh
+chsh -s $(which zsh)
+```
+
+### editor
+
+#### [nvim](https://github.com/Vvkmnn/v.nvim.git)
 
 `.config/nvim` → submodule
 
 ```sh
 dotfiles submodule update --init --recursive
+
+  brew ─────────────────────────────────────────────
+
+brew install neovim
+
+  debian (build from source) ───────────────────────
+
+cd .neovim                                          \
+&& make CMAKE_BUILD_TYPE=RelWithDebInfo             \
+&& make install
 ```
 
-### [tmux](https://github.com/tmux-plugins/tpm)
+#### [emacs](https://github.com/railwaycat/homebrew-emacsmacport)
+
+```sh
+brew tap railwaycat/emacsmacport
+brew install emacs-mac                              \
+  --with-spacemacs-icon --with-ctags                \
+  --with-native-compilation --with-mac-metal        \
+  --with-starter
+```
+
+### [tmux](https://github.com/tmux/tmux/wiki)
 
 ```sh
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 ```
 
 ### [claude](https://docs.anthropic.com/en/docs/claude-code)
-
-```sh
-  decrypt ──────────────────────────────────────────
-  code-mode servers restore automatically
-
-git-crypt unlock ~/dotfiles.key
-
-  verify ───────────────────────────────────────────
-
-dotfiles show HEAD:.utcp_config.json | head -1
-# → GITCRYPT header means still encrypted
-# → JSON content means decrypted, code-mode servers ready
-```
 
 ```
   .claude/ ─────────────────────────────────────────
@@ -144,10 +191,11 @@ dotfiles show HEAD:.utcp_config.json | head -1
   ├── settings.json ─── plugins, hooks, permissions
   ├── statusline.sh ─── custom status bar
   │
-  ├── rules/ ────────── 9 behavioral rules
+  ├── rules/ ────────── 10 behavioral rules
   │   ├── explore.md       investigate before acting
   │   ├── verify.md        evidence-based claims
   │   ├── test.md          testing requirements
+  │   ├── plan.md          plan lifecycle + tasks
   │   ├── minimize.md      simplicity principles
   │   ├── teach.md         educational insights
   │   ├── recover.md       error recovery
@@ -155,28 +203,29 @@ dotfiles show HEAD:.utcp_config.json | head -1
   │   ├── orchestrate.md   subagent delegation
   │   └── preview.md       preview before acting
   │
-  ├── skills/ ───────── 28 custom skills
-  ├── commands/ ─────── 13 slash commands
+  ├── skills/ ───────── 29 custom skills
   │
   ├── hooks/ ────────── 6 event hooks (JS)
   │   ├── session-start.js      context + reminders
   │   ├── pre-tool-use.js       safety guards
   │   ├── post-tool-use.js      tracking
-  │   ├── permission-request.js approval flow
+  │   ├── pre-compact.js        plan snapshot
   │   ├── notification.js       system alerts
   │   └── stop.js               session cleanup
   │
   └── mcp/ ──────────── 36 MCP servers
       ├── MCP.md            server inventory
+      ├── config.json       mcp-proxy config (git-crypt)
       └── mcp.json.bak     encrypted backup (native format)
 ```
 
 ```
   secrets ──────────────────────────────────────────
 
-  .utcp_config.json ──────── code-mode servers   (git-crypt)
-  .claude.json ────────────── Claude config       (git-crypt)
-  .claude/mcp/mcp.json.bak ─ MCP backup          (git-crypt)
+  .utcp_config.json ─────────── code-mode servers   (git-crypt)
+  .claude.json ─────────────── Claude config       (git-crypt)
+  .claude/mcp/mcp.json.bak ── MCP backup          (git-crypt)
+  .claude/mcp/config.json ─── mcp-proxy config    (git-crypt)
 
   key: ~/Documents/key (also in 1Password)
   new machine: git-crypt unlock ~/dotfiles.key
@@ -184,19 +233,14 @@ dotfiles show HEAD:.utcp_config.json | head -1
   mcp.json.bak is portable backup in native mcpServers format
 ```
 
-### setup
+#### [mcp-proxy](https://github.com/TBXark/mcp-proxy)
+
+NOT brew `mcp-proxy` (`sparfenyuk/mcp-proxy`, Python — different project)
 
 ```sh
-chmod +x ~/.setup/*.sh
-# ~/.setup/setup.sh     guided setup (runs others)
-# ~/.setup/brew.sh      packages (or use Brewfile)
-# ~/.setup/macos.sh     system defaults
-# ~/.setup/fonts.sh     nerd fonts
-# ~/.setup/mas.sh       Mac App Store apps
-# ~/.setup/zsh.sh       shell setup
-# ~/.setup/tmux.sh      tmux config
-# ~/.setup/nvim.sh      neovim setup
-# ~/.setup/debian.sh    debian packages
+go install github.com/TBXark/mcp-proxy@latest
+mkdir -p ~/.claude/mcp/bin
+cp "$(go env GOPATH)/bin/mcp-proxy" ~/.claude/mcp/bin/
 ```
 
 ## macos
@@ -221,7 +265,7 @@ brew bundle install --file=~/.setup/Resources/Brewfile
   individual ───────────────────────────────────────
 
 brew install neovim gh jq fzf btop tmux bat        \
-             coreutils gnupg fnm
+             coreutils gnupg fnm git-crypt go
 
   window management ────────────────────────────────
 
@@ -237,7 +281,6 @@ brew install --cask ghostty 1password alfred        \
 
   node ─────────────────────────────────────────────
 
-# nvm install node                                  # deprecated
 fnm install --lts
 
   python ───────────────────────────────────────────
@@ -246,7 +289,20 @@ brew install python3 pipx
 pipx install virtualenv
 ```
 
-### defaults
+### configure
+
+#### [scripts](https://github.com/Vvkmnn/dotfiles/tree/v-macos-macbook/.setup)
+
+```sh
+chmod +x ~/.setup/*.sh
+# ~/.setup/setup.sh     guided setup (runs others)
+# ~/.setup/brew.sh      packages (or use Brewfile)
+# ~/.setup/macos.sh     system defaults
+# ~/.setup/fonts.sh     nerd fonts
+# ~/.setup/mas.sh       Mac App Store apps
+```
+
+#### [defaults](https://macos-defaults.com)
 
 ```sh
   Dock ─────────────────────────────────────────────
@@ -267,7 +323,7 @@ defaults write com.apple.loginwindow TALLogoutSavesState -bool false
 defaults write NSGlobalDomain AppleHighlightColor -string "0.800000 0.200000 0.200000"
 ```
 
-### services
+#### [services](https://github.com/koekeishiya/yabai/wiki)
 
 ```sh
   yabai scripting addition ─────────────────────────
@@ -283,22 +339,6 @@ yabai --start-service
 brew services start felixkratz/formulae/sketchybar
 ```
 
-### [nvim](https://neovim.io/)
-
-```sh
-brew install neovim
-```
-
-### [emacs](https://github.com/railwaycat/homebrew-emacsmacport)
-
-```sh
-brew tap railwaycat/emacsmacport
-brew install emacs-mac                              \
-  --with-spacemacs-icon --with-ctags                \
-  --with-native-compilation --with-mac-metal        \
-  --with-starter
-```
-
 ## linux
 
 ### [debian](https://wiki.debian.org/LTS)
@@ -308,22 +348,6 @@ sudo apt-get update && sudo apt-get upgrade
 sudo apt-get install git zsh curl vim openssh-client \
                      aptitude build-essential         \
                      ninja-build gettext cmake unzip
-```
-
-### zsh
-
-```sh
-chsh -s $(which zsh)
-```
-
-### [nvim](https://neovim.io/)
-
-build from source on older Debian
-
-```sh
-cd .neovim                                          \
-&& make CMAKE_BUILD_TYPE=RelWithDebInfo             \
-&& make install
 ```
 
 ## windows
