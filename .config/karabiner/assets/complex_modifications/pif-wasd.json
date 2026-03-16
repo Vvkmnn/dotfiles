@@ -1,0 +1,58 @@
+{
+  "title": "Pokemon Infinite Fusion - WASD Gaming Layout",
+  "rules": [
+    {
+      "description": "WASD movement + E/R/F/Tab for lost bindings (Wine Crossover only)",
+      "manipulators": [
+        {
+          "type": "basic",
+          "from": { "key_code": "w" },
+          "to": [{ "key_code": "up_arrow" }],
+          "conditions": [{ "type": "frontmost_application_if", "bundle_identifiers": ["^org\\.winehq\\.wine"] }]
+        },
+        {
+          "type": "basic",
+          "from": { "key_code": "a" },
+          "to": [{ "key_code": "left_arrow" }],
+          "conditions": [{ "type": "frontmost_application_if", "bundle_identifiers": ["^org\\.winehq\\.wine"] }]
+        },
+        {
+          "type": "basic",
+          "from": { "key_code": "s" },
+          "to": [{ "key_code": "down_arrow" }],
+          "conditions": [{ "type": "frontmost_application_if", "bundle_identifiers": ["^org\\.winehq\\.wine"] }]
+        },
+        {
+          "type": "basic",
+          "from": { "key_code": "d" },
+          "to": [{ "key_code": "right_arrow" }],
+          "conditions": [{ "type": "frontmost_application_if", "bundle_identifiers": ["^org\\.winehq\\.wine"] }]
+        },
+        {
+          "type": "basic",
+          "from": { "key_code": "e" },
+          "to": [{ "key_code": "a" }],
+          "conditions": [{ "type": "frontmost_application_if", "bundle_identifiers": ["^org\\.winehq\\.wine"] }]
+        },
+        {
+          "type": "basic",
+          "from": { "key_code": "r" },
+          "to": [{ "key_code": "s" }],
+          "conditions": [{ "type": "frontmost_application_if", "bundle_identifiers": ["^org\\.winehq\\.wine"] }]
+        },
+        {
+          "type": "basic",
+          "from": { "key_code": "f" },
+          "to": [{ "key_code": "d" }],
+          "conditions": [{ "type": "frontmost_application_if", "bundle_identifiers": ["^org\\.winehq\\.wine"] }]
+        },
+        {
+          "type": "basic",
+          "from": { "key_code": "tab" },
+          "to": [{ "key_code": "w" }],
+          "conditions": [{ "type": "frontmost_application_if", "bundle_identifiers": ["^org\\.winehq\\.wine"] }]
+        }
+      ]
+    }
+  ]
+}

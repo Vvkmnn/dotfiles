@@ -1,0 +1,55 @@
+#!/usr/bin/env sh
+# Vivek Menon - vvkmnn.xyz
+
+##################################################
+##################################################
+######################        ####################
+################                    ##############
+#############                #######   ###########
+###########                #########     #########
+#########                 ########         #######
+########                  ######            ######
+#######                   ######             #####
+######            ####### ######              ####
+#####           ######### ######               ###
+#####           #######   ######               ###
+#####            ######    #####               ###
+#####             ######    ####               ###
+#####              ######    ###               ###
+#####               ######    #                ###
+######               ######                   ####
+#######               #####                  #####
+########               #####                ######
+##########              #####             ########
+############             #####          ##########
+##############            #####       ############
+##################                ################
+##################################################
+##################################################
+
+# ┌───────────────────────────────── ~/.minimal ─ Minimal shell config ────────┐
+#  Vivek Menon <mail@vvkmnn.xyz>
+# └────────────────────────────────────────────────────────────────────────────┘
+#  Purpose: Bare essentials for restricted/sandbox environments
+#           Used when AI_SANDBOX_ONLY=1 or minimal shell needed
+#  Contains: Basic PATH, EDITOR, TERM settings
+
+# GUARD Prevent double-sourcing (shell-local, fresh per new shell)
+#       No AI_SANDBOX_ONLY check - this file SETS that flag
+[ -n "$__MINIMAL_SOURCED" ] && return
+__MINIMAL_SOURCED=1
+
+export LANG=${LANG:-en_US.UTF-8}
+export LC_ALL=${LC_ALL:-en_US.UTF-8}
+export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/local/sbin:$HOME/.local/bin:$PATH"
+
+# Essentials for AI tools
+export EDITOR=${EDITOR:-nvim}
+export VISUAL=${VISUAL:-$EDITOR}
+export TERM=${TERM:-xterm-256color}
+
+# GPG for git commits in AI tools
+export GPG_TTY=$(tty)
+
+# Signal to other files that we're in sandbox mode
+[ -n "$CODEX_SANDBOX" ] && export AI_SANDBOX_ONLY=1
