@@ -160,8 +160,8 @@ window-decoration = auto
 # window-position-y = center
 
 # Window padding
-window-padding-x = 7
-window-padding-y = 7
+window-padding-x = 0
+window-padding-y = 0
 
 # Asymmetric padding (matches your WezTerm's left=15)
 # window-padding-x = 15
@@ -439,11 +439,12 @@ confirm-close-surface = false
 # Auto update
 # auto-update = true
 
-# Auto update channel
-# auto-update-channel = stable
+# Auto update channel (v1.3.0 stable fixes memory leak from v1.2.3, PR #10251/#10270)
+auto-update-channel = stable
 
-# Image storage limit (prevents unbounded memory from pasted images)
-image-storage-limit = 160000000
+# Image storage limit - lowered from 160MB to 50MB to reduce memory pressure
+# on 16GB system running multiple Claude Code sessions
+image-storage-limit = 50000000
 
 # Custom shader
 # custom-shader = ""
