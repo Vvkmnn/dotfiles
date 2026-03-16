@@ -5,7 +5,7 @@
 #  Vivek Menon <mail@vvkmnn.xyz>
 # └────────────────────────────────────────────────────────────────────────────┘
 #  Purpose: Complex operations that need logic/loops
-#  Contains: get_colored_face(), _fnm_lts_check(), _claude_config_backup(), c(), cl(), cc(), update_all(), coffee(), pokemonif_patch()
+#  Contains: get_colored_face(), _recover_cwd(), _fnm_lts_check(), _claude_config_backup(), c(), cl(), cc(), update_all(), coffee(), pif(), quicksave()
 #  Archive: Disabled functions preserved at bottom
 
 # ┌───────────────────────────────────────────────────────────────── guard ────┐
@@ -24,6 +24,21 @@
     local color=${colors[$((RANDOM % ${#colors[@]} + 1))]}
     echo -e "\033[${color}m${face}\033[0m"
   }
+# └────────────────────────────────────────────────────────────────────────────┘
+
+# ┌─────────────────────────────────────────────────────────── cwd recovery ──┐
+  # recover stale CWD after volume unmount/remount (e.g., SSD disconnect)
+  # remembers original path so it can auto-return when volume comes back
+  _recover_cwd() {
+    if [[ -n "$_cwd_lost" ]] && [[ -d "$_cwd_lost" ]]; then
+      builtin cd -q "$_cwd_lost" && unset _cwd_lost && return
+    fi
+    if ! [[ -d . ]]; then
+      _cwd_lost="$PWD"
+      builtin cd -q "$PWD" 2>/dev/null || builtin cd -q ~
+    fi
+  }
+  [[ -n "$ZSH_VERSION" ]] && precmd_functions+=(_recover_cwd)
 # └────────────────────────────────────────────────────────────────────────────┘
 
 # ┌──────────────────────────────────────────────────────────────────── fnm ────┐
@@ -87,6 +102,14 @@
     local gold='\033[38;5;214m'
     __claude_msg '-,,-' 'continuing...' "$gold"
     claude --continue "$@"
+  }
+
+  # agent teams - always new session (teams can't resume/continue)
+  ct() {
+    (_claude_config_backup &)
+    local peach='\033[38;5;209m'
+    __claude_msg '^,,^' 'assembling...' "$peach"
+    CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1 claude "$@"
   }
 # └─────────────────────────────────────────────────────────────────────────────┘
 
@@ -202,21 +225,34 @@
 # └────────────────────────────────────────────────────────────────────────────┘
 
 # ┌──────────────────────────────────────────────────────────────── games ────┐
-  # patch pokemon infinite fusion: enable debug mode (F9) without Magic Boots
-  # re-run after every update since INSTALL_OR_UPDATE.bat does git reset --hard
-  pokemonif_patch() {
-    local script="/Users/v/Documents/games/InfiniteFusion/Data/Scripts/001_Settings.rb"
-    if [[ ! -f "$script" ]]; then
-      echo "Not found: $script" && return 1
+  # Pokemon Infinite Fusion — Wine Crossover (Gcenx fork) on macOS ARM64
+  #
+  # Game folder:  ~/Library/Mobile Documents/.../Games/PokemonInfiniteFusion/ (iCloud)
+  # Engine:       Wine Crossover 23.7.1 via Rosetta 2 (native mkxp-z had broken fonts)
+  # Wine config:  FontSmoothing=0, ForceOpenGLBackingStore=y (set in Wine registry)
+  # Saves:        game folder Saves/ (Wine accesses directly via working directory)
+  # Debug:        $DEBUG = true prepended to 001_Settings.rb (enables F9 menu)
+  #               Wiped on every update (git reset --hard), auto-reapplied here
+  # Updates:      git fetch --depth=1 origin releases && git reset --hard origin/releases
+  #               Never touch main branch (dev, 1197+ unstable commits)
+  pif() {
+    local dir="/Users/v/Library/Mobile Documents/com~apple~CloudDocs/Games/PokemonInfiniteFusion"
+    local wine="/opt/homebrew/bin/wine"
+    if [[ ! -d "$dir" ]]; then
+      echo "Not found: $dir" && return 1
     fi
-    if head -1 "$script" | grep -q '^\$DEBUG = true'; then
-      echo -e "$(get_colored_face) Debug mode already patched"
-      return 0
+    if [[ ! -x "$wine" ]]; then
+      echo "Wine not found: $wine (brew install --cask gcenx/wine/wine-crossover)" && return 1
     fi
-    sed -i '' '1i\
+    # Re-apply debug patch if missing (git reset --hard wipes it on updates)
+    if ! head -1 "$dir/Data/Scripts/001_Settings.rb" | grep -q 'DEBUG'; then
+      sed -i '' '1i\
 $DEBUG = true  # enable debug mode (F9) without Magic Boots
-' "$script"
-    echo -e "$(get_colored_face) Debug mode patched → F9 works without Magic Boots"
+' "$dir/Data/Scripts/001_Settings.rb"
+      echo "Debug patch re-applied."
+    fi
+    echo -e "$(get_colored_face) Launching Pokemon Infinite Fusion (Wine)..."
+    cd "$dir" && "$wine" InfiniteFusion.exe 2>&1
   }
 # └────────────────────────────────────────────────────────────────────────────┘
 
@@ -241,4 +277,40 @@ $DEBUG = true  # enable debug mode (F9) without Magic Boots
 
   # chatblade (replaced by claude)
   # call_chatblade_ai() { ... }
+# └────────────────────────────────────────────────────────────────────────────┘
+
+# ┌──────────────────────────────── Time Machine ─────────────────────────────┐
+#  APFS snapshots for pre-install safety. Recovery: hold power > TM restore
+  quicksave() {
+    local dim='\033[2m' r='\033[0m'
+    case "${1:---save}" in
+      -l|--list)
+        echo -e "$(get_colored_face) ─── local snapshots ───"
+        local snaps
+        snaps=$(tmutil listlocalsnapshots / 2>/dev/null | grep -v "^Snapshots")
+        [[ -z "$snaps" ]] && echo "  │ none" || echo "$snaps" | sed 's/^/  │ /'
+        ;;
+      -d|--delete)
+        echo -e "$(get_colored_face) ─── deleting all local snapshots ───"
+        tmutil listlocalsnapshots / 2>/dev/null \
+          | grep -oE '[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{6}' \
+          | while IFS= read -r d; do
+              echo "  │ $d"
+              sudo tmutil deletelocalsnapshots "$d"
+            done
+        echo -e "  └─ ${dim}$(df -h /System/Volumes/Data | awk 'NR==2{print $3" / "$2" ("$5" full)"}')${r}"
+        ;;
+      -h|--help)
+        echo "quicksave          create APFS snapshot (use before risky installs)"
+        echo "quicksave -l       list local snapshots"
+        echo "quicksave -d       delete all local snapshots (reclaim space)"
+        echo "quicksave -h       this help"
+        ;;
+      *)
+        echo -e "$(get_colored_face) ─── creating snapshot ───"
+        sudo tmutil snapshot
+        echo -e "  └─ ${dim}restore: Recovery Mode (hold power) > Restore from Time Machine${r}"
+        ;;
+    esac
+  }
 # └────────────────────────────────────────────────────────────────────────────┘

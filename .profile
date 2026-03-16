@@ -124,10 +124,10 @@
       export CPATH=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include
 
       # ───────────────────────────────────────────────────────────────── go ──
-      export GOROOT=/usr/local/Cellar/go/1.13.4/libexec
-      export GOPATH=$HOME/Documents/dev/go
-      path_prepend "$GOPATH/bin"
-      path_prepend "$GOROOT/bin"
+      # NOTE: GOBIN=~/.local/bin (already on PATH via ~/.minimal)
+      export GOROOT="$(brew --prefix go 2>/dev/null)/libexec"
+      export GOPATH="$HOME/.local/share/go"
+      export GOBIN="$HOME/.local/bin"
 
       # ────────────────────────────────────────────────────────────── python ──
       . "$HOME/.local/bin/env"

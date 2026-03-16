@@ -66,6 +66,20 @@
       # DETACHED: true=adds -d flag (kicks other clients out), false=allow multiple clients
       ZSH_TMUX_DETACHED=false
 
+      # ──────────────────────────────────────────────────────────── history ──
+      HISTSIZE=50000
+      SAVEHIST=50000
+      HISTFILE=~/.zsh_history
+      setopt EXTENDED_HISTORY          # record timestamp + duration (: ts:elapsed;cmd)
+      setopt INC_APPEND_HISTORY_TIME   # write after cmd finishes (accurate duration)
+      setopt HIST_IGNORE_ALL_DUPS      # remove older duplicate when new added
+      setopt HIST_IGNORE_SPACE         # space-prefixed commands not recorded
+      setopt HIST_REDUCE_BLANKS        # strip superfluous whitespace
+      setopt HIST_VERIFY               # show expansion before executing (!! etc)
+      setopt HIST_EXPIRE_DUPS_FIRST    # expire duplicates first when trimming
+      setopt HIST_FIND_NO_DUPS         # skip duplicates during search
+      setopt HIST_SAVE_NO_DUPS         # don't write duplicates to file
+
       # ────────────────────────────────────────────────────────────── zcomet ──
       if [[ ! -f ${ZDOTDIR:-${HOME}}/.zcomet/bin/zcomet.zsh ]]; then
           command git clone https://github.com/agkozak/zcomet.git ${ZDOTDIR:-${HOME}}/.zcomet/bin
@@ -90,10 +104,26 @@
       # ─────────────────────────────────────────────────────────────── plugin ──
       # directory jumping
       zcomet load agkozak/zsh-z
+      # fuzzy finder with completion and key bindings (before vi-mode so widgets exist)
+      zcomet load junegunn/fzf shell completion.zsh key-bindings.zsh
+      # ──────────────────────────────────────────────────────── vi-mode hooks ──
+      # zsh-vi-mode wipes all keybindings on init; restore them here
+      function zvm_after_init() {
+        # Ctrl+R: fzf fuzzy history search
+        bindkey '^R' fzf-history-widget
+        # Up/Down: prefix-based history search (type prefix, arrow filters)
+        bindkey '^[[A' history-beginning-search-backward
+        bindkey '^[OA' history-beginning-search-backward
+        bindkey '^[[B' history-beginning-search-forward
+        bindkey '^[OB' history-beginning-search-forward
+      }
+      function zvm_after_lazy_keybindings() {
+        # Normal mode: k/j for prefix-based history navigation
+        bindkey -M vicmd 'k' history-beginning-search-backward
+        bindkey -M vicmd 'j' history-beginning-search-forward
+      }
       # vi mode
       zcomet load jeffreytse/zsh-vi-mode
-      # fuzzy finder with completion and key bindings
-      zcomet load junegunn/fzf shell completion.zsh key-bindings.zsh
       # auto-switch python virtualenv
       zcomet load MichaelAquilina/zsh-autoswitch-virtualenv
       # git aliases

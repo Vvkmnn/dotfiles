@@ -167,13 +167,16 @@
       # alias pi3=pip3
 
       # ───────────────────────────────────────────────────────────── window ──
-      alias brs='brew services restart skhd'
-      alias bry='brew services restart yabai'
-      alias ,ys='yabai --restart-service && skhd --restart-service'
-      alias ,ystart='yabai --start-service'
-      alias ,ystop='yabai --stop-service'
-      alias _game="brew services stop yabai && brew services stop skhd"
-      alias _normal="brew services start yabai && brew services start skhd"
+      alias wms='yabai --start-service && skhd --start-service'
+      alias wmx='yabai --stop-service && skhd --stop-service'
+      alias wmr='yabai --restart-service && skhd --restart-service && brew services restart sketchybar'
+      # alias brs='brew services restart skhd'                                  # use wmr
+      # alias bry='brew services restart yabai'                                 # use wmr
+      # alias ,ys='yabai --restart-service && skhd --restart-service'           # use wmr
+      # alias ,ystart='yabai --start-service'                                   # use wms
+      # alias ,ystop='yabai --stop-service'                                     # use wmx
+      # alias _game="brew services stop yabai && brew services stop skhd"       # use wmx
+      # alias _normal="brew services start yabai && brew services start skhd"   # use wms
       ;;
   Linux)
       # alias e='export DISPLAY=:0.0; export LIBGL_ALWAYS_INDIRECT=1; setxkbmap -layout us; setsid emacs'
@@ -181,14 +184,6 @@
       ;;
   CYGWIN* | MINGW32* | MSYS* | MINGW*) ;;
   esac
-# └────────────────────────────────────────────────────────────────────────────┘
-
-# ┌──────────────────────────────────────────────────────────────── games ────┐
-  # pokemon infinite fusion (wine)
-  alias pokemonif='wine /Users/v/Documents/games/InfiniteFusion/InfiniteFusion.exe'
-  alias pokemonif!='wine /Users/v/Documents/games/InfiniteFusion/InfiniteFusion-performance.exe'
-  alias pokemonif_update='wine /Users/v/Documents/games/InfiniteFusion/INSTALL_OR_UPDATE.bat && pokemonif_patch'
-  alias ,pif='cd /Users/v/Documents/games/InfiniteFusion'
 # └────────────────────────────────────────────────────────────────────────────┘
 
 # ┌──────────────────────────────────────────────────────────────── archive ───┐
