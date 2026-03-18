@@ -39,7 +39,7 @@ internet_reconnect)
     sketchybar --animate sin $D --set location icon.color=0x008A869E
     sleep 0.4
 
-    sketchybar --set location icon.color=0x00B0B7C0 label.drawing=on label.color=0x00B0B7C0
+    sketchybar --set location "icon=󰖟" icon.color=0x00B0B7C0 label.drawing=on label.color=0x00B0B7C0
     sketchybar --animate sin $D --set location icon.color=0xffB0B7C0 label.color=0xffB0B7C0
     sleep $W
 

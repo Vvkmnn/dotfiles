@@ -174,6 +174,12 @@ sketchybar --add item internet_handler left \
 	script="$PLUGIN_DIR/internet_animate.sh" \
 	--subscribe internet_handler internet_disconnect internet_reconnect
 
+# Wake/unlock handler — needs fade-out on lock to look right, disabled for now
+# sketchybar --add item wake_handler left \
+# 	--set wake_handler drawing=off \
+# 	script="$PLUGIN_DIR/wake_fadein.sh" \
+# 	--subscribe wake_handler system_woke
+
 # NOTE: New spaces created after startup are handled by yabai's space_created
 # signal handler (see .yabairc:283-296). Destroyed spaces are handled by the
 # space_destroyed signal handler (see .yabairc:298-302).
@@ -494,6 +500,7 @@ sketchybar --add item clock_time right \
 	label.color=$TRANSPARENT \
 	label.padding_left=0 \
 	label.padding_right=0 \
+	width=0 \
 	padding_left=4 \
 	padding_right=12 \
 	script=""
@@ -520,6 +527,7 @@ sketchybar --add slider progress right 60 \
 	label.color=$TRANSPARENT \
 	label.padding_left=4 \
 	label.padding_right=0 \
+	width=0 \
 	padding_left=0 \
 	padding_right=4 \
 	script=""
@@ -534,6 +542,7 @@ sketchybar --add item progress_icon right \
 	icon.padding_left=2 \
 	icon.padding_right=2 \
 	label.drawing=off \
+	width=0 \
 	padding_left=3 \
 	padding_right=0 \
 	script=""
@@ -545,6 +554,7 @@ sketchybar --add item battery right \
 	icon.font="SFMono Nerd Font:Regular:16.0" \
 	icon.padding_right=4 \
 	label.font="SFMono Nerd Font:Regular:13.0" \
+	width=0 \
 	padding_right=4
 
 # Disk (updated by bar-daemon — statvfs 1s change detection)
@@ -553,6 +563,7 @@ sketchybar --add item disk right \
 	icon="󰋊" \
 	icon.font="SFMono Nerd Font:Regular:16.0" \
 	icon.padding_right=4 \
+	width=0 \
 	padding_right=4
 
 # Memory (updated by metrics-daemon)
@@ -561,6 +572,7 @@ sketchybar --add item memory right \
 	icon="󰍛" \
 	icon.font="SFMono Nerd Font:Regular:16.0" \
 	icon.padding_right=4 \
+	width=0 \
 	padding_right=4
 
 # CPU (updated by metrics-daemon)
@@ -569,6 +581,7 @@ sketchybar --add item cpu right \
 	icon="󰘚" \
 	icon.font="SFMono Nerd Font:Regular:16.0" \
 	icon.padding_right=4 \
+	width=0 \
 	padding_right=4
 
 # GPU Usage (updated by metrics-daemon)
@@ -577,6 +590,7 @@ sketchybar --add item gpu right \
 	icon="󰡷" \
 	icon.font="SFMono Nerd Font:Regular:16.0" \
 	icon.padding_right=4 \
+	width=0 \
 	padding_right=4
 
 # Total System Power (updated by metrics-daemon)
@@ -585,6 +599,7 @@ sketchybar --add item power right \
 	icon="󱐋" \
 	icon.font="SFMono Nerd Font:Regular:16.0" \
 	icon.padding_right=4 \
+	width=0 \
 	padding_right=4
 
 # Temperature (updated by metrics-daemon)
@@ -593,6 +608,7 @@ sketchybar --add item temp right \
 	icon="󰔏" \
 	icon.font="SFMono Nerd Font:Regular:16.0" \
 	icon.padding_right=4 \
+	width=0 \
 	padding_right=4
 
 # Legacy menuanywhere - old binary at plugins/menuanywhere_new if needed

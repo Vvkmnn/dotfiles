@@ -19,14 +19,13 @@ import SystemConfiguration
 
 // MARK: - Shared sketchybar helper (fire-and-forget)
 
-// Startup fade: first updates animate in smoothly instead of popping
-var startupFade = true
+// Smooth startup: first ~3s of updates animate with tanh 30 so values fade in
+var startupSmooth = true
 
 func sketchybar(_ args: [String]) {
     let proc = Process()
     proc.executableURL = URL(fileURLWithPath: "/opt/homebrew/bin/sketchybar")
-    // During startup, prepend --animate sin 30 so first values fade in
-    proc.arguments = startupFade ? ["--animate", "sin", "30"] + args : args
+    proc.arguments = startupSmooth ? ["--animate", "tanh", "30"] + args : args
     try? proc.run()
 }
 
@@ -1149,17 +1148,31 @@ setupPathMonitor()
 // 2. Macmon pipe reader (callback-based, ~10s intervals from macmon)
 setupMacmon()
 
-// 3. Immediate first updates (startupFade=true so these animate in)
-updateProgress()
-updateBattery()
-updateDisk()
+// 2b. Initialize networkActive + baseline bytes (so first updateNetwork shows real delta)
+let (initDown, initUp, initialActive) = readNetBytes()
+networkActive = initialActive
+prevDown = initDown
+prevUp = initUp
+hasPrev = true
 
-// End startup fade after 3s — subsequent updates are instant
-DispatchQueue.main.asyncAfter(deadline: .now() + 3) { startupFade = false }
+// 3. First updates: all sides simultaneously at +1s (startupSmooth=true animates them in)
+DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+    // Right side
+    updateProgress()
+    updateBattery()
+    updateDisk()
+    // Left side
+    updateNetwork()
+    updateConnection()
+    updateLocation()
+}
 
-// 4. Main 1s timer: network stats (every tick) + battery/disk (change detect) + connection (30s)
+// End smooth startup after 4s — subsequent updates are instant
+DispatchQueue.main.asyncAfter(deadline: .now() + 4) { startupSmooth = false }
+
+// 4. Main 1s timer: starts after first updates settle
 let mainTimer = DispatchSource.makeTimerSource(queue: DispatchQueue.main)
-mainTimer.schedule(deadline: .now() + 0.5, repeating: 1.0)
+mainTimer.schedule(deadline: .now() + 2.0, repeating: 1.0)
 mainTimer.setEventHandler {
     tick += 1
     updateNetwork()
@@ -1179,10 +1192,13 @@ progressTimer.schedule(deadline: .now() + progressDelay, repeating: 60.0)
 progressTimer.setEventHandler { updateProgress() }
 progressTimer.resume()
 
-// 6. Deferred first connection + location (wait 2s for items to exist in sketchybar)
-DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-    updateConnection()
-    updateLocation()
+// 7. SIGUSR1 handler: re-enable smooth animation (used by wake/unlock fade-in)
+let sigSource = DispatchSource.makeSignalSource(signal: SIGUSR1, queue: DispatchQueue.main)
+signal(SIGUSR1, SIG_IGN)  // ignore default handler, let GCD handle it
+sigSource.setEventHandler {
+    startupSmooth = true
+    DispatchQueue.main.asyncAfter(deadline: .now() + 3) { startupSmooth = false }
 }
+sigSource.resume()
 
 dispatchMain()
