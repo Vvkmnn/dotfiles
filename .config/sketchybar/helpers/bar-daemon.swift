@@ -19,17 +19,22 @@ import SystemConfiguration
 
 // MARK: - Shared sketchybar helper (fire-and-forget)
 
+// Startup fade: first updates animate in smoothly instead of popping
+var startupFade = true
+
 func sketchybar(_ args: [String]) {
     let proc = Process()
     proc.executableURL = URL(fileURLWithPath: "/opt/homebrew/bin/sketchybar")
-    proc.arguments = args
+    // During startup, prepend --animate sin 30 so first values fade in
+    proc.arguments = startupFade ? ["--animate", "sin", "30"] + args : args
     try? proc.run()
-    // No waitUntilExit() — sketchybar --set is idempotent, non-blocking main queue
 }
+
 
 // MARK: - Global state
 
 var networkActive = false
+var internetReachable = true
 var tick = 0
 
 // ═══════════════════════════════════════════════════════════════════
@@ -84,6 +89,9 @@ func fillColor(_ c: String) -> String {
 func updateNetwork() {
     let (curDown, curUp, active) = readNetBytes()
     networkActive = active
+
+    // Don't update network items while internet is down (animation script controls them)
+    if !internetReachable { return }
 
     if !active {
         sketchybar([
@@ -583,8 +591,8 @@ func sunriseSunsetLegacy(tz: String, month: Int) -> (sunrise: Int, sunset: Int) 
 func clockIcon(hour: Int) -> String {
     // 12h mapping: 0/12→12, 1/13→1, ..., 11/23→11
     let h12 = hour % 12  // 0-11
-    // Codepoints: 1=F143F, 2=F1440, ..., 12=F144A
-    let codepoint = h12 == 0 ? 0xF144A : (0xF143F + h12 - 1)
+    // Outline codepoints: 1=F144B, 2=F144C, ..., 12=F1456
+    let codepoint = h12 == 0 ? 0xF1456 : (0xF144B + h12 - 1)
     return String(UnicodeScalar(codepoint)!)
 }
 
@@ -612,38 +620,48 @@ func updateProgress() {
     // - Otherwise: gray clock face
     let gold = "0xffE8A838"
     let blue = "0xff4A90D9"
+    let red = "0xffE74C3C"
     let white = "0xffFFFFFF"
     let gray = "0xffA0A0A0"
 
     let icon: String
-    let color: String
-    let labelColor: String
+    let highlightColor: String  // clock icon + slider bar
+    let dayColor: String        // both day numbers (must match)
+    let displayHour = minute >= 30 ? hour + 1 : hour
 
     if hour == sunriseHour && minute < 30 {
         icon = "◐"
-        color = gold
-        labelColor = gold
+        highlightColor = gold
+        dayColor = gold
     } else if hour == sunsetHour && minute < 30 {
         icon = "◑"
-        color = blue
-        labelColor = blue
+        highlightColor = blue
+        dayColor = blue
     } else if minute == 0 {
-        icon = clockIcon(hour: hour)
-        color = white
-        labelColor = white
+        icon = clockIcon(hour: displayHour)
+        highlightColor = red
+        dayColor = red
     } else {
-        icon = clockIcon(hour: hour)
-        color = gray
-        labelColor = gray
+        icon = clockIcon(hour: displayHour)
+        highlightColor = white
+        dayColor = gray
     }
 
     let time = String(format: "%02d:%02d", hour, minute)
 
+    // Slider properties set without animation (startupFade interferes with slider state)
+    let sb = "/opt/homebrew/bin/sketchybar"
+    let sliderProc = Process()
+    sliderProc.executableURL = URL(fileURLWithPath: sb)
+    sliderProc.arguments = ["--set", "progress", "slider.percentage=\(progress)",
+                            "slider.highlight_color=\(highlightColor)",
+                            "slider.background.color=0xff8A869E"]
+    try? sliderProc.run()
+
     sketchybar([
-        "--set", "progress_icon", "icon=\(icon)", "icon.color=\(color)",
-        "--set", "progress", "icon=\(dayOfYear)", "icon.color=\(color)",
-        "slider.percentage=\(progress)", "slider.highlight_color=\(color)",
-        "label=\(nextDay)", "label.color=\(labelColor)",
+        "--set", "progress_icon", "icon=\(icon)", "icon.color=\(highlightColor)",
+        "--set", "progress", "icon=\(dayOfYear)", "icon.color=\(dayColor)",
+        "label=\(nextDay)", "label.color=\(dayColor)",
         "--set", "clock_time", "label=\(time)"
     ])
 }
@@ -970,13 +988,19 @@ func updateConnection() {
         connectionCheckInFlight = false
 
         if let inet = inetLatency {
+            // Internet is up — trigger reconnect animation if was down
+            if !internetReachable {
+                internetReachable = true
+                sketchybar(["--trigger", "internet_reconnect"])
+                updateLocation(force: true)
+            }
+
             let current = Int(inet + 0.5)
             if let prev = pingEMA {
                 pingEMA = (30 * current + 70 * prev) / 100
             } else {
                 pingEMA = current
             }
-            // ₘₛ = subscript m (U+2098) + subscript s (U+209B)
             let label = "\(pingEMA!)\u{2098}\u{209B}"
             let gwInt = gwLatency.map { Int($0 + 0.5) }
             let color: String
@@ -994,9 +1018,12 @@ func updateConnection() {
             sketchybar(["--set", "connection", "icon=\(icon)", "icon.drawing=on", "icon.color=\(color)",
                         "label=\(label)", "label.drawing=on", "label.color=\(color)"])
         } else {
+            // Internet is down — trigger disconnect animation if was up
+            if internetReachable {
+                internetReachable = false
+                sketchybar(["--trigger", "internet_disconnect"])
+            }
             pingEMA = nil
-            sketchybar(["--set", "connection", "icon=\(icon)", "icon.drawing=on", "icon.color=0xff8A869E",
-                        "label=--", "label.drawing=on", "label.color=0xff8A869E"])
         }
     }
 
@@ -1062,6 +1089,8 @@ func countryToFlag(_ cc: String) -> String {
 }
 
 func updateLocation(force: Bool = false) {
+    // Don't update while disconnected (animation script controls location item)
+    guard internetReachable else { return }
     guard networkActive else {
         sketchybar(["--set", "location", "icon=\u{F0AC8}", "icon.drawing=on", "label=", "label.drawing=off"])
         return
@@ -1120,10 +1149,13 @@ setupPathMonitor()
 // 2. Macmon pipe reader (callback-based, ~10s intervals from macmon)
 setupMacmon()
 
-// 3. Immediate first updates
+// 3. Immediate first updates (startupFade=true so these animate in)
 updateProgress()
 updateBattery()
 updateDisk()
+
+// End startup fade after 3s — subsequent updates are instant
+DispatchQueue.main.asyncAfter(deadline: .now() + 3) { startupFade = false }
 
 // 4. Main 1s timer: network stats (every tick) + battery/disk (change detect) + connection (30s)
 let mainTimer = DispatchSource.makeTimerSource(queue: DispatchQueue.main)

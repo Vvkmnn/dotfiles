@@ -30,6 +30,8 @@ export MISTY_BLUE=0xffB0B7C0 # Misty Blue accent
 
 # --- Custom Events --- #
 sketchybar --add event network_change
+sketchybar --add event internet_disconnect
+sketchybar --add event internet_reconnect
 
 # NWPathMonitor (superseded — now handled by bar-daemon inline)
 # (
@@ -61,12 +63,12 @@ sketchybar --bar height=29 \
 # --- Defaults --- #
 # Fonts: was SF Pro/SF Symbols, switched to SFMono Nerd Font (no sf-symbols dependency)
 sketchybar --default icon.font="SFMono Nerd Font:Medium:16.0" \
-	icon.color=$MID_GRAY \
+	icon.color=$TRANSPARENT \
 	icon.padding_left=2 \
 	icon.padding_right=3 \
 	icon.y_offset=0 \
 	label.font="SFMono Nerd Font:Regular:13.0" \
-	label.color=$MID_GRAY \
+	label.color=$TRANSPARENT \
 	label.padding_left=2 \
 	label.padding_right=2 \
 	label.y_offset=0 \
@@ -80,7 +82,7 @@ sketchybar --default icon.font="SFMono Nerd Font:Medium:16.0" \
 # Logo
 sketchybar --add item logo left \
 	--set logo background.image="/Users/v/Documents/logo/vLogoWhite_inverted.jpg" \
-	background.image.scale=0.048 \
+	background.image.scale=0 \
 	background.color=$TRANSPARENT \
 	background.height=22 \
 	background.drawing=on \
@@ -153,17 +155,24 @@ for sid in $SPACE_IDS; do
 		--set space.$sid \
 		icon="$sid" \
 		icon.font="SFMono Nerd Font:Medium:12.0" \
-		width=3 \
+		icon.color=0x00000000 \
+		width=20 \
 		padding_left=0 \
 		padding_right=0 \
 		click_script="/opt/homebrew/bin/yabai -m space --focus $sid"
 done
 
-# Single space handler — runs space.sh ONCE per event (not N times)
+# Single space handler — script set to "" at creation; startup_cascade.sh restores it after fade-in
 sketchybar --add item space_handler left \
 	--set space_handler drawing=off \
-	script="$PLUGIN_DIR/space.sh" \
+	script="" \
 	--subscribe space_handler space_change space_windows_change
+
+# Internet state handler — bar-daemon triggers events, this runs the animation scripts
+sketchybar --add item internet_handler left \
+	--set internet_handler drawing=off \
+	script="$PLUGIN_DIR/internet_animate.sh" \
+	--subscribe internet_handler internet_disconnect internet_reconnect
 
 # NOTE: New spaces created after startup are handled by yabai's space_created
 # signal handler (see .yabairc:283-296). Destroyed spaces are handled by the
@@ -184,9 +193,9 @@ sketchybar --add item location left \
 	icon="󰖟" \
 	icon.font="SFMono Nerd Font:Regular:16.0" \
 	icon.padding_right=3 \
-	icon.color=$SILVER \
+	icon.color=$TRANSPARENT \
 	label.font="SFMono Nerd Font:Regular:13.0" \
-	label.color=$SILVER \
+	label.color=$TRANSPARENT \
 	padding_left=-2 \
 	padding_right=3
 
@@ -196,9 +205,9 @@ sketchybar --add item connection left \
 	icon="󰤨" \
 	icon.font="SFMono Nerd Font:Regular:16.0" \
 	icon.padding_right=3 \
-	icon.color=$SILVER \
+	icon.color=$TRANSPARENT \
 	label.font="SFMono Nerd Font:Regular:12.0" \
-	label.color=$SILVER \
+	label.color=$TRANSPARENT \
 	padding_left=3 \
 	padding_right=3
 
@@ -209,15 +218,15 @@ sketchybar --add item network_down left \
 	icon.font="SFMono Nerd Font:Regular:16.0" \
 	icon.padding_right=1 \
 	label.font="SFMono Nerd Font:Regular:13.0" \
-	label.color=$SILVER \
+	label.color=$TRANSPARENT \
 	label.width=24 \
 	label.align=right \
 	padding_left=3 \
 	padding_right=0
 
 sketchybar --add graph graph_down left 50 \
-	--set graph_down graph.color=0xff8A869E \
-	graph.fill_color=0x338A869E \
+	--set graph_down graph.color=0x008A869E \
+	graph.fill_color=0x008A869E \
 	graph.line_width=1.0 \
 	background.height=12 \
 	background.color=0x00000000 \
@@ -231,15 +240,15 @@ sketchybar --add item network_up left \
 	icon.font="SFMono Nerd Font:Regular:16.0" \
 	icon.padding_right=1 \
 	label.font="SFMono Nerd Font:Regular:13.0" \
-	label.color=$SILVER \
+	label.color=$TRANSPARENT \
 	label.width=24 \
 	label.align=right \
 	padding_left=3 \
 	padding_right=0
 
 sketchybar --add graph graph_up left 50 \
-	--set graph_up graph.color=0xff8A869E \
-	graph.fill_color=0x338A869E \
+	--set graph_up graph.color=0x008A869E \
+	graph.fill_color=0x008A869E \
 	graph.line_width=1.0 \
 	background.height=12 \
 	background.color=0x00000000 \
@@ -480,8 +489,9 @@ sketchybar --add graph graph_up left 50 \
 sketchybar --add item clock_time right \
 	--set clock_time update_freq=0 \
 	icon.drawing=off \
+	label="$(date +%H:%M)" \
 	label.font="SFMono Nerd Font:Regular:13.0" \
-	label.color=$WHITE \
+	label.color=$TRANSPARENT \
 	label.padding_left=0 \
 	label.padding_right=0 \
 	padding_left=4 \
@@ -494,19 +504,20 @@ sketchybar --add item clock_time right \
 # Colors set by bar-daemon: gray normal, gold at sunrise, blue at sunset, white flash on hour
 sketchybar --add slider progress right 60 \
 	--set progress \
-	slider.highlight_color=$MID_GRAY \
-	slider.background.height=4 \
-	slider.background.color=$DIM \
+	slider.highlight_color=0x00FFFFFF \
+	slider.background.height=3 \
+	slider.background.color=0x008A869E \
 	slider.background.corner_radius=2 \
 	slider.knob.drawing=off \
 	icon.drawing=on \
+	icon=" " \
 	icon.font="SFMono Nerd Font:Regular:12.5" \
-	icon.color=$MID_GRAY \
+	icon.color=$TRANSPARENT \
 	icon.padding_left=2 \
 	icon.padding_right=6 \
 	label.drawing=on \
 	label.font="SFMono Nerd Font:Regular:12.5" \
-	label.color=$DIM_GRAY \
+	label.color=$TRANSPARENT \
 	label.padding_left=4 \
 	label.padding_right=0 \
 	padding_left=0 \
@@ -516,9 +527,10 @@ sketchybar --add slider progress right 60 \
 # Clock/sunrise/sunset icon (left of slider, updated by bar-daemon)
 sketchybar --add item progress_icon right \
 	--set progress_icon \
+	icon="󱑖" \
 	icon.drawing=on \
 	icon.font="SFMono Nerd Font:Regular:16.0" \
-	icon.color=$MID_GRAY \
+	icon.color=$TRANSPARENT \
 	icon.padding_left=2 \
 	icon.padding_right=2 \
 	label.drawing=off \
@@ -529,6 +541,7 @@ sketchybar --add item progress_icon right \
 # Battery (updated by bar-daemon — IOKit 1s change detection)
 sketchybar --add item battery right \
 	--set battery \
+	icon="󰚥" \
 	icon.font="SFMono Nerd Font:Regular:16.0" \
 	icon.padding_right=4 \
 	label.font="SFMono Nerd Font:Regular:13.0" \
@@ -595,13 +608,8 @@ sketchybar --add item temp right \
 # 	click_script="$PLUGIN_DIR/launch_menuanywhere.sh"
 # $PLUGIN_DIR/menuanywhere &
 
-# Force update
-sketchybar --update
-
-# Single unified daemon: handles all 15 items (network, progress, battery, disk,
-# connection, location, cpu, gpu, temp, memory, power). Spawns macmon internally.
-# Replaces: metrics-daemon + net-stats + progress-clock + net-monitor shell loop
-#           + battery.sh + disk.sh + connection.sh + location.sh
-"$HOME/.config/sketchybar/helpers/bar-daemon" &
+# Startup cascade: set transparent + fade in (runs in foreground to prevent flash)
+# bar-daemon launches after cascade completes inside the script
+"$PLUGIN_DIR/startup_cascade.sh" &
 
 echo "Sketchybar loaded - optimized configuration"
