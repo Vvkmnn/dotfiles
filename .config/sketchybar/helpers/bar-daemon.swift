@@ -22,10 +22,29 @@ import SystemConfiguration
 // Smooth startup: first ~3s of updates animate with tanh 30 so values fade in
 var startupSmooth = true
 
+// Kanagawa Wave palette (matching Ghostty theme + Claude statusline)
+// Old values kept in comments for easy revert if any color lacks pop
+let kDim      = "0xff727169"  // fujiGray — idle/uninteresting   (was 0xff8A869E)
+let kWhite    = "0xffDCD7BA"  // fujiWhite — normal/active       (was 0xffFFFFFF)
+let kOrange   = "0xffFFA066"  // surimiOrange — warning          (was 0xffFFA500)
+let kRed      = "0xffE82424"  // samuraiRed — critical           (was 0xffE74C3C)
+let kOldWhite = "0xffC8C093"  // oldWhite — subdued              (was 0xffA0A0A0/B0B7C0)
+let kGold     = "0xffE6C384"  // carpYellow — sunrise accent     (was 0xffE8A838)
+let kBlue     = "0xff7E9CD8"  // crystalBlue — sunset accent     (was 0xff4A90D9)
+let kPeach    = "0xffFF5D62"  // peachRed — power mid-tier       (was 0xffFF6F61)
+
 func sketchybar(_ args: [String]) {
     let proc = Process()
     proc.executableURL = URL(fileURLWithPath: "/opt/homebrew/bin/sketchybar")
     proc.arguments = startupSmooth ? ["--animate", "tanh", "30"] + args : args
+    try? proc.run()
+}
+
+// Direct call without --animate — for --trigger commands (startupSmooth would corrupt them)
+func sketchybarDirect(_ args: [String]) {
+    let proc = Process()
+    proc.executableURL = URL(fileURLWithPath: "/opt/homebrew/bin/sketchybar")
+    proc.arguments = args
     try? proc.run()
 }
 
@@ -34,6 +53,8 @@ func sketchybar(_ args: [String]) {
 
 var networkActive = false
 var internetReachable = true
+var networkItemsLocked = false  // set true during disconnect/reconnect animations
+var activeTickCount = 0         // debounce: require 2+ active ticks before reconnect
 var tick = 0
 
 // ═══════════════════════════════════════════════════════════════════
@@ -74,11 +95,11 @@ func readNetBytes() -> (down: UInt32, up: UInt32, active: Bool) {
 }
 
 func downColor(_ kb: Int) -> String {
-    kb < 50 ? "0xff8A869E" : kb < 500 ? "0xffFFFFFF" : kb < 5000 ? "0xffFFA500" : "0xffE74C3C"
+    kb < 50 ? kDim : kb < 500 ? kWhite : kb < 5000 ? kOrange : kRed
 }
 
 func upColor(_ kb: Int) -> String {
-    kb < 20 ? "0xff8A869E" : kb < 200 ? "0xffFFFFFF" : kb < 2000 ? "0xffFFA500" : "0xffE74C3C"
+    kb < 20 ? kDim : kb < 200 ? kWhite : kb < 2000 ? kOrange : kRed
 }
 
 func fillColor(_ c: String) -> String {
@@ -89,17 +110,34 @@ func updateNetwork() {
     let (curDown, curUp, active) = readNetBytes()
     networkActive = active
 
-    // Don't update network items while internet is down (animation script controls them)
-    if !internetReachable { return }
-
+    // State transitions — trigger events, animation script handles SIGUSR2/SIGUSR1
     if !active {
-        sketchybar([
-            "--set", "network_down", "icon.drawing=off", "label.drawing=off", "padding_right=0",
-            "--set", "network_up", "icon.drawing=off", "label.drawing=off", "padding_right=0",
-            "--set", "graph_down", "drawing=off",
-            "--set", "graph_up", "drawing=off"
-        ])
+        activeTickCount = 0
+        if internetReachable {
+            internetReachable = false
+            sketchybarDirect(["--trigger", "internet_disconnect"])
+        }
         hasPrev = false
+        return
+    }
+
+    activeTickCount += 1
+
+    // Reconnect after 2+ consecutive active ticks (debounce interface oscillation)
+    if !internetReachable && activeTickCount >= 2 {
+        internetReachable = true
+        sketchybarDirect(["--trigger", "internet_reconnect"])
+        prevDown = curDown
+        prevUp = curUp
+        hasPrev = true
+        return
+    }
+
+    // Don't write to items while disconnected or animation is playing
+    // (NWPathMonitor sets internetReachable=false instantly, getifaddrs lags 1-2s)
+    guard internetReachable && !networkItemsLocked else {
+        prevDown = curDown
+        prevUp = curUp
         return
     }
 
@@ -132,9 +170,9 @@ func updateNetwork() {
         ])
     } else {
         sketchybar([
-            "--set", "network_down", "label=0\u{1D37}", "label.color=0xff8A869E", "icon.color=0xff8A869E",
+            "--set", "network_down", "label=0\u{1D37}", "label.color=\(kDim)", "icon.color=\(kDim)",
                 "icon.drawing=on", "label.drawing=on",
-            "--set", "network_up", "label=0\u{1D37}", "label.color=0xff8A869E", "icon.color=0xff8A869E",
+            "--set", "network_up", "label=0\u{1D37}", "label.color=\(kDim)", "icon.color=\(kDim)",
                 "icon.drawing=on", "label.drawing=on",
             "--set", "graph_down", "drawing=on",
             "--set", "graph_up", "drawing=on",
@@ -159,20 +197,38 @@ var pendingTrigger: DispatchWorkItem?
 func setupPathMonitor() {
     let monitor = NWPathMonitor()
     pathMonitor = monitor
-    monitor.pathUpdateHandler = { _ in
+    monitor.pathUpdateHandler = { path in
         let now = Date()
         guard now.timeIntervalSince(lastNetworkTrigger) >= 3 else { return }
         pendingTrigger?.cancel()
         let work = DispatchWorkItem {
             lastNetworkTrigger = Date()
-            sketchybar(["--trigger", "network_change"])
+            sketchybarDirect(["--trigger", "network_change"])
+
+            // Use path status directly — don't rely on stale networkActive
+            if path.status != .satisfied {
+                // Network down — trigger disconnect (SIGUSR2 from animation script handles lock)
+                if internetReachable {
+                    internetReachable = false
+                    networkActive = false
+                    sketchybarDirect(["--trigger", "internet_disconnect"])
+                }
+                return
+            }
+
+            // Network up — trigger reconnect if was disconnected
+            if !internetReachable {
+                internetReachable = true
+                sketchybarDirect(["--trigger", "internet_reconnect"])
+                return
+            }
+            guard !networkItemsLocked else { return }
             updateConnection()
-            updateLocation(force: true)  // VPN changes don't alter SCDynamicStore fingerprint
+            updateLocation(force: true)
         }
         pendingTrigger = work
         DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: work)
     }
-    // Run on main queue — handler accesses shared globals (lastNetworkTrigger, pendingTrigger)
     monitor.start(queue: DispatchQueue.main)
 }
 
@@ -617,11 +673,11 @@ func updateProgress() {
     // - Sunset hour, first 30 min: blue ◑
     // - Minute 0 (top of hour, not during sunrise/sunset): white flash
     // - Otherwise: gray clock face
-    let gold = "0xffE8A838"
-    let blue = "0xff4A90D9"
-    let red = "0xffE74C3C"
-    let white = "0xffFFFFFF"
-    let gray = "0xffA0A0A0"
+    let gold = kGold    // was "0xffE8A838"
+    let blue = kBlue    // was "0xff4A90D9"
+    let red = kRed      // was "0xffE74C3C"
+    let white = kWhite  // was "0xffFFFFFF"
+    let gray = kOldWhite // was "0xffA0A0A0"
 
     let icon: String
     let highlightColor: String  // clock icon + slider bar
@@ -654,7 +710,7 @@ func updateProgress() {
     sliderProc.executableURL = URL(fileURLWithPath: sb)
     sliderProc.arguments = ["--set", "progress", "slider.percentage=\(progress)",
                             "slider.highlight_color=\(highlightColor)",
-                            "slider.background.color=0xff8A869E"]
+                            "slider.background.color=\(kDim)"]
     try? sliderProc.run()
 
     sketchybar([
@@ -717,15 +773,15 @@ func updateBattery() {
     let color: String
     if externalConnected && percentage >= 80 {
         display = "\(cycleCount)"
-        color = "0xff8A869E"
+        color = kDim
     } else {
         display = "\(percentage)%"
         if percentage > 30 {
-            color = "0xffFFFFFF"
+            color = kWhite
         } else if percentage > 10 {
-            color = "0xffFFA500"
+            color = kOrange
         } else {
-            color = "0xffE74C3C"
+            color = kRed
         }
     }
 
@@ -740,7 +796,7 @@ func updateBattery() {
 var lastDiskPct = -1
 
 func diskColor(_ pct: Int) -> String {
-    pct < 30 ? "0xff8A869E" : pct < 60 ? "0xffFFFFFF" : pct < 80 ? "0xffFFA500" : "0xffE74C3C"
+    pct < 30 ? kDim : pct < 60 ? kWhite : pct < 80 ? kOrange : kRed
 }
 
 func updateDisk() {
@@ -777,19 +833,19 @@ func smooth(key: String, value: Int) -> Int {
 }
 
 func cpuGpuColor(_ pct: Int) -> String {
-    pct < 10 ? "0xff8A869E" : pct < 25 ? "0xffFFFFFF" : pct < 40 ? "0xffFFA500" : "0xffE74C3C"
+    pct < 10 ? kDim : pct < 25 ? kWhite : pct < 40 ? kOrange : kRed
 }
 
 func tempColor(_ t: Int) -> String {
-    t <= 0 ? "0xff8A869E" : t < 60 ? "0xffFFFFFF" : t < 80 ? "0xffFFA500" : "0xffE74C3C"
+    t <= 0 ? kDim : t < 60 ? kWhite : t < 80 ? kOrange : kRed
 }
 
 func memColor(_ pct: Int) -> String {
-    pct < 50 ? "0xff8A869E" : pct < 70 ? "0xffFFFFFF" : pct < 80 ? "0xffFFA500" : "0xffE74C3C"
+    pct < 50 ? kDim : pct < 70 ? kWhite : pct < 80 ? kOrange : kRed
 }
 
 func powerColor(_ w: Double) -> String {
-    w < 8 ? "0xffFFFFFF" : w < 15 ? "0xffFFA500" : w < 25 ? "0xffFF6F61" : "0xffE74C3C"
+    w < 8 ? kWhite : w < 15 ? kOrange : w < 25 ? kPeach : kRed
 }
 
 func processLine(_ line: String) {
@@ -855,7 +911,7 @@ func processLine(_ line: String) {
 func setupMacmon() {
     let macmon = Process()
     macmon.executableURL = URL(fileURLWithPath: "/opt/homebrew/bin/macmon")
-    macmon.arguments = ["pipe", "--interval", "10000"]
+    macmon.arguments = ["pipe", "--interval", "3000"]
 
     let pipe = Pipe()
     macmon.standardOutput = pipe
@@ -954,8 +1010,8 @@ func wifiIcon(rssi: Int?) -> String {
 }
 
 func updateConnection() {
+    guard !networkItemsLocked else { return }
     guard networkActive else {
-        sketchybar(["--set", "connection", "icon.drawing=off", "label.drawing=off"])
         pingEMA = nil
         return
     }
@@ -984,13 +1040,14 @@ func updateConnection() {
 
     func finalize() {
         guard gwDone && inetDone else { return }
+        guard !networkItemsLocked else { connectionCheckInFlight = false; return }
         connectionCheckInFlight = false
 
         if let inet = inetLatency {
             // Internet is up — trigger reconnect animation if was down
             if !internetReachable {
                 internetReachable = true
-                sketchybar(["--trigger", "internet_reconnect"])
+                sketchybarDirect(["--trigger", "internet_reconnect"])
                 updateLocation(force: true)
             }
 
@@ -1004,15 +1061,15 @@ func updateConnection() {
             let gwInt = gwLatency.map { Int($0 + 0.5) }
             let color: String
             if let gw = gwInt, gw > 50 {
-                color = "0xffE74C3C"  // red — local network bad
+                color = kRed       // red — local network bad
             } else if pingEMA! < 50 {
-                color = "0xff8A869E"  // dim — smooth, don't care
+                color = kDim       // dim — smooth, don't care
             } else if pingEMA! < 150 {
-                color = "0xffFFFFFF"  // white — noticeable but fine
+                color = kWhite     // white — noticeable but fine
             } else if pingEMA! < 300 {
-                color = "0xffFFA500"  // orange — slow
+                color = kOrange    // orange — slow
             } else {
-                color = "0xffE74C3C"  // red — bad
+                color = kRed       // red — bad
             }
             sketchybar(["--set", "connection", "icon=\(icon)", "icon.drawing=on", "icon.color=\(color)",
                         "label=\(label)", "label.drawing=on", "label.color=\(color)"])
@@ -1020,7 +1077,7 @@ func updateConnection() {
             // Internet is down — trigger disconnect animation if was up
             if internetReachable {
                 internetReachable = false
-                sketchybar(["--trigger", "internet_disconnect"])
+                sketchybarDirect(["--trigger", "internet_disconnect"])
             }
             pingEMA = nil
         }
@@ -1088,12 +1145,9 @@ func countryToFlag(_ cc: String) -> String {
 }
 
 func updateLocation(force: Bool = false) {
-    // Don't update while disconnected (animation script controls location item)
+    guard !networkItemsLocked else { return }
     guard internetReachable else { return }
-    guard networkActive else {
-        sketchybar(["--set", "location", "icon=\u{F0AC8}", "icon.drawing=on", "label=", "label.drawing=off"])
-        return
-    }
+    guard networkActive else { return }
 
     // Network fingerprint = interface + gateway (detects physical network switches)
     // Note: VPN changes don't alter SCDynamicStore — force=true bypasses cache for those
@@ -1118,11 +1172,14 @@ func updateLocation(force: Bool = false) {
     request.cachePolicy = .reloadIgnoringLocalCacheData
     URLSession.shared.dataTask(with: request) { data, _, _ in
         DispatchQueue.main.async {
+            // Don't write to location during animation (callback fires 1-3s after request)
+            guard !networkItemsLocked else { return }
             guard let data = data,
                   let country = String(data: data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines),
                   country.count == 2 else {
-                // Lookup failed — show globe
-                sketchybar(["--set", "location", "icon=\u{F059F}", "icon.drawing=on", "label=", "label.drawing=off"])
+                if internetReachable {
+                    sketchybar(["--set", "location", "icon=\u{F059F}", "icon.drawing=on", "label=", "label.drawing=off"])
+                }
                 return
             }
             cachedCountry = country
@@ -1137,11 +1194,6 @@ func updateLocation(force: Bool = false) {
 // MARK: - Main: start all event sources
 // ═══════════════════════════════════════════════════════════════════
 
-// Pre-load macmon cache so metrics items aren't empty during first 10s
-if let existing = try? String(contentsOfFile: cacheFile, encoding: .utf8), !existing.isEmpty {
-    processLine(existing)
-}
-
 // 1. NWPathMonitor (push-based network change → connection + location + trigger)
 setupPathMonitor()
 
@@ -1155,8 +1207,12 @@ prevDown = initDown
 prevUp = initUp
 hasPrev = true
 
-// 3. First updates: all sides simultaneously at +1s (startupSmooth=true animates them in)
-DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+// 3. All first updates at +0.3s (cascade already done when daemon starts)
+DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+    // Macmon cache — load previous metrics so they appear with everything else
+    if let existing = try? String(contentsOfFile: cacheFile, encoding: .utf8), !existing.isEmpty {
+        processLine(existing)
+    }
     // Right side
     updateProgress()
     updateBattery()
@@ -1167,12 +1223,12 @@ DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
     updateLocation()
 }
 
-// End smooth startup after 4s — subsequent updates are instant
-DispatchQueue.main.asyncAfter(deadline: .now() + 4) { startupSmooth = false }
+// End smooth startup after 3s — subsequent updates are instant
+DispatchQueue.main.asyncAfter(deadline: .now() + 3) { startupSmooth = false }
 
 // 4. Main 1s timer: starts after first updates settle
 let mainTimer = DispatchSource.makeTimerSource(queue: DispatchQueue.main)
-mainTimer.schedule(deadline: .now() + 2.0, repeating: 1.0)
+mainTimer.schedule(deadline: .now() + 1.0, repeating: 1.0)
 mainTimer.setEventHandler {
     tick += 1
     updateNetwork()
@@ -1192,13 +1248,24 @@ progressTimer.schedule(deadline: .now() + progressDelay, repeating: 60.0)
 progressTimer.setEventHandler { updateProgress() }
 progressTimer.resume()
 
-// 7. SIGUSR1 handler: re-enable smooth animation (used by wake/unlock fade-in)
+// 7. SIGUSR1: unlock network items + enable smooth mode (sent by reconnect animation)
 let sigSource = DispatchSource.makeSignalSource(signal: SIGUSR1, queue: DispatchQueue.main)
-signal(SIGUSR1, SIG_IGN)  // ignore default handler, let GCD handle it
+signal(SIGUSR1, SIG_IGN)
 sigSource.setEventHandler {
+    networkItemsLocked = false
     startupSmooth = true
     DispatchQueue.main.asyncAfter(deadline: .now() + 3) { startupSmooth = false }
+    // Refresh location after reconnect (fetch country code)
+    updateLocation(force: true)
 }
 sigSource.resume()
+
+// 8. SIGUSR2: lock network items persistently (sent by disconnect animation)
+let sigSource2 = DispatchSource.makeSignalSource(signal: SIGUSR2, queue: DispatchQueue.main)
+signal(SIGUSR2, SIG_IGN)
+sigSource2.setEventHandler {
+    networkItemsLocked = true  // stays locked until SIGUSR1
+}
+sigSource2.resume()
 
 dispatchMain()

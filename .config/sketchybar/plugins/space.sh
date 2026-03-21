@@ -4,10 +4,11 @@
 # (Was: 1 yabai + N+2 jq + N sketchybar = ~50-100 subprocesses with N space items)
 # Font set once in sketchybarrc — not here (font names with spaces break unquoted $ARGS expansion)
 
-ACTIVE_RED=0xffE74C3C
-LAST_ORANGE=0xffFFA500
-LIGHT_GRAY=0xffE0E0E0
-DIM_GRAY=0xff606060
+# Kanagawa Wave — old values in comments for easy revert
+ACTIVE_RED=0xffE82424     # samuraiRed (was 0xffE74C3C)
+LAST_ORANGE=0xffFFA066    # surimiOrange (was 0xffFFA500)
+LIGHT_GRAY=0xffDCD7BA     # fujiWhite (was 0xffE0E0E0)
+DIM_GRAY=0xff54546D       # sumiInk4 (was 0xff606060)
 
 CURRENT_FILE="/tmp/sketchybar_current_space"
 LAST_FILE="/tmp/sketchybar_last_space"

@@ -16,22 +16,24 @@ find /tmp -name "sketchybar_*" -not -name "sketchybar_cache" -mmin +60 -delete 2
 # --- Environment Variables --- #
 export PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
 
-# --- Modern Color Palette --- #
-export WHITE=0xffFFFFFF
-export LIGHT_GRAY=0xffE0E0E0
-export SILVER=0xffB0B7C0 # Silver accent
-export MID_GRAY=0xffA0A0A0
-export DIM_GRAY=0xff606060
-export DIM=0xff8A869E        # Standard dim — used across all items
-export ORANGE=0xffFFA500 # Orange for warnings
+# --- Kanagawa Wave Palette --- #
+# Old values in comments for easy revert
+export WHITE=0xffDCD7BA        # fujiWhite (was 0xffFFFFFF)
+export LIGHT_GRAY=0xffDCD7BA   # fujiWhite (was 0xffE0E0E0)
+export SILVER=0xffC8C093       # oldWhite (was 0xffB0B7C0)
+export MID_GRAY=0xffC8C093     # oldWhite (was 0xffA0A0A0)
+export DIM_GRAY=0xff54546D     # sumiInk4 (was 0xff606060)
+export DIM=0xff727169          # fujiGray (was 0xff8A869E)
+export ORANGE=0xffFFA066       # surimiOrange (was 0xffFFA500)
 export BLACK=0xff000000
 export TRANSPARENT=0x00000000
-export MISTY_BLUE=0xffB0B7C0 # Misty Blue accent
+export MISTY_BLUE=0xffC8C093   # oldWhite (was 0xffB0B7C0)
 
 # --- Custom Events --- #
 sketchybar --add event network_change
 sketchybar --add event internet_disconnect
 sketchybar --add event internet_reconnect
+sketchybar --add event lock "com.apple.screenIsLocked"
 
 # NWPathMonitor (superseded — now handled by bar-daemon inline)
 # (
@@ -174,11 +176,17 @@ sketchybar --add item internet_handler left \
 	script="$PLUGIN_DIR/internet_animate.sh" \
 	--subscribe internet_handler internet_disconnect internet_reconnect
 
-# Wake/unlock handler — needs fade-out on lock to look right, disabled for now
-# sketchybar --add item wake_handler left \
-# 	--set wake_handler drawing=off \
-# 	script="$PLUGIN_DIR/wake_fadein.sh" \
-# 	--subscribe wake_handler system_woke
+# Lock/sleep handler — fades out + kills bar-daemon
+sketchybar --add item lock_handler left \
+	--set lock_handler drawing=off \
+	script="$PLUGIN_DIR/lock_fadeout.sh" \
+	--subscribe lock_handler lock system_will_sleep
+
+# Wake/unlock handler — fades in + restarts bar-daemon
+sketchybar --add item wake_handler left \
+	--set wake_handler drawing=off \
+	script="$PLUGIN_DIR/wake_fadein.sh" \
+	--subscribe wake_handler system_woke
 
 # NOTE: New spaces created after startup are handled by yabai's space_created
 # signal handler (see .yabairc:283-296). Destroyed spaces are handled by the
