@@ -7,6 +7,7 @@ const os = require('os');
 // Read stdin eagerly — hook runner passes JSON here, can only be read once
 let stdinData = '';
 try { stdinData = fs.readFileSync(0, 'utf8'); } catch (e) {}
+const hookData = stdinData ? (() => { try { return JSON.parse(stdinData); } catch { return {}; } })() : {};
 
 // ============================================================================
 // OLD: Plan mode forcing (now replaced by native permissions.defaultMode)
@@ -41,24 +42,70 @@ try {
 try {
   if (process.env.TMUX) {
     const { execFileSync } = require('child_process');
-    const sessionId = stdinData ? JSON.parse(stdinData).session_id : null;
+    const sessionId = hookData ? hookData.session_id : null;
     if (sessionId) {
       const tmux = '/opt/homebrew/bin/tmux';
       const tmuxSession = execFileSync(tmux, ['display-message', '-p', '#{session_name}']).toString().trim();
       const tmuxWindow = execFileSync(tmux, ['display-message', '-p', '#{window_index}']).toString().trim();
       const tmuxPath = execFileSync(tmux, ['display-message', '-p', '#{pane_current_path}']).toString().trim();
-      const prefix = `${tmuxSession}:${tmuxWindow}:`;
-      const key = `${prefix}${tmuxPath}`;
+      const key = `${tmuxSession}:${tmuxWindow}:${tmuxPath}`;
       const mapFile = path.join(os.homedir(), '.config', 'tmux', 'claude_sessions');
 
-      // Read existing, remove stale entry for this session:window (any path), append new
-      const existing = fs.existsSync(mapFile) ? fs.readFileSync(mapFile, 'utf8') : '';
-      const updated = existing.split('\n').filter(l => l && !l.startsWith(prefix)).concat(`${key} ${sessionId}`).join('\n') + '\n';
-      fs.writeFileSync(mapFile, updated);
+      // Append-only: atomic for short writes (<PIPE_BUF), no race between concurrent sessions
+      // Pruning happens in claude-session-restore.sh on reboot
+      fs.appendFileSync(mapFile, `${key} ${sessionId}\n`);
     }
   }
 } catch (err) {
   // Silently fail - don't block session start
+}
+
+// ============================================================================
+// Post-compaction plan injection: surface active plan state in new context
+// Without this, Claude must proactively re-read the plan file after compaction
+// ============================================================================
+try {
+  const planDir = path.join(os.homedir(), '.claude', 'plans');
+  if (fs.existsSync(planDir)) {
+    // Find most recent plan with pending items (same logic as pre-compact.js)
+    const plans = fs.readdirSync(planDir)
+      .filter(f => f.endsWith('.md') && !f.includes('-agent-'))
+      .map(f => {
+        const fp = path.join(planDir, f);
+        const c = fs.readFileSync(fp, 'utf8');
+        return { path: fp, mtime: fs.statSync(fp).mtimeMs, content: c, hasPending: /^- \[ \] /m.test(c) };
+      })
+      .sort((a, b) => b.mtime - a.mtime);
+    const active = plans.find(p => p.hasPending);
+
+    if (active) {
+      const title = (active.content.match(/^# (.+)$/m) || [])[1] || path.basename(active.path, '.md');
+      const basename = path.basename(active.path);
+      const done = (active.content.match(/^- \[x\] /gm) || []).length;
+      const pending = (active.content.match(/^- \[ \] /gm) || []).length;
+      const pendingItems = (active.content.match(/^- \[ \] .+$/gm) || [])
+        .slice(0, 3)
+        .map(item => item.replace(/^- \[ \] /, '').replace(/ — .+$/, '').substring(0, 60));
+
+      const injection = [
+        `<system-reminder>`,
+        `**Active plan**: "${title}" (\`plans/${basename}\`).`,
+        `Status: ${done}/${done + pending} done.`,
+        pendingItems.length > 0 ? `Next: ${pendingItems.join(', ')}.` : '',
+        `Read the plan file for full context. Follow plan.md rules.`,
+        `</system-reminder>`
+      ].filter(Boolean).join(' ');
+
+      console.log(JSON.stringify({
+        hookSpecificOutput: {
+          hookEventName: 'SessionStart',
+          additionalContext: injection
+        }
+      }));
+    }
+  }
+} catch {
+  // Fail open - don't block session start
 }
 
 process.exit(0);
