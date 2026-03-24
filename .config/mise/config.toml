@@ -1,0 +1,7 @@
+[tools]
+python = "3.13"
+node = "24"
+cmake = "latest"
+
+[settings]
+python.uv_venv_auto = true

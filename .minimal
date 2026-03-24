@@ -41,7 +41,7 @@ __MINIMAL_SOURCED=1
 
 export LANG=${LANG:-en_US.UTF-8}
 export LC_ALL=${LC_ALL:-en_US.UTF-8}
-export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/local/sbin:$HOME/.local/bin:$PATH"
+export PATH="$HOME/.local/share/mise/shims:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/local/sbin:$HOME/.local/bin:$PATH"
 
 # Essentials for AI tools
 export EDITOR=${EDITOR:-nvim}
