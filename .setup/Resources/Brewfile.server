@@ -1,0 +1,48 @@
+# Brewfile.server — dotfiles-ai server profile (Mac mini, Mac Studio).
+#
+# Goal: minimum to be a tmux + claude + ssh + tailscale host.
+# Native-first principle (owner directive): Apple-shipped or single-purpose
+# brew packages only. No yabai/skhd/sketchybar/karabiner/alfred — those
+# exist on the workstation profile, not here. Mini is a headless host
+# accessed via Screen Sharing and Mosh; nobody looks at its GUI directly.
+#
+# To install: brew bundle install --file=~/.setup/Resources/Brewfile.server
+
+# Core dev tools
+brew "git"
+brew "git-crypt"
+brew "gh"
+brew "jq"
+brew "fzf"
+brew "ripgrep"
+brew "fd"
+brew "bat"
+brew "tmux"
+brew "neovim"
+
+# Runtime / language manager
+brew "mise"
+brew "uv"
+brew "go"            # for mcp-proxy build (TBXark/mcp-proxy via `go install`)
+
+# Mobile SSH — Mosh server. Required for iPhone Blink reliability over
+# cellular networks (vanilla SSH drops on every network change; Mosh
+# survives via UDP roaming). Dormant until spawned per session.
+brew "mosh"
+
+# Casks — desktop apps and daemons
+cask "tailscale"      # Standalone variant ONLY (NOT App Store — see tailscale#17891)
+cask "1password"
+cask "1password-cli"
+cask "claude"         # Anthropic native installer (Claude Code CLI)
+
+# Notably ABSENT on server profile, present on workstation Brewfile:
+#   - Window managers: yabai, skhd, karabiner-elements
+#   - Status bar: sketchybar
+#   - Launcher: alfred
+#   - Terminal: ghostty (Terminal.app is fine for occasional GUI moments via SS)
+#   - Audio: blackhole-2ch, sonobus (AirPlay native is sufficient)
+#   - Display: betterdisplay (Screen Sharing HP mode auto-provisions virtual display)
+#   - VPN: mullvadvpn (workstation choice; not needed on server)
+#   - Local AI: ollama, lm-studio (Eve's concern, separate user account, separate setup)
+#   - Apps: discord, slack, obsidian, stats, screen-studio, transmission
