@@ -73,7 +73,10 @@
 
   # Claude Code privacy (2026-02-02)
   export CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY=1
-  export DISABLE_TELEMETRY=1
+  # 2026-05-19: DISABLE_TELEMETRY commented out — silently disables GrowthBook feature
+  # flag evaluation, which hides Remote Control (/rc, claude remote-control) and other
+  # gated commands. Bug: anthropics/claude-code#29580. Re-enable once decoupled.
+  # export DISABLE_TELEMETRY=1
   export DISABLE_ERROR_REPORTING=1
 # └────────────────────────────────────────────────────────────────────────────┘
 

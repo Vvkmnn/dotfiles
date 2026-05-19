@@ -5,7 +5,7 @@
 #  Vivek Menon <mail@vvkmnn.xyz>
 # └────────────────────────────────────────────────────────────────────────────┘
 #  Purpose: Complex operations that need logic/loops
-#  Contains: get_colored_face(), _recover_cwd(), _fnm_lts_check(), _claude_config_backup(), c(), cl(), cc(), update_all(), coffee(), pif(), quicksave()
+#  Contains: get_colored_face(), _recover_cwd(), _fnm_lts_check(), _claude_config_backup(), c(), cl(), cc(), ct(), clh(), update_all(), coffee(), pif(), quicksave()
 #  Archive: Disabled functions preserved at bottom
 
 # ┌───────────────────────────────────────────────────────────────── guard ────┐
@@ -76,32 +76,97 @@
     echo -e "${color}(\/) ($1) (\/)${r} ${action}${color}...${r}"
   }
 
+  # true if cwd has at least one Claude session jsonl
+  # (~/.claude/projects/<encoded-cwd>/*.jsonl, where / and . both encode to -)
+  __claude_has_session() {
+    local enc="${PWD//\//-}"
+    enc="${enc//./-}"
+    local dir="$HOME/.claude/projects/$enc"
+    [[ -d "$dir" ]] && compgen -G "$dir/*.jsonl" >/dev/null 2>&1
+  }
+
+  # internal wrapper: runs claude with idle detection + restart-on-idle loop
+  # __claude_run MODE [ARGS...]  where MODE = continue | new | force
+  __claude_run() {
+    # Suppress [N] PID and [N]+ Done messages from background checker
+    setopt LOCAL_OPTIONS NO_MONITOR NO_NOTIFY 2>/dev/null
+    local mode="$1"; shift
+    local gold='\033[38;5;214m' terra='\033[38;5;173m'
+    local dim='\033[38;5;240m' r='\033[0m'
+
+    # Capture tmux context once (pane doesn't change across restarts)
+    local tmux_session="" tmux_window=""
+    if [[ -n "$TMUX" ]]; then
+      tmux_session=$(/opt/homebrew/bin/tmux display-message -p '#{session_name}' 2>/dev/null)
+      tmux_window=$(/opt/homebrew/bin/tmux display-message -p '#{window_index}' 2>/dev/null)
+    fi
+    local checker="$HOME/.config/tmux/claude-idle-checker.sh"
+
+    while true; do
+      case "$mode" in
+        continue) __claude_msg '-,,-' 'continuing...' "$gold" ;;
+        new)      __claude_msg '°,,°' 'creating...' "$terra" ;;
+        force)    __claude_msg '-,,-' 'continuing...' "$gold" ;;
+      esac
+
+      # Start idle checker in background (finds Claude via pgrep -P $$)
+      local _checker_pid=""
+      if [[ -x "$checker" ]]; then
+        "$checker" $$ "$tmux_session" "$tmux_window" "$PWD" "${CLAUDE_IDLE_THRESHOLD:-1800}" &
+        _checker_pid=$!
+      fi
+
+      # Run Claude in foreground (TUI requires it)
+      local _claude_exit=0
+      case "$mode" in
+        continue)
+          claude --continue "$@"
+          _claude_exit=$?
+          ;;
+        new)      claude "$@" ;;
+        force)    claude --continue "$@" ;;
+      esac
+
+      # Clean up checker
+      local _checker_exit=0
+      if [[ -n "$_checker_pid" ]]; then
+        kill "$_checker_pid" 2>/dev/null
+        wait "$_checker_pid" 2>/dev/null
+        _checker_exit=$?
+      fi
+
+      # Any non-zero exit with existing sessions → show resume prompt, never auto-create
+      if (( _claude_exit != 0 )); then
+        echo -e "\n${dim}(\/) (~_~) (\/)${r} session ended ${dim}— press Enter to resume, Ctrl+C for shell${r}"
+        read -r || break
+        continue
+      fi
+
+      # Normal exit (0) → return to shell
+      break
+    done
+  }
+
   # smart continue - fallback to new only if no session
   c() {
     (_claude_config_backup &)
-    local gold='\033[38;5;214m'
-    local terra='\033[38;5;173m'
-    __claude_msg '-,,-' 'continuing...' "$gold"
-    claude --continue "$@" || {
-      __claude_msg '°,,°' 'creating...' "$terra"
-      claude "$@"
-    }
+    if __claude_has_session; then
+      __claude_run continue "$@"
+    else
+      __claude_run new "$@"
+    fi
   }
 
   # always new session
   cl() {
     (_claude_config_backup &)
-    local terra='\033[38;5;173m'
-    __claude_msg '°,,°' 'creating...' "$terra"
-    claude "$@"
+    __claude_run new "$@"
   }
 
   # force continue (no fallback)
   cc() {
     (_claude_config_backup &)
-    local gold='\033[38;5;214m'
-    __claude_msg '-,,-' 'continuing...' "$gold"
-    claude --continue "$@"
+    __claude_run force "$@"
   }
 
   # agent teams - always new session (teams can't resume/continue)
@@ -110,6 +175,13 @@
     local peach='\033[38;5;209m'
     __claude_msg '^,,^' 'assembling...' "$peach"
     CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1 claude "$@"
+  }
+
+  # fzf session history picker — search, preview, resume/jump
+  clh() {
+    local amber='\033[38;5;208m'
+    __claude_msg 'o,,o' 'searching...' "$amber"
+    ~/.config/fzf/clh.sh "$@"
   }
 # └─────────────────────────────────────────────────────────────────────────────┘
 
@@ -172,7 +244,7 @@
     fi
 
     # Cross-platform tools
-    __section "fnm (Node LTS)" "fnm use <old-version>" "" fnm install --lts
+    __section "mise (tool versions)" "mise use <tool>@<old-version>" "" mise upgrade
     __section "uv (Python)" "uv self update --version <old>" "" uv self update
     __section "rustup (Rust)" "rustup default <old-version>" "warn" rustup update
     __section "Neovim plugins" "cd ~/.local/share/nvim/lazy/<plugin> && git checkout" "" \
@@ -312,5 +384,78 @@ $DEBUG = true  # enable debug mode (F9) without Magic Boots
         echo -e "  └─ ${dim}restore: Recovery Mode (hold power) > Restore from Time Machine${r}"
         ;;
     esac
+  }
+# └────────────────────────────────────────────────────────────────────────────┘
+
+# ┌──────────────────────────── lf ── file manager with cd-on-quit ─────────────┐
+  # lf: Go TUI file manager with vim keys. Using lf over yazi because
+  # yazi has DCS escape probe issues with Ghostty+tmux.
+  lfcd() {
+    local tmp="$(mktemp -t "lfcd.XXXXXX")"
+    lf -last-dir-path="$tmp" "$@"
+    if [ -f "$tmp" ]; then
+      local dir="$(cat "$tmp")"
+      [ -d "$dir" ] && [ "$dir" != "$PWD" ] && builtin cd -- "$dir"
+    fi
+    rm -f -- "$tmp"
+  }
+  alias lf='lfcd'
+# └────────────────────────────────────────────────────────────────────────────┘
+
+# ┌──────────────────────── f ── find anything, cd into it ─────────────────────┐
+  # No args: plain fzf (current dir). With args: searches names (fd),
+  # contents (rg), Spotlight (mdfind) across ~, with file preview.
+  f() {
+    local query="$1" result
+    # Colors inherited from FZF_DEFAULT_OPTS (Kanagawa Wave via ~/.theme/zsh/fzf.sh)
+    local fzf_opts=(
+      --ansi
+      --layout reverse
+      --highlight-line
+      --border-label '  Find '
+      --border-label-pos 3
+      --header '  enter: cd into folder'
+      --header-border bottom
+      --prompt '  '
+      --pointer '▶'
+      --info inline-right
+      --preview-window 'right:55%:wrap'
+      --preview-border rounded
+      --preview '
+        item={}
+        if [[ -d "$item" ]]; then
+          eza -la --color=always --icons=auto --group-directories-first "$item" 2>/dev/null | head -40
+        elif [[ -f "$item" ]]; then
+          bat --color=always --style=numbers,header --line-range=:80 "$item" 2>/dev/null || head -80 "$item"
+        fi
+      '
+    )
+    if [[ -z "$query" ]]; then
+      result=$(fzf "${fzf_opts[@]}") || return
+    else
+      # 1. mdfind (Spotlight, instant, already indexed — best for broad search)
+      # 2. fd (name/path matches in project dirs, respects .gitignore)
+      # awk dedupes while preserving order
+      result=$(
+        {
+          mdfind "kMDItemFSName == '*${query}*'" 2>/dev/null
+          fd -H --max-depth 5 "$query" ~/Dev ~/Projects ~/Scratch ~/Documents 2>/dev/null
+        } | awk '!seen[$0]++' | fzf "${fzf_opts[@]}" --query="$query" --select-1 --exit-0
+      ) || return
+    fi
+    if [[ -d "$result" ]]; then
+      builtin cd -- "$result"
+    else
+      builtin cd -- "$(dirname "$result")"
+    fi
+  }
+# └────────────────────────────────────────────────────────────────────────────┘
+
+# ┌─────────────────────────────── hex ── Preview hex color swatches ──────────┐
+  hex() {
+    for c in "$@"; do
+      c="${c#\#}"
+      printf '\e[48;2;%d;%d;%dm  #%s  \e[0m\n' "0x${c:0:2}" "0x${c:2:2}" "0x${c:4:2}" "$c"
+    done
   }
 # └────────────────────────────────────────────────────────────────────────────┘

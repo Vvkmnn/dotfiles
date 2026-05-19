@@ -90,8 +90,8 @@
       zcomet load ohmyzsh plugins/tmux
 
       # ───────────────────────────────────────────────────────────────── fnm ──
-      # deferred LTS notification (output before instant prompt = no warnings)
-      [[ -f "$HOME/.cache/fnm-lts-notify" ]] && { cat "$HOME/.cache/fnm-lts-notify"; rm -f "$HOME/.cache/fnm-lts-notify"; }
+      # NOTE: removed, mise manages node now (brew uninstall fnm)
+      # [[ -f "$HOME/.cache/fnm-lts-notify" ]] && { cat "$HOME/.cache/fnm-lts-notify"; rm -f "$HOME/.cache/fnm-lts-notify"; }
 
       # ────────────────────────────────────────────────────────────── instant ──
       if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
@@ -102,15 +102,19 @@
       zcomet load romkatv/powerlevel10k
 
       # ─────────────────────────────────────────────────────────────── plugin ──
-      # directory jumping
-      zcomet load agkozak/zsh-z
+      # directory jumping (zoxide replaces zsh-z — frecency + SQLite + faster)
+      # zcomet load agkozak/zsh-z
+      eval "$(zoxide init zsh)"
       # fuzzy finder with completion and key bindings (before vi-mode so widgets exist)
       zcomet load junegunn/fzf shell completion.zsh key-bindings.zsh
       # ──────────────────────────────────────────────────────── vi-mode hooks ──
       # zsh-vi-mode wipes all keybindings on init; restore them here
       function zvm_after_init() {
-        # Ctrl+R: fzf fuzzy history search
+        # Ctrl+R: atuin shell history (overrides fzf — must come after)
         bindkey '^R' fzf-history-widget
+        eval "$(atuin init zsh --disable-up-arrow)"
+        zvm_bindkey viins '^R' atuin-search
+        zvm_bindkey vicmd '^R' atuin-search
         # Up/Down: prefix-based history search (type prefix, arrow filters)
         bindkey '^[[A' history-beginning-search-backward
         bindkey '^[OA' history-beginning-search-backward
@@ -159,6 +163,14 @@
       # load p10k config
       [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
+      # ───────────────────────────────────────── theme-system ──
+      # Theme docs: ~/.theme/README.md
+      # Active theme: ~/.theme/current
+      [ -f ~/.theme/palette.sh ] && . ~/.theme/palette.sh
+      [ -f ~/.theme/zsh/fzf.sh ] && . ~/.theme/zsh/fzf.sh
+      [ -f ~/.theme/zsh/p10k.zsh ] && . ~/.theme/zsh/p10k.zsh
+      [ -f ~/.theme/lf/colors.sh ] && . ~/.theme/lf/colors.sh
+
       # ────────────────────────────────────────────────────────────── python ──
       export AUTOSWITCH_DEFAULT_PYTHON="/opt/homebrew/bin/python3"
 
@@ -168,18 +180,18 @@
       # ──────────────────────────────────────────────────────────────── rust ──
       [ -d "$HOME/.cargo" ] && . "$HOME/.cargo/env"
 
-      # ──────────────────────────────────────────────────────────────── node ──
-      # NOTE: fnm manages Node via .node-version/.nvmrc, but brew shellenv
-      # (below) prepends /opt/homebrew/bin to PATH, shadowing fnm's node
-      # if Homebrew has node installed. Run `brew unlink node` to fix -
-      # keeps node for brew deps (gemini-cli, ccusage-monitor) but lets
-      # fnm's LTS win. Re-run after `brew upgrade` reinstalls node.
-      if command -v fnm &>/dev/null; then
-        eval "$(fnm env --use-on-cd --shell zsh)"
-        # LTS check - only in Oct-Nov (release window), once per year
-        local _fc="$HOME/.cache/fnm-lts-check" _m=$(date +%m) _y=$(date +%Y)
-        [[ ($_m == 10 || $_m == 11) && "$(<"$_fc" 2>/dev/null)" != "$_y" ]] && (_fnm_lts_check &)
-      fi
+      # ──────────────────────────────────────────────────────────────── mise ──
+      # mise replaces fnm/nvm/pyenv/rbenv — one tool for all versions.
+      # Reads .node-version, .nvmrc, .python-version, .tool-versions, .mise.toml
+      # Global config: ~/.config/mise/config.toml (python@3.13, node@24, cmake@latest)
+      # npx available at: ~/.local/share/mise/installs/node/*/bin/npx
+      eval "$(mise activate zsh)"
+
+      # ──────────────────────────────────────────────────────────────── opam ──
+      # OCaml package manager — sets PATH for ocamllsp, ocamlformat, dune, etc.
+      # Installed via: brew install opam && opam init
+      # Tools: opam install ocaml-lsp-server ocamlformat
+      [[ ! -r "$HOME/.opam/opam-init/init.zsh" ]] || source "$HOME/.opam/opam-init/init.zsh" > /dev/null 2> /dev/null
 
       # ──────────────────────────────────────────────────────────── platform ──
       case "$(uname -s)" in

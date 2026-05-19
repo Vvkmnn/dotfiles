@@ -95,8 +95,16 @@
   # fd
   alias find='fd'
   alias fdfind='fd'
-  # fzf
-  alias f='fzf'
+  # fzf — f() is now a function in ~/.functions that searches
+  # names (fd), contents (rg), Spotlight (mdfind) and cd's into the result
+  # alias f='fzf'
+  # eza
+  alias e='eza --group-directories-first --icons=auto'
+  alias ll='eza -lah --group-directories-first --icons=auto'
+  # yazi
+  alias yy='yazi'
+  # lazygit
+  alias lg='lazygit'
 # └────────────────────────────────────────────────────────────────────────────┘
 
 # ┌────────────────────────────────────────────────────────────────── config ──┐
