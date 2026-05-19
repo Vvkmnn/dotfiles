@@ -5,8 +5,7 @@
             "complex_modifications": {
                 "rules": [
                     {
-                        "description": "WASD movement + E/R/F/Tab for lost bindings (Wine Crossover only)",
-                        "enabled": false,
+                        "description": "WASD movement + E/R/F/Tab for PIF bindings (Wine Crossover only)",
                         "manipulators": [
                             {
                                 "conditions": [
@@ -201,30 +200,11 @@
                         ]
                     },
                     {
-                        "description": "Right Command: tmux prefix (Ctrl+A)",
+                        "description": "Right Command: Alone=Screenshot+Resize (700px) | +Space=Paste | Ctrl+Cmd=Area Screenshot | Shift+Cmd=Screenshot Options",
                         "manipulators": [
                             {
                                 "from": {
                                     "key_code": "right_command",
-                                    "modifiers": { "optional": ["any"] }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "a",
-                                        "modifiers": ["left_control"],
-                                        "repeat": false
-                                    }
-                                ],
-                                "type": "basic"
-                            }
-                        ]
-                    },
-                    {
-                        "description": "Right Option: Alone=Screenshot+Resize (700px) | +Space=Paste | Ctrl+Opt=Area Screenshot | Shift+Opt=Screenshot Options",
-                        "manipulators": [
-                            {
-                                "from": {
-                                    "key_code": "right_option",
                                     "modifiers": { "mandatory": ["shift"] }
                                 },
                                 "to": [
@@ -237,7 +217,7 @@
                             },
                             {
                                 "from": {
-                                    "key_code": "right_option",
+                                    "key_code": "right_command",
                                     "modifiers": { "mandatory": ["control"] }
                                 },
                                 "to": [{ "shell_command": "~/.config/karabiner/scripts/smart-screenshot-resize.sh -i" }],
@@ -246,12 +226,12 @@
                             {
                                 "from": {
                                     "key_code": "spacebar",
-                                    "modifiers": { "mandatory": ["right_option"] }
+                                    "modifiers": { "mandatory": ["right_command"] }
                                 },
                                 "to": [
                                     {
                                         "set_variable": {
-                                            "name": "ropt_solo",
+                                            "name": "rcmd_solo",
                                             "value": 0
                                         }
                                     },
@@ -264,18 +244,18 @@
                             },
                             {
                                 "from": {
-                                    "key_code": "right_option",
+                                    "key_code": "right_command",
                                     "modifiers": { "optional": ["any"] }
                                 },
                                 "to": [
                                     {
                                         "set_variable": {
-                                            "name": "ropt_solo",
+                                            "name": "rcmd_solo",
                                             "value": 1
                                         }
                                     },
                                     {
-                                        "key_code": "right_option",
+                                        "key_code": "right_command",
                                         "lazy": true
                                     }
                                 ],
@@ -283,7 +263,7 @@
                                     {
                                         "conditions": [
                                             {
-                                                "name": "ropt_solo",
+                                                "name": "rcmd_solo",
                                                 "type": "variable_if",
                                                 "value": 1
                                             }
@@ -292,9 +272,29 @@
                                     },
                                     {
                                         "set_variable": {
-                                            "name": "ropt_solo",
+                                            "name": "rcmd_solo",
                                             "value": 0
                                         }
+                                    }
+                                ],
+                                "type": "basic"
+                            }
+                        ]
+                    },
+                    {
+                        "description": "Right Option: tmux prefix (Ctrl+A) — disabled, toggle enabled:true to activate",
+                        "enabled": false,
+                        "manipulators": [
+                            {
+                                "from": {
+                                    "key_code": "right_option",
+                                    "modifiers": { "optional": ["any"] }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "a",
+                                        "modifiers": ["left_control"],
+                                        "repeat": false
                                     }
                                 ],
                                 "type": "basic"

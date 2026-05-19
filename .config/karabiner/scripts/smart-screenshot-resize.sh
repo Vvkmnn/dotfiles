@@ -13,18 +13,18 @@
 # - -i parameter: Interactive area selection
 #
 # KEYBOARD SHORTCUTS (configured in Karabiner-Elements):
-# - right_opt alone      → Fullscreen screenshot + auto-resize to 700px + notification
-# - ctrl + right_opt     → Area screenshot + auto-resize to 700px + notification
-# - shift + right_opt    → Screenshot options menu (video/other options)
-# - right_opt + space    → Paste (Ctrl+V for Claude Code terminal)
+# - right_cmd alone      → Fullscreen screenshot + auto-resize to 700px + notification
+# - ctrl + right_cmd     → Area screenshot + auto-resize to 700px + notification
+# - shift + right_cmd    → Screenshot options menu (video/other options)
+# - right_cmd + space    → Paste (Ctrl+V for Claude Code terminal)
 #
 # MECHANISM:
-# Uses to_after_key_up + ropt_solo variable instead of to_if_alone.
+# Uses to_after_key_up + rcmd_solo variable instead of to_if_alone.
 # to_if_alone is canceled by mouse/trackpad events during the key hold,
 # which silently breaks screenshots when switching windows. to_after_key_up
 # fires on every physical key release regardless of mouse events.
-# The ropt_solo variable (set on press, cleared by spacebar/paste rule)
-# prevents screenshot when right_opt was used as a modifier for paste.
+# The rcmd_solo variable (set on press, cleared by spacebar/paste rule)
+# prevents screenshot when right_cmd was used as a modifier for paste.
 #
 # WHY THIS APPROACH:
 # - Screenshot to file is synchronous (no race condition with clipboard)
@@ -98,36 +98,36 @@
 # 5. Add to ~/.config/karabiner/karabiner.json under profiles[].complex_modifications.rules:
 #    IMPORTANT: Order matters! Specific modifiers MUST come before "optional: any" rule.
 #    {
-#        "description": "Right Option: Alone=Screenshot+Resize (700px) | +Space=Paste | Ctrl+Opt=Area Screenshot | Shift+Opt=Screenshot Options",
+#        "description": "Right Command: Alone=Screenshot+Resize (700px) | +Space=Paste | Ctrl+Cmd=Area Screenshot | Shift+Cmd=Screenshot Options",
 #        "manipulators": [
 #            {
-#                "from": {"key_code": "right_option", "modifiers": {"mandatory": ["shift"]}},
+#                "from": {"key_code": "right_command", "modifiers": {"mandatory": ["shift"]}},
 #                "to": [{"key_code": "5", "modifiers": ["left_command", "left_shift"]}],
 #                "type": "basic"
 #            },
 #            {
-#                "from": {"key_code": "right_option", "modifiers": {"mandatory": ["control"]}},
+#                "from": {"key_code": "right_command", "modifiers": {"mandatory": ["control"]}},
 #                "to": [{"shell_command": "~/.config/karabiner/scripts/smart-screenshot-resize.sh -i"}],
 #                "type": "basic"
 #            },
 #            {
-#                "from": {"key_code": "spacebar", "modifiers": {"mandatory": ["right_option"]}},
+#                "from": {"key_code": "spacebar", "modifiers": {"mandatory": ["right_command"]}},
 #                "to": [
-#                    {"set_variable": {"name": "ropt_solo", "value": 0}},
+#                    {"set_variable": {"name": "rcmd_solo", "value": 0}},
 #                    {"key_code": "v", "modifiers": ["left_control"]}
 #                ],
 #                "type": "basic"
 #            },
 #            {
-#                "from": {"key_code": "right_option", "modifiers": {"optional": ["any"]}},
+#                "from": {"key_code": "right_command", "modifiers": {"optional": ["any"]}},
 #                "to": [
-#                    {"set_variable": {"name": "ropt_solo", "value": 1}},
-#                    {"key_code": "right_option", "lazy": true}
+#                    {"set_variable": {"name": "rcmd_solo", "value": 1}},
+#                    {"key_code": "right_command", "lazy": true}
 #                ],
 #                "to_after_key_up": [
 #                    {"shell_command": "~/.config/karabiner/scripts/smart-screenshot-resize.sh",
-#                     "conditions": [{"type": "variable_if", "name": "ropt_solo", "value": 1}]},
-#                    {"set_variable": {"name": "ropt_solo", "value": 0}}
+#                     "conditions": [{"type": "variable_if", "name": "rcmd_solo", "value": 1}]},
+#                    {"set_variable": {"name": "rcmd_solo", "value": 0}}
 #                ],
 #                "type": "basic"
 #            }
@@ -137,27 +137,27 @@
 # TESTING:
 # --------
 # Fullscreen screenshot:
-# 1. Press right_opt alone (should hear camera sound)
-# 2. Press right_opt + space to paste into terminal
+# 1. Press right_cmd alone (should hear camera sound)
+# 2. Press right_cmd + space to paste into terminal
 # 3. Verify image appears and is resized:
 #    pngpaste /tmp/test.png && sips -g pixelWidth -g pixelHeight /tmp/test.png | grep pixel && rm /tmp/test.png
 #    (Should show: pixelWidth: 700 or less)
 #
 # Area screenshot:
-# 1. Press ctrl + right_opt (crosshair cursor appears)
+# 1. Press ctrl + right_cmd (crosshair cursor appears)
 # 2. Drag to select area (should hear camera sound)
-# 3. Press right_opt + space to paste
+# 3. Press right_cmd + space to paste
 # 4. Verify resized: (same command as above, should show: pixelWidth: 700 or less)
 #
 # Screenshot options:
-# 1. Press shift + right_opt (macOS screenshot toolbar appears with Record/Screenshot/Options)
+# 1. Press shift + right_cmd (macOS screenshot toolbar appears with Record/Screenshot/Options)
 #
 # TROUBLESHOOTING:
 # ----------------
 # - Script not running: Check Karabiner config path matches script location
 # - Image not resized: Verify impbcopy exists and is executable
 # - No screenshot: Check macOS screenshot permissions for Karabiner
-# - ctrl + right_opt not working: Ensure specific modifier rules (shift, ctrl) come BEFORE
+# - ctrl + right_cmd not working: Ensure specific modifier rules (shift, ctrl) come BEFORE
 #   the general "optional: any" rule in karabiner.json. Karabiner processes top-to-bottom.
 # - Check script permissions: ls -lh ~/.config/karabiner/scripts/smart-screenshot-resize.sh
 #   (Should show -rwxr-xr-x or similar)
