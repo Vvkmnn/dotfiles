@@ -5,6 +5,10 @@ import IOKit
 import Network
 import SystemConfiguration
 
+// Singleton guard — prevent duplicate instances (flock is atomic, auto-released on exit/crash)
+let lockFD = open("/tmp/bar-daemon.lock", O_CREAT | O_RDWR, 0o644)
+guard lockFD >= 0, flock(lockFD, LOCK_EX | LOCK_NB) == 0 else { exit(0) }
+
 // Unified bar daemon: single process for all 15 sketchybar items
 // Replaces: metrics-daemon + net-stats + net-monitor + progress-clock + wifi-signal
 //           + battery.sh + disk.sh + connection.sh + location.sh
@@ -1191,6 +1195,128 @@ func updateLocation(force: Bool = false) {
 }
 
 // ═══════════════════════════════════════════════════════════════════
+// MARK: - Weather (URLSession, 30-min cache, Kanagawa colors)
+// ═══════════════════════════════════════════════════════════════════
+
+let weatherCacheFile = NSHomeDirectory() + "/.cache/sketchybar-weather"
+var cachedWeatherIcon = ""
+var cachedWeatherLabel = ""
+var cachedWeatherColor = ""
+var lastWeatherFetch = Date.distantPast
+
+// Preload from disk cache (written by previous sessions)
+func preloadWeatherCache() {
+    guard let contents = try? String(contentsOfFile: weatherCacheFile, encoding: .utf8) else { return }
+    for line in contents.split(separator: "\n") {
+        let parts = line.split(separator: "=", maxSplits: 1)
+        guard parts.count == 2 else { continue }
+        let val = String(parts[1]).trimmingCharacters(in: CharacterSet(charactersIn: "\""))
+        switch String(parts[0]) {
+        case "ICON": cachedWeatherIcon = val
+        case "LABEL": if val.count < 20 && !val.contains("<") { cachedWeatherLabel = val }
+        case "COLOR": cachedWeatherColor = val
+        default: break
+        }
+    }
+    if !cachedWeatherIcon.isEmpty {
+        lastWeatherFetch = Date()  // treat cache as fresh for first display
+    }
+}
+
+func weatherFallback() {
+    // No data: sun during day (6-20), night otherwise, dimmed, no label
+    let hour = Calendar.current.component(.hour, from: Date())
+    let isDaytime = hour >= 6 && hour < 20
+    let icon = isDaytime ? "\u{F0599}" : "\u{F0F33}"  // md-weather-sunny / md-weather-night
+    sketchybar(["--set", "weather", "icon=\(icon)", "icon.color=\(kDim)", "label=", "label.drawing=off"])
+}
+
+func updateWeather() {
+    guard !networkItemsLocked else { return }
+
+    // Serve from memory cache if fresh (30 min)
+    if !cachedWeatherIcon.isEmpty && Date().timeIntervalSince(lastWeatherFetch) < 1800 {
+        sketchybar(["--set", "weather", "icon=\(cachedWeatherIcon)", "label=\(cachedWeatherLabel)",
+                    "icon.color=\(cachedWeatherColor)", "label.color=\(cachedWeatherColor)", "label.drawing=on"])
+        return
+    }
+
+    guard internetReachable else { weatherFallback(); return }
+
+    guard let url = URL(string: "https://wttr.in/?format=%C|%t") else { return }
+    var request = URLRequest(url: url, timeoutInterval: 5)
+    request.cachePolicy = .reloadIgnoringLocalCacheData
+    URLSession.shared.dataTask(with: request) { data, response, _ in
+        DispatchQueue.main.async {
+            guard !networkItemsLocked else { return }
+            // Reject non-200 or HTML responses at header level (wttr.in sends text/plain for valid, text/html for errors)
+            guard let http = response as? HTTPURLResponse,
+                  http.statusCode == 200,
+                  (http.value(forHTTPHeaderField: "Content-Type") ?? "").contains("text/plain") else {
+                weatherFallback()
+                return
+            }
+            guard let data = data,
+                  let raw = String(data: data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines),
+                  raw.count < 50, raw.contains("|") else {
+                weatherFallback()
+                return
+            }
+
+            let parts = raw.split(separator: "|", maxSplits: 1)
+            guard parts.count == 2 else { weatherFallback(); return }
+
+            let condition = String(parts[0]).lowercased()
+            var temp = String(parts[1]).trimmingCharacters(in: .whitespaces)
+            if temp.hasPrefix("+") { temp = String(temp.dropFirst()) }
+            guard temp.count < 10 else { weatherFallback(); return }
+
+            let hour = Calendar.current.component(.hour, from: Date())
+            let isDaytime = hour >= 6 && hour < 20
+
+            let icon: String
+            let color: String
+
+            // Map condition to nerd font icon + Kanagawa color
+            if condition.contains("thunder") {
+                icon = "\u{F0593}"; color = "0xffFF5D62"
+            } else if condition.contains("snow") || condition.contains("blizzard") {
+                icon = "\u{F0598}"; color = kWhite
+            } else if condition.contains("sleet") || condition.contains("ice") {
+                icon = "\u{F0598}"; color = "0xffA3D4D5"
+            } else if condition.contains("heavy") && condition.contains("rain") {
+                icon = "\u{F0596}"; color = "0xff7E9CD8"
+            } else if condition.contains("rain") || condition.contains("drizzle") || condition.contains("shower") {
+                icon = "\u{F0597}"; color = "0xff7FB4CA"
+            } else if condition.contains("fog") || condition.contains("mist") || condition.contains("haze") {
+                icon = "\u{F0591}"; color = kDim
+            } else if condition.contains("overcast") {
+                icon = "\u{F0590}"; color = "0xff938AA9"
+            } else if condition.contains("cloud") || condition.contains("partly") {
+                icon = isDaytime ? "\u{F0595}" : "\u{F0594}"
+                color = isDaytime ? "0xffE6C384" : "0xff938AA9"
+            } else {
+                // Clear/sunny/default
+                icon = isDaytime ? "\u{F0599}" : "\u{F0F33}"
+                color = isDaytime ? "0xffE6C384" : kWhite
+            }
+
+            cachedWeatherIcon = icon
+            cachedWeatherLabel = temp
+            cachedWeatherColor = color
+            lastWeatherFetch = Date()
+
+            // Write cache for next session preload
+            try? "ICON=\"\(icon)\"\nLABEL=\"\(temp)\"\nCOLOR=\"\(color)\"\n"
+                .write(toFile: weatherCacheFile, atomically: true, encoding: .utf8)
+
+            sketchybar(["--set", "weather", "icon=\(icon)", "label=\(temp)",
+                        "icon.color=\(color)", "label.color=\(color)", "label.drawing=on"])
+        }
+    }.resume()
+}
+
+// ═══════════════════════════════════════════════════════════════════
 // MARK: - Main: start all event sources
 // ═══════════════════════════════════════════════════════════════════
 
@@ -1199,6 +1325,9 @@ setupPathMonitor()
 
 // 2. Macmon pipe reader (callback-based, ~10s intervals from macmon)
 setupMacmon()
+
+// 2c. Preload weather cache from disk (instant display, HTTP refresh later)
+preloadWeatherCache()
 
 // 2b. Initialize networkActive + baseline bytes (so first updateNetwork shows real delta)
 let (initDown, initUp, initialActive) = readNetBytes()
@@ -1215,6 +1344,7 @@ DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
     }
     // Right side
     updateProgress()
+    updateWeather()
     updateBattery()
     updateDisk()
     // Left side
@@ -1247,6 +1377,12 @@ let progressTimer = DispatchSource.makeTimerSource(queue: DispatchQueue.main)
 progressTimer.schedule(deadline: .now() + progressDelay, repeating: 60.0)
 progressTimer.setEventHandler { updateProgress() }
 progressTimer.resume()
+
+// 6. Weather timer (30 min)
+let weatherTimer = DispatchSource.makeTimerSource(queue: DispatchQueue.main)
+weatherTimer.schedule(deadline: .now() + 1800, repeating: 1800.0)
+weatherTimer.setEventHandler { updateWeather() }
+weatherTimer.resume()
 
 // 7. SIGUSR1: unlock network items + enable smooth mode (sent by reconnect animation)
 let sigSource = DispatchSource.makeSignalSource(signal: SIGUSR1, queue: DispatchQueue.main)

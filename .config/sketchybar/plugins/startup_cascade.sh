@@ -6,7 +6,7 @@ D=40  W=0.35
 PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
 source "$PLUGIN_DIR/bar_colors.sh"
 
-# Disable space.sh during cascade
+# Disable space.sh during cascade (it writes visible colors)
 sketchybar --set space_handler script=""
 
 # Get all space items dynamically
@@ -31,6 +31,7 @@ sketchybar \
   --set progress icon.color=$T_OLD_WHITE label.color=$T_OLD_WHITE \
       slider.highlight_color=$T_WHITE slider.background.color=$T_DIM \
   --set clock_time label.color=$T_WHITE \
+  --set weather icon.color=$T_WHITE label.color=$T_WHITE \
   --set battery icon.color=$T_WHITE label.color=$T_WHITE \
   --set disk icon.color=$T_DIM label.color=$T_DIM \
   --set memory icon.color=$T_DIM label.color=$T_DIM \
@@ -42,7 +43,7 @@ sketchybar \
 # Outside-in cascade: fade color + expand width simultaneously
 # Left side: spaces paired with right side items
 # Right items in order: clock, progress, battery, disk, memory, cpu, gpu, power, temp
-RIGHT_ITEMS=(clock_time progress battery disk memory cpu gpu power temp)
+RIGHT_ITEMS=(clock_time progress weather battery disk memory cpu gpu power temp)
 NUM_SPACES=${#SPACES[@]}
 NUM_RIGHT=${#RIGHT_ITEMS[@]}
 WAVES=$(( NUM_SPACES > NUM_RIGHT ? NUM_SPACES : NUM_RIGHT ))
@@ -57,8 +58,8 @@ sketchybar --animate tanh $D --set progress_icon width=dynamic --set progress wi
   --set progress_icon icon.color=$K_WHITE --set progress icon.color=$K_OLD_WHITE label.color=$K_OLD_WHITE slider.highlight_color=$K_WHITE slider.background.color=$K_DIM
 sleep $W
 
-# W3: space + battery
-sketchybar --animate tanh $D --set battery width=dynamic --animate sin $D --set "${SPACES[1]}" icon.color=$K_OLD_WHITE --set battery icon.color=$K_WHITE label.color=$K_WHITE
+# W3: space + weather + battery
+sketchybar --animate tanh $D --set weather width=dynamic --set battery width=dynamic --animate sin $D --set "${SPACES[1]}" icon.color=$K_OLD_WHITE --set weather icon.color=$K_WHITE label.color=$K_WHITE --set battery icon.color=$K_WHITE label.color=$K_WHITE
 sleep $W
 
 # W4+: remaining spaces paired with right-side items

@@ -555,6 +555,18 @@ sketchybar --add item progress_icon right \
 	padding_right=0 \
 	script=""
 
+# Weather (updated by bar-daemon — URLSession to wttr.in, 30-min cache)
+sketchybar --add item weather right \
+	--set weather \
+	icon="󰖕" \
+	icon.font="SFMono Nerd Font:Regular:16.0" \
+	icon.color=$TRANSPARENT \
+	icon.padding_right=4 \
+	label.font="SFMono Nerd Font:Regular:13.0" \
+	label.color=$TRANSPARENT \
+	width=0 \
+	padding_right=4
+
 # Battery (updated by bar-daemon — IOKit 1s change detection)
 sketchybar --add item battery right \
 	--set battery \
