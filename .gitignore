@@ -391,3 +391,35 @@ tags
 
 # git-crypt key (NEVER commit)
 dotfiles.key
+
+# Claude Code - additional runtime/secret gaps (2026-05 audit)
+.claude/mcp/credentials.txt
+.claude/cache/
+.claude/tasks/
+.claude/teacher/
+.claude/projects/-Users-v/memory/
+.claude/agents-output/
+
+# Other Claude-adjacent tooling (not the dotfiles' .claude/)
+.claude-server-commander/
+.claude-squad/
+.claude-mem/
+.claude-historian/
+
+# Bun install cache (per-machine, large, churning)
+.bun/install/cache/
+
+# Karabiner OS-managed snapshots (rewritten on every config change)
+.config/karabiner/automatic_backups/
+
+# Sketchybar compiled Swift binaries (rebuilt per-machine)
+.config/sketchybar/helpers/bar-daemon
+.config/sketchybar/helpers/metrics-daemon
+.config/sketchybar/helpers/net-monitor
+.config/sketchybar/helpers/net-stats
+.config/sketchybar/helpers/progress-clock
+.config/sketchybar/helpers/event_providers/
+
+# Ghostty vendored shader libraries (large, fetched at install)
+.config/ghostty/shaders/community/
+.config/ghostty/shaders/cursor/
