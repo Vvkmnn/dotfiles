@@ -38,6 +38,10 @@ ctrl + cmd - 0 : brew services restart sketchybar && yabai --restart-service && 
 # Open Obsidian
 ctrl + cmd - o : open -na /Applications/Obsidian.app/
 
+# Open Claude Code session on the mini (persistent tmux on vMiniM4)
+# Wrapper tries vminim4.local first, then Tailscale magic-DNS; falls back to local shell.
+ctrl + cmd - m : open -na /Applications/Ghostty.app --args -e /Users/v/.local/bin/claude-mini
+
 # Create Daily Note in Obsidian
 # ctrl + cmd - d : obsidian-cli daily # create "{note-name}"
 
@@ -243,3 +247,26 @@ ctrl + cmd - x : current="$(yabai -m query --spaces | jq -r 'map(select(.["has-f
 
 # Fix MacOS screenshot interactions
 # cmd + shift - 4 - chunkc border::clear >:
+
+################################################################################
+# 7. RAYCAST DEEPLINKS (modifier: ctrl + alt)
+#    Home row: a=apps  s=tmux  d=tabs  f=(free)
+################################################################################
+
+# a — Switch Windows (all open windows across all apps and spaces)
+ctrl + alt - a : open 'raycast://extensions/raycast/navigation/switch-windows'
+
+# s — tmux window picker (search by name, e.g. "claude (~/.alfred)")
+ctrl + alt - s : open 'raycast://extensions/louishuyng/tmux-sessioner/manage_tmux_windows'
+
+# d — Search Safari tabs (find and jump to any open tab)
+ctrl + alt - d : open 'raycast://extensions/koinzhang/browser-tabs/index'
+
+# f — Search Files (Spotlight-powered file search)
+ctrl + alt - f : open 'raycast://extensions/raycast/file-search/search-files'
+
+# v — Clipboard history
+ctrl + alt - v : open 'raycast://extensions/raycast/clipboard-history/clipboard-history'
+
+# Confetti (-g = background, no UI needed)
+ctrl + alt - 8 : open -g 'raycast://confetti'

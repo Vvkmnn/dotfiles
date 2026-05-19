@@ -208,3 +208,6 @@
 	packSizeLimit = 1g
 	threads = 0
 	window = 0
+
+[include]
+    path = ~/.theme/git/delta.gitconfig

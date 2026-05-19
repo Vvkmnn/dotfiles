@@ -43,6 +43,7 @@
   sketchybar ─── .config/sketchybar/ (sketchybarrc, helpers, plugins)
   wm ─────────── .skhdrc .yabairc .config/yabai/
   terminal ───── .config/ (ghostty, tmux, kitty, alacritty, wezterm)
+  launch ─────── .config/launchagents/ (tmux auto-start, mcp-proxy)
   alfred ─────── .alfred/ (~400 files: prefs, workflows, themes)
   fish ───────── .config/ (fish, fisher, omf)
   docker ─────── .docker/
@@ -144,6 +145,14 @@ brew install fzf
 chsh -s $(which zsh)
 ```
 
+#### theme
+
+```sh
+~/.theme/README.md
+~/.theme/current
+# shared theme docs, palette, and rollback notes
+```
+
 ### editor
 
 #### [nvim](https://github.com/Vvkmnn/v.nvim.git)
@@ -177,7 +186,14 @@ brew install emacs-mac                              \
 ### [tmux](https://github.com/tmux/tmux/wiki)
 
 ```sh
+brew install tmux
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+
+  config ── ~/.config/tmux/tmux.conf
+  plugins ─ tpm, resurrect, continuum, minimal-tmux-status, tmux-battery
+  server ── auto-starts at login via LaunchAgent (see macos > launch agents)
+  restore ─ continuum auto-restores sessions on server start
+  wrapper ─ ~/.config/tmux/tmux-server.sh (crash recovery, polls socket)
 ```
 
 ### [claude](https://docs.anthropic.com/en/docs/claude-code)
@@ -337,6 +353,33 @@ echo "$(whoami) ALL=(root) NOPASSWD: sha256:$(shasum -a 256 $(which yabai) \
 skhd --start-service
 yabai --start-service
 brew services start felixkratz/formulae/sketchybar
+```
+
+#### [launch agents](https://developer.apple.com/library/archive/documentation/MacOSX/Conceptual/BPSystemStartup/Chapters/CreatingLaunchdJobs.html)
+
+```sh
+  templates use __HOME__ placeholder ── see .config/launchagents/README.md
+
+  install ──────────────────────────────────────────
+
+for f in ~/.config/launchagents/*.plist; do
+    sed "s|__HOME__|$HOME|g" "$f" > ~/Library/LaunchAgents/$(basename "$f")
+    launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/$(basename "$f")
+done
+
+  agents ───────────────────────────────────────────
+
+  com.user.tmux          tmux server with crash recovery
+                         requires: tmux, ~/.config/tmux/tmux-server.sh
+                         sessions auto-restore via resurrect + continuum
+
+  com.claude.mcp-proxy   shared MCP server proxy (TBXark/mcp-proxy)
+                         requires: ~/.claude/mcp/bin/mcp-proxy, config.json
+                         all Claude Code sessions share one proxy
+
+  verify ───────────────────────────────────────────
+
+launchctl list | grep -E "tmux|mcp-proxy"
 ```
 
 ## linux
