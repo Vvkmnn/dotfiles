@@ -1,0 +1,11 @@
+---
+description: Review recent code changes for quality, security, and best practices
+---
+
+Use the code-reviewer agent to review recent changes in this repository.
+
+Focus on:
+1. Run `git diff --stat` to see what changed
+2. Review each changed file against the checklist (readability, correctness, functional style, security, tests, scope)
+3. Organize findings into Critical / Warning / Suggestion tiers with file:line references
+4. Include specific code examples showing how to fix each issue
