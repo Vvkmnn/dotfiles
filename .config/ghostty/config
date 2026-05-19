@@ -7,8 +7,8 @@
 # Dark theme with vibrant colors
 # theme = catppuccin-mocha
 
-# Unified theme configuration - tokyonight for consistency
-theme = tokyonight
+# Unified theme configuration - Kanagawa Wave for consistency
+theme = Kanagawa Wave
 
 # Beautiful rose-pine theme switching
 # theme = light:rose-pine-dawn,dark:rose-pine
@@ -30,10 +30,11 @@ theme = tokyonight
 # background-blur-radius = 40
 
 # Minimum contrast ratio for text readability (1.0-21.0)
+# 1.3 improves dim element readability (comments, inactive UI) — try if Kanagawa feels too dim
 minimum-contrast = 1.1
 
-# Color space for rendering
-# window-colorspace = srgb
+# Color space for rendering — display-p3 unlocks wide gamut on Apple Silicon P3 displays
+window-colorspace = display-p3
 
 # Alpha blending mode
 # alpha-blending = true
@@ -73,8 +74,8 @@ font-size = 12.3
 # Font thickness (macOS only)
 font-thicken = true
 
-# Font thickness strength (0.0-1.0)
-# font-thicken-strength = 0.5
+# Font thickness strength (integer 0-255, minimal visible effect on macOS CoreText/Retina)
+# font-thicken-strength = 50
 
 # Font feature settings (OpenType features)
 font-feature = liga=0
@@ -87,7 +88,7 @@ font-feature = calt=0
 # font-codepoint-map = U+E0B0=SF Mono
 
 # Adjust cell dimensions
-# adjust-cell-height = 10%  # DISABLED: Causes Neovim to not fill terminal (creates draggable gap)
+adjust-cell-height = 1
 # adjust-cell-width = 0%
 
 # Fine-tune font positioning
@@ -128,8 +129,8 @@ cursor-style-blink = true
 # Invert foreground/background colors under cursor
 # cursor-invert-fg-bg = false
 
-# Click to move cursor (requires shell integration)
-# cursor-click-to-move = false
+# Click to move cursor in prompt (requires shell integration)
+cursor-click-to-move = true
 
 # ============================================================================
 # WINDOW & DISPLAY
@@ -160,8 +161,8 @@ window-decoration = auto
 # window-position-y = center
 
 # Window padding
-window-padding-x = 0
-window-padding-y = 0
+window-padding-x = 7
+window-padding-y = 7
 
 # Asymmetric padding (matches your WezTerm's left=15)
 # window-padding-x = 15
@@ -296,8 +297,11 @@ command = /bin/zsh -l
 # Shell integration
 shell-integration = zsh
 
-# Shell integration features
-# shell-integration-features = no-cursor,no-sudo,no-title
+# Shell integration features — no-cursor preserves block_hollow, no-title since titlebar hidden
+shell-integration-features = no-cursor,sudo,no-title
+
+# Notify when commands finish in unfocused windows (10s+ commands only)
+notify-on-command-finish = unfocused
 
 # Copy on select
 copy-on-select = true
@@ -342,6 +346,9 @@ clipboard-trim-trailing-spaces = true
 
 # Scrollback buffer size
 scrollback-limit = 10000
+
+# Hide scrollbar — tmux handles scrollback
+scrollbar = never
 
 # ============================================================================
 # TERMINAL BEHAVIOR
@@ -446,10 +453,14 @@ auto-update-channel = stable
 # on 16GB system running multiple Claude Code sessions
 image-storage-limit = 50000000
 
-# Custom shader
-# custom-shader = ""
+# Custom shaders — stack in order. Hot-reload on save, no restart needed.
+# Static (no battery cost): bloom, bettercrt, retro-terminal, tft
+# Animated (needs custom-shader-animation, uses GPU): cursor trails, starfield, water
+# custom-shader = ~/.config/ghostty/shaders/community/bloom.glsl
+# custom-shader = ~/.config/ghostty/shaders/cursor/cursor_tail.glsl
+# custom-shader = ~/.config/ghostty/shaders/community/bettercrt.glsl
 
-# Custom shader animation
+# Shader animation — only needed for cursor trail (renders every frame, uses GPU)
 # custom-shader-animation = true
 
 # Window class (X11)
@@ -495,6 +506,7 @@ image-storage-limit = 50000000
 
 # Custom keybindings
 # keybind = ctrl+shift+n=new_window
+keybind = super+enter=unbind
 
 # Link URL handling
 link-url = true

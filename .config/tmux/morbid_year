@@ -152,7 +152,7 @@ zodiac)
 all)
 	# Single call for all status components for performance
 	# Order: biggest unit (year) → smallest unit (time), gradient stays the same
-	echo "#[fg=#7A9FDB]$(date +%g)|54 #[fg=#8CB0DC]$(date +%-m)|12 #[fg=#9EC2DD]$(date +%V)|52 #[fg=#AED0E7]$(date +%-j)|$(((($(date +%Y) % 400 == 0)) || ((($(date +%Y) % 4 == 0)) && (($(date +%Y) % 100 != 0))) ? 366 : 365)) #[fg=#BFE3F1]$(date +%-d)|$(date -v+1m -v1d -v-1d +%d) #[fg=#D0F0FA]$(date +%-u)|7 #[fg=#FFFFFF]$(date +%T) "
+	echo "#[fg=#c0a36e]$(date +%g)|54 #[fg=#cda45c]$(date +%-m)|12 #[fg=#d7af72]$(date +%V)|52 #[fg=#e0bc89]$(date +%-j)|$(((($(date +%Y) % 400 == 0)) || ((($(date +%Y) % 4 == 0)) && (($(date +%Y) % 100 != 0))) ? 366 : 365)) #[fg=#e8caa1]$(date +%-d)|$(date -v+1m -v1d -v-1d +%d) #[fg=#f0ddc6]$(date +%-u)|7 #[fg=#fffaf0]$(date +%T) "
 	;;
 *)
 	echo "Invalid argument: $1"
