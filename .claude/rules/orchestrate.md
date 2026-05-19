@@ -6,6 +6,8 @@ Large tasks exceed single-agent capacity. Long contexts cause forgetting. Sequen
 ## Rule
 Delegate to subagents strategically. Each agent gets fresh context - use this to your advantage.
 
+Subagents default to read-only. They research, explore, and report back — edits happen in the main session where they can be reviewed. Only dispatch editing subagents when there's a clear reason (e.g., independent file changes across separate modules with explicit approval).
+
 ### When to Recommend Subagents
 
 | Situation | Recommend | Why |
@@ -23,7 +25,7 @@ Delegate to subagents strategically. Each agent gets fresh context - use this to
 | Task Type | Model | Why |
 |-----------|-------|-----|
 | File search, pattern matching | haiku | Deterministic, can't fail |
-| Code analysis, exploration | haiku or sonnet | Haiku is 90% of Sonnet at 1/3 cost |
+| Code analysis, exploration | sonnet | Haiku misses issues that require judgment |
 | Architecture, complex reasoning | opus | Opus 4.6, worth the cost |
 
 **Session model:** Check `/switch-claude` skill for current mode (generous vs optimized).
@@ -78,7 +80,7 @@ Task("Find API patterns", prompt, "Explore")
 
 **Model selection by usage plan:**
 - **Generous** (`opus`): sonnet for all 3
-- **Optimized** (`opusplan`): haiku for Local + Docs, sonnet for Online
+- **Optimized** (`opusplan`): sonnet for all 3 (haiku misses issues — only use haiku for deterministic file search, never analysis)
 
 **Quick research** (one direct tool call, no subagents) when the question is narrow and one source suffices. Escalate to 3-subagent protocol when quick research yields nothing or user wants thoroughness.
 
@@ -107,13 +109,6 @@ Return: file:line references for each pattern found.
 Don't explore: tests, mocks, or deprecated code.
 ```
 
-### Context Isolation Benefits
-
-- **Fresh perspective** - no accumulated confusion
-- **Parallel execution** - multiple agents at once
-- **Token efficiency** - main context stays clean
-- **Failure isolation** - one agent failing doesn't corrupt others
-
 ### Agent Discovery
 
 **Default:** `Explore` for codebase questions, `Plan` for architecture design.
@@ -122,42 +117,36 @@ Don't explore: tests, mocks, or deprecated code.
 
 | When I notice... | Reach for... |
 |------------------|--------------|
-| Security concern (auth, validation, secrets) | `security-scanning:security-auditor` |
 | Bug with unclear cause | `debugging-toolkit:debugger` |
 | Test coverage gaps, TDD needed | `tdd-workflows:tdd-orchestrator` |
-| API/service design decisions | `backend-development:backend-architect` |
-| Database schema work | `database-design:database-architect` |
-| CI/CD pipeline work | `cicd-automation:deployment-engineer` |
-| Legacy code modernization | `code-refactoring:legacy-modernizer` |
-| PR needs review | `pr-review-toolkit:code-reviewer` |
 | Novel library/API or persistent error | Research protocol (3 Explore agents) |
+| PR needs review | `code-review:code-review` skill (GitHub PR integration) |
+| Feature architecture needed | `feature-dev:code-architect` or `ce:plan` |
+| Code quality after implementation | `code-simplifier:code-simplifier` agent |
 
 **Naming patterns:** `*-architect` for architecture, `*-pro` for language expertise (python-pro, typescript-pro, rust-pro, golang-pro, bash-pro).
 
-**PR Review Toolkit** (use together for comprehensive review):
-- `code-reviewer` - Quality, conventions, bugs
-- `silent-failure-hunter` - Error handling gaps
-- `pr-test-analyzer` - Test coverage
-- `type-design-analyzer` - Type invariants
+### Language Skills (invoke via Skill tool)
+
+Language plugins provide skills — not just agents. **Check matching skills before writing language-specific code**, especially for patterns, testing, and error handling.
+
+| When writing... | Invoke skill | Key skills |
+|-----------------|-------------|------------|
+| Python code | `python-development:*` | `python-code-style`, `python-testing-patterns`, `python-error-handling`, `python-anti-patterns`, `uv-package-manager` |
+| TypeScript/JS code | `javascript-typescript:*` | `typescript-advanced-types`, `modern-javascript-patterns`, `javascript-testing-patterns`, `nodejs-backend-patterns` |
+| Shell scripts | `shell-scripting:*` | `bash-defensive-patterns`, `bats-testing-patterns`, `shellcheck-configuration` |
+
+**When to invoke language skills vs write directly:**
+- Complex patterns (async, generics, decorators) — invoke skill first
+- Testing strategy for new code — invoke `*-testing-patterns`
+- Performance-sensitive code — invoke `python-performance-optimization` or equivalent
+- Simple edits, bug fixes, known patterns — write directly
+
+**Disabled but available per-project:** See `~/.claude/analysis/PLUGINS_DISABLED.md` for full reference. Enable in project `.claude/settings.json`.
 
 ### Agent Teams (Experimental)
 
-Multiple Claude Code instances coordinating via shared task list + mailbox.
-Enable per-session, NOT globally (high token cost):
-
-```bash
-CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1 claude
-```
-
-| Need | Use |
-|------|-----|
-| Focused task, result only | Subagent |
-| Agents must discuss/challenge | Agent Team |
-| Sequential dependencies | Neither (single session) |
-
-**Best for:** parallel code review, competing debug hypotheses, cross-layer features.
-**Controls:** `Shift+Up/Down` cycle teammates, `Shift+Tab` delegate mode, `Ctrl+T` task list.
-**Limitation:** Split panes not in Ghostty — use in-process mode or regular tmux.
+Multiple Claude Code instances coordinating via shared task list + mailbox. Enable per-session: `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1 claude`. Use when agents must discuss/challenge each other (parallel code review, competing hypotheses). High token cost — prefer subagents for focused tasks.
 
 ### Red Flags
 
@@ -167,6 +156,7 @@ CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1 claude
 - Vague prompts that cause redundant exploration
 - More than 3 parallel agents (diminishing returns)
 - Using agent teams for tasks subagents can handle (token waste)
+- Subagents making edits without clear justification (default to read-only)
 
 ## Complements
 - `explore.md` - When to ask before launching

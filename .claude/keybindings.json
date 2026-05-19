@@ -11,7 +11,8 @@
         "ctrl+shift+4": "input:/build-fix",
         "ctrl+shift+5": "input:/e2e",
         "ctrl+shift+6": "input:/refactor-clean",
-        "ctrl+shift+7": "input:/commit"
+        "ctrl+shift+7": "input:/commit",
+        "meta+k": "voice:pushToTalk"
       }
     }
   ]

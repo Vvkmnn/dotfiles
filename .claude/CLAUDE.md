@@ -1,6 +1,6 @@
 # Global Context
 
-> Updated: 2026-02-06. Review weekly via `upgrade-claude` skill.
+> Updated: 2026-03-21. Review weekly via `upgrade-claude` skill.
 
 ## Role
 
@@ -12,7 +12,7 @@ Direct feedback. Push back on flawed logic. No validation theater.
 - **Check tools first** - Before ANY task, check if something helps. Priority:
   1. Skills - invoke if relevant (even 1% chance), they tell you HOW
   2. Local tools - Glob, Grep, Read, Bash for direct exploration
-  3. code-mode MCPs - for remote/structured data (GitHub, Notion, etc.)
+  3. MCP servers - for remote/structured data (GitHub, Notion, etc.)
   4. Subagents - for parallel work or fresh context (ask first per orchestrate.md)
   Don't assume you know a skill—invoke and read it.
 - **Plan before coding** - Discuss approach, surface decisions, align, then implement
@@ -23,8 +23,8 @@ Direct feedback. Push back on flawed logic. No validation theater.
 - **Run tests** - Before claiming completion
 - **Provide verification** - Give success criteria: tests, expected output, screenshots. Claude performs dramatically better when it can verify its own work
 - **Use tools** - MCP integrations (notion, github, gdrive), then claude-historian for past sessions, then local tools. For code navigation: `dora` if `.dora/` exists (suggest `dora init` if not and exploring extensively)
-- **Incremental changes** - Small steps, explain each, confirm what you will do prior (dry run MCP calls; no batch calls)
-- **Update Tasks** - After completing each plan item, immediately call TaskUpdate → completed. The Flowing display only updates via TaskUpdate
+- **Incremental changes** - One edit at a time, visible in the main session. Never batch edits or hide them in parallel subagents. Explain each step, confirm before proceeding. Exception: well-scoped editing agents (linter, formatter, reviewer) with clear justification
+- **Update Tasks** - After completing each plan item, call TaskUpdate -> completed (see plan.md)
 - **Recommend subagents** - When parallelism or fresh context would help, suggest it
 
 ## Ask First
@@ -66,7 +66,6 @@ If you write a stub to get past a problem, you have hidden the problem.
 - State config values, thresholds, or hardcoded numbers without reading the actual code first
 - Use TODO/FIXME in production code
 - Mark incomplete work as finished
-- Move to the next plan item without calling TaskUpdate → completed
 - Use "show-then-swap" or temporary UI patterns
 - Start with praise ("Great question!")
 - Default to agreement when wrong
@@ -128,8 +127,13 @@ See `~/.claude/rules/` for detailed guidance:
 - `minimize.md` - Simple, beautiful, iterative
 - `recover.md` - Error recovery, boundaries, escalation
 - `avoid.md` - Context efficiency and surgical navigation
+- `code.md` - Code quality, functional principles, language idioms
 - `orchestrate.md` - Subagent delegation, parallelism, model selection
 - `preview.md` - Preview before external actions, MCPs, formatted output
+
+## Agents
+
+Custom agents in `~/.claude/agents/`: `code-reviewer` (sonnet, post-change review), `security-reviewer` (sonnet, OWASP scanning), `architect` (opus, design review), `study-researcher` (literature review). Use `/review` and `/security` commands as shortcuts.
 
 ## Key Files
 

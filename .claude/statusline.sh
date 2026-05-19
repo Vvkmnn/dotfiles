@@ -14,7 +14,7 @@ trap 'log_error "Script failed at line $LINENO"' ERR
 # │ ││││ │ │         │   │  │     │  │    │        │       │    └── θ runway (5h·7d)
 # │ ││││ │ │         │   │  │     │  │    │        │       └── σ weekly active
 # │ ││││ │ │         │   │  │     │  │    │        └── δ session elapsed
-# │ ││││ │ │         │   │  │     │  │    └── μ pace budget (linear)
+# │ ││││ │ │         │   │  │     │  │    └── μ daily allowance (%/day)
 # │ ││││ │ │         │   │  │     │  └── 7d used %
 # │ ││││ │ │         │   │  │     └── 5h used %
 # │ ││││ │ │         │   │  └── ψ context %
@@ -27,9 +27,9 @@ trap 'log_error "Script failed at line $LINENO"' ERR
 # │ └── Model (O/S/H)
 # └── model icon
 #
-# μ: Linear pace budget = (days_elapsed / 7) × 100 - weekly%
-#    1:1 sensitivity (1% util = 1% μ). No amplification.
-#    Positive = under budget, negative = over. Orange <3%, Red <-5%.
+# μ: Budget variance = (days_elapsed/7)×100 - weekly%.
+#    Positive = under budget. Negative = over budget. 0 = on track.
+#    Red <-5, Orange -5..0, White 0..5, Gray >5.
 #
 # COLOR CODING (warning colors for approaching/critical limits):
 # - Context (ψ): orange 60-80%, red >80%
@@ -112,13 +112,14 @@ input=$(cat)
 # DEBUG: Dump JSON input to discover transcript_path location (remove after investigation)
 # echo "$input" > /tmp/statusline_debug.json
 
-# ---- Colors ----
-ORANGE='\033[33m'
-RED='\033[31m'
+# ---- Colors (Kanagawa Wave — old ANSI values in comments for revert) ----
+GRAY='\033[38;2;114;113;105m'    # kanagawa fujiGray #727169 (was \033[33m)
+ORANGE='\033[38;2;255;160;102m'  # kanagawa surimiOrange #ffa066 (was \033[33m)
+RED='\033[38;2;232;36;36m'       # kanagawa samuraiRed #e82424 (was \033[31m)
 DIM='\033[2m'
 STRIKE='\033[9m'
 RESET='\033[0m'
-B='\033[34m' # blue for icons
+B='\033[38;2;230;195;132m' # kanagawa gold (#e6c384) for icons
 ICON_MODEL="${B}ॐ${RESET}"
 ICON_RATE="${B}λ${RESET}"
 ICON_ELAPSED="${B}δ${RESET}"
@@ -127,7 +128,7 @@ ICON_RUNWAY="${B}θ${RESET}"
 ICON_CTX="${B}ψ${RESET}"
 ICON_OMEGA="${B}μ${RESET}"
 ICON_GIT="${B}π${RESET}"
-GREEN='\033[32m'
+GREEN='\033[38;2;118;148;106m'   # kanagawa autumnGreen #76946a (was \033[32m)
 
 # ---- Cache paths ----
 DAILY_BUDGET_CACHE="$HOME/.claude/status/daily_budget.json"
@@ -155,12 +156,13 @@ command -v jq >/dev/null 2>&1 || {
 }
 
 # ---- Extract model name ----
-display_name=$(echo "$input" | jq -r '.model.display_name // "Claude"' 2>/dev/null)
-full_model=$(echo "$display_name" | grep -oE "(Opus|Sonnet|Haiku)" | head -1)
-case "$full_model" in
-	Opus) model_name="O" ;;
-	Sonnet) model_name="S" ;;
-	Haiku) model_name="H" ;;
+# model can be a string ("claude-opus-4-6") or object ({display_name: "..."})
+display_name=$(echo "$input" | jq -r 'if (.model | type) == "object" then .model.display_name else .model end // "Claude"' 2>/dev/null)
+full_model=$(echo "$display_name" | grep -oiE "(opus|sonnet|haiku)" | head -1)
+case "$(echo "$full_model" | tr '[:upper:]' '[:lower:]')" in
+	opus) model_name="O" ;;
+	sonnet) model_name="S" ;;
+	haiku) model_name="H" ;;
 	*) model_name="${display_name:-Claude}" ;;
 esac
 
@@ -201,16 +203,19 @@ get_context() {
 	fi
 }
 
-# ---- Color a value based on percentage thresholds ----
-# Usage: color_value <value> <pct> <orange_threshold> <red_threshold>
+# ---- Color a value based on 5-level thresholds ----
+# Usage: color_value <value> <pct> <dim_threshold> <gray_threshold> <orange_threshold> <red_threshold>
+# Levels: dim(GRAY) ≤dim | gray(GRAY) ≤gray | white(default) ≤orange | ORANGE ≤red | RED
 color_value() {
-	local value="$1" pct="$2" orange="$3" red="$4"
+	local value="$1" pct="$2" dim="$3" gray="$4" orange="$5" red="$6"
 	if [ "$pct" -gt "$red" ] 2>/dev/null; then
 		echo -e "${RED}${value}${RESET}"
 	elif [ "$pct" -gt "$orange" ] 2>/dev/null; then
 		echo -e "${ORANGE}${value}${RESET}"
+	elif [ "$pct" -gt "$gray" ] 2>/dev/null; then
+		echo "$value"  # white (default fg)
 	else
-		echo "$value"
+		echo -e "${GRAY}${value}${RESET}"
 	fi
 }
 
@@ -261,16 +266,23 @@ _parse_rate_json() {
 }
 
 # Background API refresh (runs detached, never blocks statusline)
+# ── Previous approach (usage API primary, haiku probe fallback) ──
+# Commented out for safe revert. Was: /api/oauth/usage at 900s TTL,
+# haiku probe only on 429. Failed during heavy use: 15min staleness
+# caused 84% shown when actual was 99%.
+# _refresh_rate_limit_v1() {
+#	... (see git history for full implementation)
+# }
+
 # Called as: (_refresh_rate_limit &) 2>/dev/null — subshell survives parent exit.
-# Curl timeout 5s (was 3s when synchronous — can afford more since non-blocking).
 # On success: writes cache with _fetched_at, clears error log.
-# On failure: tries Haiku probe fallback before giving up.
 #
 # Data sources (in priority order):
-# 1. /api/oauth/usage — direct endpoint, returns JSON with utilization %
-# 2. Haiku probe fallback (429 only) — sends max_tokens:1 to Haiku, reads
-#    rate limit headers from response. Only fires when usage API returns 429.
-#    Cost: ~$0.00001/probe. Headers: anthropic-ratelimit-unified-{5h,7d}-*
+# 1. Haiku probe (primary) — 1-token Haiku call, reads utilization from response
+#    headers. Zero utilization impact on Max plan (verified). Can't be rate-limited
+#    by usage API (it's a model call). 300s TTL = 12/hr.
+# 2. /api/oauth/usage (fallback) — full JSON with extra fields. Used when haiku
+#    probe fails (network, token issues). Rate-limited at ~10/hr.
 _refresh_rate_limit() {
 	local cache_file="$HOME/.claude/status/rate_limit.json"
 	local now creds token_json token expires_at usage
@@ -290,50 +302,16 @@ _refresh_rate_limit() {
 		local expires_sec=$((expires_at / 1000))
 		if [ "$now" -gt "$expires_sec" ]; then
 			log_error "OAuth token expired ($(( (now - expires_sec) / 60 ))min ago), skipping API call"
-			# Retry in 60s not 900s. No API call is made when token is expired —
-			# this just re-checks the keychain. Once Claude Code refreshes the
-			# token, the next check picks it up within a minute.
-			touch -t "$(date -j -f %s $((now - 840)) +%Y%m%d%H%M.%S)" "$cache_file" 2>/dev/null
+			# Retry in 60s not 300s. Re-checks keychain for refreshed token.
+			touch -t "$(date -j -f %s $((now - 240)) +%Y%m%d%H%M.%S)" "$cache_file" 2>/dev/null
 			return
 		fi
 	fi
 
-	# ── Source 1: /api/oauth/usage (preferred — returns full JSON) ──
-	usage=$(curl -s --max-time 5 "https://api.anthropic.com/api/oauth/usage" \
-		-H "Authorization: Bearer $token" \
-		-H "anthropic-beta: oauth-2025-04-20" 2>/dev/null)
-
-	# Validate: no .error AND utilization is non-null
-	if [ -n "$usage" ] && \
-	   ! echo "$usage" | jq -e '.error' >/dev/null 2>&1 && \
-	   [ "$(echo "$usage" | jq -r '.seven_day.utilization // "null"')" != "null" ]; then
-		usage=$(echo "$usage" | jq --argjson t "$now" '. + {_fetched_at: $t}')
-		echo "$usage" > "$cache_file" 2>/dev/null || log_error "Failed to write cache file"
-		: > "$ERROR_LOG" 2>/dev/null
-		return
-	fi
-
-	# Log the primary failure
-	if [ -z "$usage" ]; then
-		log_error "API timeout or connection failed"
-	else
-		log_error "API error: $(echo "$usage" | jq -r '.error.message // "null response"' 2>/dev/null)"
-	fi
-
-	# ── Source 2: Haiku probe fallback (429 only) ──
-	# Send minimal 1-token request to Haiku, read rate limit headers from response.
-	# Works even when /api/oauth/usage is returning persistent 429 (GitHub #30930).
-	# ONLY used when usage API returns 429 — not for auth errors, timeouts, etc.
-	# Uses the same OAuth token Claude Code uses for model calls.
-	# ToS note: this makes a real (minimal) model API call. Only fires as fallback
-	# when the dedicated usage endpoint is broken, ~4 times/hour max (TTL-gated).
-
-	# Guard: only fall back on 429 rate limit errors, not other failures
-	local is_rate_limited=""
-	if [ -n "$usage" ] && echo "$usage" | jq -e '.error.type == "rate_limit_error"' >/dev/null 2>&1; then
-		is_rate_limited=1
-	fi
-	[ -z "$is_rate_limited" ] && return
+	# ── Source 1: Haiku probe (primary) ──
+	# 1-token Haiku call reads utilization from response headers.
+	# Zero utilization impact on Max plan (verified: consecutive probes identical %).
+	# Works even when /api/oauth/usage is 429'd (separate rate limit domain).
 	local headers h5_util h5_reset h7_util h7_reset
 	headers=$(curl -sD- --max-time 8 -o /dev/null \
 		-H "Authorization: Bearer $token" \
@@ -343,44 +321,66 @@ _refresh_rate_limit() {
 		-d '{"model":"claude-haiku-4-5-20251001","max_tokens":1,"messages":[{"role":"user","content":"h"}]}' \
 		"https://api.anthropic.com/v1/messages" 2>/dev/null)
 
-	[ -z "$headers" ] && { log_error "Haiku probe: no response"; return; }
+	if [ -n "$headers" ]; then
+		h5_util=$(echo "$headers" | grep -i 'anthropic-ratelimit-unified-5h-utilization' | tr -d '\r' | awk '{print $2}')
+		h7_util=$(echo "$headers" | grep -i 'anthropic-ratelimit-unified-7d-utilization' | tr -d '\r' | awk '{print $2}')
+		h5_reset=$(echo "$headers" | grep -i 'anthropic-ratelimit-unified-5h-reset' | tr -d '\r' | awk '{print $2}')
+		h7_reset=$(echo "$headers" | grep -i 'anthropic-ratelimit-unified-7d-reset' | tr -d '\r' | awk '{print $2}')
 
-	h5_util=$(echo "$headers" | grep -i 'anthropic-ratelimit-unified-5h-utilization' | tr -d '\r' | awk '{print $2}')
-	h7_util=$(echo "$headers" | grep -i 'anthropic-ratelimit-unified-7d-utilization' | tr -d '\r' | awk '{print $2}')
-	h5_reset=$(echo "$headers" | grep -i 'anthropic-ratelimit-unified-5h-reset' | tr -d '\r' | awk '{print $2}')
-	h7_reset=$(echo "$headers" | grep -i 'anthropic-ratelimit-unified-7d-reset' | tr -d '\r' | awk '{print $2}')
+		if [ -n "$h5_util" ] || [ -n "$h7_util" ]; then
+			local pct5 pct7 iso5 iso7
+			[ -n "$h5_util" ] && pct5=$(awk "BEGIN{printf \"%.1f\", $h5_util * 100}")
+			[ -n "$h7_util" ] && pct7=$(awk "BEGIN{printf \"%.1f\", $h7_util * 100}")
+			[ -n "$h5_reset" ] && iso5=$(date -u -r "$h5_reset" "+%Y-%m-%dT%H:%M:%S+00:00" 2>/dev/null)
+			[ -n "$h7_reset" ] && iso7=$(date -u -r "$h7_reset" "+%Y-%m-%dT%H:%M:%S+00:00" 2>/dev/null)
 
-	# Need at least one utilization value
-	[ -z "$h5_util" ] && [ -z "$h7_util" ] && { log_error "Haiku probe: no utilization headers"; return; }
+			local json
+			json=$(jq -n \
+				--argjson t "$now" \
+				--argjson h5 "${pct5:-null}" \
+				--arg r5 "${iso5:-}" \
+				--argjson h7 "${pct7:-null}" \
+				--arg r7 "${iso7:-}" \
+				'{
+					five_hour: {utilization: $h5, resets_at: (if $r5 == "" then null else $r5 end)},
+					seven_day: {utilization: $h7, resets_at: (if $r7 == "" then null else $r7 end)},
+					_fetched_at: $t,
+					_source: "haiku_probe"
+				}' 2>/dev/null)
 
-	# Convert header format → cache JSON format
-	# Headers: utilization as 0.0-1.0 decimal, reset as epoch seconds
-	# Cache:   utilization as 0-100 percentage, reset as ISO timestamp
-	local pct5 pct7 iso5 iso7
-	[ -n "$h5_util" ] && pct5=$(awk "BEGIN{printf \"%.1f\", $h5_util * 100}")
-	[ -n "$h7_util" ] && pct7=$(awk "BEGIN{printf \"%.1f\", $h7_util * 100}")
-	[ -n "$h5_reset" ] && iso5=$(date -u -r "$h5_reset" "+%Y-%m-%dT%H:%M:%S+00:00" 2>/dev/null)
-	[ -n "$h7_reset" ] && iso7=$(date -u -r "$h7_reset" "+%Y-%m-%dT%H:%M:%S+00:00" 2>/dev/null)
+			if [ -n "$json" ]; then
+				echo "$json" > "$cache_file" 2>/dev/null || log_error "Failed to write cache"
+				: > "$ERROR_LOG" 2>/dev/null
+				return
+			fi
+		fi
+		log_error "Haiku probe: no utilization headers"
+	else
+		log_error "Haiku probe: no response"
+	fi
 
-	# Build JSON matching /api/oauth/usage format for _parse_rate_json compatibility
-	local json
-	json=$(jq -n \
-		--argjson t "$now" \
-		--argjson h5 "${pct5:-null}" \
-		--arg r5 "${iso5:-}" \
-		--argjson h7 "${pct7:-null}" \
-		--arg r7 "${iso7:-}" \
-		'{
-			five_hour: {utilization: $h5, resets_at: (if $r5 == "" then null else $r5 end)},
-			seven_day: {utilization: $h7, resets_at: (if $r7 == "" then null else $r7 end)},
-			_fetched_at: $t,
-			_source: "haiku_probe"
-		}' 2>/dev/null)
+	# ── Source 2: /api/oauth/usage (fallback) ──
+	# Full JSON with extra fields (sonnet breakdown, extra_usage).
+	# Rate-limited at ~10/hr — only used when haiku probe fails.
+	local usage
+	usage=$(curl -s --max-time 5 "https://api.anthropic.com/api/oauth/usage" \
+		-H "Authorization: Bearer $token" \
+		-H "anthropic-beta: oauth-2025-04-20" 2>/dev/null)
 
-	[ -z "$json" ] && { log_error "Haiku probe: failed to build JSON"; return; }
+	if [ -n "$usage" ] && \
+	   ! echo "$usage" | jq -e '.error' >/dev/null 2>&1 && \
+	   [ "$(echo "$usage" | jq -r '.seven_day.utilization // "null"')" != "null" ]; then
+		usage=$(echo "$usage" | jq --argjson t "$now" '. + {_fetched_at: $t}')
+		echo "$usage" > "$cache_file" 2>/dev/null || log_error "Failed to write cache"
+		: > "$ERROR_LOG" 2>/dev/null
+		return
+	fi
 
-	echo "$json" > "$cache_file" 2>/dev/null || { log_error "Failed to write cache file"; return; }
-	: > "$ERROR_LOG" 2>/dev/null
+	if [ -z "$usage" ]; then
+		log_error "Usage API: timeout or connection failed"
+	else
+		log_error "Usage API: $(echo "$usage" | jq -r '.error.message // "null response"' 2>/dev/null)"
+	fi
 }
 
 get_rate_limit() {
@@ -402,19 +402,18 @@ get_rate_limit() {
 		usage=$(cat "$cache_file" 2>/dev/null)
 		[ -n "$usage" ] && _parse_rate_json "$usage"
 
-		# Spawn background refresh if TTL (900s / 15min) expired
+		# Spawn background refresh if TTL expired
 		# Touch BEFORE spawn — concurrent invocations see fresh mtime → skip
-		# 900s = 4 calls/hour. /api/oauth/usage rate-limits at ~10/hour.
-		# Previous TTLs: 30s (hammered API), 120s (still too much), 300s (still 429'd).
-		if [ "$mtime_age" -ge 900 ]; then
+		# 120s (2min) TTL — haiku probe has zero utilization impact on Max plan.
+		# Previous: 900s with usage API caused 84% shown at 99%. Then 300s still missed 10% jump.
+		if [ "$mtime_age" -ge 120 ]; then
 			touch "$cache_file" 2>/dev/null
 			(_refresh_rate_limit &) 2>/dev/null
 
-			# Sleep/wake: roll back mtime so next render retries in 60s not 900s.
-			# Same pattern as token expiry (line 289). First render shows stale data
-			# immediately; background refresh lands in 1-5s; if it fails, rapid retry.
+			# Sleep/wake: roll back mtime so next render retries in 60s not 300s.
+			# First render shows stale data; background refresh lands in 1-5s.
 			if [ "$mtime_age" -ge 3600 ]; then
-				touch -t "$(date -j -f %s $((now - 840)) +%Y%m%d%H%M.%S)" "$cache_file" 2>/dev/null
+				touch -t "$(date -j -f %s $((now - 240)) +%Y%m%d%H%M.%S)" "$cache_file" 2>/dev/null
 			fi
 		fi
 	else
@@ -556,7 +555,7 @@ get_weekly_active() {
 			weekly_dim="$STRIKE"
 		fi
 
-		# Format and return immediately
+		# Format with appropriate unit: minutes, hours, or days
 		if [ "$total_min" -lt 60 ]; then
 			weekly_str="${total_min}m"
 		elif [ "$total_min" -lt 1440 ]; then
@@ -678,19 +677,11 @@ get_daily_budget() {
 	local current_7d="$1"
 	local days_until_reset="$2"
 
-	# Linear pace comparison: am I on track for the week?
-	# Formula: ideal_pace - current_7d
-	#   ideal_pace = (days_elapsed / 7) × 100
-	# Positive = under budget, negative = over budget
-	# 1:1 sensitivity: 1% utilization change = 1% budget change (no amplification)
-	#
-	# Previous formula used adaptive rate (remaining/days_left) which had a
-	# growing amplification factor: -(days_elapsed+1)/days_left - 1.
-	# By day 4.5 of 7: 3.3× amplification. By day 6.5: 14×.
-	# API rounding noise (71% vs 70%) caused 3-4% Ω swings → unreadable.
+	# Budget variance: expected usage at this point minus actual usage.
+	# expected = (days_elapsed / 7) × 100. Positive = under budget, negative = over.
+	# 0% at reset is correct: nothing spent, nothing owed.
 	local days_elapsed
-	days_elapsed=$(awk "BEGIN { printf \"%.4f\", 7.0 - $days_until_reset }")
-
+	days_elapsed=$(awk "BEGIN { de = 7.0 - $days_until_reset; if (de > 7) de = 7; printf \"%.4f\", de }")
 	awk "BEGIN { printf \"%d\", sprintf(\"%.0f\", ($days_elapsed / 7.0) * 100.0 - $current_7d) }"
 }
 
@@ -712,12 +703,12 @@ printf '%b %s%s%s' "$ICON_MODEL" "$model_name" "$thinking_indicator" "$effort_in
 
 # ψ Context
 if [ -n "$context_pct" ]; then
-	ctx_colored=$(color_value "${context_pct}%" "$context_pct" 50 67)
+	ctx_colored=$(color_value "${context_pct}%" "$context_pct" 20 40 65 80)
 	printf ' %b %s' "$ICON_CTX" "$ctx_colored"
 fi
 
-# μ Pace budget (am I on track for the week?)
-# Positive = under budget, negative = over budget for today
+# μ Budget variance (expected - actual at this point in the week)
+# Positive = under budget. Negative = overspent. 0 = exactly on pace.
 # Strikethrough stale utilization values (>2h = genuinely broken)
 # 7200s = 8 missed refresh cycles at 900s TTL. Known issue:
 # /api/oauth/usage returns intermittent 429s (GitHub #30930).
@@ -735,11 +726,13 @@ if [ -n "$seven_day_budget" ]; then
 	omega_color=""
 
 	if [ "$seven_day_budget" -lt -5 ] 2>/dev/null; then
-		omega_color="$RED"      # Significantly over today's budget
-	elif [ "$seven_day_budget" -lt 3 ] 2>/dev/null; then
-		omega_color="$ORANGE"   # Low or over budget
+		omega_color="$RED"      # >5% over budget
+	elif [ "$seven_day_budget" -lt 0 ] 2>/dev/null; then
+		omega_color="$ORANGE"   # slightly over budget
+	elif [ "$seven_day_budget" -gt 5 ] 2>/dev/null; then
+		omega_color="$GRAY"     # >5% under budget — surplus
 	fi
-	# else: healthy budget remaining (white)
+	# else: 0-5% — on or slightly under budget (white)
 
 	if [ -n "$rate_stale" ]; then
 		printf ' %b %b%s%%%b' "$ICON_OMEGA" "$rate_stale" "$seven_day_budget" "$RESET"
@@ -752,11 +745,11 @@ fi
 
 # λ Rate limits (5h%, 7d%)
 if [ -n "$rate_pct" ]; then
-	rate_colored=$(color_value "$(printf '%.0f' "$rate_pct")%" "${rate_pct%.*}" 69 90)
+	rate_colored=$(color_value "$(printf '%.0f' "$rate_pct")%" "${rate_pct%.*}" 10 40 70 90)
 	printf ' %b %b%s%b' "$ICON_RATE" "$rate_stale" "$rate_colored" "$RESET"
 
 	if [ -n "$weekly_pct" ]; then
-		weekly_colored=$(color_value "$(printf '%.0f' "$weekly_pct")%" "${weekly_pct%.*}" 50 75)
+		weekly_colored=$(color_value "$(printf '%.0f' "$weekly_pct")%" "${weekly_pct%.*}" 15 40 65 80)
 		printf ' %b%s%b' "$rate_stale" "$weekly_colored" "$RESET"
 	fi
 fi
@@ -794,6 +787,8 @@ if [ -n "$five_hour_reset" ]; then
 				five_hour_color="$RED"      # critical: pace >1.2× sustainable
 			elif [ "$(echo "$five_hour_pace_ratio > 0.8" | bc -l)" -eq 1 ]; then
 				five_hour_color="$ORANGE"   # warning: pace 0.8-1.2× sustainable
+			elif [ "$(echo "$five_hour_pace_ratio < 0.4" | bc -l)" -eq 1 ]; then
+				five_hour_color="$GRAY"     # very low pace, not interesting
 			fi
 
 			runway_super=$(to_superscript "$five_hour_runway")
@@ -830,6 +825,8 @@ if [ -n "$seven_day_reset" ]; then
 				seven_day_color="$RED"      # critical: pace >1.2× sustainable
 			elif [ "$(echo "$seven_day_pace_ratio > 0.8" | bc -l)" -eq 1 ]; then
 				seven_day_color="$ORANGE"   # warning: pace 0.8-1.2× sustainable
+			elif [ "$(echo "$seven_day_pace_ratio < 0.4" | bc -l)" -eq 1 ]; then
+				seven_day_color="$GRAY"     # very low pace, not interesting
 			fi
 
 			runway_super=$(to_superscript "$seven_day_runway")

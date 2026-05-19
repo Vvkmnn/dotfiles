@@ -182,6 +182,11 @@ function processToolRequest(data) {
         : 'File deletion. Confirm target before approving.');
     }
 
+    // In-place file editing — bypasses Edit tool diff review
+    if (/\b(?:sed|perl)\s.*-i\b/.test(cmd)) {
+      return ask('In-place file edit bypasses diff review. Confirm before approving.');
+    }
+
     // File truncation — silent data loss
     // Match: `> file`, `echo > file`, but NOT `2>/dev/null`, `>/dev/null`, `>>file`
     if (/\btruncate\b/.test(cmd) || /(?:^|[;&|])\s*>\s*(?!\/dev\/null)\S+/.test(cmd)) {
@@ -233,8 +238,11 @@ function processToolRequest(data) {
     if (/git\s+add\b/.test(n) && !/git\s+add\s+-n\b/.test(n)) {
       return ask('Staging files for git commit. Confirm before approving.');
     }
+    if (/git\s+push\s+.*--force-with-lease/.test(n)) {
+      return ask('Force push with lease (safe variant). Confirm before approving.');
+    }
     if (/git\s+push\s+.*--force/.test(n) || /git\s+push\s+-f\b/.test(n)) {
-      return deny('Force push blocked. Use regular push or ask explicitly.');
+      return deny('Force push blocked. Use --force-with-lease or ask explicitly.');
     }
     if (/git\s+push\b/.test(n)) {
       return ask('Pushing to remote repository. Confirm before approving.');
@@ -301,7 +309,7 @@ function processToolRequest(data) {
         const plansDir = path.dirname(filePath);
         try {
           if (fs.existsSync(plansDir)) {
-            const siblings = fs.readdirSync(plansDir).filter(f => f.endsWith('.md'));
+            const siblings = fs.readdirSync(plansDir).filter(f => f.endsWith('.md') && !f.includes('-agent-'));
             for (const sib of siblings) {
               const sibContent = fs.readFileSync(path.join(plansDir, sib), 'utf8');
               const pending = (sibContent.match(/^- \[ \] .+$/gm) || []).length;

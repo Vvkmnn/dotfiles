@@ -38,25 +38,27 @@ process.stdin.on('end', () => {
 });
 
 async function processHook(hookInput) {
-  console.log('🔍 Claude notification triggered');
+  console.error('Claude notification triggered');
 
   const context = await gatherContext();
   const eventType = hookInput.hook_event_name || 'Notification';
   const notifType = hookInput.notification_type || '';
 
-  // Build informative subtitle: [type] repo (branch) @ tmux
   const subtitle = formatSubtitle(context, eventType, notifType);
 
-  // Use Claude's message, with fallback
+  // const dir = context.workingDir.replace(process.env.HOME, '~');
   const message = hookInput.message || 'Claude needs your attention';
 
   // Simple notification (click action broken on modern macOS)
-  const title = "🤖 Claude Code";
+  // const title = "🤖 Claude Code";
+  const title = "Claude Code";
   // Icon options - Ghostty has known icon caching issues on macOS
-  // const sender = '-sender "com.anthropic.claudefordesktop"';  // Claude app
-  // const sender = '-sender "com.mitchellh.ghostty"';  // Ghostty (unreliable)
-  const sender = '-sender "com.apple.Terminal"';  // Terminal (reliable)
-  const notifyCmd = `terminal-notifier -title "${title}" -subtitle "${subtitle}" -message "${message}" ${sender} -timeout 30`;
+  // -appIcon relies on private API, broken since Big Sur (terminal-notifier#283)
+  // -sender only works for system apps on macOS 26+, not custom bundles
+  // -contentImage shows inline image reliably — using clawd pixel-art mascot
+  const sender = '-sender "com.apple.Terminal"';
+  const icon = '-contentImage "$HOME/.claude/clawd.png"';
+  const notifyCmd = `terminal-notifier -title "${title}" -subtitle "${subtitle}" -message "${message}" ${sender} ${icon} -timeout 30`;
 
   // Ring terminal bell for tmux window highlighting
   // Get current pane's tty and write bell directly to it
@@ -78,7 +80,7 @@ async function processHook(hookInput) {
       const fallback = `osascript -e 'display notification "${message}" with title "${title}" subtitle "${subtitle}"'`;
       exec(fallback, () => process.exit(0));
     } else {
-      console.log('✅ Notifications sent (bell + macOS)');
+      console.error('Notifications sent (bell + macOS)');
       process.exit(0);
     }
   });
@@ -91,38 +93,22 @@ async function gatherContext() {
     tmuxInfo: await getTmuxInfo(),
     gitInfo: await getGitInfo(),
     projectType: await detectProjectType(),
-    timestamp: new Date().toLocaleTimeString(),
-    duration: getDuration()
+    timestamp: new Date().toLocaleTimeString()
   };
 
   return context;
 }
 
-// Duration tracking - reads state from prompt-submit.js hook
-function getDuration() {
-  const stateFile = path.join(process.env.HOME, '.claude', 'hooks', '.task-state.json');
-  try {
-    const state = JSON.parse(fs.readFileSync(stateFile, 'utf8'));
-    const elapsed = Date.now() - state.startTime;
-    const mins = Math.floor(elapsed / 60000);
-    const secs = Math.floor((elapsed % 60000) / 1000);
-    if (mins > 0) {
-      return `${mins}m ${secs}s`;
-    }
-    return `${secs}s`;
-  } catch (e) {
-    return null;
-  }
-}
 
 function getTmuxInfo() {
   return new Promise((resolve) => {
-    exec('/opt/homebrew/bin/tmux display-message -p "v#S:#I:#W"', (error, stdout) => {
+    exec('/opt/homebrew/bin/tmux display-message -p "v#S|#I|#W"', (error, stdout) => {
       if (error) {
         const fallback = `${process.env.TMUX_SESSION || 'unknown'}:${process.env.TMUX_WINDOW || process.env.TMUX_PANE || 'unknown'}`;
         resolve(fallback);
       } else {
-        resolve(stdout.trim());
+        // Strip automatic-rename path suffix: "claude (~/.claude/hooks)" → "claude"
+        resolve(stdout.trim().replace(/\s*\(.*\)$/, ''));
       }
     });
   });
@@ -180,43 +166,29 @@ function detectProjectType() {
   });
 }
 
-function selectIcon() {
-  // Use Terminal - has notification permissions by default
-  // To use Ghostty: enable in System Settings > Notifications
-  return 'com.apple.Terminal';
-}
-
-function formatMessage(context) {
-  const [session, window] = context.tmuxInfo.split(':');
-  return `In window "${context.tmuxInfo}" of session "${session}"`;
-}
-
 function formatSubtitle(context, eventType, notifType) {
-  // Event type prefix
   let prefix = '';
   if (eventType === 'Stop') {
-    prefix = '✓ Done';
+    prefix = '✅ Complete';
   } else if (notifType === 'permission_prompt') {
     prefix = '⚠️ Permission';
   } else if (notifType === 'idle_prompt') {
     prefix = '⏸️ Waiting';
   } else if (notifType === 'elicitation_dialog') {
-    prefix = '❓ Input needed';
+    prefix = '💬 Input';
   } else {
-    prefix = '📢 Attention';
+    prefix = '🔔 Attention';
   }
 
-  // Project info
-  let project;
+  // Format: v7|8|hooks:main* (tmux session|index|folder:branch)
+  const tmux = context.tmuxInfo || '';
+  // Use session|index from tmux, folder name from cwd (not tmux window name which includes path)
+  const sessionIndex = tmux.replace(/\|[^|]*$/, '');
+  let location = `${sessionIndex}|${context.dirName}`;
   if (context.gitInfo.isGitRepo) {
     const status = context.gitInfo.hasChanges ? '*' : '';
-    project = `${context.gitInfo.repoName}:${context.gitInfo.branch}${status}`;
-  } else {
-    project = context.dirName;
+    location = `${sessionIndex}|${context.dirName}:${context.gitInfo.branch}${status}`;
   }
 
-  // tmux location
-  const location = context.tmuxInfo || '';
-
-  return `${prefix} | ${project} @ ${location}`;
+  return `${prefix} · ${location}`;
 }

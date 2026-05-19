@@ -44,6 +44,23 @@ function context(text) {
   };
 }
 
+// Find the most recent plan with pending items (prefers pending over mtime-only).
+// Same logic as pre-compact.js findMostRecentPlan.
+function findActivePlan() {
+  const planDir = path.join(os.homedir(), '.claude', 'plans');
+  try {
+    const plans = fs.readdirSync(planDir)
+      .filter(f => f.endsWith('.md') && !f.includes('-agent-'))
+      .map(f => {
+        const fp = path.join(planDir, f);
+        const c = fs.readFileSync(fp, 'utf8');
+        return { path: fp, mtime: fs.statSync(fp).mtimeMs, hasPending: /^- \[ \] /m.test(c) };
+      })
+      .sort((a, b) => b.mtime - a.mtime);
+    return plans.find(p => p.hasPending) || plans[0] || null;
+  } catch { return null; }
+}
+
 function processToolResult(result) {
   const { tool_name, tool_input, output, duration_ms, error } = result;
 
@@ -92,38 +109,78 @@ function processToolResult(result) {
     }
   }
 
-  // ========================================
-  // File creation → remind about pending tasks
-  // ========================================
-  if (tool_name === 'Write' && !error) {
+  // MultiEdit: same checkbox flip detection across multiple edits
+  if (tool_name === 'MultiEdit' && !error) {
     const filePath = tool_input?.file_path || '';
-    // Skip plan/hook/rule files — only trigger for implementation files
-    if (!/plans\/.*\.md$|\.claude\/hooks\/|\.claude\/rules\//.test(filePath)) {
-      const planDir = path.join(os.homedir(), '.claude', 'plans');
-      try {
-        const plans = fs.readdirSync(planDir).filter(f => f.endsWith('.md'));
-        if (plans.length > 0) {
-          const content = fs.readFileSync(path.join(planDir, plans[0]), 'utf8');
-          const pending = (content.match(/^- \[ \] .+$/gm) || []).length;
-          if (pending > 0) {
-            return context(`<system-reminder>You just created a new file. ${pending} plan items are still pending — if this work completes one, call TaskUpdate → completed before moving on.</system-reminder>`);
-          }
+    if (/plans\/.*\.md$/.test(filePath)) {
+      let flipped = 0;
+      for (const e of (tool_input?.edits || [])) {
+        const oldStr = e.old_string || '';
+        const newStr = e.new_string || '';
+        if (/\[ \]/.test(oldStr) && /\[x\]/.test(newStr)) {
+          flipped += (newStr.match(/\[x\]/g) || []).length - (oldStr.match(/\[x\]/g) || []).length;
         }
-      } catch (e) { /* no plans, skip */ }
+      }
+      if (flipped > 0) {
+        return context(`<system-reminder>You just marked ${flipped} plan item(s) [x]. Did you also call TaskUpdate → completed for each? The Flowing display only updates via TaskUpdate.</system-reminder>`);
+      }
     }
   }
 
   // ========================================
-  // Subagent completion → remind TaskUpdate
+  // Subagent completion → remind TaskUpdate (only if plan has pending items)
   // ========================================
   if (tool_name === 'Agent' && !error) {
-    const planDir = path.join(os.homedir(), '.claude', 'plans');
+    const active = findActivePlan();
+    if (active && active.hasPending) {
+      return context('<system-reminder>A subagent just completed. If it finished a plan item, call TaskUpdate -> completed for that task NOW — subagents cannot update the parent task list, only you can.</system-reminder>');
+    }
+  }
+
+  // ========================================
+  // Track last-edited file in tmux pane option (for prefix+V)
+  // ========================================
+  if (['Edit', 'Write', 'MultiEdit'].includes(tool_name) && !error) {
     try {
-      const plans = fs.readdirSync(planDir).filter(f => f.endsWith('.md'));
-      if (plans.length > 0) {
-        return context('<system-reminder>A subagent just completed. If it finished a plan item, call TaskUpdate → completed for that task NOW — subagents cannot update the parent task list, only you can.</system-reminder>');
+      const tmuxPane = process.env.TMUX_PANE;
+      const filePath = tool_input?.file_path || '';
+      if (tmuxPane && filePath) {
+        const absPath = path.isAbsolute(filePath) ? filePath : path.resolve(filePath);
+        const { execFileSync } = require('child_process');
+        const tmux = '/opt/homebrew/bin/tmux';
+        execFileSync(tmux, ['set-option', '-pq', '-t', tmuxPane, '@claude_last_edit', absPath], { timeout: 1000 });
+
+        // Find line number of the edit
+        let line = '1';
+        const newStr = tool_input?.new_string || tool_input?.content || '';
+        if (newStr) {
+          const firstLine = newStr.split('\n')[0];
+          if (firstLine.trim()) {
+            try {
+              line = execFileSync('grep', ['-n', '-m1', '-F', firstLine, absPath], { timeout: 1000 }).toString().split(':')[0] || '1';
+            } catch {}
+          }
+        }
+        execFileSync(tmux, ['set-option', '-pq', '-t', tmuxPane, '@claude_last_edit_line', line], { timeout: 1000 });
       }
-    } catch (e) { /* no plans dir, skip */ }
+    } catch {}
+  }
+
+  // ========================================
+  // ExitPlanMode → remind to create tasks immediately
+  // ========================================
+  if (tool_name === 'ExitPlanMode' && !error) {
+    // Extract the exact plan file from output (not findActivePlan, which may find a different plan)
+    const planPathMatch = (output || '').match(/saved to: (.+\.md)/);
+    if (planPathMatch) {
+      try {
+        const content = fs.readFileSync(planPathMatch[1], 'utf8');
+        const pendingCount = (content.match(/^- \[ \] /gm) || []).length;
+        if (pendingCount > 0) {
+          return context(`<system-reminder>Plan approved with ${pendingCount} pending items. Create tasks (TaskCreate) for all pending items NOW as your first action — before invoking skills, reading files, or any other work. The Flowing task list is empty until you call TaskCreate.</system-reminder>`);
+        }
+      } catch { /* plan file not readable, skip */ }
+    }
   }
 
   // No additional context needed

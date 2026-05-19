@@ -9,7 +9,7 @@ Before writing plans OR modifying code, explore and investigate first.
 ### Exploration Phase (Before Planning)
 
 **Use Your Tools:**
-- **code-mode** (`mcp__code-mode__search_tools` or `list_tools`) - Check available integrations FIRST (Notion, GitHub, Google Drive, Reddit, StackOverflow, HackerNews; see `~/.utcp_config.json`)
+- **mcp-proxy MCPs** - Check available integrations FIRST (Notion, GitHub, Google Drive, Reddit, StackOverflow, HackerNews; see `~/.claude/mcp/config.json`)
 - **claude-historian** - Past sessions and decisions on similar problems
 - **Explore agent** (`Task` with `subagent_type=Explore`) - Open-ended codebase questions
 - **Glob/Grep** - File pattern and content search
@@ -68,22 +68,12 @@ Before writing plans OR modifying code, explore and investigate first.
 
 **Ask before launching subagents** - they consume significant usage. However, **proactively recommend** when subagents would add clear value.
 
-**When to recommend subagents:**
-- Task involves 3+ independent areas to explore simultaneously
-- Context window is getting long (>50% used) and task needs fresh perspective
-- Domain-specific expertise needed (security-auditor, backend-architect, etc.)
-- Context-heavy operations (testing, docs generation, large code review)
-
-**Before launching any subagent:**
-1. State why a subagent would help vs direct exploration
-2. Recommend agent type and model (haiku for simple, sonnet for complex)
-3. Ask: "Should I launch [type] agent for this?"
-4. Wait for approval
-
 **Default to direct exploration** using Glob, Grep, Read tools. Only use subagents when:
 - User explicitly requests it
 - Task genuinely requires autonomous multi-step exploration
 - Direct tools have proven insufficient
+
+See `orchestrate.md` for when to recommend, model selection, and prompting guidelines.
 
 ### Investigation Phase (Before Modifying)
 
@@ -110,23 +100,11 @@ Before writing plans OR modifying code, explore and investigate first.
 
 **Data Retrieval:**
 - WebSearch for info available in MCP servers (Notion, GitHub, etc.)
-- WebFetch when structured API access exists (check code-mode tools first)
-- WebFetch for Reddit (blocked) - use `reddit.reddit_get_post_details` or `reddit.reddit_browse_subreddit` via code-mode instead
+- WebFetch when structured API access exists (check mcp-proxy servers first)
+- WebFetch for Reddit (blocked) - use `mcp__reddit__reddit_get_post_details` or `mcp__reddit__reddit_browse_subreddit` instead
 - Re-reading files when claude-historian already has the answer
 - Manual extraction when MCP provides structured access
-- Searching for MCP config in `~/.claude.json` - code-mode servers are in `~/.utcp_config.json`
-
-### code-mode Syntax
-
-**Wrap in async IIFE** (top-level await not supported):
-```typescript
-(async () => {
-  const result = await server.server_tool_name({ param: "value" });
-  console.log(JSON.stringify(result, null, 2));
-})();
-```
-
-**Param errors?** Use `mcp__code-mode__tool_info("server.tool_name")` to see interface.
+- Searching for MCP config in `~/.claude.json` - check `mcpServers` section in project or global `.claude.json`
 
 ## Complements
 - `superpowers:brainstorming` skill - Use AFTER exploration to refine ideas

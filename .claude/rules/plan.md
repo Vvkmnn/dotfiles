@@ -12,6 +12,7 @@ Plans are living documents. Update as you work. Sync with Tasks.
 - **Bold feature names** for scanning: `- [ ] **Feature name** — brief status`
 - **Abandoned items** in Done with strikethrough: `- [x] ~~**Approach**~~ — abandoned: [reason]`
 - **Detail sections** below `---`: `## Detail: Feature name` — read only when starting that item, collapse to 1-line summary after completing
+- **Summary** as final section: `## Summary` — 2-3 lines max, plain English. Cover the hardest/scariest technical aspect, current state, and what's left. Written so a non-engineer can understand what's happening in a PhD-level plan
 
 ### After Compaction
 
@@ -24,6 +25,11 @@ Plans are living documents. Update as you work. Sync with Tasks.
 
 ### Implementation Workflow
 
+**After exiting plan mode (first action):**
+1. TaskCreate for every `- [ ]` item in the plan — this populates the Flowing display
+2. Only then: read files, invoke skills, begin implementation
+3. The task list is invisible to the user until TaskCreate is called
+
 **Starting a plan item:**
 1. TaskUpdate → in_progress
 2. Read that item's Detail section (only that section, not the full plan)
@@ -32,6 +38,7 @@ Plans are living documents. Update as you work. Sync with Tasks.
 **After completing a plan item:**
 1. **TaskUpdate → completed** — this updates the Flowing display. Skip it and items stay [ ] forever
 2. Avoid editing the plan file mid-coding (disrupts flow). Batch plan updates for natural pauses instead
+3. When updating the plan at a natural pause, collapse that item's Detail section to a 1-line summary
 
 **After a subagent completes plan item work:**
 1. **TaskUpdate → completed** for that item immediately when the subagent returns
@@ -46,8 +53,6 @@ Natural pauses: after compaction, between major work phases, before switching ta
 3. Batch all checkbox updates into a single Edit
 4. Never send parallel Edits to the same file
 5. Update the `**Progress: X/Y done**` line at the top to match checkbox counts
-
-Skipping this step is the most common plan failure: items stay `[ ]` when done, future sessions trust stale markers and redo or mis-plan work.
 
 **When abandoning an approach:**
 1. Move to Done with strikethrough + reason: `- [x] ~~**Approach**~~ — abandoned: [why]`
@@ -76,14 +81,7 @@ Skipping this step is the most common plan failure: items stay `[ ]` when done, 
 | Flowing display | TaskUpdate | Immediately | Session only (`~/.claude/tasks/`) |
 | Plan file | Edit | At natural pauses | Across sessions (`plans/*.md`) |
 
-**Both must be updated.** TaskUpdate without plan Edit = display updates but next session loses progress. Plan Edit without TaskUpdate = persistent record correct but user sees stale `[ ]` in Flowing display.
-
-- **Session start**: read plan `## Done` / `## In Progress`, create Tasks from pending items
-- **During work**: TaskUpdate → completed immediately after finishing each item
-- **At natural pauses**: batch plan file Edit to mark `[x]`
-- **After subagent returns**: TaskUpdate → completed for the delegated item (subagents can't update parent tasks)
-- **Session end**: Tasks stay in `~/.claude/tasks/`; plan file persists with `[x]` markers
-- **Next session**: read plan, create fresh Tasks from remaining `[ ]` items
+**Both must stay in sync.** See Implementation Workflow above for when to call each. TaskUpdate without plan Edit = display updates but next session loses progress. Plan Edit without TaskUpdate = user sees stale display.
 
 ### Session Start — Plan Relevance
 
@@ -131,7 +129,7 @@ When the user provides a plan or plan-like content:
 
 ### Plan Lineage
 
-When creating a new plan (rewrite or fresh start), include a `## Previous Plans` section at the bottom:
+When creating a new plan (rewrite or fresh start), include a `## Previous` section at the bottom:
 
 - **Reference the old plan file**: `Previous: old-plan-name.md` — always include the filename so future sessions can read it for context
 - **1-line summary**: what it covered
@@ -156,26 +154,21 @@ When creating a new plan (rewrite or fresh start), include a `## Previous Plans`
 |-------|-----|
 | Read full plan after compaction | Read Done/In Progress section only |
 | Grep codebase to check if item is done | Trust `[x]` markers in Done |
-| Leave completed Detail sections | Collapse to 1-line summary — Done line is the record |
-| Skip plan updates entirely | Use TaskUpdate during work, batch Edit plan at natural pauses |
+| Leave completed Detail sections or delete them entirely | Collapse to 1-line summary of what was done/learned |
+| Skip plan updates or edit mid-coding | TaskUpdate during work, batch plan Edits at natural pauses only |
 | Silently rewrite a plan with pending work | Announce what exists, ask user to confirm |
-| Simplify/compact a useful plan | Trim completed Details, keep In Progress lean |
-| Add plans to session-start hook | Use rules/ files (load automatically) |
-| Let plan grow unbounded | Delete completed details, keep In Progress lean |
 | Execute plan items without evaluating current state | Evaluate each item before starting — stale items get updated, not executed |
 | Leave abandoned approaches as pending items | Move to Done with abandonment note immediately |
-| Edit plan file mid-coding | Batch plan Edits for natural pauses — avoids disrupting flow |
-| TaskCreate without TaskUpdate | Always call TaskUpdate → completed — this updates the Flowing display |
+| Complete work without calling TaskUpdate | Always TaskUpdate → completed — includes after subagent returns (they can't update parent tasks) |
 | Say "plan is stale" or "can be cleaned up later" | Update it NOW — if you're talking about it, you're at a natural pause |
 | Trust [ ] markers without checking your own work | If you completed it, mark it [x] — stale markers mislead future sessions |
 | Send parallel Edits to the same plan file | One Edit per file, batch changes together |
 | Match partial item text in old_string | Include full line with description suffix |
 | Strip specifics from a user-provided plan | Preserve file:line refs, regexes, exact values — improve structure, don't lose detail |
 | Enter plan mode when user says "implement" | Execute directly — save plan for tracking only |
-| Delete completed Detail entirely | Collapse to 1-line summary of what was done and learned |
-| Create new plan with no reference to previous | Include `## Previous Plans` with file name, summary, outcomes |
-| Strip filenames from plan lineage | Always include `previous-plan.md` filename — enables lookup across sessions |
-| Dispatch subagent then move on without TaskUpdate | When subagent returns, immediately TaskUpdate → completed — subagents can't update parent tasks |
+| Create new plan with no reference to previous | Include `## Previous` with file name, summary, outcomes |
+| Invoke skills or read files before TaskCreate after ExitPlanMode | TaskCreate for all pending items first — Flowing display is empty until you do |
+| Write Summary longer than 3 lines or use jargon | 2-3 plain English lines: what we did, what's scary, what's left |
 
 ## Complements
 - `explore.md` — Investigation before modifying plan items

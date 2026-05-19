@@ -1,8 +1,8 @@
 ---
 name: upgrade-claude
 author: Vvkmnn
-description: Use after Claude Code binary updates, weekly maintenance, or when optimizing setup. Comprehensive self-improvement system reviewing settings, hooks, plugins, rules, CLAUDE.md against changelog and community best practices.
-version: 1.0.0
+description: Use after Claude Code binary updates, weekly maintenance, or when optimizing setup. Comprehensive self-improvement system reviewing settings, hooks, plugins, agents, rules, commands, CLAUDE.md against changelog and community best practices.
+version: 1.1.0
 ---
 
 # Upgrade Claude - Post-Update Optimization
@@ -38,6 +38,7 @@ cat ~/.claude/.last-update-check    # When was last review?
 | `skills/` | Stale patterns, missing common workflows | Current patterns |
 | `commands/` | Missing commands for repetitive tasks | Cover common ops |
 | `.claudeignore` | Context exclusions configured | Appropriate exclusions |
+| `agents/` | Custom agent definitions, tool restrictions, models | Key roles covered (reviewer, architect, security) |
 
 ## Intelligence Sources
 
@@ -53,6 +54,9 @@ cat ~/.claude/.last-update-check    # When was last review?
 | awesome-claude-skills | Curated community skills collection | github.com/ComposioHQ/awesome-claude-skills |
 | claude-code-best-practice | Curated best practices and examples | github.com/shanraisshan/claude-code-best-practice |
 | skills.sh | Community skills ecosystem | Browse skills.sh, `npx skills add <repo> --list` |
+| Official Claude Code docs | Canonical feature reference, new capabilities per release | WebFetch code.claude.com/docs/en (llms.txt for index) |
+| DeepWiki ultimate guide | Comprehensive: rewind, context zones, agents, hooks, 111 templates | WebFetch deepwiki.com/FlorianBruniaux/claude-code-ultimate-guide |
+| Casper marketplace | Progressive disclosure, structured analysis, parallel subagent patterns | github.com/Casper-Studios/casper-marketplace |
 | /stats | Context efficiency | Run in session |
 | /doctor | Installation health | Run in session |
 
@@ -95,6 +99,12 @@ Prompt: "Extract all changes since [LAST_VERSION]. For each version list:
 | Plans directory | `plansDirectory` setting | Custom location for plans |
 | Wildcard permissions | `Bash(*-h*)` syntax | Flexible tool access |
 | /teleport | Move session to claude.ai | Continue work in browser |
+| Subagent memory | `memory` field in agent frontmatter | Cross-session learning for agents |
+| Subagent skills | `skills` field in agent frontmatter | Preload domain knowledge into agents |
+| `/agents` command | Interactive agent management | Create/edit/delete agents without files |
+| Agent permission modes | `permissionMode` in frontmatter | Granular control (acceptEdits, dontAsk, plan) |
+| Background tasks | Ctrl+B to background a subagent | Non-blocking parallel work |
+| SubagentStart/Stop hooks | Hook config in settings.json | Lifecycle governance for agents |
 
 ### Phase 3: Inventory & Validate
 
@@ -105,9 +115,12 @@ echo "Settings keys: $(jq 'keys | length' ~/.claude/settings.json)"
 echo "Hooks: $(ls ~/.claude/hooks/*.js 2>/dev/null | wc -l | tr -d ' ')"
 echo "Rules: $(ls ~/.claude/rules/*.md 2>/dev/null | wc -l | tr -d ' ')"
 echo "Skills: $(ls -d ~/.claude/skills/*/ 2>/dev/null | wc -l | tr -d ' ')"
+echo "Agents: $(ls ~/.claude/agents/*.md 2>/dev/null | wc -l | tr -d ' ')"
 echo "Commands: $(ls ~/.claude/commands/*.md 2>/dev/null | wc -l | tr -d ' ')"
 echo "CLAUDE.md lines: $(wc -l < ~/.claude/CLAUDE.md | tr -d ' ')"
 echo "Plugins enabled: $(jq '.enabledPlugins | to_entries | map(select(.value == true)) | length' ~/.claude/settings.json)"
+echo "Disabled plugin entries: $(jq '[.enabledPlugins | to_entries[] | select(.value == false)] | length' ~/.claude/settings.json)"
+echo "Temp cache dirs: $(ls -d ~/.claude/plugins/cache/temp_git_* 2>/dev/null | wc -l | tr -d ' ')"
 ```
 
 **Validate configurations:**
@@ -126,6 +139,22 @@ echo "--- Rule references ---"
 grep -oE '[a-z-]+\.md' ~/.claude/CLAUDE.md 2>/dev/null | sort -u | while read f; do
   test -f ~/.claude/rules/$f && echo "✓ $f" || echo "✗ Missing: $f"
 done
+
+# Agent definitions
+echo "--- Agents ---"
+for agent in ~/.claude/agents/*.md 2>/dev/null; do
+  name=$(grep "^name:" "$agent" | head -1 | sed 's/name: //')
+  model=$(grep "^model:" "$agent" | head -1 | sed 's/model: //')
+  memory=$(grep "^memory:" "$agent" | head -1 | sed 's/memory: //')
+  echo "✓ $name (model: $model, memory: ${memory:-none})"
+done
+
+# Cleanup opportunities
+echo "--- Cleanup ---"
+temp_count=$(ls -d ~/.claude/plugins/cache/temp_git_* 2>/dev/null | wc -l | tr -d ' ')
+[ "$temp_count" -gt 0 ] && echo "✗ $temp_count stale temp_git cache dirs — run cleanup" || echo "✓ No stale cache dirs"
+disabled=$(jq '[.enabledPlugins | to_entries[] | select(.value == false)] | length' ~/.claude/settings.json)
+[ "$disabled" -gt 0 ] && echo "✗ $disabled disabled plugin entries — remove false entries" || echo "✓ No disabled plugin noise"
 ```
 
 **Check skills ecosystem (skills.sh):**
@@ -202,7 +231,7 @@ Find: workflow optimizations, context efficiency tricks, integration patterns."
 
 | Repo | What to Check |
 |------|---------------|
-| `affaan-m/everything-claude-code` | 9 agents, modular rules, token optimization |
+| `affaan-m/everything-claude-code` | 28 agents, modular rules, verification-loop, instinct system, profile-gated hooks |
 | `ChrisWiles/claude-code-showcase` | PreToolUse blocking, MCP integration |
 | `hesreallyhim/awesome-claude-code` | Curated commands, tools, integrations |
 | `ComposioHQ/awesome-claude-skills` | Community-curated skills collection |
@@ -210,6 +239,8 @@ Find: workflow optimizations, context efficiency tricks, integration patterns."
 | `fcakyon/claude-codex-settings` | Multi-model (Opus plan + Sonnet execute) |
 | `jarrodwatts/claude-code-config` | Path-scoped instructions, custom agents |
 | `brianlovin/claude-config` | Sync infrastructure, statusline |
+| `Casper-Studios/casper-marketplace` | Progressive disclosure, 7-phase analysis, dynamic skill sync, parallel subagent decomposition |
+| `VoltAgent/awesome-claude-code-subagents` | 127+ agent examples, meta-orchestration patterns |
 
 **Patterns to look for:**
 - Wildcard permission configurations
@@ -218,6 +249,28 @@ Find: workflow optimizations, context efficiency tricks, integration patterns."
 - Multi-model strategies (Opus for planning, Sonnet for execution)
 - Plan-based model optimization (`switch-claude` skill: pro/5x/20x modes)
 - Custom commands for common workflows
+- Progressive disclosure (layered context loading on demand)
+- Structured analysis workflows (phased with explicit decision points)
+- Profile-gated hooks (env var controls which hooks fire)
+- Verification loops (multi-phase quality gates before claiming done)
+- Strategic compaction (threshold-aware, at logical boundaries)
+- Agent memory and skill preloading configurations
+
+**4.6 Comprehensive guides & community innovation:**
+
+```
+WebFetch: https://deepwiki.com/FlorianBruniaux/claude-code-ultimate-guide
+Prompt: "Extract: New features, patterns, or capabilities not in our setup.
+Focus on: context management, rewind, agent/hook patterns, security, workflow optimizations."
+
+WebFetch: https://code.claude.com/docs/en/sub-agents
+Prompt: "Extract: New agent frontmatter fields, permission modes, memory/skills config,
+hook patterns added since last check."
+```
+
+Check community repos for new patterns each cycle:
+- Casper: progressive disclosure innovations, analysis workflow improvements
+- ECC: new agents, skills, hook profile patterns, instinct system evolution
 
 ### Phase 5: Analyze Against Best Practices
 
@@ -243,6 +296,8 @@ Find: workflow optimizations, context efficiency tricks, integration patterns."
 | /commit command | Check commands/ | Smart commits |
 | Dotfiles sync | Check setup | Cross-machine consistency |
 | HANDOFF.md pattern | Document it | Context transfer |
+| Verification loop | Check skills/ | Multi-phase quality gate before completion |
+| Custom agents | Check agents/ | Specialized agents for review, security, architecture |
 | Model switching | Opus→Sonnet at 50% | Cost optimization |
 | switch-claude modes | `/switch-claude pro/5x/20x` | Plan-based model optimization |
 
@@ -253,11 +308,13 @@ Find: workflow optimizations, context efficiency tricks, integration patterns."
 | Component | Gap Questions |
 |-----------|---------------|
 | Settings | New CHANGELOG settings missing? Deprecated present? Suboptimal values? |
-| Hooks | Missing useful hooks? (8 types: SessionStart, PreToolUse, PostToolUse, Notification, Stop, SubagentStop, PreCompact, UserPromptSubmit) |
+| Hooks | Missing useful hooks? (9 types: SessionStart, UserPromptSubmit, PreToolUse, PostToolUse, Notification, Stop, SubagentStart, SubagentStop, PreCompact) |
 | Plugins | Updates available? `claude plugins list --available` |
 | Rules | Missing topics? (error handling, boundaries, verification) Outdated refs? |
 | CLAUDE.md | >300 lines? Missing sections? (Commands, Stack, Boundaries) |
 | Skills | Stale patterns? Missing for common tasks? |
+| Agents | Custom agents defined? (`~/.claude/agents/`) Reviewer, security, architect roles covered? |
+| Commands | Custom commands defined? (`~/.claude/commands/`) Common workflows automated? |
 | Model config | Using plan-appropriate mode? (`/switch-claude` skill: pro/5x/20x) |
 
 ### Phase 7: Generate Report
@@ -284,6 +341,8 @@ Generated: [DATE]
 | Hooks | [N] | ✓/✗ | [details] |
 | Rules | [N] | ✓/✗ | [details] |
 | Skills | [N] | ✓/✗ | [details] |
+| Agents | [N] | ✓/✗ | [details] |
+| Commands | [N] | ✓/✗ | [details] |
 | CLAUDE.md | [N] lines | ✓/✗ | [details] |
 
 ## Improvements Found
@@ -349,7 +408,7 @@ echo "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" > ~/.claude/.last-update-check
 | Invalid settings.json | Show error, fix before proceeding |
 | Hook syntax error | Show error, offer to fix |
 
-## Quick Reference: 8 Hook Types
+## Quick Reference: 9 Hook Types
 
 | Hook | When | Use For |
 |------|------|---------|
@@ -359,7 +418,8 @@ echo "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" > ~/.claude/.last-update-check
 | PostToolUse | After tool runs | Validation, cleanup, formatting |
 | Notification | Waiting for input | TTS alerts |
 | Stop | Session ending | Cleanup, backups |
-| SubagentStop | Subagent finishes | Announcements |
+| SubagentStart | Subagent spawns | Setup, logging |
+| SubagentStop | Subagent finishes | Announcements, task updates |
 | PreCompact | Before compaction | Create backups |
 
 ## Quick Reference: Essential Keyboard Shortcuts
@@ -376,7 +436,9 @@ echo "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" > ~/.claude/.last-update-check
 - [ ] Version verified with `claude --version`
 - [ ] Health check passed with `claude doctor`
 - [ ] CHANGELOG reviewed for new features
-- [ ] All components inventoried and validated
+- [ ] All components inventoried and validated (settings, hooks, rules, skills, agents, commands)
+- [ ] Agents checked: definitions valid, memory configured, key roles covered
+- [ ] Commands checked: common workflows have shortcuts
 - [ ] Best practices compared (HumanLayer, GitHub blog)
 - [ ] Community configs researched (awesome-claude-code, power user repos)
 - [ ] Historical patterns checked (claude-historian)
@@ -385,6 +447,8 @@ echo "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" > ~/.claude/.last-update-check
 - [ ] Changes applied and verified
 - [ ] Tracking file updated
 - [ ] Improvements logged to claude-historian
+
+---
 
 ### Phase 2.5: Plugin Cache & ECC Audit
 
@@ -453,7 +517,7 @@ Compare against:
 | Component | Why | Our equivalent |
 |-----------|-----|----------------|
 | continuous-learning-v2 | Session learning, instincts | ~/Projects/claude-homunculus-mcp (research) |
-| security-reviewer agent | Pre-commit security | security-scanning plugin |
+| security-reviewer agent | Pre-commit security | ~/.claude/agents/security-reviewer.md |
 | tdd-guide agent | TDD workflow | tdd-workflows plugin |
 | build-error-resolver | Build failure recovery | recover.md rule |
 | iterative-retrieval skill | Search refinement | explore.md rule |

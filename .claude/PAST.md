@@ -25,7 +25,51 @@
 - `"haiku"` - Always use Haiku 4.5
 - `"opusplan"` - Use Opus for plan mode, default for execute mode
 
+## MCP Server Settings
+
+### 2026-03-17: MCP Server Fixes and Additions
+
+**Changes:**
+- **Reddit**: Switched from `reddit-mcp-buddy` (blocked by Reddit API changes) to `reddit-mcp-server` with OAuth credentials (client_id + client_secret from reddit.com/prefs/apps)
+- **Twitter/X**: Switched from `agent-twitter-client-mcp` (cookie/credential auth both broken) to `@practicaltools/twitter-mcp-server` via Apify. Uses existing Apify token — free tier covers ~50k searches/month
+- **YouTube**: Added `@kirbah/mcp-youtube` with YouTube Data API v3 key. Complements yt_dlp (search vs transcript extraction)
+- **Firecrawl**: Added API key (free tier, 500 credits one-time)
+- **Apify**: Added API key (free tier, $5/month credits)
+- **Supabase/Railway**: Left with placeholder keys (not currently used)
+
+**Architecture:** All MCP servers route through `mcp-proxy` gateway on localhost:9090. Config: `~/.claude/mcp/config.json`. Claude Code connects via `~/.claude.json` HTTP entries.
+
+**Reference:** `~/.claude/mcp/MCP.md` — full server inventory
+**Credentials backup:** `~/.claude/mcp/credentials.txt`
+
+**To restore old Twitter:** See credentials.txt for cookie and credential auth configs. Cookie auth works but expires frequently. Credential auth returns error 34 on new accounts.
+
+---
+
 ## Plugin Settings
+
+### 2026-03-17: Max 20x Optimization (63 -> 27 plugins)
+
+**Previous:** 63 plugins enabled, model unset, git instructions on
+**Current:** 27 plugins enabled, model: "opus", includeGitInstructions: false, filesystem Read denies added
+
+**Changes applied:**
+- Disabled 36 plugins (15 Trail of Bits, 7 redundant, 14 zero-usage workflow)
+- Added `model: "opus"` (fixes switch-claude 20x detection)
+- Added `includeGitInstructions: false` (~2k token savings, covered by commit-commands plugin)
+- Added Read denies for `~/.ssh/*`, `~/.aws/*`, `~/.env*`, `~/.gnupg/*`
+- Updated `orchestrate.md` with Language Skills invoke triggers
+- Kept ralph-loop (6 sessions/5 projects confirmed), code-simplifier (2 sessions confirmed)
+- Kept python-development, javascript-typescript (fixed root cause of non-invocation in orchestrate.md)
+
+**Evidence:** Direct JSONL search across 794 session files (historian search has gaps — zero results doesn't mean zero usage).
+
+**Reference:** `~/.claude/analysis/PLUGINS_DISABLED.md` — full catalog with re-enable guidance
+**Plan:** `plans/groovy-pondering-flamingo.md`
+
+**To restore:** Backup not needed — set any plugin back to `true` in settings.json. See PLUGINS_DISABLED.md for what each does.
+
+---
 
 ### 2025-12-26: Disabled claude-mem
 

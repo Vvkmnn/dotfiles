@@ -5,7 +5,7 @@
       "repo": "wshobson/agents"
     },
     "installLocation": "/Users/v/.claude/plugins/marketplaces/claude-code-workflows",
-    "lastUpdated": "2026-03-16T09:15:21.465Z",
+    "lastUpdated": "2026-05-04T07:00:06.462Z",
     "autoUpdate": true
   },
   "superpowers-marketplace": {
@@ -14,7 +14,7 @@
       "repo": "obra/superpowers-marketplace"
     },
     "installLocation": "/Users/v/.claude/plugins/marketplaces/superpowers-marketplace",
-    "lastUpdated": "2026-03-16T09:15:25.770Z",
+    "lastUpdated": "2026-05-18T16:29:38.434Z",
     "autoUpdate": true
   },
   "repomix": {
@@ -23,7 +23,7 @@
       "repo": "yamadashy/repomix"
     },
     "installLocation": "/Users/v/.claude/plugins/marketplaces/repomix",
-    "lastUpdated": "2026-03-16T09:15:34.736Z",
+    "lastUpdated": "2026-05-18T16:29:30.958Z",
     "autoUpdate": true
   },
   "every-marketplace": {
@@ -32,7 +32,7 @@
       "url": "https://github.com/EveryInc/compound-engineering-plugin.git"
     },
     "installLocation": "/Users/v/.claude/plugins/marketplaces/compound-engineering-plugin",
-    "lastUpdated": "2026-03-16T09:15:36.580Z",
+    "lastUpdated": "2026-03-18T03:25:57.611Z",
     "autoUpdate": true
   },
   "claude-plugins-official": {
@@ -41,7 +41,7 @@
       "repo": "anthropics/claude-plugins-official"
     },
     "installLocation": "/Users/v/.claude/plugins/marketplaces/claude-plugins-official",
-    "lastUpdated": "2026-03-16T09:15:45.534Z",
+    "lastUpdated": "2026-03-23T11:43:33.042Z",
     "autoUpdate": true
   },
   "cc-skills": {
@@ -50,7 +50,7 @@
       "repo": "terrylica/cc-skills"
     },
     "installLocation": "/Users/v/.claude/plugins/marketplaces/cc-skills",
-    "lastUpdated": "2026-03-16T09:15:53.951Z",
+    "lastUpdated": "2026-05-18T16:02:43.464Z",
     "autoUpdate": true
   },
   "trailofbits": {
@@ -59,7 +59,7 @@
       "repo": "trailofbits/skills"
     },
     "installLocation": "/Users/v/.claude/plugins/marketplaces/trailofbits",
-    "lastUpdated": "2026-03-16T09:16:01.825Z",
+    "lastUpdated": "2026-05-04T06:45:15.628Z",
     "autoUpdate": true
   },
   "claude-emporium": {
@@ -68,7 +68,7 @@
       "repo": "Vvkmnn/claude-emporium-beta"
     },
     "installLocation": "/Users/v/.claude/plugins/marketplaces/claude-emporium",
-    "lastUpdated": "2026-03-16T09:16:09.223Z",
+    "lastUpdated": "2026-03-18T03:26:23.195Z",
     "autoUpdate": true
   },
   "interface-design": {
@@ -86,6 +86,7 @@
       "repo": "CharlesWiltgen/Axiom"
     },
     "installLocation": "/Users/v/.claude/plugins/marketplaces/axiom-marketplace",
-    "lastUpdated": "2026-03-16T09:16:27.142Z"
+    "lastUpdated": "2026-05-18T15:27:30.036Z",
+    "autoUpdate": true
   }
 }

@@ -2,7 +2,7 @@
 name: update-dotfiles
 author: Vvkmnn
 description: Use when user says "update dotfiles", "commit dotfiles", "sync dotfiles", "push dotfiles", or asks to save/backup their config. Manages bare git repo at ~/.dotfiles with logical commits, security checks, and config discovery.
-version: 0.3.0
+version: 0.4.0
 ---
 
 # Dotfiles Update
@@ -26,18 +26,19 @@ version: 0.3.0
 
 Always commit to the current branch. Never switch branches without asking.
 
-### What's Tracked (~1100 files)
+### What's Tracked (~1136 files)
 
 | Category | Scope | Key Files |
 |----------|-------|-----------|
-| Shell | `shell` | `.alias`, `.functions`, `.profile`, `.rc`, `.shell`, `.bashrc`, `.zshrc`, `.zshenv`, `.zimrc`, `.p10k.zsh`, `.fishrc` |
-| Claude Code | `claude` | `.claude/CLAUDE.md`, `PAST.md`, `FUTURE.md`, `settings.json`, `statusline.sh`, `rules/*`, `commands/*`, `hooks/*`, `skills/*`, `mcp/MCP.md`, `mcp/mcp.json.bak` (encrypted), `.claudeignore`, `.gitignore` |
-| Karabiner | `karabiner` | `.config/karabiner/karabiner.json`, `KARABINER.md`, `scripts/*`, `automatic_backups/*` |
-| Sketchybar | `sketchybar` | `.config/sketchybar/sketchybarrc`, `plugins/*` |
+| Shell | `shell` | `.alias`, `.functions`, `.minimal`, `.profile`, `.rc`, `.shell`, `.bashrc`, `.zshrc`, `.zshenv`, `.zimrc`, `.p10k.zsh`, `.fishrc`, `.hushlogin` |
+| Claude Code | `claude` | `.claude/CLAUDE.md`, `PAST.md`, `FUTURE.md`, `settings.json`, `statusline.sh`, `rules/*`, `hooks/*`, `skills/*`, `mcp/MCP.md`, `mcp/config.json` (encrypted), `mcp/mcp.json.bak` (encrypted), `.claudeignore`, `.gitignore` |
+| Karabiner | `karabiner` | `.config/karabiner/karabiner.json`, `KARABINER.md`, `scripts/*`, `assets/complex_modifications/*`, `automatic_backups/*` |
+| Sketchybar | `sketchybar` | `.config/sketchybar/sketchybarrc`, `plugins/*`, `helpers/*.swift` |
 | WM | `wm` | `.skhdrc`, `.yabairc`, `.config/yabai/*` |
 | Terminal | `terminal` | `.config/ghostty/*`, `.config/tmux/*`, `.config/kitty/*`, `.config/alacritty/*`, `.config/wezterm/*` |
 | Editor | `editor` | `.vimrc`, `.config/nvim` (submodule), `Library/Application Support/Code/*` |
 | Git | `git` | `.gitconfig`, `.gitmessage`, `.gitignore`, `.gitattributes`, `.globalgitignore`, `.gitmodules` |
+| GH | `gh` | `.config/gh/config.yml` (no tokens — `hosts.yml` is separate) |
 | Alfred | `alfred` | `.alfred/*` (~400 files: prefs, workflows, themes) |
 | Setup | `setup` | `.setup/*` (brew.sh, fonts.sh, macos.sh, Brewfile, etc.) |
 | Docker | `docker` | `.docker/*` |
@@ -75,8 +76,12 @@ dotfiles diff --name-only | grep -iE '(token|secret|credential|password|\.env|\.
 | `*.pem`, `*.key`, `*.p12` | Certificates | NEVER stage |
 | `.utcp_config.json` | MCP tokens | OK — git-crypt encrypted |
 | `.claude/mcp/mcp.json.bak` | MCP tokens backup | OK — git-crypt encrypted |
+| `.claude/mcp/config.json` | mcp-proxy tokens | OK — git-crypt encrypted |
 | `.claude/settings.json` | May reference API config | Inspect before staging |
 | `.docker/config.json` | Docker Hub auth tokens | NEVER stage (untracked) |
+| `.npmrc` | npm auth token | NEVER stage (untracked) |
+| `.config/ngrok/ngrok.yml` | ngrok auth token | NEVER stage (untracked) |
+| `.ssh/config` | Machine-specific paths | Don't track (Colima refs to /Volumes) |
 
 **Verify git-crypt:** `dotfiles show HEAD:.utcp_config.json | head -1` → should show `GITCRYPT`
 
@@ -150,6 +155,8 @@ done
 - New apps in `~/.config/` not yet tracked
 - Changes to `~/Library/Application Support/` (VS Code, Cursor)
 - New shell dotfiles (`.tool-versions`, `.mise.toml`, etc.)
+- `~/Library/LaunchAgents/` — check but do NOT track auto-generated plists (machine-specific paths confuse fresh installs)
+- Sketchybar `helpers/*.swift` sources (track source, not compiled binaries)
 
 **Ask:** "Found N untracked config files in [dirs]. Want to review them for tracking?"
 
@@ -160,7 +167,7 @@ dotfiles log --oneline -5
 dotfiles status
 ```
 
-**README staleness check:** If commits touched `.claude/` (rules, skills, commands, hooks, mcp) or category structure changed, verify `~/.github/README.md` tree counts still match reality (9 rules, 28 skills, 13 commands, 6 hooks, 36 servers, ~1126 files). Suggest update if stale.
+**README staleness check:** If commits touched `.claude/` (rules, skills, hooks, mcp) or category structure changed, verify `~/.github/README.md` tree counts still match reality (10 rules, 29 skills, 6 hooks, 36 servers, ~1136 files). Suggest update if stale.
 
 Report: "Committed as [hashes]. Push with `dotfiles push`"
 
@@ -213,6 +220,7 @@ dotfiles add ~/.setup/Resources/Brewfile
   - `.utcp_config.json` — code-mode MCP servers with tokens
   - `.claude.json` — Claude Code config (may have native mcpServers)
   - `.claude/mcp/mcp.json.bak` — portable MCP backup (all servers)
+  - `.claude/mcp/config.json` — mcp-proxy config with API tokens
 - New machine: `git-crypt unlock ~/dotfiles.key`
 - Verify: `dotfiles show HEAD:.utcp_config.json | head -1` → `GITCRYPT` header
 
@@ -248,6 +256,16 @@ jq -s '
 **On new machine**, decrypt and register servers in `~/.utcp_config.json` for code-mode.
 
 See `~/.claude/mcp/MCP.md` for full server inventory (36 servers).
+
+### mcp-proxy
+
+`TBXark/mcp-proxy` (Go) — NOT the brew `mcp-proxy` (`sparfenyuk/mcp-proxy`, Python — different project entirely).
+
+```bash
+go install github.com/TBXark/mcp-proxy@latest
+mkdir -p ~/.claude/mcp/bin
+cp "$(go env GOPATH)/bin/mcp-proxy" ~/.claude/mcp/bin/
+```
 
 ## Quick Reference
 

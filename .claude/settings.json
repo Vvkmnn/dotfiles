@@ -540,7 +540,7 @@
     "explanatory-output-style@claude-plugins-official": true,
     "commit-commands@claude-plugins-official": true,
     "plugin-dev@claude-plugins-official": true,
-    "ralph-loop@claude-plugins-official": true,
+    "ralph-loop@claude-plugins-official": false,
     "typescript-lsp@claude-plugins-official": true,
     "pyright-lsp@claude-plugins-official": true,
     "rust-analyzer-lsp@claude-plugins-official": true,
@@ -607,5 +607,6 @@
   },
   "alwaysThinkingEnabled": true,
   "effortLevel": "high",
-  "voiceEnabled": true
+  "voiceEnabled": true,
+  "editorMode": "vim"
 }

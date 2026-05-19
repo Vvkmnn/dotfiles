@@ -24,13 +24,6 @@ Write the minimum code needed, but make it beautiful. Iterate in small steps.
 - Inline code > premature extraction
 - Three similar lines > a premature helper function
 
-**Right-sized models:**
-- Haiku for deterministic, can't-fail tasks (CI/CD, file reads, structured data extraction, simple MCP calls)
-- Sonnet for general work (default, handles most complexity)
-- Opus for complex reasoning (planning, architecture, novel problem-solving)
-
-When launching subagents: `model: "haiku"` for straightforward execution tasks
-
 ### The Beauty Principles
 
 **Readable code:**
@@ -64,6 +57,7 @@ When launching subagents: `model: "haiku"` for straightforward execution tasks
 - Commit frequently at stable points
 - Validate each step before continuing
 - Easier to review, easier to revert
+- Edits happen in the main session, never inside subagents — user must see and approve each one. Exception: well-scoped agents with clear justification (e.g., linter fixing 20 files)
 
 **Commit messages match the repo:**
 - Run `git log --oneline -10` before every commit — match the existing format exactly
@@ -124,7 +118,7 @@ Before considering code complete:
 - [ ] Immutable patterns used (spread `{ ...obj, key }` not mutation)
 - [ ] Functions small (<50 lines)
 - [ ] Files focused (<800 lines, 200-400 typical)
-- [ ] No deep nesting (>4 levels)
+- [ ] No deep nesting (>3 levels — see code.md)
 - [ ] No console.log in production code
 
 ### Branch-Scope Refactoring

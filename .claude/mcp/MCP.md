@@ -1,113 +1,112 @@
-# MCP Server Configuration
+# MCP Server Inventory
 
-> **Backup**: `~/.claude/mcp/mcp.json.bak` (git-crypt encrypted, 36 servers)
-> **Active runtime**: `~/.utcp_config.json` (code-mode UTCP proxy, git-crypt encrypted)
+> Updated: 2026-03-18
+> Config: `~/.claude/mcp/config.json` (proxy server definitions)
+> Endpoints: `~/.claude.json` (Claude Code HTTP connections)
+> Credentials backup: `~/.claude/mcp/credentials.txt`
+> Logs: `~/.claude/mcp/proxy-error.log`
 
-## Backup Strategy
+## Architecture
 
-`mcp.json.bak` is the single source of truth for MCP server definitions. It contains all servers in Claude's native `mcpServers` format for portability.
+All servers run through `mcp-proxy` gateway on `localhost:9090`. Each server is an npm/uvx package spawned as a stdio subprocess. Claude Code connects to `http://localhost:9090/<server>/mcp`.
 
-**On dotfiles update**, the skill captures servers from:
-1. `~/.utcp_config.json` (code-mode UTCP — primary, always used)
-2. `.claude.json` `mcpServers` section (native MCPs — rare, backed up if configured)
+**Restart proxy:** `pkill -f mcp-proxy && ~/.claude/mcp/bin/mcp-proxy --config ~/.claude/mcp/config.json &`
 
-Existing backup entries take precedence (they have real tokens). New servers from either source are merged in.
+**After config changes:** Restart proxy AND restart Claude Code (tools load at session start).
 
-**On new machine**, decrypt with `git-crypt unlock`, then register servers in `~/.utcp_config.json` for code-mode. Native `mcpServers` in `.claude.json` is not the default workflow.
+### Previous Architecture (before 2026-02-01)
 
-## Active Servers (36)
+All MCP servers were proxied through code-mode UTCP (`@utcp/code-mode-mcp`). Config lived in `~/.utcp_config.json` (git-crypt encrypted). Backup of that era: `~/.claude/mcp/mcp.json.bak` (git-crypt encrypted, 36 servers). Native MCP with mcp-proxy replaced UTCP for better performance (+8.6% accuracy, 85% token reduction via lazy loading). Lost features: `call_tool_chain`, `register_manual`, `search_tools`. `~/.utcp_config.json` kept as reference.
 
-### Core Tools
+## Active Servers (24 of 26)
 
-| Server | Package | Purpose | Key |
-|--------|---------|---------|-----|
-| `tmux` | `tmux-mcp` | Terminal session management | No |
-| `memory` | `@modelcontextprotocol/server-memory` | Persistent key-value memory | No |
-| `sequential-thinking` | `@modelcontextprotocol/server-sequential-thinking` | Step-by-step reasoning | No |
-| `fetch` | `mcp-fetch-server` | HTTP requests to URLs | No |
+### Search & Social
+| Server | Package | Auth | Notes |
+|--------|---------|------|-------|
+| reddit | `reddit-mcp-server` | OAuth client_id + secret | 60-100 req/min. Creds from reddit.com/prefs/apps |
+| twitter | `@practicaltools/twitter-mcp-server` | Apify token (shared) | 11 tools via Apify scraping. Free ~50k results/month |
+| hackernews | `@devabdultech/hn-mcp-server` | None | |
+| stackoverflow | `@notalk-tech/stackoverflow-mcp` | None | 300 req/day |
+| duckduckgo | `duckduckgo-mcp-server` | None | Fallback search |
 
-### Search & Research
+### Web & Content
+| Server | Package | Auth | Notes |
+|--------|---------|------|-------|
+| brave_search | `@brave/brave-search-mcp-server` | API key | Free: 1 req/sec |
+| fetch | `mcp-fetch-server` | None | URL -> markdown, unlimited |
+| firecrawl | `firecrawl-mcp` | API key | JS-rendered pages. 500 one-time free credits |
+| rss | `@iflow-mcp/rss-reader-server` | None | |
 
-| Server | Package | Purpose | Key |
-|--------|---------|---------|-----|
-| `brave-search` | `@brave/brave-search-mcp-server` | Web search via Brave API | Yes |
-| `duckduckgo` | `duckduckgo-mcp-server` | Web search (no key) | No |
-| `arxiv` | `arxiv-mcp-server` | Academic paper search | No |
-| `hackernews` | `@devabdultech/hn-mcp-server` | Hacker News stories | No |
-| `stackoverflow` | `@notalk-tech/stackoverflow-mcp` | Stack Overflow Q&A | No |
-| `rss` | `@iflow-mcp/rss-reader-server` | RSS feed reading | No |
+### Research
+| Server | Package | Auth | Notes |
+|--------|---------|------|-------|
+| paper_search | `paper-search-mcp` (uvx) | None (optional keys for higher rate limits) | 22+ sources: arXiv, PubMed, Google Scholar, Semantic Scholar, Crossref, OpenAlex, SSRN, bioRxiv, dblp, CORE, Europe PMC, and more. Replaces standalone arxiv. 817 stars, 95% reliability |
+| fred | `fred-mcp-server` | FRED API key (free) | 800k+ Federal Reserve economic time series. GDP, inflation, employment, rates |
 
-### Development
+### Media
+| Server | Package | Auth | Notes |
+|--------|---------|------|-------|
+| youtube | `@kirbah/mcp-youtube` | YouTube Data API v3 key | Search, transcripts, trending. 10k units/day free |
+| yt_dlp | `@kevinwatt/yt-dlp-mcp` | None | Download transcripts/metadata. Complements youtube |
 
-| Server | Package | Purpose | Key |
-|--------|---------|---------|-----|
-| `github` | `@modelcontextprotocol/server-github` | GitHub repos, issues, PRs | Yes |
-| `notion` | `@notionhq/notion-mcp-server` | Notion pages and databases | Yes |
-| `google-drive` | `@piotr-agier/google-drive-mcp` | Google Drive file access | OAuth |
-| `supabase` | `@supabase/mcp-server-supabase` | Supabase database ops | Yes |
-| `firecrawl` | `firecrawl-mcp` | Web scraping and crawling | Yes |
-| `railway` | `@railway/mcp-server` | Railway deployment | Yes |
-| `apify` | `@apify/actors-mcp-server` | Web automation | Yes |
-| `vercel` | Remote URL | Vercel platform MCP | OAuth |
-| `clickhouse` | Remote URL | ClickHouse cloud MCP | OAuth |
+### Productivity
+| Server | Package | Auth | Notes |
+|--------|---------|------|-------|
+| notion | `@notionhq/notion-mcp-server` | Integration token | |
+| google_drive | `@piotr-agier/google-drive-mcp` | OAuth tokens | ~/.config/google-drive-mcp/ |
+| github | `@modelcontextprotocol/server-github` | PAT | Also via gh CLI |
+| memory | `@modelcontextprotocol/server-memory` | None | Knowledge graph |
 
-### Browser & UI
+### System & Automation
+| Server | Package | Auth | Notes |
+|--------|---------|------|-------|
+| tmux | `tmux-mcp` | None | |
+| applescript | `@peakmojo/applescript-mcp` | None | macOS automation |
+| chrome_devtools | `chrome-devtools-mcp` | None | |
+| apify | `@apify/actors-mcp-server` | API token | Shared token with twitter server |
 
-| Server | Package | Purpose | Key |
-|--------|---------|---------|-----|
-| `chrome-devtools` | `chrome-devtools-mcp` | Chrome browser automation | No |
-| `magic` | `@magicuidesign/mcp` | UI component generation | Yes |
+### AI & Dev Tools
+| Server | Package | Auth | Notes |
+|--------|---------|------|-------|
+| sequential_thinking | `@modelcontextprotocol/server-sequential-thinking` | None | |
+| magic_ui | `@magicuidesign/mcp` | None | |
+| anki | `@ankimcp/anki-mcp-server` | None | Needs Anki desktop running |
 
-### System Integration
+### Unconfigured (2 servers — need API keys to activate)
 
-| Server | Package | Purpose | Key |
-|--------|---------|---------|-----|
-| `applescript` | `@peakmojo/applescript-mcp` | macOS automation | No |
-| `cclsp` | `cclsp` | Language server protocol | No |
-| `openapi` | `openapi-mcp` | OpenAPI spec exploration | No |
-| `chatgpt-mcp` | `chatgpt-mcp` | ChatGPT integration | No |
-| `anki` | `@ankimcp/anki-mcp-server` | Anki flashcard management | No |
+| Server | What's Needed |
+|--------|---------------|
+| supabase | Access token + project ref from supabase.com dashboard |
+| railway | API token from railway.app/account/tokens |
 
-### Claude Code Ecosystem
+### Retired (available if needed)
 
-| Server | Package | Purpose | Key |
-|--------|---------|---------|-----|
-| `claude-historian-mcp` | `claude-historian-mcp` | Search past sessions | No |
-| `claude-senator` | `claude-senator` (local) | Permission and safety checks | No |
-| `claude-praetorian` | `claude-praetorian` | Security scanning | No |
-| `context7` | `@upstash/context7-mcp` | Library documentation | Yes |
+| Server | Package | Notes |
+|--------|---------|-------|
+| arxiv | `arxiv-mcp-server` (uvx) | Replaced by paper_search which includes arXiv + 20 more sources. Re-add with: `"arxiv": {"command": "uvx", "args": ["arxiv-mcp-server", "--storage-path", "/Users/v/.arxiv-papers"]}` |
 
-### Content & Media
+## Changes Log
 
-| Server | Package | Purpose | Key |
-|--------|---------|---------|-----|
-| `yt-dlp` | `@kevinwatt/yt-dlp-mcp` | YouTube download | No |
-| `reddit` | `reddit-mcp-buddy` | Reddit browsing | No |
-| `twitter` | `agent-twitter-client-mcp` | Twitter/X integration | Cookies |
-| `1mcpserver` | `@particlefuture/1mcpserver` | General utilities | No |
+### 2026-03-18
+- Added `paper-search-mcp` (22+ academic sources in one server, replaces standalone arxiv)
+- Added `fred-mcp-server` (Federal Reserve economic data, 800k+ time series)
+- Retired standalone `arxiv` (now covered by paper_search)
+- Created `study-claude` skill + `study-researcher` agent for research workflows
 
-### Documentation (Remote URL)
+### 2026-03-17
+- Reddit: `reddit-mcp-buddy` -> `reddit-mcp-server` (old package blocked by Reddit API changes)
+- Twitter: `agent-twitter-client-mcp` -> `@practicaltools/twitter-mcp-server` (cookie/credential auth broken, switched to Apify)
+- YouTube: Added `@kirbah/mcp-youtube` (new)
+- Firecrawl: API key configured
+- Apify: API key configured
 
-| Server | URL | Purpose | Key |
-|--------|-----|---------|-----|
-| `cloudflare-docs` | `docs.mcp.cloudflare.com` | Cloudflare documentation | OAuth |
-| `cloudflare-observability` | `observability.mcp.cloudflare.com` | Cloudflare observability | OAuth |
-
-## Server Status
-
-- **Needs Setup**: `railway`, `firecrawl`, `supabase`, `apify` (tokens not configured)
-- **Needs OAuth**: `vercel`, `cloudflare-docs`, `cloudflare-observability`, `clickhouse`
-- **Needs Cookies**: `twitter` (AUTH_METHOD=cookies)
-
-## Adding New Servers
-
-1. Add to `~/.utcp_config.json` via code-mode registration
-2. Run dotfiles update — skill auto-captures into `mcp.json.bak`
-3. Document purpose and key requirement here
-4. Restart Claude Code (`/mcp` to verify)
+### 2026-02-01
+- Migrated from code-mode UTCP proxy to native MCP with mcp-proxy gateway
 
 ## Troubleshooting
 
-- **Server not connecting**: Check `/mcp` output, verify package installed
-- **Auth errors**: Verify API key in encrypted config
-- **Tool not found**: Native MCP lazy-loads tools >10K tokens, use specific tool names
+- **404 from proxy**: Server crashed on startup. Check proxy-error.log for "Connecting" loops
+- **Stuck "Connecting"**: Kill all proxy processes, restart fresh. Stale state causes this
+- **Tools missing in Claude Code**: Restart Claude Code after proxy changes
+- **Twitter auth issues**: Now uses Apify, no direct Twitter auth needed
+- **Reddit 403**: Uses OAuth now, not unauthenticated scraping
