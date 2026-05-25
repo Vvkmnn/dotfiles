@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# ai/ux.sh — visual primitives for the dotfiles-ai bootstrap.
+# ai/ux.sh — visual primitives for the dotfiles-setup bootstrap.
 #
 # Tokyo Night palette + face roster + box drawing. Sourced by the skill
 # orchestrator and by ai/gate.sh / ai/doctor.sh which build on it.
@@ -8,7 +8,7 @@
 #
 # Usage:
 #   . ~/.setup/ai/ux.sh
-#   ui_header "dotfiles-ai" "Bootstrap"
+#   ui_header "dotfiles-setup" "Bootstrap"
 #   ui_phase_start P4 "Clone dotfiles bare repo"
 #   ui_step ok   "branch v-macos-mini forked"
 #   ui_step warn "1 conflict moved to ~/.backup/"
@@ -38,7 +38,7 @@ _ui_color() { echo "${UI_COLORS[$((RANDOM % ${#UI_COLORS[@]}))]}"; }
 
 # ui_header <title> [subtitle]
 ui_header() {
-  local title="${1:-dotfiles-ai}" sub="${2:-}" face color
+  local title="${1:-dotfiles-setup}" sub="${2:-}" face color
   face=$(_ui_face); color=$(_ui_color)
   printf '\n  \033[%sm┌─ %s\033[0m  \033[1;%sm%s\033[0m\n' "$color" "$face" "$color" "$title"
   printf '  \033[%sm│\033[0m\n' "$color"

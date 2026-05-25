@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# ai/gate.sh — manual-gate orchestration helper for dotfiles-ai.
+# ai/gate.sh — manual-gate orchestration helper for dotfiles-setup.
 #
 # DRYs up the 7 [GATE] phases in AI.md. Each gate has the same shape:
 #   1. Probe verify; if already passes, skip the whole interaction
@@ -41,11 +41,11 @@ _gate_notify() {
   if [ -n "$AI_GATE_IPHONE" ]; then
     osascript >/dev/null 2>&1 <<EOF &
 tell application "Messages"
-  send "dotfiles-ai paused: $title" to buddy "$AI_GATE_IPHONE"
+  send "dotfiles-setup paused: $title" to buddy "$AI_GATE_IPHONE"
 end tell
 EOF
   fi
-  osascript -e "display notification \"$title\" with title \"dotfiles-ai\" sound name \"Glass\"" 2>/dev/null &
+  osascript -e "display notification \"$title\" with title \"dotfiles-setup\" sound name \"Glass\"" 2>/dev/null &
 }
 
 # ai_gate <name> <deeplink> <verify_cmd> [help_lines...]

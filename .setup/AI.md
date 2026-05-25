@@ -7,8 +7,8 @@
 ## What this is
 
 `AI.md` is both the primer and the executable runbook. The Claude skill at
-`~/.claude/skills/dotfiles-ai/SKILL.md` triggers on phrases like "Bootstrap this
-Mac" / "Set up this Mac" / "Match the laptop" / `/dotfiles-ai`. The skill reads
+`~/.claude/skills/dotfiles-setup/SKILL.md` triggers on phrases like "Bootstrap this
+Mac" / "Set up this Mac" / "Match the laptop" / `/dotfiles-setup`. The skill reads
 this file and walks through the phases. There is no separate state tracker —
 each script is idempotent (brew bundle skips installed, `defaults write` no-ops
 on matched values, `git clone` exits if the dir exists). Interrupted halfway?
@@ -423,7 +423,7 @@ Re-run `AI.md` after any change, after `dotfiles pull`, after a crash. Safe.
 ├── macos.sh                 ← 816-line defaults script (invoked by P11)
 └── README.md                ← original pre-AI runbook (still works manually)
 
-~/.claude/skills/dotfiles-ai/
+~/.claude/skills/dotfiles-setup/
 └── SKILL.md                 ← trigger phrases; references this file
 ```
 
@@ -433,7 +433,7 @@ Re-run `AI.md` after any change, after `dotfiles pull`, after a crash. Safe.
 |---|---|
 | Add/remove a phase | This file |
 | Profile detection logic | This file § "Profiles" |
-| Trigger phrases | `~/.claude/skills/dotfiles-ai/SKILL.md` |
+| Trigger phrases | `~/.claude/skills/dotfiles-setup/SKILL.md` |
 | Workstation package list | `~/.setup/Resources/Brewfile` |
 | Server package list | `~/.setup/Resources/Brewfile.server` |
 | `defaults write` calls | `~/.setup/macos.sh` (called by P11) |
@@ -447,7 +447,7 @@ Re-run `AI.md` after any change, after `dotfiles pull`, after a crash. Safe.
 ## Hand-off contract
 
 1. Owner clones dotfiles or skill does it as P4
-2. Owner says "Bootstrap this Mac" / `/dotfiles-ai` to a Claude Code session
+2. Owner says "Bootstrap this Mac" / `/dotfiles-setup` to a Claude Code session
 3. Claude reads this file, executes top to bottom, pauses at the 7 manual gates
 4. Doctor verifies; celebration card prints
 5. Owner walks away

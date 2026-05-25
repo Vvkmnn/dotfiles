@@ -1,4 +1,4 @@
-# Brewfile.server — dotfiles-ai server profile (Mac mini, Mac Studio).
+# Brewfile.server — dotfiles-setup server profile (Mac mini, Mac Studio).
 #
 # Goal: minimum to be a tmux + claude + ssh + tailscale host.
 # Native-first principle (owner directive): Apple-shipped or single-purpose

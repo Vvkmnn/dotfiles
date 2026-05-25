@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# ai/doctor.sh — standalone verification suite for dotfiles-ai.
+# ai/doctor.sh — standalone verification suite for dotfiles-setup.
 #
 # Runs every probe declared in AI.md's P18 section. Read-only — never
 # mutates state. Designed for drift detection any time (post-bootstrap,

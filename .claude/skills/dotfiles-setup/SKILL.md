@@ -1,21 +1,21 @@
 ---
-name: dotfiles-ai
-description: Use when owner says "set up this Mac", "bootstrap this Mac", "match the laptop", "make this feel like mine", "/dotfiles-ai", or runs on a fresh macOS install. Reads ~/.setup/AI.md and executes phases in order, pausing at manual gates with deeplinks + iPhone notification. Every step is idempotent — safe to re-run after interruption, after dotfiles pull, or any time as a drift check. Profile (workstation/server) auto-detected by $USER. Helpers: ~/.setup/ai/ux.sh (visual), ai/gate.sh (manual gates), ai/doctor.sh (verify).
+name: dotfiles-setup
+description: Use when owner says "set up this Mac", "bootstrap this Mac", "match the laptop", "make this feel like mine", "/dotfiles-setup", or runs on a fresh macOS install. Reads ~/.setup/AI.md and executes phases in order, pausing at manual gates with deeplinks + iPhone notification. Every step is idempotent — safe to re-run after interruption, after dotfiles pull, or any time as a drift check. Profile (workstation/server) auto-detected by $USER. Helpers: ~/.setup/ai/ux.sh (visual), ai/gate.sh (manual gates), ai/doctor.sh (verify).
 ---
 
-# dotfiles-ai
+# dotfiles-setup
 
 Owner-environment bootstrap orchestrator. Source of truth: `~/.setup/AI.md`. This skill is just the launcher.
 
 ## Activation
 
 Trigger phrases (any of):
-- `/dotfiles-ai`
+- `/dotfiles-setup`
 - "set up this Mac"
 - "bootstrap this Mac"
 - "match the laptop"
 - "make this feel like mine"
-- "run dotfiles-ai"
+- "run dotfiles-setup"
 
 ## How to orchestrate
 
@@ -28,7 +28,7 @@ Trigger phrases (any of):
    - On a `[GATE]` phase: prefer `ai_gate "<name>" "<deeplink>" "<verify_cmd>" "<help>"` from `gate.sh`. It probes verify first (silent skip if already satisfied), opens the deeplink, sends notification, and runs the done/skip/abort loop.
    - On non-gate failure: surface the actual diagnostic and offer retry/skip/abort.
 5. **No state markers, no manifest.** Idempotency in the actions is the resume mechanism.
-6. **Sub-command**: `/dotfiles-ai doctor` — just runs `bash ~/.setup/ai/doctor.sh`. Exit 0/1/2 (clean/warnings/failures). No actions.
+6. **Sub-command**: `/dotfiles-setup doctor` — just runs `bash ~/.setup/ai/doctor.sh`. Exit 0/1/2 (clean/warnings/failures). No actions.
 
 ## Manual-gate UX
 
