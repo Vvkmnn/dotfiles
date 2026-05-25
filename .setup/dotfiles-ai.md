@@ -53,7 +53,9 @@ verify:
 ```bash
 verify:
   ver=$(sw_vers -productVersion)
-  printf '%s\n26.0\n' "$ver" | sort -CV || die "macOS < 26 — runbook is Tahoe-targeted"
+  # sort -CV checks non-decreasing order. Threshold first, $ver second,
+  # so "26.0\n26.3\n" is ascending → passes for any macOS ≥ 26.0.
+  printf '26.0\n%s\n' "$ver" | sort -CV || die "macOS < 26 — runbook is Tahoe-targeted"
 ```
 
 ### P0.3 iCloud signed in + Apple ID match (server profile only)
@@ -197,8 +199,13 @@ they want both NICs on the same subnet.
 
 ```bash
 action:
-  test -d "$HOME/.dotfiles" || git clone --bare \
-    git@github.com:Vvkmnn/dotfiles.git "$HOME/.dotfiles"
+  # First-boot clone uses HTTPS because the ed25519 SSH key isn't
+  # generated until P15. P15 rewrites the remote to SSH after keygen.
+  if [ ! -d "$HOME/.dotfiles" ]; then
+    if ! git clone --bare git@github.com:Vvkmnn/dotfiles.git "$HOME/.dotfiles" 2>/dev/null; then
+      git clone --bare https://github.com/Vvkmnn/dotfiles.git "$HOME/.dotfiles"
+    fi
+  fi
   
   dotfiles() { /usr/bin/git --git-dir="$HOME/.dotfiles" --work-tree="$HOME" "$@"; }
   export -f dotfiles
@@ -336,15 +343,24 @@ action:
   echo "macos.sh applied. Some changes need a logout to take full effect."
 
 verify:
-  test "$(defaults read NSGlobalDomain AppleShowAllExtensions)" = "1"
-  test "$(defaults read com.apple.dock autohide)" = "1"
+  # `defaults read` exits non-zero on unset keys. Coerce to a sentinel
+  # so we can distinguish "macos.sh not run yet" (unset) from
+  # "macos.sh ran but key wrong" (set to wrong value).
+  test "$(defaults read NSGlobalDomain AppleShowAllExtensions 2>/dev/null || echo unset)" = "1"
+  test "$(defaults read com.apple.dock autohide 2>/dev/null || echo unset)" = "1"
 ```
 
-## Phase 12 — pmset never-sleep (server profile only)
+## Phase 12 — pmset never-sleep (server profile only) [admin-gate]
 
 ```bash
 condition: $DOTFILES_AI_PROFILE = server
+gate: admin   # requires sudo password
 action:
+  # Pre-cache sudo timestamp so the pmset call doesn't block mid-phase.
+  # On a fresh login, prompt once interactively; subsequent sudo within
+  # the timestamp_timeout window (default 5 min) is non-interactive.
+  sudo -v || die "sudo required for pmset — owner must authenticate"
+  
   sudo pmset -a sleep 0 disksleep 0 displaysleep 30 \
               womp 1 powernap 1 networkoversleep 1 tcpkeepalive 1 \
               standby 0 autorestart 1 hibernatemode 0
@@ -441,9 +457,21 @@ Host *
   IdentityAgent ~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock
 EOF
 
+  # Rewrite dotfiles remote to SSH (P4 may have used HTTPS as bootstrap
+  # fallback before this key existed). Idempotent — no-op if already SSH.
+  if [ -d "$HOME/.dotfiles" ]; then
+    current_url=$(/usr/bin/git --git-dir="$HOME/.dotfiles" remote get-url origin 2>/dev/null || echo "")
+    case "$current_url" in
+      https://*) /usr/bin/git --git-dir="$HOME/.dotfiles" \
+          remote set-url origin git@github.com:Vvkmnn/dotfiles.git ;;
+    esac
+  fi
+
 verify:
   test -f "$HOME/.ssh/id_ed25519_$(scutil --get LocalHostName | tr A-Z a-z)"
   grep -q '1password' "$HOME/.ssh/config"
+  # dotfiles remote is SSH (either set originally or rewritten above)
+  /usr/bin/git --git-dir="$HOME/.dotfiles" remote get-url origin | grep -q '^git@github.com:'
 ```
 
 ## Phase 16 — Remote Login ON (both profiles)
@@ -543,6 +571,9 @@ action:
   # Approve on iPhone-side prompt. After pair: Spotlight on Mac
   # indexes iPhone apps (Tahoe-new).
 verify:
+  # No reliable Mac-side probe for pair status — only checks the app
+  # is installed. Pair state lives in keychain + iPhone-side approval.
+  # Owner confirms pairing by opening the app and seeing the phone screen.
   test -d "/System/Applications/iPhone Mirroring.app"
 ```
 
@@ -576,9 +607,12 @@ verify:
 mode: info + manual-verify
 instructions:
   AirDrop broken in 26.0–26.2 with VPN/security tools active
-  (Mullvad daemon is a known culprit on this host).
+  (Mullvad daemon is a known culprit on the laptop; the mini
+  has no Mullvad — skip the disable step there).
   Test: send small file laptop ↔ mini ↔ iPhone (all 3 pairs).
-  If any pair fails: disable Mullvad temporarily, re-test.
+  If any pair fails AND Mullvad is installed: disable temporarily, re-test.
+  Probe whether Mullvad is present:
+    systemextensionsctl list 2>/dev/null | grep -qi mullvad && echo "Mullvad present" || echo "no Mullvad"
   If still fails: Network → Firewall → off, re-test.
 ```
 
