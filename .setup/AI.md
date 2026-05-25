@@ -204,12 +204,48 @@ open 'x-apple.systempreferences:com.apple.systempreferences.AppleIDSettings'
 
 ### P11 — Apply macos.sh (existing 816-line defaults script)
 
+> **Caution**: macos.sh dates from Oct 31 2025 and captures the laptop's state
+> at that moment. Settings tweaked since via System Settings clicks are NOT
+> captured here. Audit confirms it does **not** touch Screen Sharing, SSH, or
+> networking services — but it does `killall Dock Finder SystemUIServer` at
+> the end, causing a brief UI blink during screen sharing (VNC connection
+> survives). Opt out with `DOTFILES_AI_SKIP_MACOSSH=1` if you want to apply
+> manually later.
+
 ```bash
-bash ~/.setup/macos.sh 2>&1 | tail -20
-# Verify a couple of canonical keys landed:
-test "$(defaults read NSGlobalDomain AppleShowAllExtensions 2>/dev/null || echo unset)" = "1"
-test "$(defaults read com.apple.dock autohide 2>/dev/null || echo unset)" = "1"
+# Snapshot critical services BEFORE — confirm we don't break access
+sharing_before=$(sudo launchctl print system/com.apple.screensharing >/dev/null 2>&1 && echo on || echo off)
+ssh_before=$(systemsetup -getremotelogin 2>/dev/null | grep -q On && echo on || echo off)
+
+if [ "${DOTFILES_AI_SKIP_MACOSSH:-0}" = "1" ]; then
+  echo "P11 skipped via DOTFILES_AI_SKIP_MACOSSH=1 — apply manually later: bash ~/.setup/macos.sh"
+else
+  bash ~/.setup/macos.sh 2>&1 | tail -20
+fi
+
+# Verify critical services still up AFTER
+sharing_after=$(sudo launchctl print system/com.apple.screensharing >/dev/null 2>&1 && echo on || echo off)
+ssh_after=$(systemsetup -getremotelogin 2>/dev/null | grep -q On && echo on || echo off)
+[ "$sharing_before" = on ] && [ "$sharing_after" != on ] && echo "WARN: Screen Sharing went down — re-enable in System Settings"
+[ "$ssh_before"     = on ] && [ "$ssh_after"     != on ] && echo "WARN: Remote Login went down — re-enable in System Settings"
+
+# Verify a couple of canonical keys landed (skip these if SKIP=1)
+if [ "${DOTFILES_AI_SKIP_MACOSSH:-0}" != "1" ]; then
+  test "$(defaults read NSGlobalDomain AppleShowAllExtensions 2>/dev/null || echo unset)" = "1"
+  test "$(defaults read com.apple.dock autohide 2>/dev/null || echo unset)" = "1"
+fi
 ```
+
+**Drift catch-up (post-bootstrap)**: to bring the mini to the laptop's CURRENT state (not Oct 31 baseline), from the laptop run:
+
+```bash
+# Dump current defaults from laptop (one-time, runs ~30s)
+defaults read > /tmp/laptop-defaults.txt
+defaults -currentHost read > /tmp/laptop-defaults-current.txt
+# scp to mini, then on mini diff against fresh dump and import deltas manually
+```
+
+A proper drift script is out of scope — the laptop's accumulated System Settings clicks are best replayed by you in the actual Settings panes you remember tweaking. macos.sh is the persistent baseline; ad-hoc clicks are owner's to remember.
 
 ### P11.5 — Fast User Switching + Screen Sharing
 
