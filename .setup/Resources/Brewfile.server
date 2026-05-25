@@ -11,14 +11,19 @@
 # Core dev tools
 brew "git"
 brew "git-crypt"
+brew "git-delta"     # diff viewer (configured in .gitconfig)
 brew "gh"
 brew "jq"
 brew "fzf"
 brew "ripgrep"
 brew "fd"
 brew "bat"
+brew "eza"           # ls replacement (aliased in .alias)
+brew "zoxide"        # cd replacement (heavy use in shell config)
 brew "tmux"
+brew "sesh"          # tmux session manager
 brew "neovim"
+brew "atuin"         # shell history sync across owner's machines
 
 # Runtime / language manager
 brew "mise"

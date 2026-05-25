@@ -33,6 +33,17 @@ brew "fd"
 brew "ffmpeg"
 brew "fnm"
 brew "fzf"
+brew "git-delta"     # git diff viewer (configured in .gitconfig)
+brew "eza"           # ls replacement (aliased in .alias)
+brew "zoxide"        # cd replacement (heavy use)
+brew "mise"          # runtime version manager (Node/Python per project)
+brew "atuin"         # shell history sync across machines
+brew "bottom"        # alt system monitor (btm)
+brew "jless"         # JSON viewer
+brew "lf"            # terminal file manager
+brew "yazi"          # terminal file manager (richer than lf)
+brew "sesh"          # tmux session manager
+brew "clang-format"  # C/C++ formatter
 brew "gh"
 brew "ghostscript"
 brew "gifsicle"
@@ -119,6 +130,7 @@ cask "font-montserrat"
 cask "epk/epk/font-sf-mono-nerd-font"
 cask "font-sf-pro"
 cask "ghostty"
+cask "chromium"      # open-source Chrome (no Google telemetry)
 cask "google-chrome"
 cask "google-chrome@canary"
 cask "google-chrome@dev"
@@ -127,6 +139,8 @@ cask "karabiner-elements"
 cask "mullvad-vpn"
 cask "ngrok"
 cask "obsidian"
+cask "proton-mail-bridge"  # SMTP/IMAP local gateway for ProtonMail
+cask "raycast"             # launcher (login item — set in System Settings)
 cask "screen-studio"
 cask "slack"
 cask "smcfancontrol"

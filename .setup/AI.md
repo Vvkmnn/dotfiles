@@ -480,6 +480,63 @@ Re-run `AI.md` after any change, after `dotfiles pull`, after a crash. Safe.
 - Set up iPhone access (Phase 20+, deferred)
 - Disable phantom en5/en6/en7 dock adapter interfaces
 - Touch SIP state (stays enabled — preserves iOS app support)
+- Install direct-download apps that aren't in Homebrew / MAS (see below)
+
+## Manual installs (not in any package manager)
+
+Apps the owner uses on the laptop that have no Homebrew/MAS path. Re-install
+manually on each new Mac via the listed source:
+
+| App | Source | Purpose |
+|---|---|---|
+| **BatFi** | Direct download (batfi.app) | Battery health menubar (workstation only; useless on always-plugged-in mini) |
+| **iDrift** | App Store or direct | Menu bar tweaks |
+| **iKontroller** | Direct download | Controller mapping helper |
+| **Cartesian** | Direct download | Menu bar layout |
+| **FluidNoti** | Direct download | Notification UI replacement |
+| **superwhisper** | superwhisper.com | Local Whisper STT, paid one-time |
+| **Keynote/Pages Creator Studio** | Direct download | Apple iWork extensions |
+| **Whisky** / **Wine Crossover** | brew cask `whisky` + `wine-crossover` ✓ | Game compatibility (tracked) |
+| **Steam games** (`~/Applications/*.app`) | Steam | Owner re-downloads as desired |
+
+Mini may not need most of these — most are workstation/laptop ergonomic
+helpers (BatFi makes no sense on a desktop; FluidNoti is a personal
+preference). Decide per-app on each new Mac.
+
+## Brewfile audit (May 2026)
+
+Drift-check: which leaves/casks on the laptop are NOT in Brewfile.
+
+```bash
+# Run on laptop to surface any new drift:
+brew leaves | sort > /tmp/leaves.txt
+comm -23 /tmp/leaves.txt \
+  <(grep '^brew ' ~/.setup/Resources/Brewfile | sed -E 's/^brew "([^"]+)".*/\1/' | sort)
+
+brew list --cask | sort > /tmp/casks.txt
+comm -23 /tmp/casks.txt \
+  <(grep '^cask ' ~/.setup/Resources/Brewfile | sed -E 's/^cask "([^"]+)".*/\1/' | sort)
+```
+
+Anything that shows up is a new gap to add to Brewfile.
+
+## Legacy ~/.setup/ scripts (kept, not invoked by AI.md)
+
+~/.setup/ contains ~30 single-purpose install scripts from the pre-AI era
+(`alacritty.sh`, `bot.sh`, `brave.sh`, etc.). They are **not invoked by
+the AI bootstrap** — only `Brewfile`, `Brewfile.server`, and `macos.sh`
+are. The legacy scripts are kept as reference / standalone manual runs:
+
+```bash
+bash ~/.setup/fonts.sh    # Nerd Fonts install (also covered by Brewfile cask "font-*")
+bash ~/.setup/git.sh      # git-specific tweaks
+bash ~/.setup/web.sh      # web-related apps
+# ...etc
+```
+
+Run them ad-hoc if AI.md doesn't cover a specific tool. Don't run
+`~/.setup/setup.sh` (the old interactive runner) on a new Mac — it
+predates Tahoe 26 and has not been audited.
 
 ---
 
