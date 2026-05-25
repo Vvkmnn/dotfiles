@@ -324,43 +324,11 @@ Mostly iPhone-side toggles. Owner can pre-complete in parallel with bootstrap.
 Run any time. Idempotent. Exit 0 (clean) / 1 (warnings) / 2 (failures).
 
 ```bash
-# Core
-test "$(uname -m)" = "arm64"
-test "$(sysctl -n hw.memsize)" -ge 17179869184
-printf '26.0\n%s\n' "$(sw_vers -productVersion)" | sort -CV
-defaults read MobileMeAccounts Accounts 2>/dev/null | grep -q AccountID
-route -n get default 2>/dev/null | awk '/interface:/ {print $2}' | grep -qE '^en[0-9]+$'
-
-# Tailscale
-tailscale ip -4 2>/dev/null | grep -qE '^100\.'
-tailscale status >/dev/null
-
-# Services
-launchctl print "gui/$(id -u)/com.user.tmux" >/dev/null
-launchctl print "gui/$(id -u)/com.claude.mcp-proxy" >/dev/null
-command -v claude && command -v mosh-server && command -v tmux && command -v op
-
-# Dotfiles + git-crypt
-head -1 ~/.claude.json | grep -qv 'GITCRYPT'
-/usr/bin/git --git-dir=~/.dotfiles remote get-url origin | grep -q '^git@github.com:'
-
-# Workstation-only
-[ "$DOTFILES_AI_PROFILE" = workstation ] && pgrep -x yabai && pgrep -x skhd && pgrep -x sketchybar
-
-# Server-only
-[ "$DOTFILES_AI_PROFILE" = server ] && {
-  pmset -g custom | grep -E '^[[:space:]]*sleep[[:space:]]+0' >/dev/null
-  pmset -g custom | grep -E '^[[:space:]]*womp[[:space:]]+1' >/dev/null
-}
-
-# Continuity
-pgrep -x useractivityd   # Handoff
-test -d "/System/Applications/Phone.app"            # Tahoe-new
-test -d "/System/Applications/iPhone Mirroring.app"
-
-# TCC
-sqlite3 ~/Library/Application\ Support/com.apple.TCC/TCC.db "select 1 from access limit 1" >/dev/null 2>&1
+bash ~/.setup/ai/doctor.sh           # run all probes
+bash ~/.setup/ai/doctor.sh tailscale  # filter to one
 ```
+
+`doctor.sh` covers: hardware, macOS version, Apple ID, network, Tailscale, launchd services (tmux, mcp-proxy), Claude CLI, dotfiles remote, git-crypt unlock state, profile-specific (yabai/skhd/sketchybar OR pmset), Continuity (Handoff, Phone, iPhone Mirroring, Notes markdown), TCC FDA. ~25 probes total. See the script for the full list.
 
 ### P19 — Celebration
 
@@ -444,7 +412,9 @@ Re-run `AI.md` after any change, after `dotfiles pull`, after a crash. Safe.
 ~/.setup/
 ├── AI.md                    ← this file (runbook)
 ├── ai/
-│   └── ui.sh                ← Tokyo Night palette + box drawing primitives
+│   ├── ux.sh                ← Tokyo Night palette, box drawing, faces, celebration
+│   ├── gate.sh              ← manual-gate orchestration (DRYs the 7 [GATE] phases)
+│   └── doctor.sh            ← standalone verify suite (P18); exits 0/1/2
 ├── Resources/
 │   ├── Brewfile             ← workstation profile
 │   └── Brewfile.server      ← server profile (eve user)
@@ -467,7 +437,9 @@ Re-run `AI.md` after any change, after `dotfiles pull`, after a crash. Safe.
 | Workstation package list | `~/.setup/Resources/Brewfile` |
 | Server package list | `~/.setup/Resources/Brewfile.server` |
 | `defaults write` calls | `~/.setup/macos.sh` (called by P11) |
-| Visual look (palette, faces) | `~/.setup/ai/ui.sh` |
+| Visual primitives (palette, faces, boxes) | `~/.setup/ai/ux.sh` |
+| Manual-gate UX flow | `~/.setup/ai/gate.sh` |
+| Doctor probes (add / remove / filter) | `~/.setup/ai/doctor.sh` |
 | Re-run after a phase edit | Just invoke again — scripts are idempotent |
 
 ---

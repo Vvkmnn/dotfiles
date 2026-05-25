@@ -1,6 +1,6 @@
 ---
 name: dotfiles-ai
-description: Use when owner says "set up this Mac", "bootstrap this Mac", "match the laptop", "make this feel like mine", "/dotfiles-ai", or runs on a fresh macOS install. Reads ~/.setup/AI.md and executes phases in order, pausing at manual gates with deeplinks + iPhone notification. Every step is idempotent — safe to re-run after interruption, after dotfiles pull, or any time as a drift check. Profile (workstation/server) auto-detected by $USER. Visual layer in ~/.setup/ai/ui.sh.
+description: Use when owner says "set up this Mac", "bootstrap this Mac", "match the laptop", "make this feel like mine", "/dotfiles-ai", or runs on a fresh macOS install. Reads ~/.setup/AI.md and executes phases in order, pausing at manual gates with deeplinks + iPhone notification. Every step is idempotent — safe to re-run after interruption, after dotfiles pull, or any time as a drift check. Profile (workstation/server) auto-detected by $USER. Helpers: ~/.setup/ai/ux.sh (visual), ai/gate.sh (manual gates), ai/doctor.sh (verify).
 ---
 
 # dotfiles-ai
@@ -19,30 +19,37 @@ Trigger phrases (any of):
 
 ## How to orchestrate
 
-1. **Source the UI layer** if present: `. ~/.setup/ai/ui.sh` for Tokyo Night box-drawn output. Fall back to plain echo if missing (fresh-bootstrap, before P4).
+1. **Source helpers** if present: `. ~/.setup/ai/ux.sh` and `. ~/.setup/ai/gate.sh` for visual + gate orchestration. Fall back to plain `echo` + inline `open`+`read` loops if missing (fresh-bootstrap, before P4).
 2. **Detect profile**: `case "$USER" in eve) p=server ;; *) p=workstation ;; esac` and `export DOTFILES_AI_PROFILE=$p`.
-3. **Read `~/.setup/AI.md` top to bottom**. It contains every phase inline as bash + manual-gate instructions. No separate runbook file.
+3. **Read `~/.setup/AI.md` top to bottom**. It contains every phase inline as bash + manual-gate instructions.
 4. **Execute phases in order** (P0 → P19). For each phase:
-   - If the phase has a profile condition, check it first; skip if profile doesn't match.
+   - If the phase has a profile condition, check it first; skip if not matching.
    - **Run the bash directly**. Don't pre-check "have I done this" — the commands are idempotent (`brew bundle` skips installed, `defaults write` no-ops on match, `git clone` exits if dir exists, etc.).
-   - On a manual gate: `open` the deeplink, send an iOS notification via `osascript -e 'tell app "Messages" to send "<gate-name>" to buddy "<owner-iphone-number>"'`, then `AskUserQuestion` with options `done` / `skip` / `abort`.
-   - On `done`: re-run the phase's verify line. If it fails, surface the actual diagnostic and loop. If it passes, advance.
-   - On `skip`: print warning, continue.
-   - On `abort`: stop. Re-running the skill resumes from where it stopped because all prior phases are idempotent no-ops.
-5. **No state markers, no manifest, no resume database.** Idempotency in the actions is the resume mechanism.
-6. **Sub-command**: `/dotfiles-ai doctor` — read AI.md's "P18 — Doctor" verify suite and run only those probes. Exit 0/1/2 (clean/warnings/failures). No actions.
+   - On a `[GATE]` phase: prefer `ai_gate "<name>" "<deeplink>" "<verify_cmd>" "<help>"` from `gate.sh`. It probes verify first (silent skip if already satisfied), opens the deeplink, sends notification, and runs the done/skip/abort loop.
+   - On non-gate failure: surface the actual diagnostic and offer retry/skip/abort.
+5. **No state markers, no manifest.** Idempotency in the actions is the resume mechanism.
+6. **Sub-command**: `/dotfiles-ai doctor` — just runs `bash ~/.setup/ai/doctor.sh`. Exit 0/1/2 (clean/warnings/failures). No actions.
 
 ## Manual-gate UX
 
-When AI.md flags a phase **[GATE]**:
+When AI.md flags a phase **[GATE]**, source `gate.sh` and call `ai_gate`:
 
-1. Print a `ui_gate_pause` box if ui.sh is sourced, otherwise plain text.
-2. `open "$deeplink"` to jump owner into the System Settings pane.
-3. `osascript -e 'display notification "<gate>" with title "dotfiles-ai" sound name "Glass"'`. If `osascript -e 'tell app "Messages"'` to iPhone number is configured, fire that too.
-4. **Probe first**: if the verify line already passes (carried via iCloud or set in a prior run), skip the gate with "(already satisfied)" — no point making the owner click for nothing.
-5. Otherwise: `AskUserQuestion` with `done` / `skip` / `abort`.
+```bash
+. ~/.setup/ai/gate.sh
+ai_gate "<name>" "<deeplink_or_empty>" "<verify_cmd>" "<help_line_1>" "<help_line_2>"
+```
 
-The manual gates in AI.md as of writing:
+`ai_gate` handles all five steps:
+
+1. **Pre-checks** the verify cmd; if it already passes, returns silently with "(already satisfied)" — no point making the owner click for nothing.
+2. **Opens** the deeplink (if given) via `open`.
+3. **Notifies** via `osascript display notification` + Messages-to-iPhone if `AI_GATE_IPHONE` env var is set.
+4. **Prints** the orange-bordered box with help text.
+5. **Loops** on owner input: `done` re-runs verify, `skip` warns and returns 1, `abort` returns 2.
+
+If `gate.sh` is missing (pre-P4 fresh bootstrap), fall back to a minimal inline equivalent — `open` + `read -p "done? "` + re-run verify.
+
+The 7 manual gates in AI.md:
 
 - **P0.7** git-crypt key transfer (AirDrop from laptop)
 - **P10** iCloud sync settle wait
@@ -50,6 +57,7 @@ The manual gates in AI.md as of writing:
 - **P14** Tailscale OAuth
 - **P16** Remote Login toggle
 - **P17.5** 9 Continuity sub-gates (mostly iPhone-side; owner pre-completes in parallel)
+- **P12** sudo password for pmset (server) / yabai SA P17 (workstation) — pre-cached via `sudo -v`
 
 ## Fresh-Mac edge case (~/.setup/AI.md doesn't exist yet)
 
@@ -74,9 +82,11 @@ Then proceed from P0. After P4 lands the cloned repo, AI.md gets overwritten wit
 ## Companion files
 
 - `~/.setup/AI.md` — the runbook (this skill reads it)
+- `~/.setup/ai/ux.sh` — visual primitives (Tokyo Night palette, boxes, faces, celebration)
+- `~/.setup/ai/gate.sh` — manual-gate orchestration helper (`ai_gate <name> <deeplink> <verify>`)
+- `~/.setup/ai/doctor.sh` — standalone verify suite (P18); `bash ~/.setup/ai/doctor.sh` any time
 - `~/.setup/Resources/Brewfile` — workstation profile package set
 - `~/.setup/Resources/Brewfile.server` — server profile package set
-- `~/.setup/ai/ui.sh` — visual primitives (Tokyo Night)
 - `~/.setup/macos.sh` — `defaults write` script invoked by P11
 - `~/.setup/brew.sh` — legacy Brewfile wrapper (still runnable standalone)
 
