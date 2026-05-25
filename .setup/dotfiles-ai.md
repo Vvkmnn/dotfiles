@@ -1,7 +1,11 @@
-# dotfiles-ai
+# dotfiles-ai — the 19-phase runbook
 
-> Owner environment bootstrap for a Mac.
-> Reusable across machines: workstation (MacBook, iMac) and server (Mac mini, Mac Studio).
+> **Read [AI.md](./AI.md) first** if you don't know what this file is.
+> AI.md is the primer; this file is the runbook Claude executes.
+
+> Owner environment bootstrap for a Mac. Reusable across machines —
+> workstation (owner accounts: `v` on laptop/mini admin/Studio admin) and
+> server (`eve` daemon user on mini/Studio).
 > Calls existing `~/.setup/*.sh` scripts where they're non-interactive.
 > State markers at `~/.setup/dotfiles-ai/state/` (gitignored).
 > Visual layer in `~/.setup/dotfiles-ai/ui.sh` (Tokyo Night, face glyphs, box drawing).
@@ -16,16 +20,26 @@
 | `/dotfiles-ai reset <key>` | Delete one marker so that step re-runs next time. |
 | `DOTFILES_AI_SOUND=0 /dotfiles-ai` | Silence milestone sounds. |
 
-## Profile detection — no user input
+## Profile detection — by user role
 
 ```bash
-case "$(system_profiler SPHardwareDataType | awk -F': ' '/Model Name/ {gsub(/^[ \t]+/,"",$2); print $2}')" in
-  MacBook*|iMac*)          DOTFILES_AI_PROFILE=workstation ;;
-  "Mac mini"|"Mac Studio") DOTFILES_AI_PROFILE=server ;;
-  *)                       DOTFILES_AI_PROFILE=server ;;
-esac
+# Profile is determined by who the account is FOR, not what hardware it
+# runs on. Owner accounts (v, vivek, etc.) get the full workstation
+# stack regardless of machine. The dedicated daemon user `eve` gets
+# the lean server profile.
+#
+# Override with: export DOTFILES_AI_PROFILE=server  (or workstation)
+
+if [ -z "$DOTFILES_AI_PROFILE" ]; then
+  case "$USER" in
+    eve)         DOTFILES_AI_PROFILE=server      ;;  # daemon host on mini/Studio
+    *)           DOTFILES_AI_PROFILE=workstation  ;;  # owner: laptop, mini admin, Studio admin
+  esac
+fi
 export DOTFILES_AI_PROFILE
 ```
+
+**Why user-based**: the mini admin account (`v`) is screen-shared into ~90% of the time — needs window management, sketchybar, karabiner, the works. Mini's `eve` user runs daemons (Matrix, bot, router) — no GUI, lean install. Hardware is irrelevant; user role decides.
 
 ## State paths
 
