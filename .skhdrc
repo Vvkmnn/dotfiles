@@ -270,3 +270,10 @@ ctrl + alt - v : open 'raycast://extensions/raycast/clipboard-history/clipboard-
 
 # Confetti (-g = background, no UI needed)
 ctrl + alt - 8 : open -g 'raycast://confetti'
+
+################################################################################
+# 8. SYSTEM (modifier: ctrl + alt)
+################################################################################
+
+# u — Fast User Switch (login window without logout; eve's daemons keep running)
+ctrl + alt - u : /System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resources/CGSession -suspend

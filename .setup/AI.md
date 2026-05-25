@@ -211,6 +211,47 @@ test "$(defaults read NSGlobalDomain AppleShowAllExtensions 2>/dev/null || echo 
 test "$(defaults read com.apple.dock autohide 2>/dev/null || echo unset)" = "1"
 ```
 
+### P11.5 — Fast User Switching + Screen Sharing
+
+```bash
+# System-wide: allow multiple logged-in users (Fast User Switching).
+# Owner can switch between admin (v) and daemon (eve) without logging out
+# — eve's daemons keep running across the switch.
+sudo -v
+sudo defaults write /Library/Preferences/.GlobalPreferences MultipleSessionEnabled -bool true
+
+# Menu bar item via Control Center (Tahoe-modern path).
+defaults write com.apple.controlcenter "NSStatusItem Visible UserSwitcher" -bool true
+
+# Legacy fallback (older defaults key, still respected on Tahoe):
+# 0=hidden 1=name 2=initials 3=icon
+defaults -currentHost write -globalDomain userMenuExtraStyle -int 2
+
+# Restart Control Center so the menu bar item appears.
+killall ControlCenter 2>/dev/null || true
+
+# Screen Sharing service (idempotent — no-op if already on).
+# Owner accesses admin account remotely via vnc://vminim4.local or
+# vnc://vminim4 (Tailscale MagicDNS).
+sudo launchctl print system/com.apple.screensharing >/dev/null 2>&1 || {
+  sudo launchctl enable system/com.apple.screensharing
+  sudo launchctl bootstrap system /System/Library/LaunchDaemons/com.apple.screensharing.plist
+}
+
+# skhd binding for keyboard-fast user-switch (already in tracked .skhdrc):
+#   ctrl + alt - u  →  CGSession -suspend
+# Reload skhd if it's already running:
+skhd --reload 2>/dev/null || true
+
+# Verify
+defaults read /Library/Preferences/.GlobalPreferences MultipleSessionEnabled | grep -q 1
+sudo launchctl print system/com.apple.screensharing >/dev/null 2>&1
+```
+
+Owner toggles still required in System Settings (no programmatic equivalent on Tahoe):
+- **System Settings → General → Sharing → Screen Sharing**: confirm ON. "Allow access for: Administrators" is the default — when the `eve` user is later created, add `eve` here too so the owner can VNC into eve's session.
+- **System Settings → Control Center → Fast User Switching**: confirm "Show in Menu Bar" if the defaults block above didn't take effect after `killall ControlCenter`.
+
 ### P12 — pmset never-sleep **[server, admin]**
 
 ```bash
