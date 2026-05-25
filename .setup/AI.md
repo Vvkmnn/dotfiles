@@ -1,161 +1,481 @@
-# AI.md — the AI-driven Mac bootstrap
+# AI.md — Mac bootstrap runbook
 
-> Read this first. It explains what the rest of `~/.setup/` is for and how
-> Claude takes a fresh Mac to owner-environment-parity.
+> One file. Take a fresh Mac to owner-environment-parity. Claude reads this top
+> to bottom, executes each phase, pauses at manual gates, sends an iPhone
+> notification when input is needed. Re-run any time — every step is idempotent.
 
-## In one paragraph
+## What this is
 
-`dotfiles-ai` is a Claude skill that orchestrates a fresh Mac install. It reads
-a 19-phase runbook (`dotfiles-ai.md`), auto-detects which profile to apply
-based on the user account, runs verifiable shell snippets phase-by-phase,
-pauses at manual gates with iPhone notifications, and writes state markers so
-re-runs resume from the last completed step instead of repeating work.
+`AI.md` is both the primer and the executable runbook. The Claude skill at
+`~/.claude/skills/dotfiles-ai/SKILL.md` triggers on phrases like "Bootstrap this
+Mac" / "Set up this Mac" / "Match the laptop" / `/dotfiles-ai`. The skill reads
+this file and walks through the phases. There is no separate state tracker —
+each script is idempotent (brew bundle skips installed, `defaults write` no-ops
+on matched values, `git clone` exits if the dir exists). Interrupted halfway?
+Re-run; safe steps skip automatically.
 
-## Pieces
+## TL;DR
 
-```
-~/.setup/
-├── AI.md                      ← you are here, the primer
-├── dotfiles-ai.md             ← the 19-phase runbook (Claude reads this)
-├── dotfiles-ai/
-│   ├── ui.sh                  ← Tokyo Night palette + box drawing primitives
-│   └── state/                 ← resume markers (gitignored)
-│       ├── p0.done            ← timestamp + SHA of P0's verify block
-│       ├── p1.done
-│       └── manifest.txt       ← grep-friendly rollup
-├── Resources/
-│   ├── Brewfile               ← workstation profile (~80 brew + cask)
-│   └── Brewfile.server        ← server profile (~12 brew + 4 cask)
-├── brew.sh                    ← legacy: invokes Brewfile (still used by P-phase)
-├── fonts.sh                   ← Nerd Fonts install
-├── macos.sh                   ← `defaults write` calls (still used by P11)
-└── README.md                  ← original ~/.setup runbook (pre-AI era)
+```bash
+# 1. Clone the bare repo (HTTPS first-boot; SSH after P15 keygen)
+git clone --bare https://github.com/Vvkmnn/dotfiles.git ~/.dotfiles
+alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles --work-tree=$HOME'
+dotfiles config --local status.showUntrackedFiles no
 
-~/.claude/skills/dotfiles-ai/
-└── SKILL.md                   ← skill metadata; trigger phrases live here
+# 2. Trigger the skill
+"Bootstrap this Mac"   # to Claude Code session
 ```
 
-## Profiles
+That's it. Claude does the rest, pausing at gates.
 
-**Profile = who the account is for, not what hardware runs it.**
+---
 
-| Profile | User accounts | Brewfile | Includes |
-|---|---|---|---|
-| `workstation` | Owner: `v` on laptop, `v` on mini admin, `v` on Studio admin | `Resources/Brewfile` | yabai, skhd, sketchybar, karabiner, full GUI app set |
-| `server` | Daemon: `eve` on mini, `eve` on Studio | `Resources/Brewfile.server` | git, mosh, tmux, nvim, mise, uv, go, Tailscale, 1Password, Claude — no window manager |
-
-Detection logic (in `dotfiles-ai.md`):
+## Profiles — by user role, not hardware
 
 ```bash
 case "$USER" in
-  eve) DOTFILES_AI_PROFILE=server      ;;
-  *)   DOTFILES_AI_PROFILE=workstation ;;
+  eve) DOTFILES_AI_PROFILE=server      ;;  # daemon host (mini, Studio)
+  *)   DOTFILES_AI_PROFILE=workstation ;;  # owner: laptop, mini admin, Studio admin
+esac
+export DOTFILES_AI_PROFILE
+# Override: export DOTFILES_AI_PROFILE=server before invoking
+```
+
+| Profile | Brewfile | Includes |
+|---|---|---|
+| `workstation` | `Resources/Brewfile` (~80 brew + casks) | yabai, skhd, sketchybar, karabiner, full GUI stack |
+| `server` | `Resources/Brewfile.server` (~12 brew + 4 cask) | git, tmux, nvim, mosh, mise, uv, go, Tailscale, 1Password, Claude — no window manager |
+
+Mini admin (`v`) gets workstation — screen-shared 90% of the time, needs full UX.
+Mini eve (`eve`) gets server — daemons only.
+
+---
+
+## Bootstrap phases
+
+Phases run in this order. Manual gates marked **[GATE]**. Profile-specific marked **[server]** or **[workstation]**.
+
+### P0 — Preflight (read-only)
+
+```bash
+# Hardware
+test "$(uname -m)" = "arm64"
+test "$(sysctl -n hw.memsize)" -ge 17179869184      # ≥ 16 GB
+test "$(df -k / | awk 'NR==2 {print $4}')" -ge 209715200   # ≥ 200 GB free
+
+# macOS ≥ 26 (Tahoe-targeted runbook)
+ver=$(sw_vers -productVersion)
+printf '26.0\n%s\n' "$ver" | sort -CV   # ascending: threshold first
+
+# iCloud signed in
+defaults read MobileMeAccounts Accounts 2>/dev/null | grep -q AccountID
+
+# [GATE if missing] git-crypt key
+test -f ~/Downloads/key -o -f ~/Documents/key
+# If absent: prompt owner to AirDrop from laptop ~/Documents/key
+
+# Preserve ~/.claude live state if a previous install exists
+mkdir -p ~/.backup
+for d in projects sessions session-env shell-snapshots backups cache; do
+  [ -d ~/.claude/$d ] && cp -R ~/.claude/$d ~/.backup/.claude/$d
+done
+```
+
+### P1 — Hostname
+
+```bash
+host=vminim4    # or vbookair / vstudio
+sudo scutil --set HostName    "$host"
+sudo scutil --set LocalHostName "$host"
+sudo scutil --set ComputerName  "$host"
+```
+
+### P2 — Xcode CLT + Homebrew + baseline
+
+```bash
+xcode-select --install 2>/dev/null || true
+until xcode-select -p >/dev/null 2>&1; do sleep 5; done
+
+if ! command -v brew >/dev/null; then
+  NONINTERACTIVE=1 /bin/bash -c \
+    "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
+brew install git git-crypt jq
+```
+
+### P3 — Network priority **[server]**
+
+```bash
+# Prefer Ethernet, keep Wi-Fi as fallback. Idempotent.
+if ifconfig en0 2>/dev/null | grep -q 'status: active'; then
+  networksetup -ordernetworkservices "Ethernet" "Wi-Fi" 2>/dev/null || true
+fi
+```
+
+### P4 — Clone dotfiles bare repo
+
+```bash
+# HTTPS fallback because ed25519 key isn't generated until P15.
+if [ ! -d ~/.dotfiles ]; then
+  git clone --bare git@github.com:Vvkmnn/dotfiles.git ~/.dotfiles 2>/dev/null \
+    || git clone --bare https://github.com/Vvkmnn/dotfiles.git ~/.dotfiles
+fi
+dotfiles() { /usr/bin/git --git-dir=$HOME/.dotfiles --work-tree=$HOME "$@"; }
+export -f dotfiles
+
+# Conflict-resolver: move existing files to ~/.backup, retry
+base=v-macos-macbook
+if ! dotfiles checkout "$base" 2>&1 | tee /tmp/co.log; then
+  mkdir -p ~/.backup
+  awk '/^\s+\./ {print $1}' /tmp/co.log | while read f; do
+    mv ~/$f ~/.backup/$f 2>/dev/null || true
+  done
+  dotfiles checkout "$base"
+fi
+dotfiles config status.showUntrackedFiles no
+
+# Fork to host-specific branch (per convention v-macos-<host>)
+case "$DOTFILES_AI_PROFILE" in
+  workstation) machine=v-macos-macbook ;;  # or v-macos-studio etc
+  server)      machine=v-macos-mini ;;
+esac
+[ "$machine" != "$base" ] && dotfiles checkout -B "$machine"
+```
+
+### P5 — Restore ~/.claude state
+
+```bash
+for d in projects sessions session-env shell-snapshots backups cache; do
+  [ -d ~/.backup/.claude/$d ] && {
+    rm -rf ~/.claude/$d 2>/dev/null
+    mv ~/.backup/.claude/$d ~/.claude/$d
+  }
+done
+```
+
+### P6 — Submodules (nvim config)
+
+```bash
+dotfiles submodule update --init --recursive --jobs 4
+```
+
+### P7 — git-crypt unlock
+
+```bash
+key=""
+[ -f ~/Downloads/key ] && key=~/Downloads/key
+[ -f ~/Documents/key ] && key=~/Documents/key
+test -n "$key" || { echo "FATAL: key vanished" >&2; exit 1; }
+cd ~ && git-crypt unlock "$key"
+head -1 ~/.claude.json | grep -qv 'GITCRYPT'  # verify
+[ -f ~/Downloads/key ] && rm -P ~/Downloads/key
+```
+
+### P8 — Brewfile (profile-conditional)
+
+```bash
+case "$DOTFILES_AI_PROFILE" in
+  workstation) brew bundle install --file=~/.setup/Resources/Brewfile ;;
+  server)      brew bundle install --file=~/.setup/Resources/Brewfile.server ;;
 esac
 ```
 
-Override via `export DOTFILES_AI_PROFILE=server` before invoking.
-
-## How to invoke
-
-Three entry points, all equivalent:
+### P9 — LaunchAgents
 
 ```bash
-# 1. Claude trigger phrases (read by the SKILL.md description):
-"Bootstrap this Mac"
-"Set up this Mac"
-"Match the laptop"
-"Make this feel like mine"
-
-# 2. Slash command:
-/dotfiles-ai
-
-# 3. Doctor mode — verify every probe, change nothing:
-/dotfiles-ai doctor
+mkdir -p ~/Library/LaunchAgents
+for f in ~/.config/launchagents/*.plist; do
+  [ -e "$f" ] || continue
+  out=~/Library/LaunchAgents/$(basename "$f")
+  sed "s|__HOME__|$HOME|g" "$f" > "$out"
+  launchctl bootstrap "gui/$(id -u)" "$out" 2>/dev/null || true
+done
 ```
 
-Claude reads `SKILL.md` to know the trigger phrases, then loads
-`dotfiles-ai.md` to execute. The skill is auto-discovered when present in
-`~/.claude/skills/dotfiles-ai/`.
+### P10 — iCloud sync settle **[GATE]**
 
-## What `state/` is
-
-`~/.setup/dotfiles-ai/state/` is the resume mechanism. Every completed phase
-writes a marker:
-
-```
-~/.setup/dotfiles-ai/state/p0.done
-# Contents:
-2026-05-20T14:23:01Z
-sha256:a4f9c2... # SHA of P0's verify block at time of completion
+```bash
+# iCloud silently reverts ~10 macos.sh lines if applied too early.
+# Open the Apple ID pane; wait until no spinners + "Synced" on key apps.
+open 'x-apple.systempreferences:com.apple.systempreferences.AppleIDSettings'
+# Owner types "done"
 ```
 
-On re-run, the skill checks each marker:
+### P11 — Apply macos.sh (existing 816-line defaults script)
 
-- **Marker exists + SHA matches** → skip (already done, verify block unchanged)
-- **Marker exists + SHA differs** → invalidate, re-run (verify block was edited upstream — fix arrived via `dotfiles pull`)
-- **No marker** → run
+```bash
+bash ~/.setup/macos.sh 2>&1 | tail -20
+# Verify a couple of canonical keys landed:
+test "$(defaults read NSGlobalDomain AppleShowAllExtensions 2>/dev/null || echo unset)" = "1"
+test "$(defaults read com.apple.dock autohide 2>/dev/null || echo unset)" = "1"
+```
 
-This is chezmoi-style content-addressed state. The 5 runbook bugs we fixed
-on the laptop will invalidate the corresponding markers on next mini pull
-and re-run only those phases.
+### P12 — pmset never-sleep **[server, admin]**
 
-State is **gitignored** (never tracked across machines) — each Mac has its
-own. Wipe with `rm -rf ~/.setup/dotfiles-ai/state/` to force a full re-run.
-Reset one phase with `/dotfiles-ai reset p12`.
+```bash
+sudo -v   # pre-cache password (prompts once, 5-min window)
+sudo pmset -a sleep 0 disksleep 0 displaysleep 30 \
+            womp 1 powernap 1 networkoversleep 1 tcpkeepalive 1 \
+            standby 0 autorestart 1 hibernatemode 0
+```
 
-## Manual gates
+### P13 — TCC checklist **[GATE]**
 
-Some phases require human action — `git-crypt unlock` needs the key,
-Accessibility/Full Disk Access need a System Settings click, Tailscale OAuth
-needs a browser sign-in. The skill detects these phases, pauses, opens the
-relevant System Settings deeplink, and sends an iPhone notification via
-`osascript`/Messages so you can walk away from the screen until it's time
-to interact.
+Single batched System Settings trip. Open each pane; add **Terminal.app** (and **Ghostty.app** on workstation) to each:
 
-The 4 known admin/manual gates on the mini server profile:
-- **git-crypt key** transfer + unlock (P0.7)
-- **iCloud sync** settle wait (P6)
-- **TCC checklist** — single batched System Settings trip (P13)
-- **Tailscale OAuth** + Remote Login toggle (P14, P16)
+```bash
+open 'x-apple.systempreferences:com.apple.settings.PrivacySecurity?Privacy_Accessibility'
+open 'x-apple.systempreferences:com.apple.settings.PrivacySecurity?Privacy_AllFiles'
+open 'x-apple.systempreferences:com.apple.settings.PrivacySecurity?Privacy_LocalNetwork'
+open 'x-apple.systempreferences:com.apple.settings.PrivacySecurity?Privacy_ScreenCapture'  # workstation only
+```
 
-Plus the 9 Native Continuity sub-gates in P17.5 (iMessage forwarding,
-Phone relay, Continuity Camera, iPhone Mirroring pair, Notes markdown,
-Apple Intelligence opt-in, AirDrop regression test, Shortcuts awareness).
+### P14 — Tailscale **[GATE]**
+
+```bash
+open -a Tailscale
+# Menu bar → Log In → Apple ID (same as iCloud). Wait for "Logged in".
+sudo tailscale up --ssh
+tailscale ip -4   # should print 100.x.x.x
+```
+
+### P15 — Per-device ed25519 + 1Password registry
+
+```bash
+mkdir -p ~/.ssh && chmod 700 ~/.ssh
+host=$(scutil --get LocalHostName | tr A-Z a-z)
+keyfile=~/.ssh/id_ed25519_${host}
+[ -f "$keyfile" ] || ssh-keygen -t ed25519 -C "${host}@$(date +%Y%m%d)" -N "" -f "$keyfile"
+touch ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys
+
+# Register this host's pubkey in 1Password + pull peer pubkeys
+if command -v op >/dev/null && op account list 2>/dev/null | grep -q .; then
+  op item create --vault Private --category 'SSH Key' \
+    --title "Mac SSH key — ${host}" \
+    "public_key=$(cat ${keyfile}.pub)" 2>/dev/null \
+    || op item edit "Mac SSH key — ${host}" "public_key=$(cat ${keyfile}.pub)"
+  for peer in vbookair vminim4 vstudio iphone15pm; do
+    [ "$peer" = "$host" ] && continue
+    pk=$(op item get "Mac SSH key — ${peer}" --field public_key 2>/dev/null)
+    [ -n "$pk" ] && ! grep -qF "$pk" ~/.ssh/authorized_keys \
+      && echo "$pk" >> ~/.ssh/authorized_keys
+  done
+fi
+
+# 1Password SSH agent line
+grep -q '1password.*agent.sock' ~/.ssh/config 2>/dev/null || cat >> ~/.ssh/config <<'EOF'
+
+Host *
+  IdentityAgent ~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock
+EOF
+
+# Rewrite dotfiles remote to SSH if P4 used HTTPS fallback
+if [ -d ~/.dotfiles ]; then
+  url=$(/usr/bin/git --git-dir=~/.dotfiles remote get-url origin 2>/dev/null || echo "")
+  case "$url" in
+    https://*) /usr/bin/git --git-dir=~/.dotfiles \
+        remote set-url origin git@github.com:Vvkmnn/dotfiles.git ;;
+  esac
+fi
+```
+
+### P16 — Remote Login **[GATE]**
+
+```bash
+open 'x-apple.systempreferences:com.apple.settings.PrivacySecurity?Privacy_Sharing'
+# General → Sharing → Remote Login ON.
+systemsetup -getremotelogin 2>/dev/null | grep -q "On"  # verify
+```
+
+### P17 — yabai SA + sketchybar **[workstation]**
+
+```bash
+yabai_bin=$(command -v yabai)
+[ -n "$yabai_bin" ] && {
+  echo "$(whoami) ALL=(root) NOPASSWD: sha256:$(shasum -a 256 "$yabai_bin" | awk '{print $1}') $yabai_bin --load-sa" \
+    | sudo tee /etc/sudoers.d/yabai >/dev/null
+  sudo yabai --install-sa
+  yabai --start-service
+}
+command -v skhd >/dev/null && skhd --start-service
+brew services start FelixKratz/formulae/sketchybar 2>/dev/null || true
+pgrep -x yabai && pgrep -x skhd   # verify
+```
+
+### P17.5 — Native Continuity (Tahoe 26 / iOS 26)
+
+Mostly iPhone-side toggles. Owner can pre-complete in parallel with bootstrap.
+
+| Sub | Action | Verify |
+|---|---|---|
+| **Handoff** | macOS: System Settings → General → AirDrop & Handoff → ON | `pgrep -x useractivityd` |
+| **iMessage/SMS forwarding** | iPhone: Settings → Messages → Text Message Forwarding → this Mac ON. Type code on iPhone. | owner-confirms |
+| **Phone calls relay** | iPhone: Settings → Phone → Calls on Other Devices → this Mac ON | `test -d /System/Applications/Phone.app` |
+| **Continuity Camera** | iPhone: Settings → General → AirPlay & Continuity → Continuity Camera ON | owner-confirms (FaceTime camera picker) |
+| **iPhone Mirroring pair** | `open -a "iPhone Mirroring"` → approve on iPhone | owner-confirms |
+| **Notes markdown (new)** | `defaults write com.apple.Notes EnableMarkdown -bool true` | automatic |
+| **Apple Intelligence (~7 GB)** | `open 'x-apple.systempreferences:com.apple.AppleIntelligence-Settings.extension'` → toggle ON | optional |
+| **AirDrop test** | Send file laptop ↔ mini ↔ iPhone (regression test) | owner-verifies |
+| **Shortcuts automations** | Awareness only — Tahoe added Mac triggers (folder/drive/app/battery/Wi-Fi) | n/a |
+
+### P18 — Doctor (verify suite)
+
+Run any time. Idempotent. Exit 0 (clean) / 1 (warnings) / 2 (failures).
+
+```bash
+# Core
+test "$(uname -m)" = "arm64"
+test "$(sysctl -n hw.memsize)" -ge 17179869184
+printf '26.0\n%s\n' "$(sw_vers -productVersion)" | sort -CV
+defaults read MobileMeAccounts Accounts 2>/dev/null | grep -q AccountID
+route -n get default 2>/dev/null | awk '/interface:/ {print $2}' | grep -qE '^en[0-9]+$'
+
+# Tailscale
+tailscale ip -4 2>/dev/null | grep -qE '^100\.'
+tailscale status >/dev/null
+
+# Services
+launchctl print "gui/$(id -u)/com.user.tmux" >/dev/null
+launchctl print "gui/$(id -u)/com.claude.mcp-proxy" >/dev/null
+command -v claude && command -v mosh-server && command -v tmux && command -v op
+
+# Dotfiles + git-crypt
+head -1 ~/.claude.json | grep -qv 'GITCRYPT'
+/usr/bin/git --git-dir=~/.dotfiles remote get-url origin | grep -q '^git@github.com:'
+
+# Workstation-only
+[ "$DOTFILES_AI_PROFILE" = workstation ] && pgrep -x yabai && pgrep -x skhd && pgrep -x sketchybar
+
+# Server-only
+[ "$DOTFILES_AI_PROFILE" = server ] && {
+  pmset -g custom | grep -E '^[[:space:]]*sleep[[:space:]]+0' >/dev/null
+  pmset -g custom | grep -E '^[[:space:]]*womp[[:space:]]+1' >/dev/null
+}
+
+# Continuity
+pgrep -x useractivityd   # Handoff
+test -d "/System/Applications/Phone.app"            # Tahoe-new
+test -d "/System/Applications/iPhone Mirroring.app"
+
+# TCC
+sqlite3 ~/Library/Application\ Support/com.apple.TCC/TCC.db "select 1 from access limit 1" >/dev/null 2>&1
+```
+
+### P19 — Celebration
+
+```
+┌─ [$_$]  This machine is your machine.
+│
+│   profile    workstation | server
+│   hostname   vminim4
+│   tailnet    vminim4.tail-XXXX.ts.net
+│   reachable  ssh v@vminim4 (LAN + Tailscale)  ·  mosh v@vminim4 (iPhone)
+│
+│   Try now:
+│     ssh mini → tmux attach -t claude
+│     re-run AI.md any time to drift-check
+│
+└──   Welcome home.
+```
+
+### P20+ — iPhone access (deferred)
+
+Blink Shell ($20) + Tailscale (free) from App Store. Generate ed25519 in Blink → AirDrop pubkey to a Mac → register in 1Password as `Mac SSH key — iphone15pm`. Future Macs auto-pull and authorize via P15.
+
+---
+
+## Manual gates summary
+
+| Phase | Gate | What you do |
+|---|---|---|
+| P0.7 | git-crypt key transfer | AirDrop laptop's `~/Documents/key` to mini's `~/Downloads/key` |
+| P10 | iCloud sync settle | Wait 2-3 min after iCloud sign-in until panel shows "Synced" |
+| P12 | sudo password | Type once at first sudo prompt (5-min window covers subsequent) |
+| P13 | TCC checklist | Add Terminal.app (+ Ghostty.app workstation) to 3-4 panes |
+| P14 | Tailscale OAuth | Menu bar → Log In → Apple ID, then `sudo tailscale up --ssh` |
+| P16 | Remote Login | System Settings → Sharing → Remote Login ON |
+| P17.5 | Continuity sub-gates | iPhone-side toggles (see table) |
+
+iPhone notifications fire at each gate via `osascript -e 'tell app "Messages" ...'` to the owner's iPhone 15 PM number.
+
+---
+
+## Idempotency model
+
+No state markers. Every step is safe to re-run because:
+
+- `brew bundle` — queries installed packages, skips matches
+- `defaults write` — no-op if value matches
+- `git clone` — exits if directory exists
+- `ssh-keygen -f X` — refuses to overwrite (won't clobber)
+- `pmset -a` — sets values; matches are no-ops
+- `op item create || op item edit` — handles "already exists"
+- `launchctl bootstrap` — `|| true` swallows "already loaded"
+- `git-crypt unlock` — refuses to re-unlock (harmless if files already plain)
+- `xcode-select --install` — exits if already installed
+
+Re-run `AI.md` after any change, after `dotfiles pull`, after a crash. Safe.
+
+---
+
+## Known Tahoe 26 regressions (NOT auto-fixed)
+
+- **AirPlay 2 / CoreAudio**: handoff drops after sleep through 26.2. Defer audio config until 26.3+.
+- **AirDrop**: unreliable with VPN/security tools active. Check `systemextensionsctl list | grep -qi mullvad`; disable temporarily if present (mini has none).
+- **yabai SA**: flaky on 26.1/26.2. Use `asmvik/yabai` HEAD (already in Brewfile).
+- **`csrutil status`**: reports `unknown` on Tahoe even when configured. Verify SIP via `yabai --load-sa` exit code instead.
+
+---
+
+## What this runbook does NOT do
+
+- Touch existing WIP in `~/.dotfiles` (only commits explicitly added files)
+- Install or configure the `eve` standard user account (separate flow)
+- Set up iPhone access (Phase 20+, deferred)
+- Disable phantom en5/en6/en7 dock adapter interfaces
+- Touch SIP state (stays enabled — preserves iOS app support)
+
+---
+
+## File map
+
+```
+~/.setup/
+├── AI.md                    ← this file (runbook)
+├── ai/
+│   └── ui.sh                ← Tokyo Night palette + box drawing primitives
+├── Resources/
+│   ├── Brewfile             ← workstation profile
+│   └── Brewfile.server      ← server profile (eve user)
+├── brew.sh                  ← legacy wrapper (still runnable standalone)
+├── fonts.sh                 ← Nerd Fonts install
+├── macos.sh                 ← 816-line defaults script (invoked by P11)
+└── README.md                ← original pre-AI runbook (still works manually)
+
+~/.claude/skills/dotfiles-ai/
+└── SKILL.md                 ← trigger phrases; references this file
+```
 
 ## When to edit what
 
 | Want to change | Edit |
 |---|---|
-| Trigger phrases for Claude | `~/.claude/skills/dotfiles-ai/SKILL.md` |
-| A specific phase's action/verify | `~/.setup/dotfiles-ai.md` (phase section) |
-| Server profile package list | `~/.setup/Resources/Brewfile.server` |
-| Workstation profile package list | `~/.setup/Resources/Brewfile` |
-| Visual look (palette, faces, boxes) | `~/.setup/dotfiles-ai/ui.sh` |
-| Profile detection logic | `~/.setup/dotfiles-ai.md` § "Profile detection" |
-| `defaults write` calls | `~/.setup/macos.sh` (legacy, still invoked by P11) |
-| Force re-run of one phase | `rm ~/.setup/dotfiles-ai/state/p<N>.done` or `/dotfiles-ai reset p<N>` |
+| Add/remove a phase | This file |
+| Profile detection logic | This file § "Profiles" |
+| Trigger phrases | `~/.claude/skills/dotfiles-ai/SKILL.md` |
+| Workstation package list | `~/.setup/Resources/Brewfile` |
+| Server package list | `~/.setup/Resources/Brewfile.server` |
+| `defaults write` calls | `~/.setup/macos.sh` (called by P11) |
+| Visual look (palette, faces) | `~/.setup/ai/ui.sh` |
+| Re-run after a phase edit | Just invoke again — scripts are idempotent |
 
-## Relationship to legacy `~/.setup/` scripts
+---
 
-Pre-AI, `~/.setup/` was a collection of shell scripts (`brew.sh`,
-`fonts.sh`, `macos.sh`) invoked manually or via the original
-`~/.setup/README.md` runbook. **Those still work standalone.** The AI
-runbook doesn't replace them — it composes them. P-phases call into
-`brew.sh` and `macos.sh` directly. You can still run those scripts by hand
-on a Mac that's not bootstrapping via Claude.
+## Hand-off contract
 
-## Why an AI runbook instead of one big shell script
-
-- **Resumable**: state markers mean re-runs are idempotent and fast.
-- **Verifiable**: each phase has a `verify:` block; doctor mode runs them all without changing anything.
-- **Editable**: bug fixes ride through `dotfiles pull`, invalidate the markers, re-run only affected phases.
-- **Manual gates**: a shell script can't pause for a System Settings click — Claude can, and can ping the owner's iPhone when it's time.
-- **Profile-aware**: same runbook produces lean server installs or full workstation installs depending on `$USER`.
-- **Cross-machine reusable**: laptop, mini admin, mini eve, Studio (Sept 2026), and any future Mac all run the same orchestration.
-
-## See also
-
-- `~/.setup/dotfiles-ai.md` — the runbook itself (open and read top to bottom; it's structured as a doc, not a script)
-- `~/.claude/skills/dotfiles-ai/SKILL.md` — skill metadata
-- `~/.github/README.md` — the dotfiles repo's GitHub-facing README
-- `~/.setup/README.md` — the original pre-AI ~/.setup runbook
+1. Owner clones dotfiles or skill does it as P4
+2. Owner says "Bootstrap this Mac" / `/dotfiles-ai` to a Claude Code session
+3. Claude reads this file, executes top to bottom, pauses at the 7 manual gates
+4. Doctor verifies; celebration card prints
+5. Owner walks away

@@ -392,9 +392,6 @@ tags
 # git-crypt key (NEVER commit)
 dotfiles.key
 
-# dotfiles-ai resume markers (per-machine, never sync)
-.setup/dotfiles-ai/state/
-
 # Claude Code - additional runtime/secret gaps (2026-05 audit)
 .claude/mcp/credentials.txt
 .claude/cache/
