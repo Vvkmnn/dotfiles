@@ -57,6 +57,11 @@ Phases run in this order. Manual gates marked **[GATE]**. Profile-specific marke
 
 ### P0 — Preflight (read-only)
 
+> Drift-check / plan only against a **fresh `git fetch` from origin** — never a
+> local or iCloud copy's cached remote-tracking refs. They can be months stale
+> and will mislead you (learned the hard way: a cached iCloud clone showed
+> 13-month-old commits and sent a whole plan down the wrong path).
+
 ```bash
 # Hardware
 test "$(uname -m)" = "arm64"
@@ -70,9 +75,10 @@ printf '26.0\n%s\n' "$ver" | sort -CV   # ascending: threshold first
 # iCloud signed in
 defaults read MobileMeAccounts Accounts 2>/dev/null | grep -q AccountID
 
-# [GATE if missing] git-crypt key
-test -f ~/Downloads/key -o -f ~/Documents/key
-# If absent: prompt owner to AirDrop from laptop ~/Documents/key
+# [GATE if missing] git-crypt key — primary source is 1Password ("Dotfiles" doc → dotfiles.key)
+command -v op >/dev/null && op account list 2>/dev/null | grep -q . \
+  || test -f ~/Downloads/dotfiles.key -o -f ~/Documents/dotfiles.key   # AirDrop fallback
+# If neither: sign into 1Password (holds Personal/Dotfiles/dotfiles.key), or AirDrop the key file
 
 # Preserve ~/.claude live state if a previous install exists
 mkdir -p ~/.backup
@@ -84,7 +90,7 @@ done
 ### P1 — Hostname
 
 ```bash
-host=vminim4    # or vbookair / vstudio
+host=vminim4    # or vbookair / vstudio / vbookneo
 sudo scutil --set HostName    "$host"
 sudo scutil --set LocalHostName "$host"
 sudo scutil --set ComputerName  "$host"
@@ -163,13 +169,22 @@ dotfiles submodule update --init --recursive --jobs 4
 ### P7 — git-crypt unlock
 
 ```bash
+# Key lives in 1Password: Personal vault → "Dotfiles" (document) → dotfiles.key.
+# Retrieve to a temp file, unlock, then securely remove. Falls back to an
+# AirDropped key file if the 1Password CLI isn't available/signed in.
 key=""
-[ -f ~/Downloads/key ] && key=~/Downloads/key
-[ -f ~/Documents/key ] && key=~/Documents/key
-test -n "$key" || { echo "FATAL: key vanished" >&2; exit 1; }
+if command -v op >/dev/null && op account list 2>/dev/null | grep -q .; then
+  key=$(mktemp)
+  op document get "Dotfiles" --vault Personal --out-file "$key" 2>/dev/null \
+    || op read "op://Personal/Dotfiles/dotfiles.key" --out-file "$key" 2>/dev/null
+fi
+[ -s "$key" ] || for f in ~/Downloads/dotfiles.key ~/Downloads/key ~/Documents/dotfiles.key ~/Documents/key; do
+  [ -f "$f" ] && key="$f" && break
+done
+test -s "$key" || { echo "FATAL: git-crypt key not found (1Password 'Dotfiles' item, or AirDropped file)" >&2; exit 1; }
 cd ~ && git-crypt unlock "$key"
-head -1 ~/.claude.json | grep -qv 'GITCRYPT'  # verify
-[ -f ~/Downloads/key ] && rm -P ~/Downloads/key
+head -1 ~/.claude.json | grep -qv 'GITCRYPT'  # verify decrypted
+case "$key" in /var/folders/*|/tmp/*) rm -P "$key" ;; esac  # shred temp copy from 1Password
 ```
 
 ### P8 — Brewfile (profile-conditional)
@@ -332,7 +347,7 @@ if command -v op >/dev/null && op account list 2>/dev/null | grep -q .; then
     --title "Mac SSH key — ${host}" \
     "public_key=$(cat ${keyfile}.pub)" 2>/dev/null \
     || op item edit "Mac SSH key — ${host}" "public_key=$(cat ${keyfile}.pub)"
-  for peer in vbookair vminim4 vstudio iphone15pm; do
+  for peer in vbookair vminim4 vstudio vbookneo iphone15pm; do
     [ "$peer" = "$host" ] && continue
     pk=$(op item get "Mac SSH key — ${peer}" --field public_key 2>/dev/null)
     [ -n "$pk" ] && ! grep -qF "$pk" ~/.ssh/authorized_keys \
@@ -434,7 +449,7 @@ Blink Shell ($20) + Tailscale (free) from App Store. Generate ed25519 in Blink �
 
 | Phase | Gate | What you do |
 |---|---|---|
-| P0.7 | git-crypt key transfer | AirDrop laptop's `~/Documents/key` to mini's `~/Downloads/key` |
+| P0.7 | git-crypt key | Sign into 1Password (holds Personal → "Dotfiles" → `dotfiles.key`); AirDrop a key file as fallback |
 | P10 | iCloud sync settle | Wait 2-3 min after iCloud sign-in until panel shows "Synced" |
 | P12 | sudo password | Type once at first sudo prompt (5-min window covers subsequent) |
 | P13 | TCC checklist | Add Terminal.app (+ Ghostty.app workstation) to 3-4 panes |
