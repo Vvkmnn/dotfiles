@@ -135,7 +135,7 @@ cask "epk/epk/font-sf-mono-nerd-font" # SFMono Nerd Font — active font in Ghos
 mas "AdGuard for Safari", id: 1440147259  # Safari ad/content blocker (Safari is your browser)
 mas "Keynote", id: 361285480              # Apple presentations (free, light)
 mas "Pages", id: 361309726                # Apple word processor (free, light)
-mas "Xcode", id: 497799835                # Apple IDE/SDK (~15GB — dev; disable if disk tight)
+# mas "Xcode", id: 497799835              # ~15GB — not needed here (CLT covers builds); install later if iOS/Mac dev
 
 ###############################################################################
 # DISABLED — kept for reference, not installed. Uncomment to re-enable.       #
