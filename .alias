@@ -61,8 +61,8 @@
   # git wrapper
   alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
   alias d='dotfiles'
-  # lazygit
-  alias dg='lazygit --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
+  # lazygit — unused (not installed); re-enable if you reinstall lazygit
+  # alias dg='lazygit --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
   # status
   alias ds='dotfiles status --untracked-files=no'
 # └────────────────────────────────────────────────────────────────────────────┘
@@ -103,8 +103,8 @@
   alias ll='eza -lah --group-directories-first --icons=auto'
   # yazi
   alias yy='yazi'
-  # lazygit
-  alias lg='lazygit'
+  # lazygit — unused (not installed); re-enable if you reinstall lazygit
+  # alias lg='lazygit'
 # └────────────────────────────────────────────────────────────────────────────┘
 
 # ┌────────────────────────────────────────────────────────────────── config ──┐
