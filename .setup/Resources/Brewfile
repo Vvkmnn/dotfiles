@@ -1,167 +1,258 @@
-tap "acsandmann/tap"
-tap "crissnb/dynamicisland"
-tap "d12frosted/emacs-plus"
-tap "epk/epk"
-tap "felixkratz/formulae"
-tap "gcenx/wine"
-tap "getsentry/xcodebuildmcp"
-tap "humanlayer/humanlayer"
-tap "jazzyalex/agent-sessions"
-tap "joachimbrindeau/ccusage-monitor"
-tap "koekeishiya/formulae"
-tap "oven-sh/bun"
-tap "supabase/tap"
-brew "agg"
-brew "xz"
-brew "openssl@3"
-brew "python@3.13"
-brew "archey4"
-brew "asciinema"
-brew "bash"
-brew "bat"
-brew "openjdk"
-brew "bfg"
-brew "btop"
-brew "cava"
-brew "cmake"
-brew "colima"
-brew "coreutils"
-brew "create-dmg"
-brew "docker"
-brew "docker-buildx"
-brew "fd"
-brew "ffmpeg"
-brew "fnm"
-brew "fzf"
-brew "git-delta"     # git diff viewer (configured in .gitconfig)
-brew "eza"           # ls replacement (aliased in .alias)
-brew "zoxide"        # cd replacement (heavy use)
-brew "mise"          # runtime version manager (Node/Python per project)
-brew "atuin"         # shell history sync across machines
-brew "bottom"        # alt system monitor (btm)
-brew "jless"         # JSON viewer
-brew "lf"            # terminal file manager
-brew "yazi"          # terminal file manager (richer than lf)
-brew "sesh"          # tmux session manager
-brew "clang-format"  # C/C++ formatter
-brew "gh"
-brew "ghostscript"
-brew "gifsicle"
-brew "git"
-brew "git-crypt"
-brew "git-filter-repo"
-brew "git-lfs"
-brew "glow"
-brew "gnupg"
-brew "go"
-brew "hdf5"
-brew "lua"
-brew "highlight"
-brew "ifstat"
-brew "imagemagick"
-brew "libpst"
-brew "livekit"
-brew "livekit-cli"
-brew "luarocks"
-brew "macmon"
-brew "mactop"
-brew "mas"
-brew "maven"
-brew "neovim"
-brew "node", link: false
-brew "node@22"
-brew "node@24"
-brew "nvm"
-brew "osx-cpu-temp"
-brew "p7zip"
-brew "pigz"
-brew "pipx"
-brew "pngpaste"
-brew "poppler"
-brew "postgresql@17"
-brew "potrace"
-brew "pyenv"
-brew "pyenv-virtualenv"
-brew "python@3.11"
-brew "qpdf"
-brew "redis"
-brew "render"
-brew "ripgrep"
-brew "ruff"
-brew "shellcheck"
-brew "tcl-tk"
-brew "terminal-notifier"
-brew "tmux"
-brew "transmission-cli"
-brew "tree"
-brew "tree-sitter"
-brew "vhs"
-brew "wget"
-brew "winetricks"
-brew "yt-dlp"
-brew "zlib"
-brew "acsandmann/tap/menuanywhere"
-brew "felixkratz/formulae/sketchybar"
-brew "crissnb/dynamicisland/dynamicislandsketchybar"
-brew "felixkratz/formulae/borders"
-brew "felixkratz/formulae/svim"
-brew "getsentry/xcodebuildmcp/xcodebuildmcp"
-brew "joachimbrindeau/ccusage-monitor/ccusage-monitor"
-brew "koekeishiya/formulae/skhd"
-brew "koekeishiya/formulae/yabai"
-brew "oven-sh/bun/bun"
-brew "supabase/tap/supabase"
-cask "1password"
-cask "alfred"
-cask "anki"
-cask "antigravity"
-cask "background-music"
-cask "basictex"
-cask "chatgpt"
-cask "claude"
-cask "codex"
-cask "contexts"
-cask "discord"
-cask "firefox"
-cask "font-fira-code-nerd-font"
-cask "font-hack-nerd-font"
-cask "font-jetbrains-mono-nerd-font"
-cask "font-montserrat"
-cask "epk/epk/font-sf-mono-nerd-font"
-cask "font-sf-pro"
-cask "ghostty"
-cask "chromium"      # open-source Chrome (no Google telemetry)
-cask "google-chrome"
-cask "google-chrome@canary"
-cask "google-chrome@dev"
-cask "google-trends"
-cask "karabiner-elements"
-cask "mullvad-vpn"
-cask "ngrok"
-cask "obsidian"
-cask "proton-mail-bridge"  # SMTP/IMAP local gateway for ProtonMail
-cask "raycast"             # launcher (login item — set in System Settings)
-cask "screen-studio"
-cask "slack"
-cask "smcfancontrol"
-cask "stats"
-cask "steam"
-cask "the-unarchiver"
-cask "transmission"
-cask "wezterm"
-cask "whatsapp"
-cask "whichspace"
-cask "whisky"
-cask "windsurf"
-cask "gcenx/wine/wine-crossover"
-cask "zed"
-mas "AdGuard for Safari", id: 1440147259
-mas "Amphetamine", id: 937984704
-mas "CleanMyMac", id: 1339170533
-mas "Keynote", id: 361285480
-mas "Maccy", id: 1527619437
-mas "Pages", id: 361309726
-mas "Userscripts", id: 1463298887
-mas "Xcode", id: 497799835
-go "github.com/chrishrb/go-grip"
-uv "mcp-server-time"
+# Brewfile — workstation profile (one curated list = what we actually use)
+#
+# POLICY: nothing is ever deleted. Items we don't use are COMMENTED OUT below
+# (in the "DISABLED" section) with the reason, so you can remember why and
+# re-enable in one edit. `brew bundle` ignores commented lines.
+#   - to enable a disabled item: uncomment its line, run `brew bundle`
+#   - to disable an active item: comment its line (keep the reason note)
+#
+# Curated 2026-06-25 from the laptop's ~140-item set. Active = what's used on
+# this 8GB machine; Disabled = unused/redundant/heavy, kept for reference.
+
+###############################################################################
+# ACTIVE — taps (only those backing an active formula)                        #
+###############################################################################
+tap "koekeishiya/formulae"            # yabai + skhd (tiling WM + hotkey daemon)
+tap "felixkratz/formulae"             # sketchybar + borders (status bar + window borders)
+tap "crissnb/dynamicisland"           # dynamic-island-style sketchybar plugin
+tap "acsandmann/tap"                  # menuanywhere (menu-bar helper)
+tap "epk/epk"                         # SF Mono Nerd Font (your active terminal font)
+tap "oven-sh/bun"                     # bun JS runtime (dev)
+tap "supabase/tap"                    # supabase CLI (dev backend)
+tap "getsentry/xcodebuildmcp"         # xcodebuildmcp (Claude MCP server)
+tap "joachimbrindeau/ccusage-monitor" # ccusage-monitor (Claude usage/cost monitor)
+
+###############################################################################
+# ACTIVE — system / shell dependencies                                        #
+###############################################################################
+brew "coreutils"   # GNU core utilities (gls/gdate etc; many scripts assume them)
+brew "openssl@3"   # TLS library — dependency of git, python, many tools
+brew "xz"          # compression lib — common build dependency
+brew "zlib"        # compression lib — common build dependency
+brew "bash"        # modern bash 5 for scripts (you use zsh interactively)
+
+###############################################################################
+# ACTIVE — terminal tools (wired in .alias / .shell / .functions)             #
+###############################################################################
+brew "bat"         # `cat` replacement w/ syntax highlight — alias cat='bat'
+brew "fd"          # fast `find` replacement — alias find='fd', used in f()
+brew "fzf"         # fuzzy finder — Ctrl-R history + f() search (.shell)
+brew "ripgrep"     # fast grep (rg) — used in search functions
+brew "eza"         # `ls` replacement — alias e=/ll= (.alias)
+brew "zoxide"      # smarter `cd` — eval zoxide init (.shell)
+brew "atuin"       # shell history sync across machines — Ctrl-R (.shell)
+brew "yazi"        # terminal file manager — alias yy (.alias)
+brew "lf"          # lightweight terminal file manager — lfcd() (.functions)
+brew "jless"       # interactive JSON viewer
+
+###############################################################################
+# ACTIVE — editor (Neovim ecosystem; .config/nvim is the v.nvim submodule)    #
+###############################################################################
+brew "neovim"      # primary editor — alias v (.alias)
+brew "lua"         # Neovim config language / plugin runtime
+brew "luarocks"    # Lua package manager (some nvim plugins need it)
+brew "tree-sitter" # syntax parsing used by Neovim highlighting
+
+###############################################################################
+# ACTIVE — git + auth/secrets                                                 #
+###############################################################################
+brew "git"             # version control
+brew "gh"              # GitHub CLI — HTTPS auth (token in macOS Keychain)
+brew "git-delta"       # git diff pager — configured in .gitconfig
+brew "git-crypt"       # decrypts repo secrets (.claude.json etc) — AI.md P7
+brew "git-lfs"         # large-file storage — [filter "lfs"] in .gitconfig
+brew "gnupg"           # GPG — commit signing + gpg-agent SSH (.shell)
+
+###############################################################################
+# ACTIVE — runtimes / build (mise manages node+python; uv for Python pkgs)    #
+###############################################################################
+brew "mise"        # runtime version manager — replaces nvm/fnm/pyenv (.shell)
+brew "uv"          # fast Python pkg/venv manager — used in .functions update (ADDED: was missing)
+brew "go"          # Go toolchain — needed by go-grip (markdown preview skill)
+brew "cmake"       # build system — managed/used via mise
+
+###############################################################################
+# ACTIVE — monitoring / misc CLI                                              #
+###############################################################################
+brew "btop"               # system monitor (primary; replaces bottom/macmon/mactop)
+brew "mas"                # Mac App Store CLI — installs the `mas` entries below
+brew "terminal-notifier"  # send macOS notifications from scripts/Claude
+
+###############################################################################
+# ACTIVE — containers (on-demand only; nothing auto-starts on login)          #
+###############################################################################
+brew "docker"          # docker CLI (talks to colima; or remote context in Phase 2)
+brew "docker-buildx"   # docker buildx plugin
+brew "colima"          # lightweight container VM — `colima start` / `colima stop`
+
+###############################################################################
+# ACTIVE — dev tooling                                                        #
+###############################################################################
+brew "shellcheck"                              # shell-script linter
+brew "oven-sh/bun/bun"                         # bun JS runtime/bundler
+brew "supabase/tap/supabase"                   # supabase CLI
+
+###############################################################################
+# ACTIVE — window manager / desktop UX                                        #
+###############################################################################
+brew "koekeishiya/formulae/yabai"              # tiling window manager (.yabairc)
+brew "koekeishiya/formulae/skhd"               # hotkey daemon (.skhdrc)
+brew "felixkratz/formulae/sketchybar"          # custom status bar (.config/sketchybar)
+brew "felixkratz/formulae/borders"             # active-window borders (sketchybar companion)
+brew "crissnb/dynamicisland/dynamicislandsketchybar" # dynamic-island sketchybar widget
+brew "acsandmann/tap/menuanywhere"             # show menu bar / menus anywhere
+
+###############################################################################
+# ACTIVE — Claude / MCP tooling                                               #
+###############################################################################
+brew "getsentry/xcodebuildmcp/xcodebuildmcp"   # MCP server: Xcode/iOS builds for Claude
+brew "joachimbrindeau/ccusage-monitor/ccusage-monitor" # Claude token-usage/cost monitor
+go   "github.com/chrishrb/go-grip"             # GitHub-flavored markdown preview (skill)
+uv   "mcp-server-time"                          # MCP server: time/timezone for Claude
+
+###############################################################################
+# ACTIVE — GUI apps (casks)                                                   #
+###############################################################################
+cask "ghostty"                       # terminal emulator (your daily terminal)
+cask "claude"                        # Claude Code / desktop
+cask "chatgpt"                       # ChatGPT desktop app
+cask "codex"                         # OpenAI Codex CLI/agent
+cask "raycast"                       # launcher + clipboard history (replaces Alfred)
+cask "1password"                     # password manager + SSH agent (fleet auth, AI.md P15)
+cask "karabiner-elements"            # keyboard remapping (.config/karabiner)
+cask "tailscale"                     # mesh VPN — SSH to home Macs (AI.md P14)  (ADDED: was missing)
+cask "mullvad-vpn"                   # privacy VPN (note: VPN ext can disrupt AirDrop)
+cask "ngrok"                         # dev tunneling (expose localhost)
+cask "obsidian"                      # notes
+cask "discord"                       # chat
+cask "anki"                          # spaced-repetition flashcards
+cask "the-unarchiver"                # extracts RAR/7z/etc the built-in can't
+cask "epk/epk/font-sf-mono-nerd-font" # SFMono Nerd Font — active font in Ghostty + sketchybar
+
+###############################################################################
+# ACTIVE — Mac App Store                                                      #
+###############################################################################
+mas "AdGuard for Safari", id: 1440147259  # Safari ad/content blocker (Safari is your browser)
+mas "Keynote", id: 361285480              # Apple presentations (free, light)
+mas "Pages", id: 361309726                # Apple word processor (free, light)
+mas "Xcode", id: 497799835                # Apple IDE/SDK (~15GB — dev; disable if disk tight)
+
+###############################################################################
+# DISABLED — kept for reference, not installed. Uncomment to re-enable.       #
+###############################################################################
+
+# --- Confirmed unused (you told me) ---
+# tap "d12frosted/emacs-plus"          # Emacs — you use Neovim
+# cask "wezterm"                       # terminal — you use Ghostty now
+# cask "alfred"                        # launcher — migrated to Raycast
+# cask "windsurf"                      # AI IDE — not used (kept chatgpt/codex instead)
+# cask "zed"                           # editor — not used (Neovim is primary)
+# cask "antigravity"                   # Google's AI IDE — dropped alongside windsurf/zed
+# cask "slack"                         # chat — not used
+# cask "whatsapp"                      # chat — not used
+# cask "proton-mail-bridge"            # ProtonMail IMAP/SMTP — email is browser-based
+
+# --- Browsers (you use Safari, built-in) ---
+# cask "firefox"                       # not primary
+# cask "google-chrome"                 # not used here
+# cask "google-chrome@canary"          # not used here
+# cask "google-chrome@dev"             # not used here
+# cask "chromium"                      # not used here
+# cask "google-trends"                 # research site wrapper — not daily
+
+# --- Redundant runtime managers (mise replaces these; see .shell note) ---
+# brew "fnm"                           # mise manages node now
+# brew "nvm"                           # mise manages node
+# brew "node", link: false             # mise manages node
+# brew "node@22"                       # mise manages node
+# brew "node@24"                       # mise manages node
+# brew "pyenv"                         # mise manages python
+# brew "pyenv-virtualenv"              # mise/uv manage venvs
+# brew "python@3.11"                   # mise manages python
+# brew "python@3.13"                   # mise manages python
+# brew "pipx"                          # uv replaces this workflow
+# brew "ruff"                          # python linter — run via `uvx ruff` instead
+
+# --- Redundant monitors (btop is primary) ---
+# brew "bottom"                        # alt monitor
+# brew "macmon"                        # alt monitor
+# brew "mactop"                        # alt monitor
+# brew "osx-cpu-temp"                  # btop shows temp
+# brew "ifstat"                        # btop shows net
+# brew "archey4"                       # system-info banner
+# cask "stats"                         # menubar stats — sketchybar covers this
+
+# --- WM/menubar duplicates (yabai/sketchybar/raycast cover these) ---
+# cask "contexts"                      # window switcher — yabai handles
+# cask "whichspace"                    # space indicator — sketchybar handles
+# brew "felixkratz/formulae/svim"      # experimental sketchybar vim — purpose unclear
+# mas "Amphetamine", id: 937984704     # keep-awake — `caffeinate` covers
+# mas "Maccy", id: 1527619437          # clipboard — Raycast has clipboard history
+
+# --- Media / graphics CLIs (no config reference) ---
+# brew "ffmpeg"                        # video/audio transcode
+# brew "imagemagick"                   # image processing
+# brew "ghostscript"                   # PostScript/PDF
+# brew "gifsicle"                      # GIF optimizer
+# brew "poppler"                       # PDF utils
+# brew "qpdf"                          # PDF transform
+# brew "potrace"                       # raster→vector
+# brew "agg"                           # asciinema→gif
+# brew "asciinema"                     # terminal session recorder
+# brew "vhs"                           # terminal GIF recorder
+# brew "cava"                          # audio visualizer
+# brew "yt-dlp"                        # media downloader
+# cask "screen-studio"                 # screen recorder
+
+# --- Java / C build (no current project) ---
+# brew "openjdk"                       # Java runtime
+# brew "maven"                         # Java build
+# brew "clang-format"                  # C/C++ formatter
+
+# --- Misc CLIs superseded or unused ---
+# brew "glow"                          # markdown pager — bat/go-grip cover
+# brew "highlight"                     # syntax highlighter — bat covers
+# brew "tree"                          # dir tree — eza --tree covers
+# brew "wget"                          # downloader — curl covers
+# brew "sesh"                          # tmux session mgr — not wired in tmux config
+# brew "bfg"                           # git history cleaner — niche
+# brew "git-filter-repo"               # git history rewrite — niche
+# brew "p7zip"                         # 7z — the-unarchiver covers
+# brew "pigz"                          # parallel gzip
+# brew "pngpaste"                      # paste clipboard image to file
+# brew "create-dmg"                    # build .dmg installers
+# brew "render"                        # (unclear tool — verify before enabling)
+# brew "hdf5"                          # scientific data format
+# brew "libpst"                        # Outlook .pst parser
+# brew "tcl-tk"                        # Tk GUI toolkit
+# brew "transmission-cli"              # torrent CLI
+
+# --- Databases (resident daemons — heavy on 8GB; install on the mini instead) ---
+# brew "postgresql@17"                 # Postgres server
+# brew "redis"                         # Redis server
+
+# --- Gaming / Windows compat (multi-GB; not on this machine) ---
+# tap  "gcenx/wine"                    # wine tap
+# cask "steam"                         # game store
+# cask "whisky"                        # Windows game compat
+# cask "gcenx/wine/wine-crossover"     # Wine (CrossOver build)
+# brew "winetricks"                    # Wine helper
+
+# --- Extra fonts (active font is SFMono Nerd Font above) ---
+# cask "font-fira-code-nerd-font"
+# cask "font-hack-nerd-font"
+# cask "font-jetbrains-mono-nerd-font"
+# cask "font-montserrat"
+# cask "font-sf-pro"
+
+# --- Empty taps (no formula referenced) ---
+# tap "humanlayer/humanlayer"
+# tap "jazzyalex/agent-sessions"
+
+# --- Other GUI apps not in daily use ---
+# cask "background-music"              # per-app audio routing
+# cask "basictex"                      # LaTeX distribution
+# cask "smcfancontrol"                 # fan control — this MacBook is fanless
+# cask "transmission"                  # torrent GUI
+# mas  "CleanMyMac", id: 1339170533    # maintenance suite
+# mas  "Userscripts", id: 1463298887   # Safari userscript manager
