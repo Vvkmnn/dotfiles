@@ -131,9 +131,15 @@ See `~/.claude/rules/` for detailed guidance:
 - `orchestrate.md` - Subagent delegation, parallelism, model selection
 - `preview.md` - Preview before external actions, MCPs, formatted output
 
-## Machine Setup (new Mac)
+## Machine Setup
 
-"set up this Mac" / "bootstrap" / fresh install → the **`~/.ai/`** folder is the entry. Read `~/.ai/README.md` (mission + 1Password secrets manifest), then run **`~/.ai/setup`** — a self-contained command (`packages·fonts·services·xcode·macos·gate·doctor`; inline package list + curated macOS defaults). The `dotfiles-setup` skill triggers on those phrases and routes here; `~/.setup/AI.md` is the deeper cold-start runbook (deploy bare repo + git-crypt unlock). The repo contains everything (vendored fonts, inline defaults, tracked configs) — no cross-machine handoff needed.
+Point Claude at this dotfiles repo on a fresh machine and it sets the machine up — minimal expected early intervention (unlock 1Password, one sudo, Apple 2FA), then walk away. Triggered by "set up this Mac" / "bootstrap" (the `dotfiles-setup` skill). The repo contains everything (vendored fonts, inline defaults, tracked configs) — no cross-machine handoff needed.
+
+### macOS
+
+The **`~/.ai/`** folder is the entry. Read `~/.ai/README.md` (mission + 1Password secrets manifest), then run **`~/.ai/setup`** — a self-contained command (`packages·fonts·services·xcode·macos·gate·doctor`; inline package list + curated macOS defaults). `~/.setup/AI.md` is the deeper cold-start runbook (deploy bare repo + git-crypt unlock). Targets macOS 26 Tahoe; basic yabai (no scripting-addition — broken on Tahoe). Manual gates: TCC (Accessibility/Input Monitoring), system-extension approvals, Aerial wallpaper, then a restart.
+
+<!-- ### Linux / Debian — add when there's a machine for it (1Password CLI works; no yabai/sketchybar; brew-on-Linux or apt). -->
 
 ## Agents
 
