@@ -123,6 +123,7 @@ cask "codex"                         # OpenAI Codex CLI/agent
 cask "visual-studio-code"            # editor — settings/keybindings/extensions tracked under ~/.vscode/
 cask "raycast"                       # launcher + clipboard history (replaces Alfred)
 cask "1password"                     # password manager + SSH agent (fleet auth, AI.md P15)
+cask "1password-cli"                 # `op` CLI — fleet automation (storing keys/passphrases)
 cask "karabiner-elements"            # keyboard remapping (.config/karabiner)
 cask "contexts"                      # window switcher / Mission Control replacement — login item
 cask "tailscale"                     # mesh VPN — SSH to home Macs (AI.md P14)  (ADDED: was missing)
