@@ -15,11 +15,12 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 # General UI/UX                                                               #
 ###############################################################################
 
-# Set computer name (as done via System Preferences → Sharing)
-sudo scutil --set ComputerName "vBook"
-sudo scutil --set HostName "vBook"
-sudo scutil --set LocalHostName "vBook"
-sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server NetBIOSName -string "vBook"
+# Set computer name (auto-detected from current LocalHostName; override with COMPUTER_NAME env var)
+COMPUTER_NAME="${COMPUTER_NAME:-$(scutil --get LocalHostName 2>/dev/null || echo vMac)}"
+sudo scutil --set ComputerName  "$COMPUTER_NAME"
+sudo scutil --set HostName      "$COMPUTER_NAME"
+sudo scutil --set LocalHostName "$COMPUTER_NAME"
+sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server NetBIOSName -string "$COMPUTER_NAME"
 
 # Set standby delay to 24 hours (default is 1 hour or 3600)
 #sudo pmset -a standbydelay 86400
@@ -116,11 +117,35 @@ defaults write NSGlobalDomain NSAutomaticQuoteSubstitutionEnabled -bool false
 # Disable smart dashes as they’re annoying when typing code
 defaults write NSGlobalDomain NSAutomaticDashSubstitutionEnabled -bool false
 
-# Set a custom wallpaper image. `DefaultDesktop.jpg` is already a symlink, and
-# all wallpapers are in `/Library/Desktop Pictures/`. The default is `Wave.jpg`.
-rm -rf ~/Library/Application Support/Dock/desktoppicture.db
-sudo rm -rf /System/Library/CoreServices/DefaultDesktop.jpg
-sudo ln -s .assets/graphics/Hal.jpg /System/Library/CoreServices/DefaultDesktop.jpg
+# Disable auto-capitalisation and auto-period (annoying mid-code, mid-URL)
+defaults write NSGlobalDomain NSAutomaticCapitalizationEnabled -bool false
+defaults write NSGlobalDomain NSAutomaticPeriodSubstitutionEnabled -bool false
+
+# Disable window-open/close animations (snappier UI)
+defaults write NSGlobalDomain NSAutomaticWindowAnimationsEnabled -bool false
+
+# No delay before a window title becomes editable on hover
+defaults write NSGlobalDomain NSToolbarTitleViewRolloverDelay -float 0
+
+# Auto-hide the menu bar (gives sketchybar an uncontested top strip)
+defaults write NSGlobalDomain _HIHideMenuBar -bool true
+
+# Hide menu bar in fullscreen apps (cleaner immersive mode)
+defaults write NSGlobalDomain AppleMenuBarVisibleInFullscreen -bool false
+
+# Don’t miniaturize windows on title-bar double-click (prevents accidental dock-shrink)
+defaults write NSGlobalDomain AppleMiniaturizeOnDoubleClick -bool false
+defaults write NSGlobalDomain AppleActionOnDoubleClick -string "None"
+
+# Switch to a window’s Space when activating it (keeps yabai flows sane)
+defaults write NSGlobalDomain AppleSpacesSwitchOnActivate -bool true
+
+# Disable all UI sound effects (notifications, screenshots, mounts, etc.)
+defaults write NSGlobalDomain com.apple.sound.uiaudio.enabled -bool false
+defaults write NSGlobalDomain com.apple.sound.beep.volume -float 0
+
+# Wallpaper: set manually via System Settings → Wallpaper → Aerials → Shuffle Earth.
+# (Apple Silicon’s SSV blocks /System/ symlinks; no clean programmatic Aerial API.)
 
 ###############################################################################
 # SSD-specific tweaks                                                         #
@@ -177,8 +202,10 @@ defaults write com.apple.universalaccess closeViewZoomFollowsFocus -bool true
 # Disable press-and-hold for keys in favor of key repeat
 defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
 
-# Set a blazingly fast keyboard repeat rate
+# Set a blazingly fast keyboard repeat rate + short initial delay
+# (System Settings → Keyboard tops out at 2 / 15 — this is the real floor)
 defaults write NSGlobalDomain KeyRepeat -int 0
+defaults write NSGlobalDomain InitialKeyRepeat -int 15
 
 # Set language and text formats
 #defaults write NSGlobalDomain AppleLanguages -array "en"
@@ -275,8 +302,9 @@ defaults write NSGlobalDomain com.apple.springing.enabled -bool true
 # Tweak the spring loading delay for directories
 defaults write NSGlobalDomain com.apple.springing.delay -float .5
 
-# Avoid creating .DS_Store files on network volumes
+# Avoid creating .DS_Store files on network volumes and USB drives
 defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
+defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
 
 # Disable disk image verification
 #defaults write com.apple.frameworks.diskimages skip-verify -bool true
@@ -315,6 +343,9 @@ defaults write com.apple.finder OpenWindowForNewRemovableDisk -bool true
 # Four-letter codes for the other view modes: `icnv`, `clmv`, `Flwv`
 defaults write com.apple.finder FXPreferredViewStyle -string "Nlsv"
 
+# Folders before files in list view (matches Sequoia System Settings option)
+defaults write com.apple.finder _FXSortFoldersFirst -bool true
+
 # Disable the warning before emptying the Trash
 defaults write com.apple.finder WarnOnEmptyTrash -bool false
 
@@ -351,11 +382,24 @@ defaults write com.apple.dock mouse-over-hilite-stack -bool true
 # Set the icon size of Dock items to 36 pixels
 defaults write com.apple.dock tilesize -int 36
 
+# Enable Dock magnification and set the magnified size
+defaults write com.apple.dock magnification -bool true
+defaults write com.apple.dock largesize -int 60
+
 # Change minimize/maximize window effect
 defaults write com.apple.dock mineffect -string "scale"
 
-# Minimize windows into their application’s icon
-#defaults write com.apple.dock minimize-to-application -bool true
+# Minimize windows into their application’s icon (cleaner Dock)
+defaults write com.apple.dock minimize-to-application -bool true
+
+# Hide recent apps section in the Dock
+defaults write com.apple.dock show-recents -bool false
+
+# Don’t rearrange Spaces based on most recent use (required for stable yabai)
+defaults write com.apple.dock mru-spaces -bool false
+
+# Don’t group windows by application in Mission Control
+defaults write com.apple.dock expose-group-apps -bool false
 
 # Enable spring loading for all Dock items
 defaults write com.apple.dock enable-spring-load-actions-on-all-items -bool true
@@ -363,10 +407,18 @@ defaults write com.apple.dock enable-spring-load-actions-on-all-items -bool true
 # Show indicator lights for open applications in the Dock
 defaults write com.apple.dock show-process-indicators -bool true
 
-# Wipe all (default) app icons from the Dock
-# This is only really useful when setting up a new Mac, or if you don’t use
-# the Dock to launch apps.
-# defaults write com.apple.dock persistent-apps -array
+# Translucent Dock icons for hidden apps
+defaults write com.apple.dock showhidden -bool true
+
+# Stop apps from bouncing in the Dock when they want attention
+defaults write com.apple.dock no-bouncing -bool true
+
+# Don’t animate launching from the Dock (faster cold-start feel)
+defaults write com.apple.dock launchanim -bool false
+
+# Wipe all (default) app icons from the Dock — useful on a fresh Mac
+defaults write com.apple.dock persistent-apps -array
+defaults write com.apple.dock recent-apps -array
 
 # Don’t animate opening applications from the Dock
 # defaults write com.apple.dock launchanim -bool false
@@ -441,6 +493,24 @@ defaults write com.apple.dock wvous-tr-modifier -int 0
 # Bottom left screen corner → Start screen saver
 defaults write com.apple.dock wvous-br-corner -int 5
 defaults write com.apple.dock wvous-br-modifier -int 0
+
+###############################################################################
+# Stage Manager / WindowManager                                               #
+###############################################################################
+
+# Stage Manager off (yabai owns window layout)
+defaults write com.apple.WindowManager GloballyEnabled -bool false
+
+# Hide desktop widgets and icons (clean canvas for sketchybar / wallpaper)
+defaults write com.apple.WindowManager HideDesktop -bool true
+defaults write com.apple.WindowManager StandardHideDesktopIcons -bool true
+
+# Auto-hide Stage Manager widget strip; no tiled-window margins
+defaults write com.apple.WindowManager AutoHide -bool true
+defaults write com.apple.WindowManager EnableTiledWindowMargins -bool false
+
+# Clicking the desktop shouldn’t reveal it (preserves window focus)
+defaults write com.apple.WindowManager EnableStandardClickToShowDesktop -bool false
 
 ###############################################################################
 # Safari & WebKit                                                             #
