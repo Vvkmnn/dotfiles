@@ -128,6 +128,7 @@ cask "obsidian"                      # notes
 cask "discord"                       # chat
 cask "anki"                          # spaced-repetition flashcards
 cask "the-unarchiver"                # extracts RAR/7z/etc the built-in can't
+cask "batfi"                         # battery health & charge mgmt (limit charge ceiling to extend lifespan) — license handled per-machine
 cask "adguard"                       # ad/content blocker (standalone cask, CLI; replaces MAS "AdGuard for Safari")
 cask "epk/epk/font-sf-mono-nerd-font" # SFMono Nerd Font — active font in Ghostty + sketchybar
 
