@@ -468,7 +468,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node ~/.claude/hooks/session-start.js"
+            "command": "PATH=\"/opt/homebrew/bin:$HOME/.local/share/mise/shims:$PATH\" node ~/.claude/hooks/session-start.js"
           }
         ]
       }
@@ -479,7 +479,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node ~/.claude/hooks/pre-tool-use.js"
+            "command": "PATH=\"/opt/homebrew/bin:$HOME/.local/share/mise/shims:$PATH\" node ~/.claude/hooks/pre-tool-use.js"
           }
         ]
       }
@@ -490,7 +490,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node ~/.claude/hooks/post-tool-use.js"
+            "command": "PATH=\"/opt/homebrew/bin:$HOME/.local/share/mise/shims:$PATH\" node ~/.claude/hooks/post-tool-use.js"
           }
         ]
       }
@@ -502,7 +502,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node ~/.claude/hooks/notification.js"
+            "command": "PATH=\"/opt/homebrew/bin:$HOME/.local/share/mise/shims:$PATH\" node ~/.claude/hooks/notification.js"
           }
         ]
       }
@@ -513,7 +513,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node ~/.claude/hooks/pre-compact.js"
+            "command": "PATH=\"/opt/homebrew/bin:$HOME/.local/share/mise/shims:$PATH\" node ~/.claude/hooks/pre-compact.js"
           }
         ]
       }

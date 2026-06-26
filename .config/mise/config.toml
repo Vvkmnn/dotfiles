@@ -1,6 +1,6 @@
 [tools]
 python = "3.13"
-node = "24"
+node = "lts"
 cmake = "latest"
 
 [settings]

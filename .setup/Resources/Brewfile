@@ -17,9 +17,9 @@ tap "felixkratz/formulae"             # sketchybar + borders (status bar + windo
 tap "crissnb/dynamicisland"           # dynamic-island-style sketchybar plugin
 tap "acsandmann/tap"                  # menuanywhere (menu-bar helper)
 tap "epk/epk"                         # SF Mono Nerd Font (your active terminal font)
-tap "oven-sh/bun"                     # bun JS runtime (dev)
+# tap "oven-sh/bun"                   # bun — no core formula; use 'mise use -g bun' if ever needed
 tap "supabase/tap"                    # supabase CLI (dev backend)
-tap "getsentry/xcodebuildmcp"         # xcodebuildmcp (Claude MCP server)
+# tap "getsentry/xcodebuildmcp"       # xcodebuildmcp needs full Xcode (dropped); re-enable with Xcode
 tap "joachimbrindeau/ccusage-monitor" # ccusage-monitor (Claude usage/cost monitor)
 
 ###############################################################################
@@ -89,7 +89,8 @@ brew "colima"          # lightweight container VM — `colima start` / `colima s
 # ACTIVE — dev tooling                                                        #
 ###############################################################################
 brew "shellcheck"                              # shell-script linter
-brew "oven-sh/bun/bun"                         # bun JS runtime/bundler
+brew "xcodes"                                  # headless Xcode installer (replaces mas for Xcode; ai.sh drives it)
+# brew "oven-sh/bun/bun"                       # bun — no core formula; 'mise use -g bun' if ever needed
 brew "supabase/tap/supabase"                   # supabase CLI
 
 ###############################################################################
@@ -100,12 +101,12 @@ brew "koekeishiya/formulae/skhd"               # hotkey daemon (.skhdrc)
 brew "felixkratz/formulae/sketchybar"          # custom status bar (.config/sketchybar)
 brew "felixkratz/formulae/borders"             # active-window borders (sketchybar companion)
 brew "crissnb/dynamicisland/dynamicislandsketchybar" # dynamic-island sketchybar widget
-brew "acsandmann/tap/menuanywhere"             # show menu bar / menus anywhere
+brew "acsandmann/tap/menuanywhere"             # menu-bar helper; builds from source (needs Xcode)
 
 ###############################################################################
 # ACTIVE — Claude / MCP tooling                                               #
 ###############################################################################
-brew "getsentry/xcodebuildmcp/xcodebuildmcp"   # MCP server: Xcode/iOS builds for Claude
+# brew "getsentry/xcodebuildmcp/xcodebuildmcp" # needs full Xcode (dropped); re-enable with Xcode
 brew "joachimbrindeau/ccusage-monitor/ccusage-monitor" # Claude token-usage/cost monitor
 go   "github.com/chrishrb/go-grip"             # GitHub-flavored markdown preview (skill)
 uv   "mcp-server-time"                          # MCP server: time/timezone for Claude
@@ -127,15 +128,17 @@ cask "obsidian"                      # notes
 cask "discord"                       # chat
 cask "anki"                          # spaced-repetition flashcards
 cask "the-unarchiver"                # extracts RAR/7z/etc the built-in can't
+cask "adguard"                       # ad/content blocker (standalone cask, CLI; replaces MAS "AdGuard for Safari")
 cask "epk/epk/font-sf-mono-nerd-font" # SFMono Nerd Font — active font in Ghostty + sketchybar
 
 ###############################################################################
 # ACTIVE — Mac App Store                                                      #
 ###############################################################################
-mas "AdGuard for Safari", id: 1440147259  # Safari ad/content blocker (Safari is your browser)
-mas "Keynote", id: 361285480              # Apple presentations (free, light)
-mas "Pages", id: 361309726                # Apple word processor (free, light)
-# mas "Xcode", id: 497799835              # ~15GB — not needed here (CLT covers builds); install later if iOS/Mac dev
+# MAS-only apps pulled from the auto path — Apple blocks headless install (see ~/.ai/README.md).
+# mas "AdGuard for Safari", id: 1440147259  # → replaced by cask "adguard" above (CLI-installable)
+# mas "Keynote", id: 361285480              # skipped per owner (MAS-only; use iCloud/web)
+# mas "Pages", id: 361309726                # skipped per owner (MAS-only; use iCloud/web)
+# mas "Xcode", id: 497799835                # → installed headlessly via `xcodes` in ai.sh (not mas)
 
 ###############################################################################
 # DISABLED — kept for reference, not installed. Uncomment to re-enable.       #
