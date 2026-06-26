@@ -3,3 +3,8 @@
 *~
 *#
 .#*
+
+**/.claude/settings.local.json
+
+# VS Code user-level files live elsewhere (`.vscode/` snapshot in repo)
+Library/Application Support/Code/**
