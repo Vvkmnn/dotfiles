@@ -44,6 +44,7 @@ brew "atuin"       # shell history sync across machines — Ctrl-R (.shell)
 brew "yazi"        # terminal file manager — alias yy (.alias)
 brew "lf"          # lightweight terminal file manager — lfcd() (.functions)
 brew "jless"       # interactive JSON viewer
+brew "jq"          # JSON CLI processor — dep of countless shell scripts
 
 ###############################################################################
 # ACTIVE — editor (Neovim ecosystem; .config/nvim is the v.nvim submodule)    #
@@ -77,6 +78,7 @@ brew "cmake"       # build system — managed/used via mise
 brew "btop"               # system monitor (primary; replaces bottom/macmon/mactop)
 brew "mas"                # Mac App Store CLI — installs the `mas` entries below
 brew "terminal-notifier"  # send macOS notifications from scripts/Claude
+brew "pngpaste"           # paste images from clipboard — Karabiner smart-screenshot-resize.sh dep
 
 ###############################################################################
 # ACTIVE — containers (on-demand only; nothing auto-starts on login)          #
@@ -122,6 +124,7 @@ cask "visual-studio-code"            # editor — settings/keybindings/extension
 cask "raycast"                       # launcher + clipboard history (replaces Alfred)
 cask "1password"                     # password manager + SSH agent (fleet auth, AI.md P15)
 cask "karabiner-elements"            # keyboard remapping (.config/karabiner)
+cask "contexts"                      # window switcher / Mission Control replacement — login item
 cask "tailscale"                     # mesh VPN — SSH to home Macs (AI.md P14)  (ADDED: was missing)
 cask "mullvad-vpn"                   # privacy VPN (note: VPN ext can disrupt AirDrop)
 cask "ngrok"                         # dev tunneling (expose localhost)
@@ -132,6 +135,7 @@ cask "the-unarchiver"                # extracts RAR/7z/etc the built-in can't
 cask "batfi"                         # battery health & charge mgmt (limit charge ceiling to extend lifespan) — license handled per-machine
 cask "adguard"                       # ad/content blocker (standalone cask, CLI; replaces MAS "AdGuard for Safari")
 cask "epk/epk/font-sf-mono-nerd-font" # SFMono Nerd Font — active font in Ghostty + sketchybar
+cask "font-sf-pro"                   # SF Pro — sketchybar network/weather labels reference "SF Pro" family
 
 ###############################################################################
 # ACTIVE — Mac App Store                                                      #
