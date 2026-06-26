@@ -118,6 +118,7 @@ cask "ghostty"                       # terminal emulator (your daily terminal)
 cask "claude"                        # Claude Code / desktop
 cask "chatgpt"                       # ChatGPT desktop app
 cask "codex"                         # OpenAI Codex CLI/agent
+cask "visual-studio-code"            # editor — settings/keybindings/extensions tracked under ~/.vscode/
 cask "raycast"                       # launcher + clipboard history (replaces Alfred)
 cask "1password"                     # password manager + SSH agent (fleet auth, AI.md P15)
 cask "karabiner-elements"            # keyboard remapping (.config/karabiner)

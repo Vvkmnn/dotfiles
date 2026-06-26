@@ -1,31 +1,29 @@
 #!/usr/bin/env bash
-# Setup Visual Studio Code
+# VS Code settings — reference snapshot from vBook.
+# Not required to run. Prints instructions if you want to apply manually.
 
-# Install Visual Studo Code
-brew cask install visual-studio-code-insiders
+cat <<'EOF'
 
-# Move settings and symlink
-rm ~/Library/Application\ Support/Code\ -\ Insiders/User/settings.json
-rm ~/Library/Application\ Support/Code\ -\ Insiders/User/keybindings.json
+Tracked under ~/.vscode/ (already on disk if you cloned dotfiles):
+  settings.json     user-level settings
+  keybindings.json  user-level keybindings
+  extensions.txt    extension IDs (one per line)
 
-# Symlink existing files
-ln -s ~/.vscode/settings.json ~/Library/Application\ Support/Code\ -\ Insiders/User/settings.json
-ln -s ~/.vscode/keybindings.json ~/Library/Application\ Support/Code\ -\ Insiders/User/keybindings.json
+You may not need to apply these — VS Code's built-in Settings Sync
+likely covers it. To apply manually anyway:
 
-# Use `core` to install packages
-# code --list-extensions
+  cp ~/.vscode/settings.json    "$HOME/Library/Application Support/Code/User/settings.json"
+  cp ~/.vscode/keybindings.json "$HOME/Library/Application Support/Code/User/keybindings.json"
+  xargs -n1 code --install-extension < ~/.vscode/extensions.txt
 
-# Vim Vscode
-code --install-extension vscodevim.vim
+(For the `code` CLI you need to first run in VS Code:
+  Cmd+Shift+P → "Shell Command: Install 'code' command in PATH")
 
-# Dracula Theme
-code --install-extension dracula-theme.theme-dracula
+To refresh this snapshot on vBook after tweaking VS Code:
 
-# Linters
-# ESlint
-# code --install-extension dbaeumer.vscode-eslint
+  cp "$HOME/Library/Application Support/Code/User/settings.json"    ~/.vscode/settings.json
+  cp "$HOME/Library/Application Support/Code/User/keybindings.json" ~/.vscode/keybindings.json
+  code --list-extensions > ~/.vscode/extensions.txt
+  dotfiles add .vscode && dotfiles commit -m "CHORE(vscode): Refresh snapshot"
 
-# Project Manager
-code --install-extension alefragnani.project-manager
-
-# gitignore
+EOF

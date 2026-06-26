@@ -216,14 +216,12 @@
     ".integrated-terminal .xterm": "padding-right: 0 !important",
     // Let the command status icons float without button chrome.
     ".integrated-terminal .xterm-decoration-container .xterm-decoration": "background: transparent !important; box-shadow: none !important; border: none !important",
-    // Collapse the terminal scrollbar to a one pixel track (with Firefox fallback).
-    ".integrated-terminal .xterm-viewport": "scrollbar-width: thin; scrollbar-color: #7E9CD8 transparent",
-    ".integrated-terminal .xterm-viewport::-webkit-scrollbar": "width: 1px !important; height: 1px !important",
+    // Collapse the terminal scrollbar to a one pixel track.
+    ".integrated-terminal .xterm-viewport::-webkit-scrollbar": "width: 1px !important",
     // Keep the one pixel thumb visible enough to grab.
-    ".integrated-terminal .xterm-viewport::-webkit-scrollbar-thumb": "background-color: #7E9CD8 !important; border-radius: 0 !important; min-height: 20px; border: none !important",
+    ".integrated-terminal .xterm-viewport::-webkit-scrollbar-thumb": "background-color: #7E9CD8 !important; border-radius: 0 !important",
     // Remove residual styling from the scrollbar track.
     ".integrated-terminal .xterm-viewport::-webkit-scrollbar-track": "background: transparent !important",
-    ".integrated-terminal .xterm-viewport::-webkit-scrollbar-corner": "background: transparent !important",
     // Tighten sidebar titles.
     ".sidebar .title-label": "padding: 1 !important",
     // Remove focus outlines in lists unless focused.
@@ -265,7 +263,7 @@
     // ".monaco-workbench": "font-family: 'SF Pro' !important; --codex-zoom: 0.92",
     // Use zoom to shrink activity bar icons; keep the bar tight and let the wallpaper show through.
     // Activity bar: transparent + zoomed/narrow (only element intended to be see-through).
-    ".monaco-workbench .part.activitybar": "zoom: 80% !important; width: 26px !important; min-width: 26px !important; max-width: 26px !important; background-color: transparent !important; box-shadow: none !important; border: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; padding: 4px 0 !important",
+    ".monaco-workbench .part.activitybar": "zoom: 70% !important; width: 35px !important; background-color: transparent !important; box-shadow: none !important; border: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important",
     ".monaco-workbench .part.activitybar::before": "background-color: transparent !important; box-shadow: none !important; border: none !important",
     // Opaque activity bar rollback.
     // ".monaco-workbench .part.activitybar": "zoom: 70% !important; width: 24px !important; background-color: rgba(18, 18, 24, 0.12) !important; backdrop-filter: blur(28px) saturate(140%) !important; -webkit-backdrop-filter: blur(28px) saturate(140%) !important",
@@ -275,10 +273,10 @@
     ".monaco-workbench .activitybar": "background-color: transparent !important; box-shadow: none !important",
     ".monaco-workbench .activitybar > .content": "background-color: transparent !important; box-shadow: none !important",
     // Force activity bar icons always visible (full opacity); add subtle stroke/glow for contrast on bright wallpapers.
-    ".monaco-workbench .activitybar .action-item": "opacity: 1 !important; filter: none !important; visibility: visible !important; padding: 4px 0 !important; margin: 0 auto !important",
+    ".monaco-workbench .activitybar .action-item": "opacity: 1 !important; filter: none !important; visibility: visible !important",
     ".monaco-workbench .activitybar .action-item:not(.checked)": "opacity: 1 !important; filter: none !important; visibility: visible !important",
-    ".monaco-workbench .activitybar .action-item .action-label": "display: none !important",
-    ".monaco-workbench .activitybar .action-item:not(.checked) .action-label": "display: none !important",
+    ".monaco-workbench .activitybar .action-item .action-label": "opacity: 1 !important; filter: none !important; color: #DCD7BA !important; visibility: visible !important",
+    ".monaco-workbench .activitybar .action-item:not(.checked) .action-label": "opacity: 1 !important; filter: none !important; color: #DCD7BA !important; visibility: visible !important",
     ".monaco-workbench .activitybar .action-item .codicon": "color: #DCD7BA !important; opacity: 1 !important; filter: drop-shadow(0 0 2px rgba(0,0,0,0.35)) !important; text-shadow: 0 0 2px rgba(0,0,0,0.35) !important; visibility: visible !important; mix-blend-mode: normal !important",
     ".monaco-workbench .activitybar .action-item .codicon::before": "color: #DCD7BA !important; opacity: 1 !important; filter: drop-shadow(0 0 2px rgba(0,0,0,0.35)) !important; text-shadow: 0 0 2px rgba(0,0,0,0.35) !important; visibility: visible !important; mix-blend-mode: normal !important",
     ".monaco-workbench .activitybar .action-item img, .monaco-workbench .activitybar .action-item svg, .monaco-workbench .activitybar .action-item svg *": "opacity: 1 !important; filter: drop-shadow(0 0 2px rgba(0,0,0,0.35)) !important; color: #DCD7BA !important; fill: #DCD7BA !important; stroke: #DCD7BA !important; visibility: visible !important; mix-blend-mode: normal !important; background-color: transparent !important",
