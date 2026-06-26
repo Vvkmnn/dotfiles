@@ -2,3 +2,4 @@
 .claude.json filter=git-crypt diff=git-crypt
 .claude/mcp/mcp.json.bak filter=git-crypt diff=git-crypt
 .claude/mcp/config.json filter=git-crypt diff=git-crypt
+.assets/fonts/** filter=git-crypt diff=git-crypt
