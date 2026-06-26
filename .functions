@@ -82,7 +82,10 @@
     local enc="${PWD//\//-}"
     enc="${enc//./-}"
     local dir="$HOME/.claude/projects/$enc"
-    [[ -d "$dir" ]] && compgen -G "$dir/*.jsonl" >/dev/null 2>&1
+    # (N) = nullglob qualifier: empty array if no matches or dir missing.
+    # Avoids `compgen` (a bash builtin absent in zsh unless bashcompinit is loaded).
+    local sessions=("$dir"/*.jsonl(N))
+    (( ${#sessions} ))
   }
 
   # internal wrapper: runs claude with idle detection + restart-on-idle loop
