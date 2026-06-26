@@ -5,6 +5,27 @@ as-is (legacy package/defaults scripts). Captured while bootstrapping **vBookNeo
 (8GB MacBook, macOS 26) on 2026-06-25 so the next machine goes clean. The
 "what broke and why" log.
 
+## Restart-readiness snapshot — 2026-06-26 (READ FIRST if resuming vBookNeo)
+
+vBookNeo is set up + pushed; **one normal restart pending.** State for a fresh Claude:
+
+**Done + committed (origin `v-macos-macbook`, HEAD `7c66f46e`):**
+- `~/.ai/setup` = the self-contained one command (inline package list + curated macOS defaults). `.ai/` = `setup` + `README.md` + `ISSUES.md` only (`ai.sh`/`SECRETS.md` removed → folded into README).
+- Routing: `~/.claude/CLAUDE.md` ("Machine Setup → macOS") + the `dotfiles-setup` skill both point at `~/.ai/setup`. New machine = point Claude → it finds `.ai/`, no handoff.
+- Packages installed (jq/pngpaste/contexts + full set); `font-sf-pro` dropped (plugins use SFMono now).
+- Fonts: **SFMono Nerd Font** (vendored `.otf`, `.assets/fonts`, git-crypt) + **Symbols Nerd Font Mono** (cask `font-symbols-only-nerd-font`) installed.
+- Curated macOS defaults applied via `setup macos` (menu-bar+dock autohide, finder, fast key-repeat, Stage-Manager-off…). One failed: `com.apple.universalaccess reduceTransparency` → set via System Settings → Accessibility → Display.
+- sketchybar `network_boxes.sh`/`clock_analog.sh` switched SF Pro → SFMono Nerd Font.
+- BatFi license stored in 1Password (Personal → "BatFi", Software License).
+
+**Check after the restart:**
+- **`?` glyphs** — fonts are installed; the restart rebuilds CoreText's fallback cache, which should clear them. If they PERSIST → the cask's Symbols Nerd Font Mono differs from the laptop's exact `NFM.ttf` → `cp ~/.assets/fonts/NFM.ttf ~/Library/Fonts/ && brew services restart sketchybar`.
+- Menu-bar autohide needs the re-login to fully take.
+
+**yabai — VERIFIED (2026-06): scripting addition is BROKEN on macOS 26 Tahoe.** `space --focus`/`--destroy` fail even with SIP off; disabling SIP gains nothing (GitHub #2634/2656/2675/2707/2730). → **Basic yabai only — NO scripting-addition, NO SIP-disable, ONE restart (not Recovery).** Space-switching = native Ctrl+←/→. CAVEAT: if `.skhdrc` binds spaces to `yabai -m space --focus`, those hotkeys won't fire on Tahoe → rebind to native Ctrl+arrow (the fleet default for Tahoe).
+
+**The restart = one normal restart** (Apple → Restart). Owner checklist: `?` cleared · menu-bar autohides · yabai/skhd/sketchybar auto-started · space-switch via Ctrl+arrows · approve any Mullvad/AdGuard system-extension prompt.
+
 ## TL;DR — the core failure
 
 The bootstrap machinery (`AI.md` + `dotfiles-setup` skill + `ai/` helpers)
