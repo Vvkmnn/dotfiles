@@ -66,15 +66,30 @@ for input *mid-run*, something violated this contract — log it in `ISSUES.md`.
 
 | File | Role |
 |---|---|
-| `README.md` | this charter — the mission + rules |
-| `ai.sh` | the toolkit + installer (sudo keep-alive, tap trust, `brew bundle`, `xcodes`) — `bash ~/.ai/ai.sh` |
+| `setup` | **the one command** — `~/.ai/setup [packages·fonts·services·xcode·macos·gate·doctor]`. Self-contained: inline package list + curated macOS defaults live in it. |
+| `README.md` | this charter — mission, rules, secrets manifest, map |
 | `ISSUES.md` | what broke & why, across setups — read before re-trying anything |
-| `AGENTS.md` | *(planned)* the phase runbook (what to run, in order), AGENTS.md-standard |
+
+`~/.setup/` is **frozen reference** (the laptop's fuller `macos.sh` + `Brewfile` + per-tool scripts) — for inspiration/maintenance, not run by `setup`. Rule: **vendor only what has no working cask** (e.g. SF Mono Nerd Font → `.assets/fonts`, git-crypt); everything with a real cask stays a cask.
+
+## Secrets (1Password — the one human gate)
+
+Sign into 1Password and the rest is pulled; nothing on disk, no tokens in the repo.
+
+| 1Password item | Type | Used by |
+|---|---|---|
+| `1password_25519` | SSH Key | GitHub + inter-Mac SSH (1Password SSH agent) |
+| `Dotfiles` | Document (`dotfiles.key`) | `git-crypt unlock` → decrypts `.claude/mcp/*`, `.utcp_config.json`, `.claude.json`, `.assets/fonts/*` |
+| `Apple` | Login (email + password) | `xcodes` → Xcode (one 2FA code, unavoidable) |
+
+`op` injects per-command (`op run`, SSH agent) — keys never touch disk.
 
 ## How a fresh Mac gets set up
 
 1. Install Claude Code: `curl -fsSL https://claude.ai/install.sh | bash`
 2. Point Claude at this repo; it reads `~/.claude/CLAUDE.md` → comes here.
-3. Do the early interventions (Apple ID, unlock 1Password, one sudo).
-4. Claude runs the runbook / `ai.sh`. Walk away.
-5. Come back to a working environment; `ai.sh check` (or doctor) verifies.
+3. Early gates: Apple ID, **unlock 1Password**, one **sudo**.
+4. Cold-start (Homebrew · deploy bare repo · `git-crypt unlock`) — see `~/.setup/AI.md`.
+5. `~/.ai/setup` — installs packages, fonts, services, defaults. Walk away.
+6. Grant TCC (Accessibility / Input Monitoring) when prompted; **restart** (menu-bar autohide + font cache).
+7. `~/.ai/setup doctor` verifies. Gotchas → `ISSUES.md`.

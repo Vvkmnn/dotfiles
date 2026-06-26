@@ -131,6 +131,10 @@ See `~/.claude/rules/` for detailed guidance:
 - `orchestrate.md` - Subagent delegation, parallelism, model selection
 - `preview.md` - Preview before external actions, MCPs, formatted output
 
+## Machine Setup (new Mac)
+
+"set up this Mac" / "bootstrap" / fresh install → the **`~/.ai/`** folder is the entry. Read `~/.ai/README.md` (mission + 1Password secrets manifest), then run **`~/.ai/setup`** — a self-contained command (`packages·fonts·services·xcode·macos·gate·doctor`; inline package list + curated macOS defaults). The `dotfiles-setup` skill triggers on those phrases and routes here; `~/.setup/AI.md` is the deeper cold-start runbook (deploy bare repo + git-crypt unlock). The repo contains everything (vendored fonts, inline defaults, tracked configs) — no cross-machine handoff needed.
+
 ## Agents
 
 Custom agents in `~/.claude/agents/`: `code-reviewer` (sonnet, post-change review), `security-reviewer` (sonnet, OWASP scanning), `architect` (opus, design review), `study-researcher` (literature review). Use `/review` and `/security` commands as shortcuts.

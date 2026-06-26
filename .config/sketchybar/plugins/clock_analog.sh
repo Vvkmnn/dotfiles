@@ -43,4 +43,4 @@ fi
 
 sketchybar --set clock_analog label="$CLOCK" \
                              label.color=$COLOR \
-                             label.font="SF Pro:Regular:13.0"
+                             label.font="SFMono Nerd Font:Regular:13.0"

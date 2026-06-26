@@ -17,7 +17,24 @@ Trigger phrases (any of):
 - "make this feel like mine"
 - "run dotfiles-setup"
 
-## How to orchestrate
+## The front door: `~/.ai/setup`
+
+**The automatable install/config is consolidated in `~/.ai/setup`** — a single
+self-contained bash command (`packages · fonts · services · xcode · macos · gate · doctor`;
+inline package list + curated macOS defaults). **Prefer it over re-running AI.md's inline bash.**
+Read `~/.ai/README.md` first — it's the charter + the 1Password secrets manifest.
+
+- **Fresh Mac (cold):** do AI.md **P0–P7** (the part `setup` can't — it lives *in* the repo:
+  fetch → Homebrew → deploy bare repo → git-crypt unlock; see the fresh-Mac edge case below),
+  then run `~/.ai/setup` for packages/fonts/services/macos.
+- **Already deployed (drift / re-run):** just `~/.ai/setup` (idempotent).
+- **Verify any time:** `~/.ai/setup doctor`.
+
+`AI.md` remains the **full runbook** for cold-start + the deeper manual gates `setup` doesn't
+cover (Tailscale P14, Remote Login P16, Continuity P17.5). The legacy phase-by-phase path
+(reading AI.md top-to-bottom + sourcing `.setup/ai/*.sh`) still works and is documented below.
+
+## How to orchestrate (legacy phase-by-phase — for cold-start + deeper gates)
 
 1. **Source helpers** if present: `. ~/.setup/ai/ux.sh` and `. ~/.setup/ai/gate.sh` for visual + gate orchestration. Fall back to plain `echo` + inline `open`+`read` loops if missing (fresh-bootstrap, before P4).
 2. **Detect profile**: `case "$USER" in eve) p=server ;; *) p=workstation ;; esac` and `export DOTFILES_AI_PROFILE=$p`.

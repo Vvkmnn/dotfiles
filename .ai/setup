@@ -1,0 +1,398 @@
+#!/usr/bin/env bash
+# setup — the ONE self-contained command to bring this Mac to fleet parity.
+#
+#   ~/.ai/setup            run all: packages → fonts → services → macos → gate → doctor
+#   ~/.ai/setup packages   brew bundle (inline list, tap-trust, one sudo, Xcode 2nd pass)
+#   ~/.ai/setup fonts      install vendored SFMono Nerd Font → ~/Library/Fonts
+#   ~/.ai/setup services   yabai/skhd/sketchybar/borders/menuanywhere + tmux plugins
+#   ~/.ai/setup xcode      headless Xcode via xcodes (Apple ID from 1Password) — one 2FA code
+#   ~/.ai/setup macos      apply curated macOS defaults (sudo-free)
+#   ~/.ai/setup gate       open the manual TCC panes + checklist
+#   ~/.ai/setup doctor     verify the machine (self-contained)
+#   ~/.ai/setup help
+#
+# SELF-CONTAINED on purpose: the package list + macOS defaults live INLINE here —
+# this is the source of truth Claude/the owner edit. `~/.setup/` is frozen
+# reference (the laptop's fuller macos.sh/Brewfile) for inspiration + maintenance.
+# Plain bash (no just/make — must run on a fresh Mac). Every phase is idempotent.
+# Assumes the dotfiles are deployed + git-crypt unlocked (fonts need it).
+#
+# ─────────────────────────────────────────────────────────────────────────────
+# DESIGN NOTES & CHANGELOG  (read before editing — keep this current)
+#
+# 2026-06-26 — created + consolidated for vBookNeo (8GB A18 Pro, macOS 26 Tahoe).
+#   WHY self-contained: the package list (_brewfile) + macOS defaults (phase_macos)
+#     live INLINE so a future Claude edits ONE place. `~/.setup/` (the laptop's
+#     fuller macos.sh ~886L + Brewfile) is FROZEN REFERENCE — inspiration/maintenance,
+#     not called at runtime. Collapsed 3 parallel impls (this, an old `ai.sh`, and
+#     AI.md's inline bash) down to this one file.
+#   WHY plain bash (no just/make): chicken-egg — a task runner needs `brew install`
+#     first, but this must run on a FRESH Mac before anything exists. bash is always
+#     present; `setup <phase>` gives the same discoverability as `just <recipe>`.
+#   WHY curated defaults (not macos.sh verbatim): macos.sh carries dead-app cruft
+#     (Spectacle/Twitter/SizeUp/Transmission/Opera/GPGMail) + Safari/Chrome/Mail/iCal/
+#     TextEdit app tweaks + sudo pmset/nvram bits that error on Apple silicon. Kept
+#     ONLY the UX-defining, user-domain (sudo-free) set. To re-curate: diff against
+#     ~/.setup/macos.sh and pull in what you actually use.
+#   WHY fonts vendored (not a cask): the epk `font-sf-mono-nerd-font` cask registers
+#     as family "SF Mono", but sketchybar/Ghostty reference "SFMono Nerd Font" → glyphs
+#     render as `?`. The 12 hand-patched .otf (correct family) are vendored via
+#     git-crypt in .assets/fonts and copied by `setup fonts`. Binary → can't inline.
+#   WHY the gate is manual/honest: macOS won't let a script grant TCC or approve a
+#     system extension, and can't reliably VERIFY them either (reading TCC.db needs
+#     Full Disk Access — itself a gate). So `setup gate` only opens panes + instructs.
+#   WHY macos is sudo-free: every curated default is user-domain. Only `packages`
+#     needs sudo (casks + xcode-select), via need_sudo's one-prompt keep-alive.
+#
+# MAINTENANCE: edit `_brewfile()` (packages) + `phase_macos()` (defaults) here — they
+#   are the source of truth. Keep `~/.setup/` as reference. Log gotchas in
+#   ~/.ai/ISSUES.md so they aren't re-hit. After any edit: `bash -n ~/.ai/setup`.
+#   When you change something, add a dated line to this changelog explaining WHY.
+# ─────────────────────────────────────────────────────────────────────────────
+
+set -uo pipefail
+
+FONTS_SRC="$HOME/.assets/fonts"   # vendored .otf (binary — can't inline); git-crypt
+
+# ── tiny UI ───────────────────────────────────────────────────────────────────
+say()  { printf '\n\033[1;34m==>\033[0m \033[1m%s\033[0m\n' "$*"; }
+ok()   { printf '  \033[32m✓\033[0m %s\n' "$*"; }
+warn() { printf '  \033[33m⚠\033[0m %s\n' "$*"; }
+die()  { printf '\n\033[31m✗ %s\033[0m\n' "$*" >&2; exit 1; }
+
+command -v brew >/dev/null 2>&1 || eval "$(/opt/homebrew/bin/brew shellenv 2>/dev/null)"
+
+# ── one sudo + keep-alive, started on demand (only 'packages' needs it: casks) ──
+_sudo_started=
+need_sudo() {
+  [ -n "$_sudo_started" ] && return 0
+  say "sudo — one prompt, kept alive for the whole run"
+  sudo -v || die "sudo is required here"
+  ( while true; do sudo -n true; sleep 60; kill -0 "$$" 2>/dev/null || exit; done ) &
+  trap 'kill %1 2>/dev/null' EXIT
+  _sudo_started=1
+  ok "sudo cached + refreshing every 60s"
+}
+
+# ── the package set (inline source of truth; .setup/Resources/Brewfile = reference) ──
+_brewfile() {
+  cat <<'BREW'
+tap "koekeishiya/formulae"
+tap "felixkratz/formulae"
+tap "crissnb/dynamicisland"
+tap "acsandmann/tap"
+tap "supabase/tap"
+tap "joachimbrindeau/ccusage-monitor"
+# core CLI
+brew "coreutils"
+brew "openssl@3"
+brew "xz"
+brew "zlib"
+brew "bash"
+brew "bat"
+brew "fd"
+brew "fzf"
+brew "ripgrep"
+brew "eza"
+brew "zoxide"
+brew "atuin"
+brew "yazi"
+brew "lf"
+brew "jless"
+brew "jq"
+brew "pngpaste"
+brew "neovim"
+brew "lua"
+brew "luarocks"
+brew "tree-sitter"
+brew "git"
+brew "gh"
+brew "git-delta"
+brew "git-crypt"
+brew "git-lfs"
+brew "gnupg"
+brew "mise"
+brew "uv"
+brew "go"
+brew "cmake"
+brew "btop"
+brew "mas"
+brew "terminal-notifier"
+brew "docker"
+brew "docker-buildx"
+brew "colima"
+brew "shellcheck"
+brew "xcodes"
+brew "supabase/tap/supabase"
+# window manager stack
+brew "koekeishiya/formulae/yabai"
+brew "koekeishiya/formulae/skhd"
+brew "felixkratz/formulae/sketchybar"
+brew "felixkratz/formulae/borders"
+brew "crissnb/dynamicisland/dynamicislandsketchybar"
+brew "acsandmann/tap/menuanywhere"
+brew "joachimbrindeau/ccusage-monitor/ccusage-monitor"
+# GUI apps
+cask "ghostty"
+cask "claude"
+cask "chatgpt"
+cask "codex"
+cask "raycast"
+cask "1password"
+cask "karabiner-elements"
+cask "contexts"
+cask "tailscale"
+cask "mullvad-vpn"
+cask "ngrok"
+cask "obsidian"
+cask "discord"
+cask "anki"
+cask "the-unarchiver"
+cask "batfi"
+cask "adguard"
+cask "font-symbols-only-nerd-font"   # Symbols Nerd Font Mono — the glyph-fallback
+                                     # superset (wifi/weather/dev-logo icons live ONLY
+                                     # here; SFMono Nerd Font doesn't carry them).
+# FONTS, two pieces:
+#  1) SFMono Nerd Font (primary mono face) — NOT a cask: the epk cask registers as
+#     family "SF Mono" (wrong); sketchybar/Ghostty need "SFMono Nerd Font". Vendored
+#     as .otf in .assets/fonts (git-crypt), installed by `setup fonts`.
+#  2) Symbols Nerd Font Mono (above) — CoreText fallback for glyphs SFMono lacks.
+# Dropped `font-sf-pro` (rare, sudo .pkg): the sketchybar plugins (network_boxes,
+# clock_analog) were switched to SFMono Nerd Font, so SF Pro is no longer referenced.
+# NOTE: a fresh font install needs a re-login (restart) for CoreText to rebuild its
+# fallback cache — otherwise some glyphs render as `?` until reboot.
+BREW
+}
+
+# ── phases ────────────────────────────────────────────────────────────────────
+phase_packages() {
+  pgrep -f 'Library/Homebrew/brew' >/dev/null 2>&1 && die "another brew is running — let it finish, then re-run"
+  command -v brew >/dev/null 2>&1 || die "Homebrew not found — install it first (AI.md P2)"
+  need_sudo
+  say "taps — trust the third-party ones (Homebrew 4.6+ tap-trust)"
+  local t
+  for t in koekeishiya/formulae felixkratz/formulae crissnb/dynamicisland acsandmann/tap supabase/tap joachimbrindeau/ccusage-monitor; do
+    brew tap "$t" >/dev/null 2>&1; brew trust "$t" >/dev/null 2>&1 && ok "trusted $t"
+  done
+  say "brew bundle (Xcode is large + shows no progress — be patient)"
+  brew bundle install --file=<(_brewfile) || warn "first pass had failures (menuanywhere needs Xcode) — run 'setup xcode' then re-run"
+  local xc; xc=$(ls -d /Applications/Xcode*.app 2>/dev/null | sort -V | tail -1)
+  if [ -n "$xc" ]; then
+    sudo xcode-select -s "$xc/Contents/Developer" 2>/dev/null && ok "xcode-select → $(basename "$xc")"
+    sudo xcodebuild -license accept 2>/dev/null && ok "Xcode license accepted"
+    brew bundle install --file=<(_brewfile) >/dev/null 2>&1 && ok "Xcode-dependent items (menuanywhere) built"
+  fi
+}
+
+phase_fonts() {
+  # Family must be exactly "SFMono Nerd Font" for sketchybar + Ghostty. Vendored
+  # .otf (git-crypt) in .assets/fonts — the epk cask registers as "SF Mono" (wrong).
+  say "fonts — install vendored SFMono Nerd Font"
+  [ -d "$FONTS_SRC" ] || { warn "no $FONTS_SRC (pull dotfiles + git-crypt unlock first)"; return 0; }
+  local probe; probe=$(ls "$FONTS_SRC"/*.otf "$FONTS_SRC"/*.ttf 2>/dev/null | head -1)
+  if [ -n "$probe" ] && head -c 9 "$probe" 2>/dev/null | grep -q GITCRYPT; then
+    die "fonts still git-crypt-encrypted — unlock first (op document get Dotfiles → git-crypt unlock)"
+  fi
+  local n=0 f
+  for f in "$FONTS_SRC"/*.otf "$FONTS_SRC"/*.ttf; do
+    [ -e "$f" ] || continue
+    cp "$f" "$HOME/Library/Fonts/" && n=$((n+1))
+  done
+  ok "installed $n font file(s) → ~/Library/Fonts"
+  command -v sketchybar >/dev/null 2>&1 && brew services restart sketchybar >/dev/null 2>&1 && ok "sketchybar reloaded"
+  warn "quit + relaunch Ghostty to pick up the font"
+}
+
+phase_services() {
+  say "services — window manager + tmux plugins"
+  command -v yabai >/dev/null 2>&1 && { yabai --start-service 2>/dev/null; ok "yabai"; }
+  command -v skhd  >/dev/null 2>&1 && { skhd  --start-service 2>/dev/null; ok "skhd"; }
+  local svc
+  for svc in sketchybar borders menuanywhere; do
+    command -v "$svc" >/dev/null 2>&1 && { brew services start "$svc" >/dev/null 2>&1; ok "$svc"; }
+  done
+  if [ -x "$HOME/.config/tmux/plugins/tpm/bin/install_plugins" ]; then
+    "$HOME/.config/tmux/plugins/tpm/bin/install_plugins" >/dev/null 2>&1 && ok "tmux plugins (tpm)"
+  fi
+}
+
+phase_xcode() {
+  say "Xcode — headless install via xcodes (Apple ID from 1Password)"
+  local xc; xc=$(ls -d /Applications/Xcode*.app 2>/dev/null | sort -V | tail -1)
+  [ -n "$xc" ] && { ok "already present: $(basename "$xc")"; return 0; }
+  command -v xcodes >/dev/null 2>&1 || { warn "xcodes missing — 'setup packages' installs it"; return 0; }
+  command -v op     >/dev/null 2>&1 || { warn "1Password CLI (op) needed — see README (secrets)"; return 0; }
+  warn "you'll enter a one-time 2FA code (Apple policy — codes expire in ~30s, use the freshest)"
+  XCODES_USERNAME="op://Personal/Apple/username" XCODES_PASSWORD="op://Personal/Apple/password" \
+    op run -- xcodes install --latest || warn "xcodes failed (retry with a fresh 2FA code)"
+}
+
+phase_macos() {
+  # Curated UX defaults (sudo-free — user domain only). Source of truth; the
+  # laptop's fuller ~/.setup/macos.sh is frozen reference for anything deeper.
+  say "macOS defaults — curated UX"
+  # General UI/UX + privacy
+  defaults write com.apple.PowerChime ChimeOnAllHardware -bool false
+  defaults write com.apple.universalaccess reduceTransparency -bool true
+  defaults write NSGlobalDomain AppleHighlightColor -string "1.000000 0.733333 0.721569"
+  defaults write NSGlobalDomain NSTableViewDefaultSizeMode -int 2
+  defaults write NSGlobalDomain AppleShowScrollBars -string "Always"
+  defaults write NSGlobalDomain NSUseAnimatedFocusRing -bool false
+  defaults write NSGlobalDomain NSWindowResizeTime -float 0.001
+  defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode -bool true
+  defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode2 -bool true
+  defaults write NSGlobalDomain PMPrintingExpandedStateForPrint -bool true
+  defaults write NSGlobalDomain PMPrintingExpandedStateForPrint2 -bool true
+  defaults write NSGlobalDomain NSDocumentSaveNewDocumentsToCloud -bool false
+  defaults write com.apple.print.PrintingPrefs "Quit When Finished" -bool true
+  defaults write com.apple.LaunchServices LSQuarantine -bool false
+  defaults write com.apple.systempreferences NSQuitAlwaysKeepsWindows -bool false
+  defaults write com.apple.CrashReporter DialogType -string "none"
+  defaults write com.apple.SoftwareUpdate ScheduleFrequency -int 1
+  # Typing — substitutions off (annoying mid-code)
+  defaults write NSGlobalDomain NSAutomaticQuoteSubstitutionEnabled -bool false
+  defaults write NSGlobalDomain NSAutomaticDashSubstitutionEnabled -bool false
+  defaults write NSGlobalDomain NSAutomaticCapitalizationEnabled -bool false
+  defaults write NSGlobalDomain NSAutomaticPeriodSubstitutionEnabled -bool false
+  defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool false
+  # Snappy + WM-friendly (this is what makes sketchybar/yabai feel right)
+  defaults write NSGlobalDomain NSAutomaticWindowAnimationsEnabled -bool false
+  defaults write NSGlobalDomain NSToolbarTitleViewRolloverDelay -float 0
+  defaults write NSGlobalDomain _HIHideMenuBar -bool true
+  defaults write NSGlobalDomain AppleMenuBarVisibleInFullscreen -bool false
+  defaults write NSGlobalDomain AppleMiniaturizeOnDoubleClick -bool false
+  defaults write NSGlobalDomain AppleActionOnDoubleClick -string "None"
+  defaults write NSGlobalDomain AppleSpacesSwitchOnActivate -bool true
+  defaults write NSGlobalDomain com.apple.sound.uiaudio.enabled -bool false
+  defaults write NSGlobalDomain com.apple.sound.beep.volume -float 0
+  ok "general · typing · snappy UI · menu-bar autohide"
+  # Keyboard — fast repeat (vim), full keyboard access, traditional scroll
+  defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
+  defaults write NSGlobalDomain KeyRepeat -int 0
+  defaults write NSGlobalDomain InitialKeyRepeat -int 15
+  defaults write NSGlobalDomain AppleKeyboardUIMode -int 3
+  defaults write NSGlobalDomain com.apple.swipescrolldirection -bool false
+  # Trackpad — tap to click
+  defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
+  defaults -currentHost write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
+  defaults write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
+  ok "keyboard · trackpad"
+  # Screenshots + lock security + font smoothing
+  defaults write com.apple.screensaver askForPassword -int 1
+  defaults write com.apple.screensaver askForPasswordDelay -int 0
+  defaults write com.apple.screencapture type -string "png"
+  defaults write com.apple.screencapture disable-shadow -bool true
+  defaults write NSGlobalDomain AppleFontSmoothing -int 2
+  # Finder
+  defaults write com.apple.finder CreateDesktop -bool false
+  defaults write com.apple.finder QuitMenuItem -bool true
+  defaults write com.apple.finder DisableAllAnimations -bool true
+  defaults write com.apple.finder AppleShowAllFiles -bool true
+  defaults write NSGlobalDomain AppleShowAllExtensions -bool true
+  defaults write com.apple.finder ShowStatusBar -bool true
+  defaults write com.apple.finder ShowPathbar -bool true
+  defaults write com.apple.finder _FXShowPosixPathInTitle -bool true
+  defaults write com.apple.finder FXDefaultSearchScope -string "SCcf"
+  defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
+  defaults write com.apple.finder FXPreferredViewStyle -string "Nlsv"
+  defaults write com.apple.finder _FXSortFoldersFirst -bool true
+  defaults write com.apple.finder WarnOnEmptyTrash -bool false
+  defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
+  defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
+  chflags nohidden "$HOME/Library" 2>/dev/null || true
+  ok "finder"
+  # Dock — small, autohide, no clutter, WM-friendly
+  defaults write com.apple.dock tilesize -int 36
+  defaults write com.apple.dock magnification -bool true
+  defaults write com.apple.dock largesize -int 60
+  defaults write com.apple.dock mineffect -string "scale"
+  defaults write com.apple.dock minimize-to-application -bool true
+  defaults write com.apple.dock show-recents -bool false
+  defaults write com.apple.dock mru-spaces -bool false
+  defaults write com.apple.dock expose-group-apps -bool false
+  defaults write com.apple.dock show-process-indicators -bool true
+  defaults write com.apple.dock showhidden -bool true
+  defaults write com.apple.dock no-bouncing -bool true
+  defaults write com.apple.dock launchanim -bool false
+  defaults write com.apple.dock expose-animation-duration -float 0.1
+  defaults write com.apple.dock autohide-delay -float 0
+  defaults write com.apple.dock autohide -bool true
+  defaults write com.apple.dock persistent-apps -array
+  defaults write com.apple.dock recent-apps -array
+  defaults write com.apple.dock wvous-tr-corner -int 2   # top-right → Mission Control
+  defaults write com.apple.dock wvous-tr-modifier -int 0
+  defaults write com.apple.dock wvous-br-corner -int 5   # bottom-right → screen saver
+  defaults write com.apple.dock wvous-br-modifier -int 0
+  ok "dock + hot corners"
+  # Stage Manager off, clean desktop (yabai-friendly)
+  defaults write com.apple.WindowManager GloballyEnabled -bool false
+  defaults write com.apple.WindowManager HideDesktop -bool true
+  defaults write com.apple.WindowManager StandardHideDesktopIcons -bool true
+  defaults write com.apple.WindowManager AutoHide -bool true
+  defaults write com.apple.WindowManager EnableTiledWindowMargins -bool false
+  defaults write com.apple.WindowManager EnableStandardClickToShowDesktop -bool false
+  ok "stage manager off · clean desktop"
+  killall Dock Finder SystemUIServer 2>/dev/null || true
+  ok "applied (Dock/Finder restarted; menu-bar autohide may need a re-login to fully take)"
+}
+
+phase_gate() {
+  # macOS won't let a script grant TCC or approve a system extension — and it
+  # can't reliably verify them either (reading TCC.db needs Full Disk Access,
+  # itself a gate). So this just opens the panes + tells you exactly what to add.
+  say "GATE — grant these in System Settings (a script genuinely cannot do this)"
+  warn "Accessibility:     add yabai, skhd, sketchybar, Karabiner-Elements"
+  warn "Input Monitoring:  add skhd, Karabiner-Elements (karabiner_grabber)"
+  warn "System extensions: approve Karabiner, Mullvad, AdGuard when prompted"
+  warn "Wallpaper:         set Aerial \"Shuffle Earth\" manually"
+  open 'x-apple.systempreferences:com.apple.settings.PrivacySecurity?Privacy_Accessibility' 2>/dev/null
+  open 'x-apple.systempreferences:com.apple.settings.PrivacySecurity?Privacy_ListenEvent' 2>/dev/null
+  warn "after granting: yabai --restart-service && skhd --restart-service"
+}
+
+phase_doctor() {
+  # Self-contained "did my setup work" check. No external deps.
+  say "doctor — did setup work?"
+  brew bundle check --file=<(_brewfile) >/dev/null 2>&1 && ok "all packages installed" || warn "packages incomplete — run 'setup packages'"
+  local p
+  for p in yabai skhd sketchybar borders; do pgrep -x "$p" >/dev/null && ok "$p running" || warn "$p not running (grant Accessibility, then 'setup services')"; done
+  if ls "$HOME/Library/Fonts/"SFMono*Nerd*Font* >/dev/null 2>&1; then ok "SFMono Nerd Font installed"; else warn "SFMono Nerd Font missing — run 'setup fonts'"; fi
+  local t miss=0
+  for t in tmux nvim git gh mise uv node rg fzf jq; do command -v "$t" >/dev/null 2>&1 || { warn "missing: $t"; miss=1; }; done
+  [ "$miss" = 0 ] && ok "core CLI tools present"
+}
+
+usage() {
+  cat <<'EOF'
+
+setup — bring this Mac to fleet parity (self-contained).   ~/.ai/setup [phase]
+
+  (none)     run all: packages → fonts → services → macos → gate → doctor
+  packages   brew bundle (inline list, tap-trust, one sudo, Xcode 2nd pass)
+  fonts      install vendored SFMono Nerd Font → ~/Library/Fonts
+  services   yabai/skhd/sketchybar/borders/menuanywhere + tmux plugins
+  xcode      headless Xcode via xcodes (Apple ID from 1Password) — one 2FA code
+  macos      apply curated macOS defaults (sudo-free)
+  gate       open the manual TCC panes + checklist
+  doctor     verify the machine (self-contained)
+  help       this
+
+Package list + macOS defaults are INLINE here (the source of truth).
+~/.setup/ is frozen reference. See ~/.ai/README.md.
+EOF
+}
+
+# ── dispatch ──────────────────────────────────────────────────────────────────
+case "${1:-all}" in
+  all)            phase_packages; phase_fonts; phase_services; phase_macos; phase_gate; phase_doctor ;;
+  packages)       phase_packages ;;
+  fonts)          phase_fonts ;;
+  services)       phase_services ;;
+  xcode)          phase_xcode ;;
+  macos)          phase_macos ;;
+  gate)           phase_gate ;;
+  doctor|check)   phase_doctor ;;
+  help|-h|--help) usage ;;
+  *)              warn "unknown phase: $1"; usage; exit 1 ;;
+esac

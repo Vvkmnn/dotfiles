@@ -15,8 +15,8 @@ done
 
 if [ $CONNECTED -eq 0 ]; then
     # No connection - dark gray boxes
-    sketchybar --set network_down_box label="■" label.color=0xff404040 label.font="SF Pro:Regular:8.0" \
-               --set network_up_box label="■" label.color=0xff404040 label.font="SF Pro:Regular:8.0"
+    sketchybar --set network_down_box label="■" label.color=0xff404040 label.font="SFMono Nerd Font:Regular:8.0" \
+               --set network_up_box label="■" label.color=0xff404040 label.font="SFMono Nerd Font:Regular:8.0"
     exit 0
 fi
 
@@ -68,19 +68,19 @@ if [ -f "$STATE_FILE" ]; then
         SYMBOL=$(echo $BOX_DATA | awk '{print $1}')
         COLOR=$(echo $BOX_DATA | awk '{print $2}')
         SIZE=$(echo $BOX_DATA | awk '{print $3}')
-        sketchybar --set network_down_box label="$SYMBOL" label.color=$COLOR label.font="SF Pro:Regular:$SIZE"
+        sketchybar --set network_down_box label="$SYMBOL" label.color=$COLOR label.font="SFMono Nerd Font:Regular:$SIZE"
     elif [ "$TYPE" = "up" ]; then
         BOX_DATA=$(get_box_display $UP_KB)
         SYMBOL=$(echo $BOX_DATA | awk '{print $1}')
         COLOR=$(echo $BOX_DATA | awk '{print $2}')
         SIZE=$(echo $BOX_DATA | awk '{print $3}')
-        sketchybar --set network_up_box label="$SYMBOL" label.color=$COLOR label.font="SF Pro:Regular:$SIZE"
+        sketchybar --set network_up_box label="$SYMBOL" label.color=$COLOR label.font="SFMono Nerd Font:Regular:$SIZE"
     fi
     
 else
     # First run - initialize with inactive boxes
-    sketchybar --set network_down_box label="■" label.color=0xff404040 label.font="SF Pro:Regular:8.0" \
-               --set network_up_box label="■" label.color=0xff404040 label.font="SF Pro:Regular:8.0"
+    sketchybar --set network_down_box label="■" label.color=0xff404040 label.font="SFMono Nerd Font:Regular:8.0" \
+               --set network_up_box label="■" label.color=0xff404040 label.font="SFMono Nerd Font:Regular:8.0"
 fi
 
 # Save state (only once per call to avoid duplicate writes)
