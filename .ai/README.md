@@ -70,7 +70,7 @@ for input *mid-run*, something violated this contract — log it in `ISSUES.md`.
 | `README.md` | this charter — mission, rules, secrets manifest, map |
 | `ISSUES.md` | what broke & why, across setups — read before re-trying anything |
 
-`~/.setup/` is **frozen reference** (the laptop's fuller `macos.sh` + `Brewfile` + per-tool scripts) — for inspiration/maintenance, not run by `setup`. Rule: **vendor only what has no working cask** (e.g. SF Mono Nerd Font → `.assets/fonts`, git-crypt); everything with a real cask stays a cask.
+`~/.setup/` is **frozen reference** (the laptop's fuller `macos.sh` + `Brewfile` + per-tool scripts) — for inspiration/maintenance, not run by `setup`; see `~/.setup/README.md`. Rule: **vendor only what has no working cask** (e.g. SF Mono Nerd Font → `.assets/fonts`, git-crypt); everything with a real cask stays a cask.
 
 ## Secrets (1Password — the one human gate)
 

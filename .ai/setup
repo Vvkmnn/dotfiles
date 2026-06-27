@@ -116,6 +116,11 @@ brew "uv"
 brew "go"
 brew "cmake"
 brew "btop"
+brew "tmux"
+brew "sesh"               # tmux session manager (fzf/zoxide-style switcher)
+brew "imagemagick"        # image CLI (convert/magick) + common build dep
+brew "wget"
+brew "yt-dlp"             # video/audio downloader
 brew "mas"
 brew "terminal-notifier"
 brew "docker"
@@ -131,21 +136,26 @@ brew "felixkratz/formulae/sketchybar"
 brew "felixkratz/formulae/borders"
 brew "crissnb/dynamicisland/dynamicislandsketchybar"
 brew "acsandmann/tap/menuanywhere"
+brew "macmon"                                    # Apple Silicon power/temp/cpu/gpu telemetry — sketchybar bar-daemon pipes it (helpers/bar-daemon.swift:917)
 brew "joachimbrindeau/ccusage-monitor/ccusage-monitor"
 # GUI apps
 cask "ghostty"
 cask "claude"
 cask "chatgpt"
 cask "codex"
+cask "visual-studio-code"
 cask "raycast"
 cask "1password"
+cask "1password-cli"            # op — secrets manifest depends on it (was a brew formula elsewhere)
 cask "karabiner-elements"
 cask "contexts"
-cask "tailscale"
+cask "tailscale-app"           # renamed from deprecated cask "tailscale" (ships the CLI too)
 cask "mullvad-vpn"
 cask "ngrok"
 cask "obsidian"
 cask "discord"
+cask "steam"
+cask "openemu"
 cask "anki"
 cask "the-unarchiver"
 cask "batfi"
@@ -183,6 +193,12 @@ phase_packages() {
     sudo xcodebuild -license accept 2>/dev/null && ok "Xcode license accepted"
     brew bundle install --file=<(_brewfile) >/dev/null 2>&1 && ok "Xcode-dependent items (menuanywhere) built"
   fi
+  # Materialize mise-managed runtimes (python · node · cmake) from the tracked
+  # ~/.config/mise/config.toml. brew installs `mise` but never populates it — without
+  # this, python3 is missing → the shell warns every init and p10k instant prompt breaks.
+  if command -v mise >/dev/null 2>&1; then
+    mise install -y >/dev/null 2>&1 && ok "mise tools installed (python · node · cmake)" || warn "mise install had issues — run 'mise install'"
+  fi
 }
 
 phase_fonts() {
@@ -208,6 +224,18 @@ phase_services() {
   say "services — window manager + tmux plugins"
   command -v yabai >/dev/null 2>&1 && { yabai --start-service 2>/dev/null; ok "yabai"; }
   command -v skhd  >/dev/null 2>&1 && { skhd  --start-service 2>/dev/null; ok "skhd"; }
+  # Compile the sketchybar bar-daemon (Swift). The binary is gitignored, so it must be
+  # built on each machine BEFORE sketchybar starts (startup_cascade.sh launches it).
+  # Without it: no /tmp/sketchybar_cache → cpu/gpu/temp/memory/power show no data.
+  local bd="$HOME/.config/sketchybar/helpers"
+  if [ -f "$bd/bar-daemon.swift" ] && command -v swiftc >/dev/null 2>&1; then
+    if [ ! -x "$bd/bar-daemon" ] || [ "$bd/bar-daemon.swift" -nt "$bd/bar-daemon" ]; then
+      ( cd "$bd" && swiftc -O -o bar-daemon bar-daemon.swift ) 2>/dev/null \
+        && ok "bar-daemon compiled" || warn "bar-daemon compile failed (run: swiftc -O -o $bd/bar-daemon $bd/bar-daemon.swift)"
+    else
+      ok "bar-daemon up to date"
+    fi
+  fi
   local svc
   for svc in sketchybar borders menuanywhere; do
     command -v "$svc" >/dev/null 2>&1 && { brew services start "$svc" >/dev/null 2>&1; ok "$svc"; }
@@ -234,7 +262,13 @@ phase_macos() {
   say "macOS defaults — curated UX"
   # General UI/UX + privacy
   defaults write com.apple.PowerChime ChimeOnAllHardware -bool false
-  defaults write com.apple.universalaccess reduceTransparency -bool true
+  # Reduce Transparency = solid/filled menu bar (blends with sketchybar's black bar).
+  # TCC-protected on Tahoe: `defaults write` is silently REFUSED, so verify and fall
+  # back to a manual gate rather than pretend it applied.
+  defaults write com.apple.universalaccess reduceTransparency -bool true 2>/dev/null
+  if [ "$(defaults read com.apple.universalaccess reduceTransparency 2>/dev/null)" != "1" ]; then
+    warn "Reduce Transparency: toggle ON manually → System Settings ▸ Accessibility ▸ Display (macOS blocks scripting this)"
+  fi
   defaults write NSGlobalDomain AppleHighlightColor -string "1.000000 0.733333 0.721569"
   defaults write NSGlobalDomain NSTableViewDefaultSizeMode -int 2
   defaults write NSGlobalDomain AppleShowScrollBars -string "Always"
@@ -264,9 +298,13 @@ phase_macos() {
   defaults write NSGlobalDomain AppleMiniaturizeOnDoubleClick -bool false
   defaults write NSGlobalDomain AppleActionOnDoubleClick -string "None"
   defaults write NSGlobalDomain AppleSpacesSwitchOnActivate -bool true
+  # Silence UI noise (visual indicators only): UI sound effects off, alert beep muted.
+  # KEEP volume-change feedback — the level pop is wanted (don't set beep.feedback).
+  # Startup chime handled via nvram. Notification sounds (email/app dings) are per-app
+  # in System Settings ▸ Notifications — a manual gate, not a scriptable default.
   defaults write NSGlobalDomain com.apple.sound.uiaudio.enabled -bool false
   defaults write NSGlobalDomain com.apple.sound.beep.volume -float 0
-  ok "general · typing · snappy UI · menu-bar autohide"
+  ok "general · typing · snappy UI · menu-bar autohide · silent UI"
   # Keyboard — fast repeat (vim), full keyboard access, traditional scroll
   defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
   defaults write NSGlobalDomain KeyRepeat -int 0
@@ -338,16 +376,23 @@ phase_macos() {
 }
 
 phase_gate() {
-  # macOS won't let a script grant TCC or approve a system extension — and it
-  # can't reliably verify them either (reading TCC.db needs Full Disk Access,
-  # itself a gate). So this just opens the panes + tells you exactly what to add.
-  say "GATE — grant these in System Settings (a script genuinely cannot do this)"
-  warn "Accessibility:     add yabai, skhd, sketchybar, Karabiner-Elements"
-  warn "Input Monitoring:  add skhd, Karabiner-Elements (karabiner_grabber)"
-  warn "System extensions: approve Karabiner, Mullvad, AdGuard when prompted"
-  warn "Wallpaper:         set Aerial \"Shuffle Earth\" manually"
+  # macOS won't let a script grant TCC, approve a system extension, install a
+  # config profile, or hide notification previews — and it can't reliably verify
+  # them either (reading TCC.db needs Full Disk Access, itself a gate). So this
+  # opens the panes + tells you exactly what to do; an LLM driving setup relays each.
+  say "GATE — grant/approve these in System Settings (a script genuinely cannot)"
+  warn "Accessibility:       add yabai, skhd, sketchybar, Karabiner-Elements"
+  warn "Input Monitoring:    add skhd, Karabiner-Elements (karabiner_grabber)"
+  warn "System extensions:   approve Karabiner, Mullvad, AdGuard when prompted"
+  warn "Reduce Transparency: Accessibility ▸ Display — ON (solid/filled menu bar; TCC-blocks scripting)"
+  warn "vProfile:            install ~/.ai/vProfile.mobileconfig (notification sound OFF, visual only)"
+  warn "Show previews:       Notifications ▸ Show previews → Never (hide content; not profile-able on macOS)"
+  warn "Wallpaper:           set Aerial \"Shuffle Earth\" manually"
   open 'x-apple.systempreferences:com.apple.settings.PrivacySecurity?Privacy_Accessibility' 2>/dev/null
   open 'x-apple.systempreferences:com.apple.settings.PrivacySecurity?Privacy_ListenEvent' 2>/dev/null
+  [ -f "$HOME/.ai/vProfile.mobileconfig" ] && open "$HOME/.ai/vProfile.mobileconfig" 2>/dev/null
+  open 'x-apple.systempreferences:com.apple.preferences.configurationprofiles' 2>/dev/null
+  open 'x-apple.systempreferences:com.apple.Notifications-Settings.extension' 2>/dev/null
   warn "after granting: yabai --restart-service && skhd --restart-service"
 }
 
@@ -361,6 +406,10 @@ phase_doctor() {
   local t miss=0
   for t in tmux nvim git gh mise uv node rg fzf jq; do command -v "$t" >/dev/null 2>&1 || { warn "missing: $t"; miss=1; }; done
   [ "$miss" = 0 ] && ok "core CLI tools present"
+  # mise-managed runtimes materialized? (the gap that broke python3 + p10k)
+  command -v mise >/dev/null 2>&1 && { mise ls 2>/dev/null | grep -qi missing && warn "mise tools missing — run 'mise install'" || ok "mise tools present (python · node · cmake)"; }
+  # docker is on-demand via colima (not autostarted) — note, don't fail
+  command -v colima >/dev/null 2>&1 && { colima status >/dev/null 2>&1 && ok "colima running (docker ready)" || ok "docker idle — run 'colima start' when needed (on-demand by design)"; }
 }
 
 usage() {

@@ -220,3 +220,34 @@ Our approach was confirmed correct by web research:
   Switching · P13 TCC perms (yabai/skhd/karabiner) · P14 Tailscale login · P15
   per-host key · P16 Remote Login · P17 yabai SA (SIP — skipped, Tahoe-flaky) ·
   P18 doctor.
+
+## Live-setup findings — 2026-06-27 (vBookNeo: sketchybar · shell · sound)
+
+- **sketchybar metrics need macmon AND a compiled bar-daemon.** `helpers/bar-daemon.swift`
+  spawns `/opt/homebrew/bin/macmon pipe` (~line 917) and is the ONLY writer of
+  `/tmp/sketchybar_cache`; the binary is gitignored → must be `swiftc`-compiled per machine.
+  Missing either = blank cpu/gpu/temp/memory/power. Fixed inline: `brew "macmon"` + a
+  `swiftc` compile step in `phase_services`. macmon needs no sudo.
+- **Reduce Transparency is a TCC gate, not a scriptable default.** `defaults write
+  com.apple.universalaccess reduceTransparency` is SILENTLY REFUSED on Tahoe (the old line
+  did nothing). Toggle manually (Accessibility ▸ Display) — the supported way to a
+  solid/"filled" menu bar. Now a self-verifying gate in `phase_macos` + `phase_gate`.
+- **mise tools configured but never installed.** `~/.config/mise/config.toml` pins
+  python=3.13 · node=lts · cmake + `python.uv_venv_auto=true`, but `mise install` was never
+  run → no python3 shim → stale `zsh-autoswitch-virtualenv` plugin warned every shell init
+  → broke p10k instant prompt. Fix: `mise install` step in `phase_packages`; removed the
+  plugin + `AUTOSWITCH_DEFAULT_PYTHON` from `.shell`. Python/venvs via mise+uv now.
+- **Stale uv standalone env line in `.profile`.** `. "$HOME/.local/bin/env"` (uv
+  standalone-installer artifact) errored every shell because uv is brew-managed. Guarded:
+  `[ -f ... ] && . ...`. (`.zprofile` is a symlink → `.profile`; one real file.)
+- **Cask drift + tailscale rename.** Added `1password-cli`/`steam`/`openemu`; renamed
+  deprecated cask `tailscale` → `tailscale-app`. Cask manifest now matches installed. Do
+  NOT add `node`/`tailscale` formulae (mise owns node; cask ships tailscale CLI).
+- **Notification sound: vProfile, not defaults.** Not scriptable on Tahoe (ncprefs dead;
+  per-app `PreviewType` is iOS-only). Solution = `~/.ai/vProfile.mobileconfig`
+  (`com.apple.notificationsettings`, `SoundsEnabled=false` per app, banners kept = visual
+  only). macOS `allowmanualinstall=true` → installs without MDM (one approval = a gate).
+  "Show previews → Never" is a separate manual gate. KEEP volume-change feedback (wanted).
+  Verified silent. vProfile = superset of fleet apps (inert entries for absent apps).
+- **mas still not worth it.** The 2 MAS apps are cask-redundant (1Password-for-Safari ships
+  in the `1password` cask; AdGuard Mini = `adguard` cask). Stay 100% cask = the manifest.
