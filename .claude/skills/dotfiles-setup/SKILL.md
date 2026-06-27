@@ -1,11 +1,13 @@
 ---
 name: dotfiles-setup
-description: Use when owner says "set up this Mac", "bootstrap this Mac", "match the laptop", "make this feel like mine", "/dotfiles-setup", or runs on a fresh macOS install. Reads ~/.setup/AI.md and executes phases in order, pausing at manual gates with deeplinks + iPhone notification. Every step is idempotent — safe to re-run after interruption, after dotfiles pull, or any time as a drift check. Profile (workstation/server) auto-detected by $USER. Helpers: ~/.setup/ai/ux.sh (visual), ai/gate.sh (manual gates), ai/doctor.sh (verify).
+description: Use when owner says "set up this Mac", "bootstrap this Mac", "match the laptop", "make this feel like mine", "/dotfiles-setup", or runs on a fresh macOS install. Front door is the self-contained ~/.ai/setup (inline package list + curated macOS defaults; phases packages·fonts·services·xcode·macos·gate·doctor). Manual gates (TCC, system-extension approvals, config-profile installs, appearance toggles like Reduce Transparency) are relayed IN-CHAT by the driving LLM — open the pane, owner flips it, verify with a probe (NOT the legacy iPhone-ping/read-loop). Every step is idempotent — safe to re-run after interruption, after a dotfiles pull, or any time as a drift check. Profile auto-detected by $USER. ~/.setup/ is frozen reference (see ~/.setup/README.md); ~/.ai/setup never sources it.
 ---
 
 # dotfiles-setup
 
-Owner-environment bootstrap orchestrator. Source of truth: `~/.setup/AI.md`. This skill is just the launcher.
+Owner-environment bootstrap orchestrator. **Source of truth: the self-contained `~/.ai/setup`** (inline package list + macOS defaults). `~/.setup/AI.md` is the cold-start runbook (the repo-internal steps `setup` can't do); `~/.setup/` is otherwise frozen reference. This skill drives `~/.ai/setup` and relays its manual gates in-chat.
+
+> **The two skills.** `dotfiles-setup` (this one) = **discover + set up** a machine. `update-dotfiles` = **update + improve** (capture live drift back into `~/.ai/setup` + `ISSUES.md`). When you fix something live that the setup wouldn't reproduce, that's an `update-dotfiles` job.
 
 ## Activation
 
@@ -47,34 +49,56 @@ cover (Tailscale P14, Remote Login P16, Continuity P17.5). The legacy phase-by-p
 5. **No state markers, no manifest.** Idempotency in the actions is the resume mechanism.
 6. **Sub-command**: `/dotfiles-setup doctor` — just runs `bash ~/.setup/ai/doctor.sh`. Exit 0/1/2 (clean/warnings/failures). No actions.
 
-## Manual-gate UX
+## Manual-gate UX — LLM-driven (primary)
 
-When AI.md flags a phase **[GATE]**, source `gate.sh` and call `ai_gate`:
+A gate is a step macOS forbids a script from doing: grant TCC (Accessibility/Input
+Monitoring), approve a system extension, install a config profile, toggle Reduce
+Transparency, hide notification previews, sign into iCloud. **You (the driving LLM) are the
+gate runner** — there's a person in the session with you:
 
+1. **Explain** what the gate is for (one line).
+2. **Open the pane**: `open "<deeplink>"` (or `open ~/.ai/vProfile.mobileconfig` for the profile).
+3. **Wait** for the owner to flip it (they say "done").
+4. **Verify with a probe** where possible — `defaults read com.apple.universalaccess reduceTransparency` (==1), `profiles list | grep vProfile`. If it didn't take, say so.
+
+This replaces the old iPhone-ping flow. Worked example from 2026-06-27: Reduce Transparency —
+`defaults write` is silently refused on Tahoe, so it MUST be a relayed gate, verified by probe.
+
+### Gates `~/.ai/setup` opens (phase_gate)
+- **Accessibility / Input Monitoring** — yabai, skhd, sketchybar, Karabiner
+- **System extensions** — Karabiner, Mullvad, AdGuard (when prompted)
+- **Reduce Transparency** — Accessibility ▸ Display ON (solid/"filled" menu bar; TCC-blocked)
+- **vProfile** — install `~/.ai/vProfile.mobileconfig` (notification sound off, visual only)
+- **Show previews → Never** — Notifications pane (hide content; not profile-able on macOS)
+- **Wallpaper** — Aerial
+
+Cold-start gates still live in `AI.md` (git-crypt key, iCloud settle, Tailscale OAuth,
+Remote Login, Continuity, sudo).
+
+### Legacy (optional): `ai_gate` / `gate.sh`
+`~/.setup/ai/gate.sh`'s `ai_gate` (deeplink → iPhone notification → `read` done/skip/abort
+loop) is the **unattended-owner** path — useful only when NO LLM is driving. Reference, not
+default. Don't wire it into `~/.ai/setup` (which stays self-contained).
+
+## Maintenance / drift-capture (the update loop)
+
+When you fix something live that `~/.ai/setup` wouldn't reproduce on a fresh machine,
+**capture it** — that's what keeps the fleet consistent:
+1. Fix it live.
+2. **Capture inline** in `~/.ai/setup` (package · default · phase) — the source of truth.
+3. **Log the why** in `~/.ai/ISSUES.md` (dated bullet).
+4. Relay any resulting gate in-chat.
+
+One-shot drift audit (both directions):
 ```bash
-. ~/.setup/ai/gate.sh
-ai_gate "<name>" "<deeplink_or_empty>" "<verify_cmd>" "<help_line_1>" "<help_line_2>"
+# installed but NOT in the manifest
+comm -23 <(brew list --cask|sort) <(grep -oE '^cask "[^"]+"' ~/.ai/setup|sed 's/cask "//;s/"//'|sort)
+comm -23 <(brew leaves|sort)      <(grep -oE '^brew "[^"]+"' ~/.ai/setup|sed 's/brew "//;s/"//;s#.*/##'|sort)
+# referenced-by-config but MISSING (surfaces as console noise on shell init)
+zsh -lic exit 2>&1 | grep -iE 'warning|not found'
+mise ls | grep -i missing
 ```
-
-`ai_gate` handles all five steps:
-
-1. **Pre-checks** the verify cmd; if it already passes, returns silently with "(already satisfied)" — no point making the owner click for nothing.
-2. **Opens** the deeplink (if given) via `open`.
-3. **Notifies** via `osascript display notification` + Messages-to-iPhone if `AI_GATE_IPHONE` env var is set.
-4. **Prints** the orange-bordered box with help text.
-5. **Loops** on owner input: `done` re-runs verify, `skip` warns and returns 1, `abort` returns 2.
-
-If `gate.sh` is missing (pre-P4 fresh bootstrap), fall back to a minimal inline equivalent — `open` + `read -p "done? "` + re-run verify.
-
-The 7 manual gates in AI.md:
-
-- **P0.7** git-crypt key transfer (AirDrop from laptop)
-- **P10** iCloud sync settle wait
-- **P13** TCC checklist (single batched System Settings trip)
-- **P14** Tailscale OAuth
-- **P16** Remote Login toggle
-- **P17.5** 9 Continuity sub-gates (mostly iPhone-side; owner pre-completes in parallel)
-- **P12** sudo password for pmset (server) / yabai SA P17 (workstation) — pre-cached via `sudo -v`
+This is the `update-dotfiles` skill's job; `~/.ai/setup doctor` also flags gaps.
 
 ## Fresh-Mac edge case (~/.setup/AI.md doesn't exist yet)
 

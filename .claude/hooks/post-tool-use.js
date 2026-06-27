@@ -183,6 +183,34 @@ function processToolResult(result) {
     }
   }
 
+  // ========================================
+  // Ambient dotfiles drift nudge — gentle, occasional, stateless.
+  // When editing a dotfiles-TRACKED file and the uncommitted pile is large,
+  // ~1/3 of the time remind to run /update-dotfiles. No state files (git state only);
+  // the random gate also short-circuits before any git call 2/3 of the time (perf).
+  // ========================================
+  if (['Edit', 'Write', 'MultiEdit'].includes(tool_name) && !error && Math.random() < 0.34) {
+    try {
+      const filePath = tool_input?.file_path || '';
+      const home = os.homedir();
+      const absPath = path.isAbsolute(filePath) ? filePath : path.resolve(filePath);
+      // Skip non-home files and session-scoped plans (committed separately).
+      if (absPath.startsWith(home) && !absPath.startsWith(path.join(home, '.claude', 'plans'))) {
+        const { execFileSync } = require('child_process');
+        const git = '/usr/bin/git';
+        const gitArgs = ['--git-dir=' + path.join(home, '.dotfiles'), '--work-tree=' + home];
+        const opts = { timeout: 1500, stdio: ['ignore', 'pipe', 'ignore'] };
+        // Throws if the edited file isn't tracked by the dotfiles repo → caught → silent.
+        execFileSync(git, [...gitArgs, 'ls-files', '--error-unmatch', absPath], opts);
+        const status = execFileSync(git, [...gitArgs, 'status', '--short'], opts).toString();
+        const count = status.split('\n').filter(l => l.trim()).length;
+        if (count >= 10) {
+          return context(`<system-reminder>You're editing tracked dotfiles and ${count} files are uncommitted. At a natural pause, consider /update-dotfiles to capture them (and fold any package drift into ~/.ai/setup). Gentle reminder — don't interrupt the current task.</system-reminder>`);
+        }
+      }
+    } catch { /* not tracked / git unavailable — stay silent */ }
+  }
+
   // No additional context needed
   return {};
 }

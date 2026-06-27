@@ -39,8 +39,9 @@ Always commit to the current branch. Never switch branches without asking.
 | Editor | `editor` | `.vimrc`, `.config/nvim` (submodule), `Library/Application Support/Code/*` |
 | Git | `git` | `.gitconfig`, `.gitmessage`, `.gitignore`, `.gitattributes`, `.globalgitignore`, `.gitmodules` |
 | GH | `gh` | `.config/gh/config.yml` (no tokens — `hosts.yml` is separate) |
-| Alfred | `alfred` | `.alfred/*` (~400 files: prefs, workflows, themes) |
-| Setup | `setup` | `.setup/*` (brew.sh, fonts.sh, macos.sh, Brewfile, etc.) |
+| Alfred | `alfred` | `.alfred/*` (~400 files) — **DEPRECATED: Raycast replaced it; NOT in use, kept for reference only** |
+| Raycast | `raycast` | `.config/raycast/raycast.rayconfig` (encrypted free-tier export; import via Raycast "Import Settings & Data") |
+| Setup | `setup` | **`.ai/*` (LIVE: setup · README · ISSUES · vProfile.mobileconfig)** + `.setup/*` (frozen reference) |
 | Docker | `docker` | `.docker/*` |
 | Fish | `fish` | `.config/fish/*`, `.config/fisher/*`, `.config/omf/*` |
 | Meta | `dotfiles` | `.github/README.md`, `.logo`, `.theme`, `.assets/*`, `.utcp_config.json` |
@@ -159,6 +160,29 @@ done
 - Sketchybar `helpers/*.swift` sources (track source, not compiled binaries)
 
 **Ask:** "Found N untracked config files in [dirs]. Want to review them for tracking?"
+
+### Phase 5b: Manifest drift — keep `~/.ai/setup` honest
+
+The owner doesn't always remember to capture new apps/tools (that's the point of this skill).
+On any dotfiles commit, run the two-direction drift audit and offer to fold gaps into the
+manifest BEFORE committing:
+
+```bash
+# (A) installed but NOT in the manifest → candidates to add
+comm -23 <(brew list --cask|sort) <(grep -oE '^cask "[^"]+"' ~/.ai/setup|sed 's/cask "//;s/"//'|sort)
+comm -23 <(brew leaves|sort)      <(grep -oE '^brew "[^"]+"' ~/.ai/setup|sed 's/brew "//;s/"//;s#.*/##'|sort)
+# (B) referenced-by-config but MISSING (shell-init noise = a fresh-machine break)
+zsh -lic exit 2>&1 | grep -iE 'warning|not found'
+mise ls | grep -i missing
+```
+
+- **Capture into `~/.ai/setup`** (the LIVE manifest), never `.setup/` (frozen reference).
+- Annotate by owner-relevance; don't blindly add — skip one-off/experimental installs, ask.
+- Things mise-managed (node·python·cmake) or shipped by a cask (tailscale CLI) do NOT belong
+  as separate `brew` lines. MAS-only apps need owner sign-off (App Store gate).
+- Log non-obvious root causes in `~/.ai/ISSUES.md`. `~/.ai/setup doctor` also flags gaps.
+
+This is the "you help me remember" loop — paired with `dotfiles-setup` (discover/set up).
 
 ### Phase 6: Report
 
