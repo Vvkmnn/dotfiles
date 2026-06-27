@@ -606,7 +606,8 @@
     "mode": "auto-allow"
   },
   "alwaysThinkingEnabled": true,
-  "effortLevel": "high",
+  "editorMode": "vim",
+  "skipAutoPermissionPrompt": true,
   "voiceEnabled": true,
-  "editorMode": "vim"
+  "tui": "fullscreen"
 }

@@ -8,3 +8,6 @@
 
 # VS Code user-level files live elsewhere (`.vscode/` snapshot in repo)
 Library/Application Support/Code/**
+
+# Ghostty community shaders — 36MB, vendored from upstream repo
+.config/ghostty/shaders/
