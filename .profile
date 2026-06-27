@@ -81,8 +81,17 @@
 # └────────────────────────────────────────────────────────────────────────────┘
 
 # ┌────────────────────────────────────────────────────────────────── docker ──┐
-  export COLIMA_HOME="/Volumes/vSSD/Sandbox/Colima"
-  export DOCKER_HOST="unix://$COLIMA_HOME/docker.sock"
+  # Standard: local Colima (~/.colima) — docker uses its default context, no env needed.
+  # OPTIONAL escape hatch (low local storage): if Colima was set up on the vSSD, point
+  # docker at it. Auto-activates ONLY when that dir exists — never the fleet default.
+  if [ -d "/Volumes/vSSD/Sandbox/Colima" ]; then
+    export COLIMA_HOME="/Volumes/vSSD/Sandbox/Colima"
+    export DOCKER_HOST="unix://$COLIMA_HOME/docker.sock"
+  else
+    # Clear any stale/inherited value (e.g. an old `launchctl setenv`) so docker
+    # falls back to the default local Colima context.
+    unset COLIMA_HOME DOCKER_HOST 2>/dev/null
+  fi
 # └────────────────────────────────────────────────────────────────────────────┘
 
 # ┌─────────────────────────────────────────────────────────────── security ───┐
@@ -133,7 +142,9 @@
       export GOBIN="$HOME/.local/bin"
 
       # ────────────────────────────────────────────────────────────── python ──
-      . "$HOME/.local/bin/env"
+      # uv's standalone installer drops ~/.local/bin/env; brew-managed uv does not.
+      # Guard the source so a missing file doesn't error on every shell start.
+      [ -f "$HOME/.local/bin/env" ] && . "$HOME/.local/bin/env"
       ;;
   Linux) ;;
   CYGWIN* | MINGW32* | MSYS* | MINGW*)

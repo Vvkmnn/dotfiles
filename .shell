@@ -128,8 +128,9 @@
       }
       # vi mode
       zcomet load jeffreytse/zsh-vi-mode
-      # auto-switch python virtualenv
-      zcomet load MichaelAquilina/zsh-autoswitch-virtualenv
+      # (removed zsh-autoswitch-virtualenv — mise provides python + python.uv_venv_auto
+      #  in ~/.config/mise/config.toml handles per-project venvs. The old plugin needed a
+      #  fixed global python and warned on every shell init, breaking p10k instant prompt.)
       # git aliases
       zcomet load ohmyzsh plugins/gitfast
       # tmux integration (moved before instant prompt)
@@ -172,7 +173,8 @@
       [ -f ~/.theme/lf/colors.sh ] && . ~/.theme/lf/colors.sh
 
       # ────────────────────────────────────────────────────────────── python ──
-      export AUTOSWITCH_DEFAULT_PYTHON="/opt/homebrew/bin/python3"
+      # Python is managed by mise (~/.config/mise/config.toml) + uv. No global python
+      # pin needed — `mise activate` (below) puts the right python3 on PATH; uv handles venvs.
 
       # ─────────────────────────────────────────────────────────────── ngrok ──
       command -v ngrok &>/dev/null && eval "$(ngrok completion)"
