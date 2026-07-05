@@ -37,12 +37,32 @@
 #     fi
 # }
 
-zodiac_sign() {
-	# Today's month and day in MMDD format with leading zeros
-	today=$(date +%m%d)
+# Single date call supplies every field every subcommand below needs (was up to 13
+# separate `date` forks in `all` alone — one per field, plus 4 re-calls of `date +%Y`
+# inside the leap-year ternary). One fork, parsed once, reused everywhere.
+read -r _g _m _V _j _d _u _T _Y <<< "$(date '+%g %-m %V %-j %-d %-u %T %Y')"
 
-	# Convert today's date from MMDD format to a numeric value for comparison
-	today_numeric=$(echo $today | sed 's/^0*//') # Remove leading zeros
+# Leap-aware days-in-year, zero fork (pure arithmetic on $_Y from the read above).
+# Verified against edge cases: 2024/leap, 2026/non-leap, 2000/leap(/400), 1900/non-leap(/100).
+days_in_year() {
+	if (( _Y % 400 == 0 || (_Y % 4 == 0 && _Y % 100 != 0) )); then echo 366; else echo 365; fi
+}
+
+# Days-in-month via static lookup, zero fork — replaces the old GNU/BSD `date --version`
+# detection + `date -v+1m -v1d -v-1d` / `date -d ... +1 month -1 day` shell-out entirely.
+# The lookup works identically on GNU and BSD date, so it's simpler AND more portable,
+# not just faster.
+days_in_month() {
+	case "$_m" in
+		1|3|5|7|8|10|12) echo 31 ;;
+		4|6|9|11) echo 30 ;;
+		2) [ "$(days_in_year)" = 366 ] && echo 29 || echo 28 ;;
+	esac
+}
+
+zodiac_sign() {
+	# MMDD as a number, built from the shared $_m/$_d (no separate date/sed forks)
+	today_numeric=$((_m * 100 + _d))
 
 	# Check the date against zodiac sign ranges using numeric comparison
 	if [[ "$today_numeric" -lt 120 ]] || [[ "$today_numeric" -ge 1222 ]]; then
@@ -76,74 +96,30 @@ zodiac_sign() {
 
 case "$1" in
 day_of_week)
-	echo "$(date +%-u)|7"
-	# echo "$(date +%-u)⋮7"
-	# echo "$(date +%-u)/7"
-	# echo "$(date +%-u)"
+	echo "$_u|7"
 	;;
 
 day_of_month)
-	# Current day of the month
-	day=$(date +%-d)
-
-	# Try to detect if we're using GNU date (Linux) or BSD date (macOS).
-	if date --version >/dev/null 2>&1; then
-		# GNU date command; likely a Linux system
-		last_day=$(date -d "$(date +'%Y-%m-01') +1 month -1 day" +%d)
-	else
-		# BSD date command; likely a macOS system
-		last_day=$(date -v+1m -v1d -v-1d +%d)
-	fi
-
-	# echo "$day/$last_day"
-	echo "$day|$last_day"
-	# echo "$day⋮$last_day"
-	# echo "$day"
+	echo "$_d|$(days_in_month)"
 	;;
 
 day_of_year)
-	# Day of the year
-	day=$(date +%-j)
-	# Total days in the current year, accounting for leap years
-	if (($(date +%Y) % 400 == 0)); then
-		leap="true"
-	elif (($(date +%Y) % 100 == 0)); then
-		leap="false"
-	elif (($(date +%Y) % 4 == 0)); then
-		leap="true"
-	else
-		leap="false"
-	fi
-	total_days=$((leap ? 366 : 365))
-	# echo "$day/$total_days"
-	echo "$day|$total_days"
-	# echo "$day⋮$total_days"
-	# echo "$day"
+	echo "$_j|$(days_in_year)"
 	;;
 
 week_of_year)
-	# echo "$(date +%V)/52"
-	echo "$(date +%V)|52"
-	# echo "$(date +%V)⋮52"
-	# ⫶
-	# echo "$(date +%V)"
+	echo "$_V|52"
 	;;
 current_month)
-	# echo "$(date +%-m)/12"
-	echo "$(date +%-m)|12"
-	# echo "$(date +%-m)⋮12"
-	# echo "$(date +%-m)"
+	echo "$_m|12"
 	;;
 year_week_based)
 	# 63 == 2054
 	# 72 == 2063
-	# echo "$(date +%g)/54"
-	echo "$(date +%g)|54"
-	# echo "$(date +%g)54"
-	# echo "$(date +%g)"
+	echo "$_g|54"
 	;;
 time)
-	echo "$(date +%T)"
+	echo "$_T"
 	;;
 zodiac)
 	# Call the function to get zodiac sign emoji
@@ -152,7 +128,7 @@ zodiac)
 all)
 	# Single call for all status components for performance
 	# Order: biggest unit (year) → smallest unit (time), gradient stays the same
-	echo "#[fg=#c0a36e]$(date +%g)|54 #[fg=#cda45c]$(date +%-m)|12 #[fg=#d7af72]$(date +%V)|52 #[fg=#e0bc89]$(date +%-j)|$(((($(date +%Y) % 400 == 0)) || ((($(date +%Y) % 4 == 0)) && (($(date +%Y) % 100 != 0))) ? 366 : 365)) #[fg=#e8caa1]$(date +%-d)|$(date -v+1m -v1d -v-1d +%d) #[fg=#f0ddc6]$(date +%-u)|7 #[fg=#fffaf0]$(date +%T) "
+	echo "#[fg=#c0a36e]$_g|54 #[fg=#cda45c]$_m|12 #[fg=#d7af72]$_V|52 #[fg=#e0bc89]$_j|$(days_in_year) #[fg=#e8caa1]$_d|$(days_in_month) #[fg=#f0ddc6]$_u|7 #[fg=#fffaf0]$_T "
 	;;
 *)
 	echo "Invalid argument: $1"
