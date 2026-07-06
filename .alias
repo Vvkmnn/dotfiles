@@ -89,9 +89,8 @@
 # └────────────────────────────────────────────────────────────────────────────┘
 
 # ┌─────────────────────────────────────────────────────────────────── tools ──┐
-  # bat
-  alias cat='bat --paging=never'
-  alias cath='bat'
+  # bat — use `bat` directly for highlighting; cat stays REAL cat
+  #   (removed cat=bat + cath aliases 2026-07-07: bat broke `cat -v` and pipes)
   # fd
   alias find='fd'
   alias fdfind='fd'
