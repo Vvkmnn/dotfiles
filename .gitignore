@@ -408,6 +408,39 @@ dotfiles.key
 .claude-mem/
 .claude-historian/
 
+# Codex - track only intentional guidance/skills; exclude secrets/state/caches
+.codex/config.toml
+.codex/*.config.toml
+.codex/auth.json
+.codex/installation_id
+.codex/version.json
+.codex/models_cache.json
+.codex/history.jsonl
+.codex/.codex-global-state.json
+.codex/.codex-global-state.json.bak
+.codex/.personality_migration
+.codex/*.sqlite
+.codex/*.sqlite-*
+.codex/log/
+.codex/logs/
+.codex/cache/
+.codex/tmp/
+.codex/.tmp/
+.codex/sessions/
+.codex/shell_snapshots/
+.codex/memories/
+.codex/memories_extensions/
+.codex/plugins/cache/
+.codex/plugins/.plugin-appserver/
+.codex/plugins/.remote-plugin-install-staging/
+.codex/ambient-suggestions/
+.codex/computer-use/
+.codex/sqlite/
+.codex/vendor_imports/
+.codex/app-server-*/
+.codex/app-server-daemon/
+.codex/skills/.system/
+
 # Bun install cache (per-machine, large, churning)
 .bun/install/cache/
 
