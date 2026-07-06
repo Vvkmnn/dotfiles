@@ -107,7 +107,7 @@ if ! command -v brew >/dev/null; then
     "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
-brew install git git-crypt jq
+brew install git git-crypt jq mise   # mise here (not just P8) so P6.5 can provision node early
 ```
 
 ### P3 — Network priority **[server]**
@@ -166,6 +166,22 @@ done
 dotfiles submodule update --init --recursive --jobs 4
 ```
 
+### P6.5 — Provision language runtimes (mise) — EARLY, so hooks + shell work
+
+```bash
+# WHY here (not just P8): deploying the dotfiles (P4) activates
+# .claude/settings.json's safety hooks — which run via `node`
+# (~/.local/share/mise/shims/node) — and .shell (mise/zoxide/atuin init),
+# BEFORE the P8 Brewfile installs runtimes. That left a window where the
+# PreToolUse guardrail silently failed ("node: command not found" → treated
+# non-blocking → hooks bypassed) and every shell init errored. Provision node
+# right after the mise config lands (P4) to close it. (.shell tool-inits are
+# also `command -v`-guarded to tolerate any residual gap.)
+mise install    # reads ~/.config/mise/config.toml (node=lts, python=3.13, cmake=latest)
+mise reshim     # ensure ~/.local/share/mise/shims/node exists — the path the hooks use
+command -v node >/dev/null && node --version   # verify: hooks can now run
+```
+
 ### P7 — git-crypt unlock
 
 ```bash
@@ -175,15 +191,23 @@ dotfiles submodule update --init --recursive --jobs 4
 key=""
 if command -v op >/dev/null && op account list 2>/dev/null | grep -q .; then
   key=$(mktemp)
-  op document get "Dotfiles" --vault Personal --out-file "$key" 2>/dev/null \
-    || op read "op://Personal/Dotfiles/dotfiles.key" --out-file "$key" 2>/dev/null
+  # --force: mktemp already created the file, so op needs it to overwrite
+  # (without it, op aborts "cannot prompt for confirmation" in a no-TTY shell,
+  # leaving an empty file → false FATAL below). Don't 2>/dev/null the real error.
+  op document get "Dotfiles" --vault Personal --out-file "$key" --force \
+    || op read "op://Personal/Dotfiles/dotfiles.key" --out-file "$key" --force
 fi
 [ -s "$key" ] || for f in ~/Downloads/dotfiles.key ~/Downloads/key ~/Documents/dotfiles.key ~/Documents/key; do
   [ -f "$f" ] && key="$f" && break
 done
 test -s "$key" || { echo "FATAL: git-crypt key not found (1Password 'Dotfiles' item, or AirDropped file)" >&2; exit 1; }
-cd ~ && git-crypt unlock "$key"
-head -1 ~/.claude.json | grep -qv 'GITCRYPT'  # verify decrypted
+# Bare repo: git-crypt can't find the repo from $HOME (no .git here) — must pass
+# GIT_DIR/GIT_WORK_TREE. Unlock also needs a clean tree; if bootstrap made WIP
+# edits, `dotfiles stash` first and `dotfiles stash pop` after.
+GIT_DIR="$HOME/.dotfiles" GIT_WORK_TREE="$HOME" git-crypt unlock "$key"
+# Verify via an actually-git-crypt-tracked file — NOT ~/.claude.json, which is
+# Claude Code's live (untracked, always-plaintext) file and would pass vacuously.
+head -c 1 ~/.claude/mcp/config.json | grep -q '{' || { echo "FATAL: git-crypt did not decrypt" >&2; exit 1; }
 case "$key" in /var/folders/*|/tmp/*) rm -P "$key" ;; esac  # shred temp copy from 1Password
 ```
 
