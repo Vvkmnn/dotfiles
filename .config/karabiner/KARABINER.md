@@ -83,3 +83,14 @@ See `scripts/smart-screenshot-resize.sh` header comments for:
 - Detailed testing procedures
 - Resize dimension adjustment
 - Research sources and credits
+
+## Screen Sharing caveat (not a bug)
+
+Karabiner remaps only events from a **physical HID device** (via its DriverKit
+VirtualHIDDevice). When you Screen Share **into** a Mac, keystrokes arrive as
+**synthetic events injected by the screen-sharing agent** and bypass Karabiner
+entirely — so these shortcuts (and any remap) do NOT fire on the *host* over a
+share. The remaps you get over the wire come from the **machine you're typing on**
+(the parent/client). Fix: keep this config on whatever machine you screen-share
+*from*. On the host, remaps work only on its own attached keyboard. (See
+`~/.ai/ISSUES.md`, 2026-07-07.)
