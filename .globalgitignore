@@ -11,3 +11,11 @@ Library/Application Support/Code/**
 
 # Ghostty community shaders — 36MB, vendored from upstream repo
 .config/ghostty/shaders/
+
+# Rust is mise-managed (config.toml: rust="stable") — never track the toolchain.
+# Was 33MB of arch-specific binaries committed by mistake; untracked 2026-07-07.
+.cargo/bin/
+.cargo/env
+.cargo/registry/
+.cargo/.package-cache
+.rustup/
