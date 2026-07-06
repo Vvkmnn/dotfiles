@@ -50,6 +50,7 @@ set_random_emoji() {
 			"🦕"   # Sauropod
 			"🦖"   # T-Rex
 			"🐋"   # Whale
+			"🫍"   # Orca (Unicode 17.0 — needs macOS/iOS 26.4+ to render)
 			"🐬"   # Dolphin
 			"🦭"   # Seal
 			"🦈"   # Shark
