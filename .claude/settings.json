@@ -592,6 +592,14 @@
     "claude-vigil@claude-emporium": true,
     "claude-augur@claude-emporium": true
   },
+  "extraKnownMarketplaces": {
+    "anthropic-agent-skills": {
+      "source": {
+        "source": "github",
+        "repo": "anthropics/skills"
+      }
+    }
+  },
   "sandbox": {
     "allowUnsandboxedCommands": true,
     "network": {
@@ -645,19 +653,15 @@
   },
   "alwaysThinkingEnabled": true,
   "tui": "fullscreen",
+  "voice": {
+    "enabled": true,
+    "mode": "hold"
+  },
   "editorMode": "vim",
   "showTurnDuration": true,
   "terminalProgressBarEnabled": true,
   "inputNeededNotifEnabled": true,
   "agentPushNotifEnabled": true,
   "skipAutoPermissionPrompt": true,
-  "voiceEnabled": true,
-  "extraKnownMarketplaces": {
-    "anthropic-agent-skills": {
-      "source": {
-        "source": "github",
-        "repo": "anthropics/skills"
-      }
-    }
-  }
+  "voiceEnabled": true
 }
