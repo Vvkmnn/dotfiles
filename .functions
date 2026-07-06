@@ -248,11 +248,11 @@
     print -P "$rule"
     print -P "  power   ${pstate} ${pct:-?}%% [$(_vw_bar ${pct:-0})]   temp ${temp}   load ${load:-?}"
     if (( hot )); then
-      print -P "  wake    %F{red}HOT%f — open the lid / cut load, or ^C to let it cool and sleep"
+      print -P "  wake    %F{red}HOT%f — throttling; open the lid or cut load (still holding awake)"
     elif (( ac )); then
-      print -P "  wake    %F{green}AVAILABLE%f — held on AC + lid open (unplug or close lid -> sleeps, safe)"
+      print -P "  wake    %F{green}AVAILABLE%f — held awake on AC (no battery cost)"
     else
-      print -P "  wake    %F{yellow}SLEEPS ON BATTERY%f — sparing cycles; plug in to stay available"
+      print -P "  wake    %F{yellow}AVAILABLE%f — held awake on battery (${pct:-?}%%, draining) — plug in to spare it"
     fi
     print -P "$rule"
     print -P "  agents"
@@ -275,15 +275,15 @@
     print -P "  tmux    ${ns} sessions · ${nw} windows          %F{8}^C to release%f"
   }
 
-  # vw — v[wake]: keep THIS machine available for agentic work, hardware-safe. `caffeinate -s`
-  # holds it awake ONLY on AC + lid-open — unplug or close the lid and it sleeps naturally,
-  # sparing battery cycles and never trapping heat in the fanless chassis (mosh + tmux survive
-  # sleep, so nothing is lost — you reconnect on wake). Display sleeps on its own (no -d, no
-  # wasted backlight). SINGLE-INSTANCE: if a vw already holds this machine awake, it reports WHERE
-  # and exits — never competes. Live ASCII dashboard: power, thermal, agents, tmux. PROCESS-BOUND:
-  # ^C / close -> caffeinate dies -> normal sleep restored, no disk artifact.
+  # vw — v[wake]: keep THIS machine available for agentic work by any means, wasting the least
+  # energy possible. `caffeinate -im` holds the SYSTEM awake on AC *and* battery (lid open), but
+  # lets the display sleep (no -d = no wasted backlight). On battery it stays up and shows the
+  # drain honestly, so you decide when to plug in. Thermal-aware: warns if the fanless chassis
+  # throttles. SINGLE-INSTANCE: if a vw already holds this machine awake, it reports WHERE and
+  # exits — never competes. Live ASCII dashboard: power, thermal, agents, tmux. `disown`ed +
+  # EXIT-trap cleanup: never a stray "running job"; ^C/close -> caffeinate dies, no disk artifact.
   vw() {
-    local existing=$(pgrep -f 'caffeinate -s' 2>/dev/null | head -1)
+    local existing=$(pgrep -f 'caffeinate -im' 2>/dev/null | head -1)
     if [[ -n "$existing" ]]; then
       local owner=$(ps -o ppid= -p "$existing" 2>/dev/null | tr -d ' ')
       local loc=$(tmux list-panes -a -F '#{pane_pid} #{session_name}:#{window_index}.#{pane_index}' 2>/dev/null | awk -v p="$owner" '$1==p{print $2}')
@@ -291,11 +291,13 @@
       print -P "  Go there, or ^C it to release. Exiting."
       return 0
     fi
-    caffeinate -s &
-    local caff=$!
-    # cleanup on ANY exit (Ctrl-C, error, or normal) so caffeinate never leaks — even a render
-    # error that aborts the function still fires this EXIT trap, killing it + restoring the cursor.
-    trap 'kill $caff 2>/dev/null; tput cnorm 2>/dev/null; print -P "\n  %F{cyan}${HOST%%.*} released%f — normal sleep restored"' EXIT
+    # caffeinate -im: keep the SYSTEM awake for work on AC *and* battery (unlike -s = AC-only),
+    # but NOT -d — let the display sleep so we waste the least energy. `disown` so it's never a
+    # tracked shell job (no "you have running jobs" on exit).
+    caffeinate -im & local caff=$!; disown
+    # cleanup on ANY exit (Ctrl-C, error, normal) so caffeinate never leaks — even a render error
+    # that aborts the function fires this EXIT trap, killing it + restoring the cursor.
+    trap 'kill $caff 2>/dev/null; tput cnorm 2>/dev/null; print -P "\n  %F{cyan}${HOST%%.*} released%f"' EXIT
     tput civis 2>/dev/null
     while :; do _vw_render "$caff"; sleep 3; done
   }
