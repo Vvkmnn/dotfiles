@@ -1,95 +1,104 @@
-# .ai — agent-driven machine setup
+# .ai — shared AI machine setup
 
 ```
    ╭──────────────────────────────────────────────────────────╮
-   │   point claude at this repo  ·  walk away  ·  come home    │
+   │   point a strong AI at this repo · unlock 1Password · run │
    ╰──────────────────────────────────────────────────────────╯
 
-     ①  curl -fsSL https://claude.ai/install.sh | bash
-     ②  point claude at this repo     → reads ~/.claude/CLAUDE.md → ~/.ai
-     ③  sign into 1Password           → the one human gate
+     ①  install one capable AI CLI/app  → Codex or Claude
+     ②  point it at this repo           → reads tool adapter → ~/.ai
+     ③  sign into 1Password             → the one human secrets gate
               │
-              │   claude works, unattended:
-              │   brew + xcodes  ·  dotfiles → $HOME  ·  git-crypt unlock
+              │   AI works, unattended:
+              │   brew + xcodes · dotfiles → $HOME · git-crypt unlock
               ▼
-     ④  ☕  walk away                  (one 2FA code + one sudo, up front)
+     ④  ☕  walk away                    (one 2FA code + one sudo, up front)
               │
               ▼
-     ⑤  come back → claude prints the exact restart steps, and why
+     ⑤  come back → exact restart and manual-permission steps
      ⑥  restart
               │
               ▼
    ╭──────────────────────────────────────────────────────────╮
-   │   [^_^]   a beautiful, ready, bug-free environment         │
+   │   [^_^]   a beautiful, ready, owner-parity environment    │
    ╰──────────────────────────────────────────────────────────╯
 ```
 
 ## Mission
 
-**Point Claude at this dotfiles repo on a fresh Mac, do a few expected
-interventions early, walk away — and come back to a working, owner-parity
-environment.**
+**Point Codex, Claude, ChatGPT, or another capable AI at this dotfiles repo on a
+fresh Mac, do the expected interventions early, walk away, and come back to a
+working owner-parity environment.**
 
-That is the entire purpose of this folder. Everything here is judged against it:
-if a step needs a click in the middle, or only works when an agent improvises,
-it has failed the mission.
+This folder is the shared source of truth. Tool-specific folders are adapters:
+they should point here, not duplicate the runbook.
 
-## The human-intervention contract
+## Human-intervention contract
 
-Interventions are **minimal, expected, and early** — front-loaded at the start,
-never scattered through the run:
+Interventions are **minimal, expected, and early**:
 
-- **(early)** Apple ID / iCloud sign-in
-- **(early)** Unlock **1Password** — it then serves the GitHub SSH key, the
-  git-crypt key (`Personal → Dotfiles → dotfiles.key`), and Apple-ID creds
-- **(early)** One **sudo** password — cached and kept alive for the whole run
+- **Apple ID / iCloud sign-in** for Xcode and device continuity
+- **Unlock 1Password** for GitHub SSH, git-crypt, and Apple-ID credentials
+- **One sudo password** cached and kept alive during setup
+- **One Apple 2FA code** for `xcodes`, when Xcode is not already installed
+- **Manual macOS privacy gates** after install: Accessibility, Input Monitoring,
+  Screen Recording, notifications, and system extensions
 
-After those, it runs unattended to a working environment. If you're being asked
-for input *mid-run*, something violated this contract — log it in `ISSUES.md`.
+After those, setup should run unattended. If a mid-run prompt appears, log it in
+`ISSUES.md`.
 
-## Design principles (learned the hard way — see ISSUES.md)
+## Principles
 
-- **Automatable only.** The auto path is `brew` formulae + casks + **`xcodes`**
-  for Xcode. **Never MAS-only apps** (Apple blocks headless App Store installs;
-  `mas install` forces per-app auth) — they break "walk away." iWork etc. are
-  optional and live outside the automated path.
-- **One sudo + keep-alive** — never repeated password prompts.
-- **Idempotent** — safe to re-run after a crash; every step skips what's done.
-- **Fetch fresh from origin** before reasoning about the repo — never a stale or
-  iCloud-cached copy (that mistake cost us a whole wrong plan; see ISSUES.md).
-- **For the agent: execute the runbook, don't improvise.** No ad-hoc raw
-  `brew`/`sudo` commands when a script/phase exists for it.
-- **Discoverable.** The always-loaded `~/.claude/CLAUDE.md` points here; this is
-  the entry. Errors and gotchas go in `ISSUES.md` so they're not re-hit.
+- **AI, not vendor lock-in.** Shared rules live here; Codex/Claude adapters stay
+  thin.
+- **Automatable only.** Use Homebrew formulae/casks and `xcodes`; avoid MAS-only
+  apps in the unattended path.
+- **One sudo + keep-alive.** Never scatter password prompts through a run.
+- **Idempotent.** Every phase must be safe to rerun after a crash.
+- **Fetch fresh before reasoning.** Avoid stale iCloud or old local branches.
+- **No raw secrets or runtime state.** Use `op` and git-crypt deliberately; do
+  not track OAuth tokens, SQLite state, sessions, histories, or caches.
+- **Simple until pain proves otherwise.** Add skills/hooks/profiles only after a
+  repeated workflow earns them.
 
 ## Map
 
 | File | Role |
 |---|---|
-| `setup` | **the one command** — `~/.ai/setup [packages·fonts·services·xcode·macos·gate·doctor]`. Self-contained: inline package list + curated macOS defaults live in it. |
-| `README.md` | this charter — mission, rules, secrets manifest, map |
-| `ISSUES.md` | what broke & why, across setups — read before re-trying anything |
+| `README.md` | shared charter, contracts, secrets, setup map |
+| `codex.md` | Codex TUI/App daily-use policy and setup |
+| `chatgpt.md` | ChatGPT macOS/iOS integration, remote control, appshots |
+| `codex/config.toml` | safe Codex template; setup merges selected keys locally |
+| `setup` | one command: `~/.ai/setup [packages·fonts·services·xcode·macos·remote·codex·gate·doctor]` |
+| `ISSUES.md` | failures and gotchas across machine setups |
+| `vProfile.mobileconfig` | manual macOS notification/profile gate |
 
-`~/.setup/` is **frozen reference** (the laptop's fuller `macos.sh` + `Brewfile` + per-tool scripts) — for inspiration/maintenance, not run by `setup`; see `~/.setup/README.md`. Rule: **vendor only what has no working cask** (e.g. SF Mono Nerd Font → `.assets/fonts`, git-crypt); everything with a real cask stays a cask.
+`~/.setup/` is frozen reference. Do not run random old setup scripts when
+`~/.ai/setup` has a phase for the job.
 
-## Secrets (1Password — the one human gate)
+## Secrets
 
-Sign into 1Password and the rest is pulled; nothing on disk, no tokens in the repo.
+Sign into 1Password and let commands fetch what they need. Nothing secret is
+checked into the repo unless it is intentionally git-crypt encrypted.
 
 | 1Password item | Type | Used by |
 |---|---|---|
-| `1password_25519` | SSH Key | GitHub + inter-Mac SSH (1Password SSH agent) |
-| `Dotfiles` | Document (`dotfiles.key`) | `git-crypt unlock` → decrypts `.claude/mcp/config.json` + `mcp.json.bak`, `.utcp_config.json`, `.assets/fonts/*` (`.claude.json` is gitignored, not tracked — regenerated by `claude /login`) |
-| `Apple` | Login (email + password) | `xcodes` → Xcode (one 2FA code, unavoidable) |
+| `1password_25519` | SSH Key | GitHub and inter-Mac SSH via 1Password SSH agent |
+| `Dotfiles` | Document (`dotfiles.key`) | `git-crypt unlock` for encrypted dotfiles |
+| `Apple` | Login | `xcodes` headless Xcode install |
 
-`op` injects per-command (`op run`, SSH agent) — keys never touch disk.
+Codex-specific local files such as `~/.codex/auth.json`, SQLite DBs, logs,
+history, sessions, plugin cache, and app runtime state are machine-local and
+must stay untracked.
 
-## How a fresh Mac gets set up
+## Fresh Mac flow
 
-1. Install Claude Code: `curl -fsSL https://claude.ai/install.sh | bash`
-2. Point Claude at this repo; it reads `~/.claude/CLAUDE.md` → comes here.
-3. Early gates: Apple ID, **unlock 1Password**, one **sudo**.
-4. Cold-start (Homebrew · deploy bare repo · `git-crypt unlock`) — see `~/.setup/AI.md`.
-5. `~/.ai/setup` — installs packages, fonts, services, defaults. Walk away.
-6. Grant TCC (Accessibility / Input Monitoring) when prompted; **restart** (menu-bar autohide + font cache).
-7. `~/.ai/setup doctor` verifies. Gotchas → `ISSUES.md`.
+1. Install any capable AI CLI/app you plan to use: Codex, Claude, or another tool.
+2. Point the AI at this repo; tool adapters lead back to `~/.ai`.
+3. Unlock 1Password and run the bare-repo/git-crypt cold start.
+4. Run `~/.ai/setup`; use `~/.ai/setup codex` after Codex is installed.
+5. Grant macOS gates from `~/.ai/setup gate`.
+6. Restart, then run `~/.ai/setup doctor` and `codex doctor --all`.
+
+For Codex specifics, read `codex.md`. For ChatGPT macOS/iOS integration, read
+`chatgpt.md`.

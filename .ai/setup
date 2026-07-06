@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
 # setup — the ONE self-contained command to bring this Mac to fleet parity.
 #
-#   ~/.ai/setup            run all: packages → fonts → services → macos → gate → doctor
+#   ~/.ai/setup            run all: packages → fonts → services → macos → codex → gate → doctor
 #   ~/.ai/setup packages   brew bundle (inline list, tap-trust, one sudo, Xcode 2nd pass)
 #   ~/.ai/setup fonts      install vendored SFMono Nerd Font → ~/Library/Fonts
 #   ~/.ai/setup services   yabai/skhd/sketchybar/borders/menuanywhere + tmux plugins
 #   ~/.ai/setup xcode      headless Xcode via xcodes (Apple ID from 1Password) — one 2FA code
 #   ~/.ai/setup macos      apply curated macOS defaults (sudo-free)
+#   ~/.ai/setup codex      merge safe Codex defaults + verify guidance files
 #   ~/.ai/setup gate       open the manual TCC panes + checklist
 #   ~/.ai/setup doctor     verify the machine (self-contained)
 #   ~/.ai/setup help
@@ -118,6 +119,7 @@ brew "cmake"
 brew "btop"
 brew "tmux"
 brew "sesh"               # tmux session manager (fzf/zoxide-style switcher)
+brew "mosh"               # roaming ssh: `vj` auto-reconnects across sleep / wifi↔cellular, no re-auth (fleet jump)
 brew "imagemagick"        # image CLI (convert/magick) + common build dep
 brew "wget"
 brew "yt-dlp"             # video/audio downloader
@@ -375,6 +377,133 @@ phase_macos() {
   ok "applied (Dock/Finder restarted; menu-bar autohide may need a re-login to fully take)"
 }
 
+phase_remote() {
+  # First-party remote access: Screen Sharing (same-iCloud Apple-ID discovery,
+  # no VNC password to manage) + Fast User Switching + a power policy that keeps
+  # a screen-shared machine reachable. Ported from ~/.setup/AI.md P11.5/P12.
+  # Sudo-gated (unlike phase_macos, which is deliberately sudo-free) — opt-in via
+  # `setup remote`, not part of the default `all` chain (same pattern as phase_xcode).
+  say "remote — screen sharing + fast user switching + power policy + remote login"
+  need_sudo
+
+  # Fast User Switching — lets you swap sessions without logging out (e.g. a
+  # daemon account keeps running while you're screen-shared into the admin account).
+  sudo defaults write /Library/Preferences/.GlobalPreferences MultipleSessionEnabled -bool true
+  defaults write com.apple.controlcenter "NSStatusItem Visible UserSwitcher" -bool true
+  defaults -currentHost write -globalDomain userMenuExtraStyle -int 2 2>/dev/null
+  killall ControlCenter 2>/dev/null || true
+  ok "fast user switching (menu bar item may need Control Center ▸ confirm 'Show in Menu Bar')"
+
+  # Screen Sharing (com.apple.screensharing) — idempotent: no-op if already loaded.
+  if sudo launchctl print system/com.apple.screensharing >/dev/null 2>&1; then
+    ok "screen sharing already loaded"
+  else
+    sudo launchctl enable system/com.apple.screensharing
+    sudo launchctl bootstrap system /System/Library/LaunchDaemons/com.apple.screensharing.plist
+    ok "screen sharing enabled"
+  fi
+  warn "confirm ON: System Settings ▸ General ▸ Sharing ▸ Screen Sharing (not scriptable to verify)"
+
+  # Power — stay reachable for remote screen-sharing/SSH: system never sleeps,
+  # display still sleeps to save the panel, wake-on-lan + auto-restart after a
+  # power failure so an outage doesn't strand the machine unreachable.
+  sudo pmset -a sleep 0 displaysleep 30 womp 1 powernap 1 tcpkeepalive 1 autorestart 1
+  ok "power: never-sleep (display sleeps after 30m) · wake-on-lan · auto-restart on power loss"
+
+  command -v skhd >/dev/null 2>&1 && { skhd --reload >/dev/null 2>&1; ok "skhd reloaded (ctrl+alt-u = fast-switch to login window)"; }
+  warn "Tailscale (any-network access) + git-crypt/1Password secrets: see 'setup gate'"
+}
+
+phase_codex() {
+  say "codex — safe defaults, guidance, and local-state hygiene"
+  local template="$HOME/.ai/codex/config.toml"
+  local cfg="$HOME/.codex/config.toml"
+
+  [ -f "$HOME/.codex/AGENTS.md" ] && ok "global Codex guidance shim present" || warn "missing ~/.codex/AGENTS.md"
+  [ -f "$HOME/.codex/skills/improve-codex/SKILL.md" ] && ok "improve-codex skill present" || warn "missing improve-codex skill"
+  [ -f "$template" ] || { warn "missing $template"; return 0; }
+
+  if ! command -v codex >/dev/null 2>&1; then
+    warn "codex CLI missing — run 'setup packages' first"
+    return 0
+  fi
+
+  if ! command -v python3 >/dev/null 2>&1; then
+    warn "python3 missing — run 'mise install' or 'setup packages', then re-run 'setup codex'"
+    return 0
+  fi
+
+  mkdir -p "$HOME/.codex"
+  if python3 - "$cfg" <<'PY'
+from pathlib import Path
+import sys
+
+path = Path(sys.argv[1]).expanduser()
+lines = path.read_text().splitlines() if path.exists() else []
+
+top = {
+    "model": '"gpt-5.5"',
+    "model_reasoning_effort": '"high"',
+    "plan_mode_reasoning_effort": '"high"',
+    "model_reasoning_summary": '"auto"',
+    "model_verbosity": '"medium"',
+    "model_auto_compact_token_limit": "90000",
+    "tool_output_token_limit": "8000",
+    "project_doc_fallback_filenames": '["AI.md", "CLAUDE.md"]',
+}
+tui = {
+    "notifications": '["agent-turn-complete", "approval-requested"]',
+    "notification_method": '"auto"',
+    "notification_condition": '"unfocused"',
+    "status_line": '["model-with-reasoning", "context-remaining", "git-branch", "current-dir"]',
+    "terminal_title": '["spinner", "project", "git-branch"]',
+}
+
+def table_name(line: str) -> str | None:
+    stripped = line.strip()
+    if stripped.startswith("[") and stripped.endswith("]"):
+        return stripped.strip("[]")
+    return None
+
+filtered: list[str] = []
+current = ""
+for line in lines:
+    found = table_name(line)
+    if found is not None:
+        current = found
+    key = line.split("=", 1)[0].strip() if "=" in line and not line.lstrip().startswith("#") else ""
+    if current == "" and key in top:
+        continue
+    if current == "tui" and key in tui:
+        continue
+    filtered.append(line)
+
+first_table = next((i for i, line in enumerate(filtered) if table_name(line) is not None), len(filtered))
+top_block = [
+    "# Managed by ~/.ai/setup codex; preserve Codex.app-generated blocks below.",
+    *[f"{key} = {value}" for key, value in top.items()],
+    "",
+]
+filtered[first_table:first_table] = top_block
+
+tui_header = next((i for i, line in enumerate(filtered) if table_name(line) == "tui"), None)
+tui_block = [f"{key} = {value}" for key, value in tui.items()]
+if tui_header is None:
+    insert_at = next((i for i, line in enumerate(filtered) if table_name(line) is not None), len(filtered))
+    filtered[insert_at:insert_at] = ["[tui]", *tui_block, ""]
+else:
+    filtered[tui_header + 1:tui_header + 1] = tui_block + [""]
+
+path.write_text("\n".join(filtered).rstrip() + "\n")
+PY
+  then
+    ok "merged safe defaults into ~/.codex/config.toml"
+  else
+    warn "could not write ~/.codex/config.toml — check sandbox/permissions, then re-run 'setup codex'"
+  fi
+  codex doctor --summary 2>/dev/null || warn "codex doctor reported issues — run 'codex doctor --all'"
+}
+
 phase_gate() {
   # macOS won't let a script grant TCC, approve a system extension, install a
   # config profile, or hide notification previews — and it can't reliably verify
@@ -386,6 +515,7 @@ phase_gate() {
   warn "System extensions:   approve Karabiner, Mullvad, AdGuard when prompted"
   warn "Reduce Transparency: Accessibility ▸ Display — ON (solid/filled menu bar; TCC-blocks scripting)"
   warn "vProfile:            install ~/.ai/vProfile.mobileconfig (notification sound OFF, visual only)"
+  warn "Codex/ChatGPT:       Notifications ON; Screen Recording/Appshots and Accessibility/Computer Use only when used"
   warn "Show previews:       Notifications ▸ Show previews → Never (hide content; not profile-able on macOS)"
   warn "Wallpaper:           set Aerial \"Shuffle Earth\" manually"
   open 'x-apple.systempreferences:com.apple.settings.PrivacySecurity?Privacy_Accessibility' 2>/dev/null
@@ -408,6 +538,9 @@ phase_doctor() {
   [ "$miss" = 0 ] && ok "core CLI tools present"
   # mise-managed runtimes materialized? (the gap that broke python3 + p10k)
   command -v mise >/dev/null 2>&1 && { mise ls 2>/dev/null | grep -qi missing && warn "mise tools missing — run 'mise install'" || ok "mise tools present (python · node · cmake)"; }
+  command -v codex >/dev/null 2>&1 && ok "codex CLI present" || warn "codex CLI missing — run 'setup packages'"
+  [ -f "$HOME/.codex/AGENTS.md" ] && ok "Codex guidance present" || warn "Codex guidance missing — run 'setup codex'"
+  [ -f "$HOME/.codex/skills/improve-codex/SKILL.md" ] && ok "improve-codex skill present" || warn "improve-codex skill missing"
   # docker is on-demand via colima (not autostarted) — note, don't fail
   command -v colima >/dev/null 2>&1 && { colima status >/dev/null 2>&1 && ok "colima running (docker ready)" || ok "docker idle — run 'colima start' when needed (on-demand by design)"; }
 }
@@ -417,12 +550,14 @@ usage() {
 
 setup — bring this Mac to fleet parity (self-contained).   ~/.ai/setup [phase]
 
-  (none)     run all: packages → fonts → services → macos → gate → doctor
+  (none)     run all: packages → fonts → services → macos → codex → gate → doctor
   packages   brew bundle (inline list, tap-trust, one sudo, Xcode 2nd pass)
   fonts      install vendored SFMono Nerd Font → ~/Library/Fonts
   services   yabai/skhd/sketchybar/borders/menuanywhere + tmux plugins
   xcode      headless Xcode via xcodes (Apple ID from 1Password) — one 2FA code
   macos      apply curated macOS defaults (sudo-free)
+  remote     screen sharing + fast switching + remote power policy (sudo, opt-in)
+  codex      merge safe Codex defaults + verify guidance files
   gate       open the manual TCC panes + checklist
   doctor     verify the machine (self-contained)
   help       this
@@ -434,12 +569,14 @@ EOF
 
 # ── dispatch ──────────────────────────────────────────────────────────────────
 case "${1:-all}" in
-  all)            phase_packages; phase_fonts; phase_services; phase_macos; phase_gate; phase_doctor ;;
+  all)            phase_packages; phase_fonts; phase_services; phase_macos; phase_codex; phase_gate; phase_doctor ;;
   packages)       phase_packages ;;
   fonts)          phase_fonts ;;
   services)       phase_services ;;
   xcode)          phase_xcode ;;
   macos)          phase_macos ;;
+  remote)         phase_remote ;;
+  codex)          phase_codex ;;
   gate)           phase_gate ;;
   doctor|check)   phase_doctor ;;
   help|-h|--help) usage ;;
