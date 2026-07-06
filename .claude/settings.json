@@ -49,6 +49,9 @@
       "Bash(diff *)",
       "Bash(grep *)",
       "Bash(rg *)",
+      "Bash(sg *)",
+      "Bash(ast-grep *)",
+      "Bash(agent-browser *)",
       "Bash(sort *)",
       "Bash(uniq *)",
       "Bash(cut *)",
@@ -462,6 +465,39 @@
     "defaultMode": "plan"
   },
   "hooks": {
+    "UserPromptSubmit": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "PATH=\"/opt/homebrew/bin:$HOME/.local/share/mise/shims:$PATH\" node ~/.claude/hooks/user-prompt-submit.js"
+          }
+        ]
+      }
+    ],
+    "SubagentStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "PATH=\"/opt/homebrew/bin:$HOME/.local/share/mise/shims:$PATH\" node ~/.claude/hooks/subagent-telemetry.js"
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "PATH=\"/opt/homebrew/bin:$HOME/.local/share/mise/shims:$PATH\" node ~/.claude/hooks/subagent-telemetry.js"
+          }
+        ]
+      }
+    ],
     "SessionStart": [
       {
         "matcher": "*",
@@ -522,7 +558,9 @@
   "statusLine": {
     "type": "command",
     "command": "~/.claude/statusline.sh",
-    "padding": 0
+    "padding": 0,
+    "refreshInterval": 30,
+    "hideVimModeIndicator": true
   },
   "enabledPlugins": {
     "superpowers@superpowers-marketplace": true,
@@ -536,9 +574,9 @@
     "python-development@claude-code-workflows": true,
     "javascript-typescript@claude-code-workflows": true,
     "lua-lsp@claude-plugins-official": true,
-    "code-simplifier@claude-plugins-official": true,
-    "explanatory-output-style@claude-plugins-official": true,
-    "commit-commands@claude-plugins-official": true,
+    "code-simplifier@claude-plugins-official": false,
+    "explanatory-output-style@claude-plugins-official": false,
+    "commit-commands@claude-plugins-official": false,
     "plugin-dev@claude-plugins-official": true,
     "ralph-loop@claude-plugins-official": false,
     "typescript-lsp@claude-plugins-official": true,
@@ -606,8 +644,20 @@
     "mode": "auto-allow"
   },
   "alwaysThinkingEnabled": true,
+  "tui": "fullscreen",
   "editorMode": "vim",
+  "showTurnDuration": true,
+  "terminalProgressBarEnabled": true,
+  "inputNeededNotifEnabled": true,
+  "agentPushNotifEnabled": true,
   "skipAutoPermissionPrompt": true,
   "voiceEnabled": true,
-  "tui": "fullscreen"
+  "extraKnownMarketplaces": {
+    "anthropic-agent-skills": {
+      "source": {
+        "source": "github",
+        "repo": "anthropics/skills"
+      }
+    }
+  }
 }

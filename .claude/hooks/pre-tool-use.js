@@ -232,6 +232,12 @@ function processToolRequest(data) {
     }
 
     // Git commit/add/push — require explicit user request
+    if (/git\s+commit\s+.*--amend/.test(n)) {
+      return ask('git commit --amend rewrites the previous commit (destroys its original state). Confirm before approving.');
+    }
+    if (/git\s+tag\s+(-d|--delete)\b/.test(n)) {
+      return ask('Deleting a git tag. Tags may be referenced by releases/CI. Confirm before approving.');
+    }
     if (/git\s+commit\b/.test(n)) {
       return ask('Committing changes to git. Confirm before approving.');
     }
@@ -243,6 +249,9 @@ function processToolRequest(data) {
     }
     if (/git\s+push\s+.*--force/.test(n) || /git\s+push\s+-f\b/.test(n)) {
       return deny('Force push blocked. Use --force-with-lease or ask explicitly.');
+    }
+    if (/git\s+push\s+.*(--delete|:\S)/.test(n)) {
+      return ask('Deleting a remote ref (branch/tag). This removes it for everyone. Confirm before approving.');
     }
     if (/git\s+push\b/.test(n)) {
       return ask('Pushing to remote repository. Confirm before approving.');

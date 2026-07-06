@@ -65,16 +65,11 @@ function processToolResult(result) {
   const { tool_name, tool_input, output, duration_ms, error } = result;
 
   // ========================================
-  // Log slow operations (>10s) for debugging
+  // Slow-operation nudge — inline, no disk (replaced /tmp log 2026-07-05;
+  // violated no-tmpfiles rule and nothing ever read it)
   // ========================================
-  if (duration_ms && duration_ms > 10000) {
-    const logFile = path.join(os.tmpdir(), 'claude-slow-tools.log');
-    const entry = `${new Date().toISOString()} | ${tool_name} | ${duration_ms}ms | ${JSON.stringify(tool_input).slice(0, 100)}\n`;
-    try {
-      fs.appendFileSync(logFile, entry);
-    } catch (e) {
-      // Ignore logging errors
-    }
+  if (duration_ms && duration_ms > 30000 && tool_name === 'Bash' && !error) {
+    return context(`<system-reminder>That ${tool_name} call took ${Math.round(duration_ms / 1000)}s. For commands this long, consider run_in_background so work continues while it runs.</system-reminder>`);
   }
 
   // ========================================
