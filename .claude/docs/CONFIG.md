@@ -27,7 +27,7 @@ Your default is **Default** (no model key): Opus 4.8 daily, auto-softens to Sonn
 
 | Glyph | Reads as | Act when |
 |-------|----------|----------|
-| `ॐ` color | vim state: orange normal · green insert · gold visual | (replaces -- INSERT --) |
+| `ॐ` color | vim state: orange insert (typing = resting) · green normal/escaped · gold visual | (replaces -- INSERT --) |
 | `F/O/S/H` + `ᵀ ᴹ ˣ ⁺ ⁻` | model, thinking, effort | wrong model for the task? `/model` |
 | `ψ %` (`¹ᴹ` = 1M session) | context used | >60% orange: wrap up or `/compact Focus on X` |
 | `κ %` | cache-hit efficiency | orange <70: cache breaking — early-context edits or >1h gaps. Cache reads DON'T count against rate limits (subscription sessions get 1-hour TTL) — κ is a quota multiplier |
@@ -39,7 +39,7 @@ Your default is **Default** (no model key): Opus 4.8 daily, auto-softens to Sonn
 
 `STATUSLINE_MINIMAL=1` flips to early-warning display (segments appear only when actionable).
 
-### Skills — reach-for map (18 owner skills)
+### Skills — reach-for map (19 owner skills)
 
 | Situation | Say / use |
 |-----------|-----------|

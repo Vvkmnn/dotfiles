@@ -84,7 +84,12 @@ dotfiles diff --name-only | grep -iE '(token|secret|credential|password|\.env|\.
 | `.config/ngrok/ngrok.yml` | ngrok auth token | NEVER stage (untracked) |
 | `.ssh/config` | Machine-specific paths | Don't track (Colima refs to /Volumes) |
 
-**Verify git-crypt:** `dotfiles show HEAD:.utcp_config.json | head -1` → should show `GITCRYPT`
+**Verify git-crypt (HEAD):** `dotfiles show HEAD:.utcp_config.json | head -1` → should show `GITCRYPT`
+**Verify git-crypt (STAGED — the check that matters pre-commit):** `dotfiles show :path` applies the SMUDGE filter and prints decrypted plaintext — a grep for GITCRYPT there fails even when encryption is perfect (learned 2026-07-06). Use the raw object instead:
+```bash
+BLOB=$(dotfiles ls-files -s .claude/mcp/config.json | awk '{print $2}')
+dotfiles cat-file blob "$BLOB" | head -c 9   # must print \0GITCRYPT
+```
 
 **Display flagged files prominently. STOP if any risk found.**
 

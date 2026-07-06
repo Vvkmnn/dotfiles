@@ -32,15 +32,26 @@ done
 for agent in ~/.claude/agents/*.md; do
   echo "$(basename $agent): model=$(grep -m1 '^model:' $agent | cut -d' ' -f2) effort=$(grep -m1 '^effort:' $agent | cut -d' ' -f2) memory=$(grep -m1 '^memory:' $agent | cut -d' ' -f2)"
 done
+
+# Agent REGISTRATION check (2026-07-06 lesson: invalid YAML silently deregisters —
+# raw XML in frontmatter broke 3 agents once). Compare files vs live agent types:
+# every agents/*.md name should appear in the session's available subagent types;
+# a file present but not registered = frontmatter parse failure. Verify YAML with:
+for agent in ~/.claude/agents/*.md; do
+  python3 -c "import yaml,sys; yaml.safe_load(open('$agent').read().split('---')[1])" 2>/dev/null \
+    && echo "OK $(basename $agent)" || echo "FRONTMATTER BROKEN: $agent"
+done
 ```
 
 ## Budget Sweep
 
 ```bash
-echo "=== Budgets ==="
-wc -l ~/.claude/CLAUDE.md                                   # ≤110
+echo "=== Budgets (owner surfaces only — vendored skills exempt) ==="
+wc -l ~/.claude/CLAUDE.md                                   # ≤160 (recalibrated 2026-07-06)
 wc -l ~/.claude/rules/*.md | sort -rn | head -12            # each ≤200 (recalibrated 2026-07-06)
-find ~/.claude/skills -maxdepth 2 -name SKILL.md -not -path "*.archive*" | xargs wc -l | sort -rn | head -10   # each ≤400
+find ~/.claude/skills -maxdepth 2 -name SKILL.md -not -path "*.archive*" \
+  | grep -vE "docx|pdf|pptx|xlsx|mcp-builder|webapp-testing|vercel|web-design|impeccable|claude-praetorian" \
+  | xargs wc -l | sort -rn | head -10                       # each OWNER ≤425
 wc -l ~/.claude/agents/*.md                                 # each ≤90
 ```
 

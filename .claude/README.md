@@ -21,7 +21,7 @@
 ## Governing Principles
 
 1. **Build, don't replace** — extend our own files; steal *patterns* from the community, never artifacts. Local convention wins unless objectively broken.
-2. **Condense, modularize, simplify** — structure budgets enforced weekly (CLAUDE.md ≤110 lines, rules ≤120, SKILL.md ≤400 + `references/`, agents ≤90). Every addition displaces or justifies its tokens.
+2. **Condense, modularize, simplify** — structure budgets enforced weekly (CLAUDE.md ≤160, rules ≤200, owner SKILL.md ≤425 + `references/`, agents ≤90; recalibrated when the evidence killed the trim — repetition of failure-lessons stays). Every addition displaces or justifies its tokens.
 3. **CLI-first, MCP-when-earned** — a server must beat the CLI/native equivalent to hold a slot (gh, tmux, osascript, yt-dlp, agent-browser, ast-grep won their fights; notion, reddit, paper_search, fred, anki etc. keep theirs).
 
 ## Maintenance

@@ -23,8 +23,8 @@ trap 'log_error "Script failed at line $LINENO"' ERR
 # │ ││└── effort from stdin (ᴹ max, ˣ xhigh, ⁺ high, ⁻ low, omit medium)
 # │ │└── thinking ᵀ (stdin, settings fallback)
 # │ └── Model letter (F/O/S/H)
-# └── ॐ anchor: model icon + vim state by color — orange NORMAL/vim-off (default),
-#     green INSERT, gold VISUAL (pairs with statusLine.hideVimModeIndicator)
+# └── ॐ anchor: model icon + vim state by color — ORANGE insert (typing = resting
+#     default), GREEN normal/escaped, gold visual (pairs with hideVimModeIndicator)
 #
 # DISPLAY MODES: default shows EVERYTHING. STATUSLINE_MINIMAL=1 opts into early-warning
 # hiding: κ hides while ≥70, μ hides while on-pace (0..+5), θ hides while pace <0.8×
@@ -199,9 +199,9 @@ thinking=$(echo "$input" | jq -r '.thinking.enabled // empty' 2>/dev/null)
 # orange = VISUAL. No extra glyph, no shifting layout.
 vim_mode=$(echo "$input" | jq -r '.vim.mode // empty' 2>/dev/null)
 case "$vim_mode" in
-	INSERT)                     vim_color="$GREEN" ;;
-	VISUAL|"VISUAL LINE")       vim_color="$B" ;;      # gold — distinct from orange default
-	*)                          vim_color="$ORANGE" ;; # NORMAL / vim off (user's default)
+	INSERT)                     vim_color="$ORANGE" ;; # typing at the prompt = resting state (user default)
+	VISUAL|"VISUAL LINE")       vim_color="$B" ;;      # gold — selection
+	*)                          vim_color="$GREEN" ;;  # NORMAL (escaped) / vim off — the departure signal
 esac
 
 # ---- Get context % (native first, transcript fallback) ----

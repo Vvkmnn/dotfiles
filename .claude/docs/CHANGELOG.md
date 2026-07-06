@@ -15,6 +15,7 @@
 - **Noted, not adopted** (2026-07-05 paradigm scan): Claude Squad orchestrator (if manual worktrees outgrow), agentmemory/claude-mem (conflicts with native-first memory), lazy-senior-dev token-diet output style (cheap experiment)
 - **Unverified plugin leads** (2026-07-06 discovery sweep degraded by rate limits — agent admitted synthesizing; star counts/repos NOT verified, do not install without checking): hivemind (trace→skill generation), context-compression-lite, mcp-memory-augmented. Verify existence + adoption before considering
 - **¢ statusline field-shape verification** — after the first real credit spend (post 07-08 Fable session), check `jq '.extra_usage' ~/.claude/status/rate_limit.json` against the defensive field list in statusline.sh `_parse_rate_json`; adjust if the real key differs
+- **apple-gtd restructure** — 439 lines, only owner skill over the ≤425 budget (verification sweep 2026-07-06); same move-to-references/ pattern as the other four
 
 ## Reference (enable when needed)
 
@@ -204,7 +205,7 @@ The largest single-day overhaul (plan: `plans/enchanted-pondering-taco.md`, 27/4
 
 | Surface | Before | After |
 |---|---|---|
-| Owner skills | 25 (3 commit paths, trigger collisions, 5-way maintenance sprawl) | 18 in 6 groups, 9 versioned archives |
+| Owner skills | 25 (3 commit paths, trigger collisions, 5-way maintenance sprawl) | 19 in 6 groups, 9 versioned archives |
 | Agents | 4, zero dispatches ever, broken frontmatter | 6 (5 professions + Explore-haiku override), wired to dispatch, memory/effort/skills routed |
 | MCP servers | 26 open on :9090, 92MB log firehose | 14 active behind Bearer auth, parks reversible, log silent |
 | Hooks | 5 events | 9 events (+per-turn context, subagent telemetry) |
@@ -214,6 +215,8 @@ The largest single-day overhaul (plan: `plans/enchanted-pondering-taco.md`, 27/4
 | CLIs | — | +agent-browser (verified best-in-class), +ast-grep |
 | Statusline | 3 bugs (phantom effort key, λ>100%, negative runway), no Fable | v2: fixed math, vim-anchor ॐ, κ/¹ᴹ/$/¢ segments |
 | Disk | 89MB log + 17 debris files | reclaimed |
+
+**Verification (same day, spent the last included-Fable on it):** two fresh-context audit agents swept the full change set; the author session cross-checked both. Real catches, fixed: improve-claude Phase 8 runbook section had silently failed to land (a mid-session Edit error — re-applied, order verified 1-8); owner-skill count is 19 not 18 (corrected in three docs); budgets recalibrated to post-doctrine reality (CLAUDE.md ≤160, owner skills ≤425, vendored exempt); apple-gtd queued as the one remaining over-budget owner skill. Auditor false alarms, rejected with evidence: "0 active MCP servers" (config holds 14, proxy 200 — mis-query), "28 plugins" (24 true, counted disabled keys), "paper-researcher YAML broken" (2 delimiters, registered), statusline "accepts malformed JSON" (fail-open is the design), stale-ref hits in plans/CHANGELOG/memory (historical records keep era-true paths by doctrine). Lesson recorded: verify the verifiers — fresh eyes catch author blindness AND generate their own.
 
 **Restore**: everything is in dotfiles git history + `skills/.archive/`; MCP parks reverse per the CONFIG.md fleet table.
 

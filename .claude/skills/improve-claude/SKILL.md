@@ -47,9 +47,9 @@ bash -n ~/.claude/statusline.sh && echo "statusline OK"
 
 | File class | Budget | Check |
 |---|---|---|
-| CLAUDE.md | ≤110 lines | `wc -l ~/.claude/CLAUDE.md` |
+| CLAUDE.md | ≤160 lines (recalibrated with the rules budget — same evidence) | `wc -l ~/.claude/CLAUDE.md` |
 | Each rule | ≤200 lines (recalibrated 2026-07-06: trim cancelled by redundancy research — failure-derived tables stay; cache makes rule-loading quota-free) | `wc -l ~/.claude/rules/*.md` |
-| Each owner SKILL.md | ≤400 lines (overflow → references/) | `find ~/.claude/skills -maxdepth 2 -name SKILL.md \| xargs wc -l \| sort -rn \| head` |
+| Each OWNER SKILL.md | ≤425 lines (overflow → references/). VENDORED are exempt and never token-edited: docx, pdf, pptx, xlsx, mcp-builder, webapp-testing, vercel-*, web-design-guidelines, impeccable, claude-praetorian | `wc -l ~/.claude/skills/*/SKILL.md` minus vendored |
 | Each agent | ≤90 lines | `wc -l ~/.claude/agents/*.md` |
 
 **Reference-integrity checks (the drift that bit us in July 2026):**
@@ -158,6 +158,10 @@ pgrep -fl mcp-proxy | head -1
 - Cloud/web sessions see only COMMITTED repo config — project .claude/ must carry what cloud runs need
 
 Interactive items (account toggles, app settings) are walked through WITH the user — never assume state that lives outside this machine.
+
+## Phase 8: cloud
+
+The weekly remote routine — runs on Anthropic infra via `/schedule` (`0 3 * * 0`), NOT locally. Clones the dotfiles repo, runs the automatable subset (health drift-gates + audit) read-only, sweeps ALL Claude surfaces for updates, refreshes the benchmark list, then reports Claude-natively: mechanical fixes as a PR on `claude/weekly-audit-*` (merge = approval, machines pull), judgment items as a tagged issue, push notification links to the still-conversable run. NEVER edits config from the cloud. Full runbook + benchmark list + boundaries: `references/cloud-routine.md`.
 
 ---
 
