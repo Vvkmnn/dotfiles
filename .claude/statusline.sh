@@ -1,6 +1,6 @@
 #!/bin/bash
 # High-performance Claude Code statusline
-# Output: ॐ ✻ Fᵀˣ ψ 51%¹ᴹ κ 94% μ 5% λ 40% 30% σ 2h 8.5h θ 0.8h¹·⁵ 6.5d π branch +45 -12 $ 12.34
+# Output: ॐ ✻ Fᵀˣ ψ 51%¹ᴹ 94% μ 5% λ 40% 30% σ 2h 8.5h θ 0.8h¹·⁵ 6.5d π branch +45 -12 $ 12.34
 #
 # Error handling: Log errors but always show something (even if incomplete)
 set -o pipefail
@@ -9,7 +9,7 @@ trap 'log_error "Script failed at line $LINENO"' ERR
 # ============================================================================
 # FORMAT BREAKDOWN (v2, 2026-07-06)
 # ============================================================================
-# ॐ Fᵀˣ ψ 51%¹ᴹ κ 94% μ 5% λ 40% 30% σ 2h 8.5h θ 0.8h¹·⁵ 6.5d π branch +45 -12 $ 12.34
+# ॐ Fᵀˣ ψ 51%¹ᴹ 94% μ 5% λ 40% 30% σ 2h 8.5h θ 0.8h¹·⁵ 6.5d π branch +45 -12 $ 12.34
 # │ │││ │       │     │    │         │         │              │             │
 # │ │││ │       │     │    │         │         │              │             └── $ session value (API-equiv, dim) + ¢ REAL
 # │ │││ │       │     │    │         │         │              │                 usage-credit spend (orange, only when >0)
@@ -18,7 +18,7 @@ trap 'log_error "Script failed at line $LINENO"' ERR
 # │ │││ │       │     │    │         └── σ session elapsed + weekly active
 # │ │││ │       │     │    └── λ 5h% 7d% quota used (clamped ≤100)
 # │ │││ │       │     └── μ daily budget variance
-# │ │││ │       └── κ cache-hit % (blue ≥80, orange <50, red <40)
+# │ │││ │       └── cache-hit % — 2nd % in the ψ section, κ glyph dropped (blue ≥80, orange <50, red <40)
 # │ │││ └── ψ context % (¹ᴹ superscript = 1M-window session)
 # │ ││└── effort from stdin (ᴹ max, ˣ xhigh, ⁺ high, ⁻ low, omit medium)
 # │ │└── thinking ᵀ (stdin, settings fallback)
@@ -781,7 +781,7 @@ if [ -n "$cache_pct" ] && { [ -z "${STATUSLINE_MINIMAL:-}" ] || [ "$cache_pct" -
 	elif [ "$cache_pct" -ge 70 ]; then cache_col=""
 	elif [ "$cache_pct" -ge 40 ]; then cache_col="$ORANGE"
 	else cache_col="$RED"; fi
-	printf ' %b %b%s%%%b' "$ICON_CACHE" "$cache_col" "$cache_pct" "$RESET"
+	printf ' %b%s%%%b' "$cache_col" "$cache_pct" "$RESET"   # merged into ψ: κ glyph dropped, cache = 2nd % after context (color-coded)
 fi
 
 # μ Budget variance (expected - actual at this point in the week)
