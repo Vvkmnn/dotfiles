@@ -104,7 +104,9 @@
       # ─────────────────────────────────────────────────────────────── plugin ──
       # directory jumping (zoxide replaces zsh-z — frecency + SQLite + faster)
       # zcomet load agkozak/zsh-z
-      eval "$(zoxide init zsh)"
+      # command -v guard: tolerate the pre-package-install bootstrap window
+      # (dotfiles deploy before Brewfile) instead of erroring every shell init.
+      command -v zoxide >/dev/null && eval "$(zoxide init zsh)"
       # fuzzy finder with completion and key bindings (before vi-mode so widgets exist)
       zcomet load junegunn/fzf shell completion.zsh key-bindings.zsh
       # ──────────────────────────────────────────────────────── vi-mode hooks ──
@@ -112,9 +114,13 @@
       function zvm_after_init() {
         # Ctrl+R: atuin shell history (overrides fzf — must come after)
         bindkey '^R' fzf-history-widget
-        eval "$(atuin init zsh --disable-up-arrow)"
-        zvm_bindkey viins '^R' atuin-search
-        zvm_bindkey vicmd '^R' atuin-search
+        # command -v guard: if atuin isn't installed yet (bootstrap window),
+        # leave ^R on fzf-history-widget rather than erroring.
+        if command -v atuin >/dev/null; then
+          eval "$(atuin init zsh --disable-up-arrow)"
+          zvm_bindkey viins '^R' atuin-search
+          zvm_bindkey vicmd '^R' atuin-search
+        fi
         # Up/Down: prefix-based history search (type prefix, arrow filters)
         bindkey '^[[A' history-beginning-search-backward
         bindkey '^[OA' history-beginning-search-backward
@@ -187,7 +193,8 @@
       # Reads .node-version, .nvmrc, .python-version, .tool-versions, .mise.toml
       # Global config: ~/.config/mise/config.toml (python@3.13, node@24, cmake@latest)
       # npx available at: ~/.local/share/mise/installs/node/*/bin/npx
-      eval "$(mise activate zsh)"
+      # command -v guard: tolerate the pre-package-install bootstrap window.
+      command -v mise >/dev/null && eval "$(mise activate zsh)"
 
       # ──────────────────────────────────────────────────────────────── opam ──
       # OCaml package manager — sets PATH for ocamllsp, ocamlformat, dune, etc.
