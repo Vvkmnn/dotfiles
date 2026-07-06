@@ -251,3 +251,157 @@ Our approach was confirmed correct by web research:
   Verified silent. vProfile = superset of fleet apps (inert entries for absent apps).
 - **mas still not worth it.** The 2 MAS apps are cask-redundant (1Password-for-Safari ships
   in the `1password` cask; AdGuard Mini = `adguard` cask). Stay 100% cask = the manifest.
+
+## Live-setup findings — 2026-07-06 (vMiniM4: fossil runbook + no-TTY sudo)
+
+- **The exact TL;DR failure repeated, on a different machine.** Found
+  `~/.setup/dotfiles-ai.md` (696L) + `~/.setup/dotfiles-ai/ui.sh` (178L) already
+  sitting on vMiniM4 — untracked, invented by an earlier session, reinventing
+  `AI.md`/`ux.sh` from scratch (same Tokyo Night palette + face-glyph roster) down
+  to referencing a `~/.claude/skills/dotfiles-ai/SKILL.md` that never existed. Cost
+  most of a session before the real checkout surfaced `.ai/`/`AI.md`/`dotfiles-setup`
+  and the duplication became obvious. Deleted both fossil files. **The rule isn't
+  sticking from prose alone** — consider making the `dotfiles-setup` skill's
+  activation step actively grep for untracked `.setup/*ai*`-looking files and flag
+  them before any bootstrap plan gets drafted, rather than relying on a Claude
+  session to remember to check.
+- **Claude Code's Bash tool has no TTY at all, ever — `need_sudo()` didn't handle
+  this.** `sudo -v` (no `-A`) fails outright with "a terminal is required... or
+  configure an askpass helper" when invoked via Claude's tool-calls, even though a
+  real Terminal.app session works fine. Also confirmed this machine's sudo
+  (1.9.17p2) requires `-A` EXPLICITLY for askpass — it does not silently fall back
+  to `SUDO_ASKPASS`/`sudo.conf` just because stdin isn't a tty (contradicts some
+  generic sudo docs/blog claims — verify empirically per-machine, don't trust
+  secondhand sudo behavior claims). Fixed: `need_sudo()` now checks `[ -t 0 ]`; if
+  false, writes a tiny `osascript display dialog ... with hidden answer` helper to
+  a mktemp file and calls `sudo -A` with `SUDO_ASKPASS` pointed at it —
+  self-contained, cleaned up after. **Gotcha inside the gotcha:** AppleScript's
+  `display dialog` does NOT support a `subtitle` clause (that's `display
+  notification` only) — including one is a silent syntax error (`-2740`) that looks
+  exactly like flaky window-server attachment. Cost real time misdiagnosing "flaky
+  GUI" before finding the actual cause.
+- **A stray `/etc/sudo.conf`** (`Path askpass /Users/v/.local/bin/macos-askpass.sh`)
+  is dangling on vMiniM4 from an earlier iteration of this fix — the file it points
+  to no longer exists. Harmless (only consulted if `SUDO_ASKPASS` env is unset,
+  which `need_sudo()` never allows now) but should be `sudo rm /etc/sudo.conf`'d
+  next time someone's at the console with sudo already primed.
+- **Claude Code's Bash tool pins its own PATH regardless of dotfiles/profile
+  exports.** `export PATH=...` in `.zshenv`/`.minimal` has zero effect on what
+  Claude's tool-calls resolve — confirmed empirically (a brand-new
+  `HOMEBREW_PREFIX` export took effect immediately in the same file/session; the
+  `PATH` export never did). Only `~/.local/bin` is on the tool's fixed PATH.
+  Practical implication: any freshly-`brew install`ed binary a Claude session needs
+  to call directly needs a symlink into `~/.local/bin` — Homebrew auto-symlinked
+  `git`/`git-crypt`/`jq` there this run (unclear why/whether reliable), but `brew`
+  itself did not and needed a manual `ln -sf /opt/homebrew/bin/brew ~/.local/bin/`.
+  Worth a `phase_packages` note or a `doctor.sh` probe if this bites again.
+- **Real profile convention is by `$USER`, not hardware model** (`AI.md`'s table:
+  `eve → server`, everyone else incl. mini-admin `v` → `workstation` — "Mini admin
+  (v) gets workstation — screen-shared 90% of the time, needs full UX"). Flagging
+  because the (now-deleted) fossil runbook assumed hardware-based profile (Mac mini
+  ⇒ server for `v`), which would have put the wrong Brewfile/services on this
+  machine. Not yet acted on — vMiniM4's `v` should get the `workstation` Brewfile,
+  not `server`, whenever packages are installed.
+- **P13's Full Disk Access grant requires quitting + reopening Terminal.app to take
+  effect — and Claude Code was itself launched from inside that Terminal.** Granting
+  FDA (needed here so `op` can read 1Password's desktop-integration bridge file in
+  its Group Container — CLI sign-in + "Integrate with 1Password CLI" alone weren't
+  enough, still got `operation not permitted` reading
+  `.../2BUA8C4S2C.com.1password/.../settings.json` after both) triggers macOS's
+  standard "quit and reopen" prompt. Since the Claude Code session's whole process
+  tree roots at that Terminal window (`launchd → Terminal.app → zsh → claude →
+  zsh`), restarting Terminal kills the in-progress session. **Sequencing implication
+  for future bootstraps: do P13 (or at least the Full Disk Access pane) BEFORE
+  starting a long Claude-driven run that depends on `op`, not mid-run** — or expect
+  a session restart and make sure state (tasks, plan file) is written to disk first
+  so the next session can resume cleanly.
+- **Safety hooks silently DOWN + shell error-spam during the P4→P8 window (FIXED in
+  the standard setup).** Deploying the dotfiles at P4 activates
+  `.claude/settings.json`'s hooks — which run via `node`
+  (`~/.local/share/mise/shims/node`) — and `.shell` (mise/zoxide/atuin init). But
+  node/mise/etc. aren't provisioned until the P8 Brewfile. Result on a fresh machine:
+  every tool call logged `PreToolUse:Bash hook error … node: command not found` and,
+  because Claude Code treats a missing-interpreter hook as **non-blocking**, the
+  guardrail was **bypassed** — exactly while a bootstrap agent runs privileged
+  commands. Plus every shell init spewed `command not found: zoxide/mise/atuin`.
+  Nuance: on THIS machine zoxide/mise/atuin were actually already brew-installed —
+  the `.shell` errors were a PATH-timing issue in the snapshot shell; only `node`
+  was genuinely absent (mise had never run `mise install`). Two-part fix, both baked
+  into the standard flow so no future machine hits it:
+  1. **`.shell`** — `command -v`-guard the `zoxide`/`mise`/`atuin` `eval "$(… init)"`
+     lines (atuin's block wrapped in `if command -v atuin; then … fi` so `^R` stays
+     on fzf-history-widget when atuin is absent). Degrades silently, any transient gap.
+  2. **`~/.setup/AI.md`** — added `mise` to the P2 `brew install` line, and a new
+     **P6.5 "Provision language runtimes (mise)"** (`mise install` + `mise reshim` +
+     a `node --version` verify) right after the mise config lands at P4/P6 — so node
+     exists before the hooks matter, closing the window to ~2 commands (P5+P6) instead
+     of the whole Brewfile. `node = "lts"` currently resolves to v24.
+  Applied live on vMiniM4 (mise install → node v24.18.0, python 3.13.14, cmake 4.3.3;
+  hook re-verified running). Edits to `.shell` + `AI.md` uncommitted pending owner review.
+  Possible follow-up: make the hook wrapper itself **fail-closed** (deny) rather than
+  non-blocking when its interpreter is missing — a missing-node hook currently means
+  "no guardrail," which is the least-safe default.
+- **AI.md P7 (git-crypt unlock) had 3 latent bugs — all FIXED.** Hit live on vMiniM4:
+  1. `op ... --out-file "$(mktemp)"` fails: mktemp pre-creates the file, so `op` wants
+     to confirm the overwrite and aborts `cannot prompt for confirmation` in a no-TTY
+     shell. The old `2>/dev/null` swallowed it, leaving a 0-byte file → the `[ -s ]`
+     check fell through to a false "FATAL: key not found." → Added `--force`, dropped
+     the stderr suppression.
+  2. `cd ~ && git-crypt unlock` fails `not a git repository` — the dotfiles are a BARE
+     repo at `~/.dotfiles`, so from `$HOME` there's no `.git`. → Must run with
+     `GIT_DIR="$HOME/.dotfiles" GIT_WORK_TREE="$HOME" git-crypt unlock`. Also: unlock
+     needs a clean tree; if the bootstrap made WIP edits first (this session did:
+     askpass/hooks/shell fixes), `dotfiles stash` before + `dotfiles stash pop` after.
+  3. Verify probed `~/.claude.json` (`head -1 | grep -qv GITCRYPT`) — but `.claude.json`
+     is NOT git-crypt-tracked on this branch (`.gitattributes` lists it, but `git
+     ls-files` shows it's uncommitted; it's Claude Code's live plaintext file). So the
+     check passed vacuously whether unlock worked or not. → Verify via an actually-tracked
+     encrypted file: `head -c1 ~/.claude/mcp/config.json | grep -q '{'`.
+  The "temp key" is NOT a second key — it's the owner's own 1Password key pulled to a
+  `mktemp` (0600), used, and `rm -P`-shredded immediately (never left on disk). Set that
+  actually decrypts: `.utcp_config.json`, `.claude/mcp/config.json`, `.claude/mcp/mcp.json.bak`,
+  `.assets/fonts/**`. Applied live on vMiniM4; edits uncommitted pending review.
+- **`~/.ai/setup packages`: 8 of ~75 deps failed first pass in a no-TTY (Claude-driven)
+  run — remediation plan below.** Three distinct causes:
+  1. **`fd`, `lf` — transient brew parallel-lock collisions** (`process has already locked
+     /opt/homebrew/Cellar/cmake` / `…/go`): two concurrent installs wanted the same dep.
+     Recovered live with a plain `brew install fd lf` (no sudo). **FIX (systemic):** add an
+     **unconditional final `brew bundle` mop-up pass** at the end of `phase_packages`
+     (idempotent — skips installed, re-tries only the transient losers). Today the 2nd
+     bundle pass only runs if Xcode is present, so lock-transients slip through.
+  2. **`mullvad-vpn`, `adguard`, `karabiner-elements`, `tailscale-app` — sudo `.pkg` casks**
+     (`installer -pkg … exited with 1: sudo: a password is required`). ROOT CAUSE:
+     `need_sudo()` primes one credential, but in a no-TTY run (a) it expires after the
+     5-min sudo timeout during the long formulae install, and (b) the keep-alive subshell's
+     `sudo -n true` can't refresh it (no-TTY ticket scoping). By the time brew reaches the
+     casks, sudo is dead. **FIX (systemic, two layers):** (a) in `phase_packages`, install
+     the known pkg-casks **first, right after `need_sudo`** (fresh window); (b) after the
+     bundle, verify that known set and, if any are missing **and** `[ ! -t 0 ]`, print the
+     exact `brew install --cask <missing>` one-liner + "run in a real terminal" — never a
+     silent buried failure. Also recommend, for a fully-hands-off install, running
+     `~/.ai/setup packages` in a real Terminal (TTY → need_sudo's keep-alive works as
+     designed, as it did on Neo). **IMMEDIATE (vMiniM4):** owner runs
+     `brew install --cask mullvad-vpn adguard karabiner-elements tailscale-app` in a terminal.
+     (NB: layer-(a) auto-fix is UNVERIFIED for no-TTY — a live test of "fresh prime →
+     brew child sudo" was declined; layer-(b) surfacing is the guaranteed-correct part.)
+  3. **`menuanywhere` — source build, needs full Xcode** (`unsatisfied requirement failed
+     this build`; `swiftc` from CLT is enough for the sketchybar bar-daemon but NOT for
+     menuanywhere). Not a bug — the intended flow is `~/.ai/setup xcode` (one Apple 2FA)
+     then re-run packages. **IMMEDIATE (vMiniM4):** pending the xcode phase.
+  Recovered live: `fd`, `lf`, `ccusage-monitor` (3/8). Still pending: the 4 sudo casks
+  (owner terminal) + `menuanywhere` (Xcode). Systemic `phase_packages` edits: TODO
+  (uncommitted branch), tracked here so they land with the other end-of-session fixes.
+  **DECISIVE follow-up (settles the "front-load via askpass" idea):** Claude CANNOT run
+  `sudo` at all — `.claude/settings.json` deny list has `Bash(sudo *)` (line ~456), so
+  any direct `sudo`/`brew install --cask <pkg-cask>` from the Bash tool is HARD-BLOCKED
+  by policy ("sudo commands require manual execution"). This is the guardrail working
+  (and it only came online once node/hooks were fixed earlier today). Implications:
+  (1) the phase_packages "front-load pkg-casks right after need_sudo" auto-fix ONLY
+  helps when the WHOLE `~/.ai/setup packages` runs in a REAL TERMINAL (owner-driven) —
+  there `need_sudo`'s TTY sudo works as designed (as on Neo). (2) In a Claude-driven run,
+  sudo only executes when buried inside a script launched by a non-sudo command (e.g.
+  `nohup ~/.ai/setup packages`), and even then the no-TTY credential doesn't reach brew's
+  child `sudo installer`. So the RELIABLE rule is: **sudo `.pkg` casks are always
+  owner-run in a terminal; the phase_packages "surface the exact command" fallback (layer
+  b) is the real fix, front-loading (layer a) is a bonus only for terminal runs.** Don't
+  chase askpass for Claude-driven direct sudo again — it's policy-denied by design.
