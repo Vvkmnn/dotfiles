@@ -57,6 +57,8 @@ Write the minimum code needed, but make it beautiful. Iterate in small steps.
 - Commit frequently at stable points
 - Validate each step before continuing
 - Easier to review, easier to revert
+- Small-CL discipline (Google): ~100 changed lines is a reasonable unit, 1000 is too large — and file COUNT counts too (20 files × 5 lines is still a large review). Split by logical seam, never by arbitrary size
+- Review bar: "code health over perfection" — approve/proceed when the change clearly improves the system, even if not ideal; pure-polish suggestions get a `Nit:` prefix, never block on them
 - Edits happen in the main session, never inside subagents — user must see and approve each one. Exception: well-scoped agents with clear justification (e.g., linter fixing 20 files)
 
 **Commit messages match the repo:**

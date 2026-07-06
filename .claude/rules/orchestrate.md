@@ -6,7 +6,7 @@ Large tasks exceed single-agent capacity. Long contexts cause forgetting. Sequen
 ## Rule
 Delegate to subagents strategically. Each agent gets fresh context - use this to your advantage.
 
-Subagents default to read-only. They research, explore, and report back — edits happen in the main session where they can be reviewed. Only dispatch editing subagents when there's a clear reason (e.g., independent file changes across separate modules with explicit approval).
+Policy: restrict custom agents to read-only unless editing is justified (only built-in Explore/Plan are inherently read-only — custom agents inherit ALL tools unless their frontmatter restricts them). Research/review agents report back; edits happen in the main session where they can be reviewed. Editing agents (e.g. debugger) are fine when the role demands it and the frontmatter scopes the tools. Subagents run in the BACKGROUND by default (v2.1.198+) and may nest their own subagents (depth 5).
 
 ### When to Recommend Subagents
 
@@ -14,25 +14,26 @@ Subagents default to read-only. They research, explore, and report back — edit
 |-----------|-----------|-----|
 | 3+ independent areas to research | Yes | Parallel exploration, fresh contexts |
 | Context >50% used | Yes | Avoid context rot |
-| Domain expertise needed | Yes | security-auditor, backend-architect, etc. |
+| Domain expertise needed | Yes | security-reviewer, architect, debugger, paper-researcher |
 | Context-heavy ops (testing, docs) | Yes | Isolate token-hungry work |
 | Novel problem or persistent error | Yes | Research protocol — local/docs/online |
 | Simple targeted lookup | No | Direct tools faster |
 | Sequential dependencies | No | Agents can't see each other |
 
-### Model Selection
+### Model + Effort Routing (Fable/Opus 4.8 era)
 
-| Task Type | Model | Why |
-|-----------|-------|-----|
-| File search, pattern matching | haiku | Deterministic, can't fail |
-| Code analysis, exploration | sonnet | Haiku misses issues that require judgment |
-| Architecture, complex reasoning | opus | Opus 4.6, worth the cost |
+| Role | model | effort | Notes |
+|------|-------|--------|-------|
+| Main session | fable/opus/sonnet per switch-claude | high (xhigh for hardest) | 20x is the PLAN; model chosen within it |
+| architect | opus | max | Deepest reasoning; advisory read-only |
+| code-reviewer / security-reviewer | sonnet | medium / high | Fast-pass gates; CE/trailofbits fleets for depth |
+| debugger | inherit | high | Fresh-context verifier beats self-critique |
+| paper-researcher | sonnet | high | background:true, writes results to file |
+| Deterministic file search | haiku | low | Explore now INHERITS main model (capped at Opus) — cheap scans need an explicit haiku override |
 
-**Session model:** Check `/switch-claude` skill for current mode (generous vs optimized).
-- `opusplan` = Opus for plan mode, Sonnet for execution (best ROI)
-- `opus` = full Opus everywhere (generous mode)
-- Effort levels: `/model` + arrow keys (low/medium/high)
-- Subagent routing: `CLAUDE_CODE_SUBAGENT_MODEL` env var
+- Agents arrive pre-equipped: their frontmatter carries `skills`/`mcpServers`/`effort` — don't re-instruct these in dispatch prompts
+- Session modes: `switch-claude` skill (pro/5x/20x + per-project overrides)
+- Global subagent cost-cap: `CLAUDE_CODE_SUBAGENT_MODEL` env var
 
 ### Context Window Strategy
 
@@ -54,8 +55,14 @@ Task("Find API patterns", prompt, "Explore")
 
 **Implementation phase:**
 - Only parallelize truly independent work
-- Agents can't see each other's changes
+- Sibling agents can't see each other's changes (nesting works to depth 5, but siblings stay isolated)
 - Reconvene and verify after parallel execution
+
+### Async Delegation (Fable-era default)
+
+Subagents run in the background by default — use it: delegate independent subtasks and keep working while they run; intervene if a subagent goes off track or is missing context. Don't block on a single agent's return when other work exists. Long-lived agents that keep context across subtasks save time and cost via cache reads. Background agents should write substantial results to a file so nothing is lost on return. For high-stakes work, verify with a fresh-context subagent against the spec — separate verifiers outperform self-critique.
+
+**Teams vs subagents vs background:** background subagents (default) for independent work; agent teams ONLY for adversarial/competing-hypothesis debugging where agents must challenge each other (`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`, fragile: no /resume for teammates); never teams for work subagents can do.
 
 ### Research Protocol
 
@@ -97,7 +104,7 @@ Task("Find API patterns", prompt, "Explore")
 **Include in every agent prompt:**
 1. Specific scope (directories, file patterns)
 2. What you already know (avoid redundant exploration)
-3. What format you want the answer in
+3. **Return contract** — output format + line cap (e.g. "≤15 lines, file:line refs, never paste file contents"). Read reports, not transcripts
 4. Any constraints or non-goals
 
 **Example:**
@@ -117,12 +124,15 @@ Don't explore: tests, mocks, or deprecated code.
 
 | When I notice... | Reach for... |
 |------------------|--------------|
-| Bug with unclear cause | `debugging-toolkit:debugger` |
+| Bug with unclear cause | `debugger` agent (ours, fresh-context) or `debugging-toolkit:debugger` |
 | Test coverage gaps, TDD needed | `tdd-workflows:tdd-orchestrator` |
-| Novel library/API or persistent error | Research protocol (3 Explore agents) |
-| PR needs review | `code-review:code-review` skill (GitHub PR integration) |
-| Feature architecture needed | `feature-dev:code-architect` or `ce:plan` |
-| Code quality after implementation | `code-simplifier:code-simplifier` agent |
+| Novel library/tool/approach | `research-topics` skill (technical mode) |
+| Academic papers/literature/citations | `research-topics` skill (academic mode) → dispatches `paper-researcher` agent |
+| Pre-commit quality pass | `code-reviewer` agent (fast gate); CE reviewer fleet for depth |
+| Pre-push / security-sensitive changes | `security-reviewer` agent (OWASP gate); trailofbits skills for adversarial depth |
+| PR needs review | `code-review` skill or `compound-engineering:ce-code-review` |
+| Feature architecture needed | `architect` agent or `compound-engineering:ce-plan` |
+| Code quality after implementation | `compound-engineering:ce-simplify-code` skill |
 
 **Naming patterns:** `*-architect` for architecture, `*-pro` for language expertise (python-pro, typescript-pro, rust-pro, golang-pro, bash-pro).
 
@@ -142,7 +152,7 @@ Language plugins provide skills — not just agents. **Check matching skills bef
 - Performance-sensitive code — invoke `python-performance-optimization` or equivalent
 - Simple edits, bug fixes, known patterns — write directly
 
-**Disabled but available per-project:** See `~/.claude/analysis/PLUGINS_DISABLED.md` for full reference. Enable in project `.claude/settings.json`.
+**Disabled but available per-project:** See `~/.claude/docs/CONFIG.md` (Plugins section) for full reference. Enable in project `.claude/settings.json`.
 
 ### Agent Teams (Experimental)
 
@@ -152,7 +162,7 @@ Multiple Claude Code instances coordinating via shared task list + mailbox. Enab
 
 - Launching agents for simple lookups (use Grep)
 - Sequential agents that depend on each other
-- Forgetting to specify model (defaults to sonnet)
+- Routing cheap scans through an inherited expensive model (Explore inherits main model now — use a haiku override for deterministic search)
 - Vague prompts that cause redundant exploration
 - More than 3 parallel agents (diminishing returns)
 - Using agent teams for tasks subagents can handle (token waste)

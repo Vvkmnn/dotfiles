@@ -43,7 +43,7 @@ From `superpowers:verification-before-completion`:
 3. READ: Full output, check exit code
 4. VERIFY: Does output confirm the claim?
 5. **TASK**: If this completes a plan item, call TaskUpdate → completed NOW
-6. **SKILLS**: If you used a custom skill or discovered something non-obvious, evaluate skill evolution at end of task (invoke `evolve-skill` if warranted). Batch this — don't interrupt main work.
+6. **SKILLS**: If you used a custom skill or discovered something non-obvious, evaluate skill evolution at end of task (invoke `improve-claude evolve` if warranted). Batch this — don't interrupt main work.
 7. ONLY THEN: Make the claim
 
 **Verification pattern:**

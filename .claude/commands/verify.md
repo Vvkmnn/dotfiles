@@ -2,7 +2,7 @@
 description: Run 6-phase verification loop before claiming work is done
 ---
 
-Invoke the verification-loop skill. Run all 6 phases in order against the current project:
+Invoke the verify-work skill. Run all 6 phases in order against the current project:
 
 1. **Build** — compile/transpile succeeds
 2. **Typecheck** — type checker passes

@@ -12,6 +12,7 @@ Before writing non-trivial code, research the best approach:
 - **Data structures:** Choose based on access patterns, not familiarity. HashMap for lookups, not linear search. Set for membership tests, not array `.includes()`. The wrong data structure makes correct code slow.
 - **Algorithms:** Know the problem class. Is it a search, sort, graph traversal, dynamic programming? The naive approach is often O(n^2) when O(n log n) or O(n) exists.
 - **Patterns:** Check if the problem has a well-known solution. Don't reinvent what the standard library provides. Check Context7 docs before writing library-specific code.
+- **Libraries:** Never assume a library is available — even a famous one. Check the manifest/lockfile (package.json, pyproject.toml, Cargo.toml) before importing; match the installed major version's API.
 - **Existing code:** Grep the codebase for similar patterns before writing new ones. Reuse > reinvent.
 - For unfamiliar territory, use the research protocol in `orchestrate.md` (3 parallel subagents: local/docs/online).
 
@@ -49,6 +50,7 @@ Before writing non-trivial code, research the best approach:
 - Every function has a reader's mental stack budget — spend it deliberately
 - Complexity signals: >3 parameters, >2 levels of nesting, >1 abstraction level per function
 - The test: can a reader understand this unit in isolation in <30 seconds?
+- Prefer deep modules: small interface, substantial implementation (Ousterhout) — an interface as complex as its implementation adds surface without hiding anything
 - Why: correctness is necessary but not sufficient; maintainability requires shallow stacks
 
 **No flag parameters:**
@@ -85,6 +87,21 @@ Before writing non-trivial code, research the best approach:
 - Prefer flat data over deeply nested structures
 - Separate data from behavior — plain structs/records + functions beat class hierarchies
 - Why: the right data structure makes the algorithm obvious; the wrong one makes every operation a fight
+
+### Documentation Policy
+
+Converged practice across frontier coding tools (Cursor/Devin/Windsurf system prompts) + Google eng-practices:
+
+- **Default is zero comments.** Add one only for: non-obvious complexity, a decision/trade-off (why this approach), or a footgun (race, timing, quirk)
+- **WHY, never WHAT.** A comment restating the next line is noise; self-documenting names carry the WHAT
+- **Verify every comment you write** — LLM-generated comments are wrong ~20% of the time (arXiv 2406.14836); a wrong comment is worse than none
+- **LSP docstrings are the contract, not the HOW**: purpose, params, return, raises — never implementation narration
+- **No unprompted doc files.** Never create README/DESIGN/NOTES files unless asked
+
+### Completion Discipline
+
+- Code isn't done until verified with a fresh run (full protocol: `verify.md`)
+- **Never modify a test to make it pass** — fix the code; if the test itself is wrong, say so explicitly and get agreement (`test.md`)
 
 ### Anti-Patterns
 
@@ -170,3 +187,9 @@ Rules describe trade-offs, not absolutes. Break them when you can articulate why
 - `orchestrate.md` — Research protocol (3 parallel subagents) for unfamiliar territory
 - `verify.md` — Evidence-based claims, run tests before claiming done
 - `test.md` — Testing gates, security checks, edge case coverage
+
+<!-- Sources (2026-07-05 research pass): elder-plinius/CL4R1T4S (CURSOR/DEVIN/WINDSURF system prompts — converged coding directives),
+     google/eng-practices (reviewer standard: code health over perfection, small CLs, Nit: convention),
+     ciembor/agent-rules-books (SE-book distillations; deep modules per Ousterhout, A Philosophy of Software Design),
+     arXiv 2406.14836 (LLM comment accuracy ~80%) -->
+

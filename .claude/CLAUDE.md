@@ -1,6 +1,6 @@
 # Global Context
 
-> Updated: 2026-03-21. Review weekly via `upgrade-claude` skill.
+> Review weekly via `improve-claude` skill (health+audit phases run via cloud routine). Dates: git log.
 
 ## Role
 
@@ -22,7 +22,7 @@ Direct feedback. Push back on flawed logic. No validation theater.
 - **Write tests** - Happy path + edge cases for new features
 - **Run tests** - Before claiming completion
 - **Provide verification** - Give success criteria: tests, expected output, screenshots. Claude performs dramatically better when it can verify its own work
-- **Use tools** - MCP integrations (notion, github, gdrive), then claude-historian for past sessions, then local tools. For code navigation: `dora` if `.dora/` exists (suggest `dora init` if not and exploring extensively)
+- **Use tools** - CLIs first (`gh`, `ast-grep`/`sg` syntax-aware code search, `agent-browser` headless web, `yt-dlp`, `osascript`), then MCPs that earned their slot (notion, reddit, paper_search — see docs/CONFIG.md), claude-historian for past sessions. Code navigation: `dora` if `.dora/` exists (suggest `dora init` if not and exploring extensively)
 - **Incremental changes** - One edit at a time, visible in the main session. Never batch edits or hide them in parallel subagents. Explain each step, confirm before proceeding. Exception: well-scoped editing agents (linter, formatter, reviewer) with clear justification
 - **Update Tasks** - After completing each plan item, call TaskUpdate -> completed (see plan.md)
 - **Recommend subagents** - When parallelism or fresh context would help, suggest it
@@ -133,7 +133,7 @@ See `~/.claude/rules/` for detailed guidance:
 
 ## Machine Setup
 
-Point Claude at this dotfiles repo on a fresh machine and it sets the machine up — minimal expected early intervention (unlock 1Password, one sudo, Apple 2FA), then walk away. Triggered by "set up this Mac" / "bootstrap" (the `dotfiles-setup` skill). The repo contains everything (vendored fonts, inline defaults, tracked configs) — no cross-machine handoff needed.
+Point Claude at this dotfiles repo on a fresh machine and it sets the machine up — minimal expected early intervention (unlock 1Password, one sudo, Apple 2FA), then walk away. Triggered by "set up this Mac" / "bootstrap" (the `setup-dotfiles` skill). The repo contains everything (vendored fonts, inline defaults, tracked configs) — no cross-machine handoff needed.
 
 ### macOS
 
@@ -143,12 +143,11 @@ The **`~/.ai/`** folder is the entry. Read `~/.ai/README.md` (mission + 1Passwor
 
 ## Agents
 
-Custom agents in `~/.claude/agents/`: `code-reviewer` (sonnet, post-change review), `security-reviewer` (sonnet, OWASP scanning), `architect` (opus, design review), `study-researcher` (literature review). Use `/review` and `/security` commands as shortcuts.
+Custom agents in `~/.claude/agents/`: `code-reviewer` (sonnet, post-change review), `security-reviewer` (sonnet, OWASP scanning), `architect` (opus, design review), `paper-researcher` (academic literature review). Use `/review` and `/security` commands as shortcuts.
 
 ## Key Files
 
-- `~/.claude/PAST.md` - Changelog of major config changes and removals
-- `~/.claude/FUTURE.md` - Ideas and features to potentially add later
+- `~/.claude/docs/` - CHANGELOG.md (the log: upcoming + dated history) · CONFIG.md (operations: playbook + settings + MCP fleet + plugin catalog). README.md at root = current-state map
 - `~/.claude/hooks/pre-tool-use.js` - **Add here** for both "ask" (approval prompt) and "deny" (hard block) patterns. See file header for format.
 - `~/.claude/backups/` - Dated config backups for emergency rollback (not git tracked)
 

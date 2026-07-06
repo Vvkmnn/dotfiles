@@ -13,15 +13,17 @@ Before writing plans OR modifying code, explore and investigate first.
 - **claude-historian** - Past sessions and decisions on similar problems
 - **Explore agent** (`Task` with `subagent_type=Explore`) - Open-ended codebase questions
 - **Glob/Grep** - File pattern and content search
+- **ast-grep** (`sg --lang <l> -p 'pattern($ARG)'`) - Syntax-aware search when text-grep false-positives hurt (refactor sweeps, call-site audits); add `-r <replacement>` for structural rewrites
+- **agent-browser** - Headless browser from Bash: `agent-browser open <url>` → `agent-browser snapshot` (compact @ref list) → `click @e1` / `fill @e2 "text"` → `close`. Interactive/authenticated browsing → claude-in-chrome instead
 - **dora** - If `.dora/` exists: `dora symbol`, `dora refs`, `dora deps` for fast code navigation. If not and exploring extensively, suggest `dora init && dora index`
 - **skills.sh** - Browse [skills.sh](https://skills.sh) periodically for useful community skills (install: `npx skills add <repo> --skill <name> --global --agent claude-code`)
 
 **Symptom → Skill Lookup (invoke BEFORE investigating):**
 | Symptom | Invoke First |
 |---------|-------------|
-| Plugin errors, stale hooks, cache issues | `refresh-claude` |
-| Claude Code binary updated | `upgrade-claude` |
-| Confused about ~/.claude structure | `cleanup-claude` |
+| Plugin errors, stale hooks, cache issues | `improve-claude refresh` |
+| Claude Code binary updated | `improve-claude health audit` |
+| Confused about ~/.claude structure | `improve-claude cleanup` |
 | Disk space issues | `save-space` |
 | Dotfiles changed | `update-dotfiles` |
 | Neovim config issues | `configure-neovim` |
@@ -101,7 +103,7 @@ See `orchestrate.md` for when to recommend, model selection, and prompting guide
 **Data Retrieval:**
 - WebSearch for info available in MCP servers (Notion, GitHub, etc.)
 - WebFetch when structured API access exists (check mcp-proxy servers first)
-- WebFetch for Reddit (blocked) - use `mcp__reddit__reddit_get_post_details` or `mcp__reddit__reddit_browse_subreddit` instead
+- WebFetch for Reddit (blocked) - use `mcp__reddit__get_reddit_post` or `mcp__reddit__browse_subreddit` instead
 - Re-reading files when claude-historian already has the answer
 - Manual extraction when MCP provides structured access
 - Searching for MCP config in `~/.claude.json` - check `mcpServers` section in project or global `.claude.json`
