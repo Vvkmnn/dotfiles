@@ -78,18 +78,20 @@ case "$chip" in
 esac
 "$TMUX_BIN" set-option -g @chip_color "$base"
 
-# --- per-session UNIQUE pale tint of the base colour + Roman numeral --------
-# pale base = blend ~50% toward white; then nudge each channel by decorrelated
-# hash bits (±20). ~41^3 ≈ 68k combos -> distinct sessions get distinct, still
-# family-related, black-text-readable colours. Clamped to 150..240 (stays light).
+# --- per-session UNIQUE shade of the chip HUE + Roman numeral ---------------
+# Each session = the chip colour lightened toward white by a per-session amount
+# (22..42%, hashed) plus a small per-channel nudge. Lightening LESS than before
+# keeps the saturation, so the shade still reads clearly as the machine's hue
+# (blue chip -> blue sessions, red -> red, …) instead of washing out to grey —
+# and cross-machine the hues stay obviously distinct. Black text stays readable.
 br=$(( 16#${base:1:2} )); bgc=$(( 16#${base:3:2} )); bbc=$(( 16#${base:5:2} ))
-pr=$(( br + (255-br)/2 )); pg=$(( bgc + (255-bgc)/2 )); pb=$(( bbc + (255-bbc)/2 ))
-clamp() { local v=$1; [ "$v" -lt 150 ] && v=150; [ "$v" -gt 240 ] && v=240; printf '%s' "$v"; }
+clamp() { local v=$1; [ "$v" -lt 150 ] && v=150; [ "$v" -gt 235 ] && v=235; printf '%s' "$v"; }
 "$TMUX_BIN" list-sessions -F '#{session_name}' 2>/dev/null | while IFS= read -r s; do
 	h=$(printf '%s' "$s" | cksum | cut -d' ' -f1)
-	r=$(clamp $(( pr + (h % 41) - 20 )))
-	g=$(clamp $(( pg + (h/41 % 41) - 20 )))
-	b=$(clamp $(( pb + (h/1681 % 41) - 20 )))
+	bl=$(( 22 + h % 21 ))   # 22..42% toward white — light enough for black text, keeps the hue
+	r=$(clamp $(( br  + (255-br)*bl/100  + (h/100   % 25) - 12 )))
+	g=$(clamp $(( bgc + (255-bgc)*bl/100 + (h/2500  % 25) - 12 )))
+	b=$(clamp $(( bbc + (255-bbc)*bl/100 + (h/62500 % 25) - 12 )))
 	"$TMUX_BIN" set-option -t "$s" @session_color "$(printf '#%02x%02x%02x' "$r" "$g" "$b")"
 	if printf '%s' "$s" | grep -qE '^[0-9]+$'; then
 		"$TMUX_BIN" set-option -t "$s" @session_roman "$(to_roman "$s")"
