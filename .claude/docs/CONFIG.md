@@ -94,6 +94,16 @@ Subagents run in the **background by default** — keep working; results arrive.
 2. **Merging that PR is the approval** — machines just pull
 3. Session-start nudges you if maintenance goes >7 days stale
 
+### Multi-model, Workflows & Memory (researched 2026-07-06, sourced)
+
+**Second opinions from Codex/Gemini — use what you already have.** You run Codex daily; the cheapest, doctrine-fit cross-check is CLI-to-CLI: Claude calls `codex exec "<prompt>"` (or `gemini`) via Bash for a fresh-context review — zero new API keys, zero new billing, no MCP to maintain. Use `/second-opinion` (command) or just ask "get Codex's take on this." *Heavier routes, only if you outgrow that:* PAL MCP (`BeehiveInnovations/pal-mcp-server`, ex-zen-mcp) puts many models in one prompt but needs OpenRouter/provider keys = separate recurring cost, NOT covered by Max — verify the repo live before installing. **Avoid `claude-code-router` for your case**: it swaps Claude's backend to other providers, so you pay *them* (Max is bypassed) — it's for replacing Claude with cheaper models, not your goal.
+
+**Dynamic Workflows (native, zero config)** — JS scripts orchestrating many background subagents. Reach for them on jobs too big for one conversation to coordinate (codebase audits, large migrations, multi-angle research). Trigger `ultracode` in a prompt for one task, or `/effort ultracode` for a whole session; `/deep-research <q>` is a built-in fan-out-and-verify workflow. Save a good run: `/workflows` → select → `s` → it lands in `~/.claude/workflows/`. Distinct from **subagents** (Claude decides each turn what to spawn) and **skills** (instructions Claude follows). The weekly cloud audit is a natural future saved-workflow.
+
+**Memory** — you already run native `/memory` + MEMORY.md (auto-caps 200 lines, overflow → topic files). The one unused lever: **path-scoped rules** — `.claude/rules/<name>.md` with `paths:` frontmatter loads only when matching files open, cutting context noise on big projects (e.g. an api rule scoped to `src/api/**`). Audit accrued memory with `/memory` periodically. (claude.ai memory does NOT sync to Code — separate systems.)
+
+**Cross-surface ritual (Remote Control is on)** — queue reviews/tests at the desk → approve from phone/couch; heavy-code in the terminal → light edits in browser → quick approvals on iOS, all synced. For a long/overnight run: start an isolated `--worktree` session + Remote Control, monitor from anywhere, main branch untouched. One live session per machine at a time.
+
 ---
 
 ## Settings — Every-Key Adoption Plan

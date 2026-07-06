@@ -591,7 +591,8 @@
     "claude-historian@claude-emporium": true,
     "claude-oracle@claude-emporium": true,
     "claude-vigil@claude-emporium": true,
-    "claude-augur@claude-emporium": true
+    "claude-augur@claude-emporium": true,
+    "example-skills@anthropic-agent-skills": true
   },
   "extraKnownMarketplaces": {
     "anthropic-agent-skills": {

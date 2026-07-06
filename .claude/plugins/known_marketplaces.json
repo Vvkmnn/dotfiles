@@ -23,7 +23,7 @@
       "repo": "yamadashy/repomix"
     },
     "installLocation": "/Users/v/.claude/plugins/marketplaces/repomix",
-    "lastUpdated": "2026-07-06T04:36:19.131Z",
+    "lastUpdated": "2026-07-06T14:44:54.579Z",
     "autoUpdate": true
   },
   "every-marketplace": {
@@ -86,6 +86,6 @@
       "repo": "anthropics/skills"
     },
     "installLocation": "/Users/v/.claude/plugins/marketplaces/anthropic-agent-skills",
-    "lastUpdated": "2026-07-06T06:21:57.610Z"
+    "lastUpdated": "2026-07-06T14:44:51.688Z"
   }
 }
