@@ -4,7 +4,7 @@
 #   ~/.ai/setup            run all: packages → fonts → services → macos → gate → doctor
 #   ~/.ai/setup packages   brew bundle (inline list, tap-trust, one sudo, Xcode 2nd pass)
 #   ~/.ai/setup fonts      install vendored SFMono Nerd Font → ~/Library/Fonts
-#   ~/.ai/setup services   yabai/skhd/sketchybar/borders/menuanywhere + tmux plugins
+#   ~/.ai/setup services   yabai/skhd/sketchybar/menuanywhere + tmux plugins
 #   ~/.ai/setup xcode      headless Xcode via xcodes (Apple ID from 1Password) — one 2FA code
 #   ~/.ai/setup macos      apply curated macOS defaults (sudo-free)
 #   ~/.ai/setup gate       open the manual TCC panes + checklist
@@ -67,7 +67,22 @@ _sudo_started=
 need_sudo() {
   [ -n "$_sudo_started" ] && return 0
   say "sudo — one prompt, kept alive for the whole run"
-  sudo -v || die "sudo is required here"
+  if [ -t 0 ]; then
+    sudo -v || die "sudo is required here"
+  else
+    # No controlling terminal (e.g. Claude Code's Bash tool) — this machine's
+    # sudo needs an askpass helper explicitly (-A; no silent no-tty fallback).
+    # Pop a native GUI password prompt instead of failing outright.
+    _askpass="$(mktemp)"
+    cat > "$_askpass" <<'EOF'
+#!/bin/bash
+osascript -e 'display dialog "sudo needs you - authenticate to continue" default answer "" with hidden answer with icon caution' -e 'text returned of result' 2>/dev/null
+EOF
+    chmod +x "$_askpass"
+    SUDO_ASKPASS="$_askpass" sudo -A -v; rc=$?
+    rm -f "$_askpass"
+    [ "$rc" -eq 0 ] || die "sudo is required here"
+  fi
   ( while true; do sudo -n true; sleep 60; kill -0 "$$" 2>/dev/null || exit; done ) &
   trap 'kill %1 2>/dev/null' EXIT
   _sudo_started=1
@@ -133,7 +148,7 @@ brew "supabase/tap/supabase"
 brew "koekeishiya/formulae/yabai"
 brew "koekeishiya/formulae/skhd"
 brew "felixkratz/formulae/sketchybar"
-brew "felixkratz/formulae/borders"
+# brew "felixkratz/formulae/borders"   # removed 2026-07-06: fleet no longer uses window borders
 brew "crissnb/dynamicisland/dynamicislandsketchybar"
 brew "acsandmann/tap/menuanywhere"
 brew "macmon"                                    # Apple Silicon power/temp/cpu/gpu telemetry — sketchybar bar-daemon pipes it (helpers/bar-daemon.swift:917)
@@ -185,6 +200,13 @@ phase_packages() {
   for t in koekeishiya/formulae felixkratz/formulae crissnb/dynamicisland acsandmann/tap supabase/tap joachimbrindeau/ccusage-monitor; do
     brew tap "$t" >/dev/null 2>&1; brew trust "$t" >/dev/null 2>&1 && ok "trusted $t"
   done
+  # sudo .pkg casks FIRST, while need_sudo's credential is freshest. In a no-TTY
+  # (Claude-driven) run the credential can't be refreshed and expires during the long
+  # formulae install below, so front-load these; any that still miss are surfaced at
+  # the end with a copy-paste command. (See ISSUES.md 2026-07-06.)
+  local PKG_CASKS="mullvad-vpn adguard karabiner-elements tailscale-app"
+  say "sudo .pkg casks first (fresh credential window)"
+  brew install --cask $PKG_CASKS 2>/dev/null || warn "some sudo casks deferred — surfaced at end of phase"
   say "brew bundle (Xcode is large + shows no progress — be patient)"
   brew bundle install --file=<(_brewfile) || warn "first pass had failures (menuanywhere needs Xcode) — run 'setup xcode' then re-run"
   local xc; xc=$(ls -d /Applications/Xcode*.app 2>/dev/null | sort -V | tail -1)
@@ -193,11 +215,23 @@ phase_packages() {
     sudo xcodebuild -license accept 2>/dev/null && ok "Xcode license accepted"
     brew bundle install --file=<(_brewfile) >/dev/null 2>&1 && ok "Xcode-dependent items (menuanywhere) built"
   fi
+  # Mop-up pass: re-run bundle once to catch transient parallel-lock failures
+  # (e.g. fd/lf losing a race for cmake/go's Cellar lock). Idempotent — skips installed.
+  brew bundle install --file=<(_brewfile) >/dev/null 2>&1 && ok "mop-up pass clean" || true
   # Materialize mise-managed runtimes (python · node · cmake) from the tracked
   # ~/.config/mise/config.toml. brew installs `mise` but never populates it — without
   # this, python3 is missing → the shell warns every init and p10k instant prompt breaks.
   if command -v mise >/dev/null 2>&1; then
     mise install -y >/dev/null 2>&1 && ok "mise tools installed (python · node · cmake)" || warn "mise install had issues — run 'mise install'"
+  fi
+  # Surface any sudo .pkg casks that still didn't install — never a silent buried
+  # failure. In a no-TTY run, .pkg sudo can't complete; print the exact command to
+  # finish them in a real terminal (TTY sudo). See ISSUES.md 2026-07-06.
+  local missing="" c
+  for c in $PKG_CASKS; do brew list --cask "$c" >/dev/null 2>&1 || missing="$missing $c"; done
+  if [ -n "$missing" ]; then
+    warn "sudo .pkg casks still missing:$missing"
+    [ -t 0 ] || echo "     finish in a REAL terminal (TTY sudo):  brew install --cask$missing"
   fi
 }
 
@@ -237,7 +271,7 @@ phase_services() {
     fi
   fi
   local svc
-  for svc in sketchybar borders menuanywhere; do
+  for svc in sketchybar menuanywhere; do   # borders removed 2026-07-06 (fleet no longer uses it)
     command -v "$svc" >/dev/null 2>&1 && { brew services start "$svc" >/dev/null 2>&1; ok "$svc"; }
   done
   if [ -x "$HOME/.config/tmux/plugins/tpm/bin/install_plugins" ]; then
@@ -401,7 +435,7 @@ phase_doctor() {
   say "doctor — did setup work?"
   brew bundle check --file=<(_brewfile) >/dev/null 2>&1 && ok "all packages installed" || warn "packages incomplete — run 'setup packages'"
   local p
-  for p in yabai skhd sketchybar borders; do pgrep -x "$p" >/dev/null && ok "$p running" || warn "$p not running (grant Accessibility, then 'setup services')"; done
+  for p in yabai skhd sketchybar; do pgrep -x "$p" >/dev/null && ok "$p running" || warn "$p not running (grant Accessibility, then 'setup services')"; done
   if ls "$HOME/Library/Fonts/"SFMono*Nerd*Font* >/dev/null 2>&1; then ok "SFMono Nerd Font installed"; else warn "SFMono Nerd Font missing — run 'setup fonts'"; fi
   local t miss=0
   for t in tmux nvim git gh mise uv node rg fzf jq; do command -v "$t" >/dev/null 2>&1 || { warn "missing: $t"; miss=1; }; done
@@ -420,7 +454,7 @@ setup — bring this Mac to fleet parity (self-contained).   ~/.ai/setup [phase]
   (none)     run all: packages → fonts → services → macos → gate → doctor
   packages   brew bundle (inline list, tap-trust, one sudo, Xcode 2nd pass)
   fonts      install vendored SFMono Nerd Font → ~/Library/Fonts
-  services   yabai/skhd/sketchybar/borders/menuanywhere + tmux plugins
+  services   yabai/skhd/sketchybar/menuanywhere + tmux plugins
   xcode      headless Xcode via xcodes (Apple ID from 1Password) — one 2FA code
   macos      apply curated macOS defaults (sudo-free)
   gate       open the manual TCC panes + checklist
