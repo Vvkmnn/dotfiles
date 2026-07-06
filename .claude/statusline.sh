@@ -1,31 +1,34 @@
 #!/bin/bash
 # High-performance Claude Code statusline
-# Output: ॐ Oᵀ+ π feat/auth +45 -12 ψ 55% λ 40% 30% μ 5% δ 2h 15m σ 8.5h θ 0.8h 6.5d
+# Output: ॐ ✻ Fᵀˣ ψ 51%¹ᴹ κ 94% μ 5% λ 40% 30% σ 2h 8.5h θ 0.8h¹·⁵ 6.5d π branch +45 -12 $ 12.34
 #
 # Error handling: Log errors but always show something (even if incomplete)
 set -o pipefail
 trap 'log_error "Script failed at line $LINENO"' ERR
 #
 # ============================================================================
-# FORMAT BREAKDOWN
+# FORMAT BREAKDOWN (v2, 2026-07-06)
 # ============================================================================
-# ॐ Oᵀ+ π feat/auth +45 -12 ψ 55% λ 40% 30% μ 5% δ 2h 15m σ 8.5h θ 0.8h 6.5d
-# │ ││││ │ │         │   │  │     │  │    │        │       │    │
-# │ ││││ │ │         │   │  │     │  │    │        │       │    └── θ runway (5h·7d)
-# │ ││││ │ │         │   │  │     │  │    │        │       └── σ weekly active
-# │ ││││ │ │         │   │  │     │  │    │        └── δ session elapsed
-# │ ││││ │ │         │   │  │     │  │    └── μ daily allowance (%/day)
-# │ ││││ │ │         │   │  │     │  └── 7d used %
-# │ ││││ │ │         │   │  │     └── 5h used %
-# │ ││││ │ │         │   │  └── ψ context %
-# │ ││││ │ │         │   └── deletions (red, hidden when clean)
-# │ ││││ │ │         └── insertions (green, hidden when clean)
-# │ ││││ │ └── git branch (truncated 16 chars)
-# │ ││││ └── π git section (hidden when not in git repo)
-# │ ││└┘── effort (+high, -low, omit medium)
-# │ │└── thinking (ᵀ when on)
-# │ └── Model (O/S/H)
-# └── model icon
+# ॐ Fᵀˣ ψ 51%¹ᴹ κ 94% μ 5% λ 40% 30% σ 2h 8.5h θ 0.8h¹·⁵ 6.5d π branch +45 -12 $ 12.34
+# │ │││ │       │     │    │         │         │              │             │
+# │ │││ │       │     │    │         │         │              │             └── $ session value (API-equiv, dim) + ¢ REAL
+# │ │││ │       │     │    │         │         │              │                 usage-credit spend (orange, only when >0)
+# │ │││ │       │     │    │         │         │              └── π git branch +ins -del (hidden outside repos)
+# │ │││ │       │     │    │         │         └── θ runway 5h·7d (superscript = pace ratio)
+# │ │││ │       │     │    │         └── σ session elapsed + weekly active
+# │ │││ │       │     │    └── λ 5h% 7d% quota used (clamped ≤100)
+# │ │││ │       │     └── μ daily budget variance
+# │ │││ │       └── κ cache-hit % (green ≥80, orange <50, red <40)
+# │ │││ └── ψ context % (¹ᴹ superscript = 1M-window session)
+# │ ││└── effort from stdin (ᴹ max, ˣ xhigh, ⁺ high, ⁻ low, omit medium)
+# │ │└── thinking ᵀ (stdin, settings fallback)
+# │ └── Model letter (F/O/S/H)
+# └── ॐ anchor: model icon + vim state by color — orange NORMAL/vim-off (default),
+#     green INSERT, gold VISUAL (pairs with statusLine.hideVimModeIndicator)
+#
+# DISPLAY MODES: default shows EVERYTHING. STATUSLINE_MINIMAL=1 opts into early-warning
+# hiding: κ hides while ≥70, μ hides while on-pace (0..+5), θ hides while pace <0.8×
+# sustainable. Nothing is ever deleted — only display-gated.
 #
 # μ: Budget variance = (days_elapsed/7)×100 - weekly%.
 #    Positive = under budget. Negative = over budget. 0 = on track.
@@ -120,7 +123,7 @@ DIM='\033[2m'
 STRIKE='\033[9m'
 RESET='\033[0m'
 B='\033[38;2;230;195;132m' # kanagawa gold (#e6c384) for icons
-ICON_MODEL="${B}ॐ${RESET}"
+ICON_MODEL="${B}✻${RESET}"   # Claude spark — model section (ॐ is the vim-state anchor)
 ICON_RATE="${B}λ${RESET}"
 ICON_ELAPSED="${B}δ${RESET}"
 ICON_WEEKLY="${B}σ${RESET}"
@@ -128,6 +131,8 @@ ICON_RUNWAY="${B}θ${RESET}"
 ICON_CTX="${B}ψ${RESET}"
 ICON_OMEGA="${B}μ${RESET}"
 ICON_GIT="${B}π${RESET}"
+ICON_CACHE="${B}κ${RESET}"
+ICON_COST="${B}\$${RESET}"
 GREEN='\033[38;2;118;148;106m'   # kanagawa autumnGreen #76946a (was \033[32m)
 
 # ---- Cache paths ----
@@ -156,28 +161,48 @@ command -v jq >/dev/null 2>&1 || {
 }
 
 # ---- Extract model name ----
-# model can be a string ("claude-opus-4-6") or object ({display_name: "..."})
+# model can be a string ("claude-fable-5[1m]") or object ({display_name: "..."})
 display_name=$(echo "$input" | jq -r 'if (.model | type) == "object" then .model.display_name else .model end // "Claude"' 2>/dev/null)
-full_model=$(echo "$display_name" | grep -oiE "(opus|sonnet|haiku)" | head -1)
+full_model=$(echo "$display_name" | grep -oiE "(fable|opus|sonnet|haiku)" | head -1)
 case "$(echo "$full_model" | tr '[:upper:]' '[:lower:]')" in
+	fable) model_name="F" ;;
 	opus) model_name="O" ;;
 	sonnet) model_name="S" ;;
 	haiku) model_name="H" ;;
 	*) model_name="${display_name:-Claude}" ;;
 esac
 
-# ---- Effort indicator (+/-) ----
+# ---- Effort indicator ----
+# Live from stdin effort.level (reflects /effort mid-session changes).
+# Was: settings.json .effortLevel — a key Claude Code never wrote → always "medium" (fixed 2026-07-06)
+# Glyphs (all superscript, consistent with ᵀ thinking marker):
+#   max ᴹ · xhigh ˣ · high ⁺ · medium (none) · low ⁻
 effort_indicator=""
-effort_level=$(jq -r '.effortLevel // "medium"' "$HOME/.claude/settings.json" 2>/dev/null)
+effort_level=$(echo "$input" | jq -r '.effort.level // empty' 2>/dev/null)
 case "$effort_level" in
-	high)   effort_indicator="+" ;;
-	low)    effort_indicator="-" ;;
+	max)    effort_indicator="ᴹ" ;;
+	xhigh)  effort_indicator="ˣ" ;;
+	high)   effort_indicator="⁺" ;;
+	low)    effort_indicator="⁻" ;;
 esac
 
 # ---- Thinking mode (ᵀ) ----
+# Live from stdin thinking.enabled; falls back to settings for older CC versions
 thinking_indicator=""
-thinking=$(jq -r '.alwaysThinkingEnabled // false' "$HOME/.claude/settings.json" 2>/dev/null)
+thinking=$(echo "$input" | jq -r '.thinking.enabled // empty' 2>/dev/null)
+[ -z "$thinking" ] && thinking=$(jq -r '.alwaysThinkingEnabled // false' "$HOME/.claude/settings.json" 2>/dev/null)
 [ "$thinking" = "true" ] && thinking_indicator="ᵀ"
+
+# ---- Vim mode via ॐ color (compact replacement for the -- INSERT -- banner) ----
+# Pairs with statusLine "hideVimModeIndicator": true (issue #16788, ours).
+# The leading ॐ IS the vim indicator: gold = NORMAL/vim off (calm), green = INSERT,
+# orange = VISUAL. No extra glyph, no shifting layout.
+vim_mode=$(echo "$input" | jq -r '.vim.mode // empty' 2>/dev/null)
+case "$vim_mode" in
+	INSERT)                     vim_color="$GREEN" ;;
+	VISUAL|"VISUAL LINE")       vim_color="$B" ;;      # gold — distinct from orange default
+	*)                          vim_color="$ORANGE" ;; # NORMAL / vim off (user's default)
+esac
 
 # ---- Get context % (native first, transcript fallback) ----
 context_pct=""
@@ -233,6 +258,7 @@ color_value() {
 # - Token expiration pre-check avoids wasted curl on expired OAuth tokens
 rate_pct="" weekly_pct=""
 five_hour_reset_sec="" seven_day_reset_sec=""
+extra_usd=""  # usage-credit spend (real money) — from /api/oauth/usage extra_usage
 rate_content_age=0  # content freshness for stale indicators (separate from mtime TTL)
 
 # Helper: extract all fields from JSON in a single jq call (5→1 jq invocations)
@@ -246,15 +272,24 @@ _parse_rate_json() {
 		(.seven_day.utilization // "~"),
 		(.five_hour.resets_at // "~"),
 		(.seven_day.resets_at // "~"),
-		(._fetched_at // "~")
+		(._fetched_at // "~"),
+		(.extra_usage.used_usd // .extra_usage.used_credits // .extra_usage.used
+		 // .extra_usage.amount_spent_usd // .extra_usage.spent // "~")
 	] | join("\t")' 2>/dev/null) || return
 
-	IFS=$'\t' read -r rate_pct weekly_pct five_hour_reset_sec seven_day_reset_sec _fetched_at <<< "$parsed"
+	IFS=$'\t' read -r rate_pct weekly_pct five_hour_reset_sec seven_day_reset_sec _fetched_at extra_usd <<< "$parsed"
+	[ "$extra_usd" = "~" ] && extra_usd=""
 	[ "$rate_pct" = "~" ] && rate_pct=""
 	[ "$weekly_pct" = "~" ] && weekly_pct=""
 	[ "$five_hour_reset_sec" = "~" ] && five_hour_reset_sec=""
 	[ "$seven_day_reset_sec" = "~" ] && seven_day_reset_sec=""
 	[ "$_fetched_at" = "~" ] && _fetched_at=""
+
+	# Clamp utilization at 100: API can report >100 (observed λ 103% 2026-07-06),
+	# which also drove runway (100-pct)/burn negative → the ⁻⁰·¹ superscript bug.
+	# Clamping here fixes display AND downstream runway/pace math in one place.
+	if [ -n "$rate_pct" ] && awk "BEGIN {exit !($rate_pct > 100)}"; then rate_pct="100"; fi
+	if [ -n "$weekly_pct" ] && awk "BEGIN {exit !($weekly_pct > 100)}"; then weekly_pct="100"; fi
 
 	# Content age: how old is the data itself (not the file mtime)
 	# Missing _fetched_at = old cache format = age unknown = assume stale
@@ -334,6 +369,12 @@ _refresh_rate_limit() {
 			[ -n "$h5_reset" ] && iso5=$(date -u -r "$h5_reset" "+%Y-%m-%dT%H:%M:%S+00:00" 2>/dev/null)
 			[ -n "$h7_reset" ] && iso7=$(date -u -r "$h7_reset" "+%Y-%m-%dT%H:%M:%S+00:00" 2>/dev/null)
 
+			# Carry forward extra_usage (usage credits) from the previous cache — probe
+			# headers don't expose it; only the /api/oauth/usage fallback refreshes it.
+			local prev_extra
+			prev_extra=$(jq -c '.extra_usage // null' "$cache_file" 2>/dev/null) || prev_extra=null
+			[ -z "$prev_extra" ] && prev_extra=null
+
 			local json
 			json=$(jq -n \
 				--argjson t "$now" \
@@ -341,9 +382,11 @@ _refresh_rate_limit() {
 				--arg r5 "${iso5:-}" \
 				--argjson h7 "${pct7:-null}" \
 				--arg r7 "${iso7:-}" \
+				--argjson extra "$prev_extra" \
 				'{
 					five_hour: {utilization: $h5, resets_at: (if $r5 == "" then null else $r5 end)},
 					seven_day: {utilization: $h7, resets_at: (if $r7 == "" then null else $r7 end)},
+					extra_usage: $extra,
 					_fetched_at: $t,
 					_source: "haiku_probe"
 				}' 2>/dev/null)
@@ -639,10 +682,15 @@ get_runways() {
 				five_hour_runway=$(awk "BEGIN {printf \"%.1f\", (100 - $rate_pct) / $burn_rate}")
 				five_hour_runway=${five_hour_runway%.0}
 
-				# Sustainable pace (%/h)
+				# Sustainable pace (%/h). At exactly 100% used, sustainable=0 →
+				# division blows up; runway is 0h, pace pegged at max-red (2026-07-06)
 				local sustainable_pace=$(awk "BEGIN {printf \"%.2f\", (100 - $rate_pct) / $five_hour_reset}")
-				# Pace ratio (current / sustainable)
-				five_hour_pace_ratio=$(awk "BEGIN {printf \"%.2f\", $burn_rate / $sustainable_pace}")
+				if [ "$(echo "$sustainable_pace > 0" | bc -l)" -eq 1 ]; then
+					five_hour_pace_ratio=$(awk "BEGIN {printf \"%.2f\", $burn_rate / $sustainable_pace}")
+				else
+					five_hour_runway="0"
+					five_hour_pace_ratio="9.99"
+				fi
 			fi
 			# else: 0% utilization — no burn rate, runway/pace stay empty (reset time still shows)
 		fi
@@ -659,10 +707,15 @@ get_runways() {
 				seven_day_runway=$(awk "BEGIN {printf \"%.1f\", (100 - $weekly_pct) / $burn_rate}")
 				seven_day_runway=${seven_day_runway%.0}
 
-				# Guard division when reset imminent
+				# Guard division when reset imminent OR quota fully used (2026-07-06)
 				if [ "$(echo "$seven_day_reset > 0" | bc -l)" -eq 1 ]; then
 					local sustainable_pace=$(awk "BEGIN {printf \"%.2f\", (100 - $weekly_pct) / $seven_day_reset}")
-					seven_day_pace_ratio=$(awk "BEGIN {printf \"%.2f\", $burn_rate / $sustainable_pace}")
+					if [ "$(echo "$sustainable_pace > 0" | bc -l)" -eq 1 ]; then
+						seven_day_pace_ratio=$(awk "BEGIN {printf \"%.2f\", $burn_rate / $sustainable_pace}")
+					else
+						seven_day_runway="0"
+						seven_day_pace_ratio="9.99"
+					fi
 				else
 					seven_day_pace_ratio="0.5"
 				fi
@@ -699,12 +752,36 @@ if [ -n "$weekly_pct" ] && [ -n "$seven_day_reset" ]; then
 fi
 
 # ---- Render statusline ----
-printf '%b %s%s%s' "$ICON_MODEL" "$model_name" "$thinking_indicator" "$effort_indicator"
+# ॐ = single anchor: model section icon AND vim state via color
+# (orange normal/off, green insert, gold visual)
+printf '%b %s%s%s' "${vim_color}ॐ${RESET}" "$model_name" "$thinking_indicator" "$effort_indicator"
 
-# ψ Context
+# ψ Context (superscript ¹ᴹ marks a 1M-context session — % means 5× more there)
 if [ -n "$context_pct" ]; then
 	ctx_colored=$(color_value "${context_pct}%" "$context_pct" 20 40 65 80)
-	printf ' %b %s' "$ICON_CTX" "$ctx_colored"
+	window_size=$(echo "$input" | jq -r '.context_window.context_window_size // empty' 2>/dev/null)
+	window_mark=""
+	[ "$window_size" = "1000000" ] && window_mark="¹ᴹ"
+	printf ' %b %s%s' "$ICON_CTX" "$ctx_colored" "$window_mark"
+fi
+
+# κ Cache-hit % (token-efficiency dial: cache reads / all input-side tokens this turn)
+# ≥80 green (healthy prefix reuse) · 50-79 plain · <50 orange (cache being invalidated)
+cache_pct=$(echo "$input" | jq -r '
+	(.context_window.current_usage // {}) as $u |
+	(($u.cache_read_input_tokens // 0) + ($u.cache_creation_input_tokens // 0) + ($u.input_tokens // 0)) as $total |
+	if $total > 1000 then (($u.cache_read_input_tokens // 0) * 100 / $total | floor) else empty end' 2>/dev/null)
+# Early-warning gate: κ hidden while healthy (≥70 — safely ignorable). Appearing =
+# cache efficiency degrading with time to fix (don't edit early context, keep turns
+# <5min apart). STATUSLINE_VERBOSE=1 shows it always (green when healthy).
+# Default: always shown ("show everything, optimize later"). STATUSLINE_MINIMAL=1
+# enables the early-warning gate (hide while ≥70 = safely ignorable).
+if [ -n "$cache_pct" ] && { [ -z "${STATUSLINE_MINIMAL:-}" ] || [ "$cache_pct" -lt 70 ]; }; then
+	if [ "$cache_pct" -ge 80 ]; then cache_col="$GREEN"
+	elif [ "$cache_pct" -ge 70 ]; then cache_col=""
+	elif [ "$cache_pct" -ge 40 ]; then cache_col="$ORANGE"
+	else cache_col="$RED"; fi
+	printf ' %b %b%s%%%b' "$ICON_CACHE" "$cache_col" "$cache_pct" "$RESET"
 fi
 
 # μ Budget variance (expected - actual at this point in the week)
@@ -722,28 +799,27 @@ if [ "$rate_content_age" -gt 7200 ]; then
 	fi
 fi
 
-if [ -n "$seven_day_budget" ]; then
+# Early-warning gate: μ hidden while on-pace (0..+5 — safely ignorable). Appearing =
+# drifting off budget with week left to correct. Orange slightly over, red >5 over,
+# gray >5 under (surplus — spend more, you paid for it). VERBOSE shows always.
+if [ -n "$seven_day_budget" ] && { [ -z "${STATUSLINE_MINIMAL:-}" ] || [ "$seven_day_budget" -lt 0 ] 2>/dev/null || [ "$seven_day_budget" -gt 5 ] 2>/dev/null || [ -n "$rate_stale" ]; }; then
 	omega_color=""
-
 	if [ "$seven_day_budget" -lt -5 ] 2>/dev/null; then
 		omega_color="$RED"      # >5% over budget
 	elif [ "$seven_day_budget" -lt 0 ] 2>/dev/null; then
-		omega_color="$ORANGE"   # slightly over budget
+		omega_color="$ORANGE"   # slightly over budget — earliest signal
 	elif [ "$seven_day_budget" -gt 5 ] 2>/dev/null; then
 		omega_color="$GRAY"     # >5% under budget — surplus
 	fi
-	# else: 0-5% — on or slightly under budget (white)
 
 	if [ -n "$rate_stale" ]; then
 		printf ' %b %b%s%%%b' "$ICON_OMEGA" "$rate_stale" "$seven_day_budget" "$RESET"
-	elif [ -n "$omega_color" ]; then
-		printf ' %b %b%s%%%b' "$ICON_OMEGA" "$omega_color" "$seven_day_budget" "$RESET"
 	else
-		printf ' %b %s%%' "$ICON_OMEGA" "$seven_day_budget"
+		printf ' %b %b%s%%%b' "$ICON_OMEGA" "$omega_color" "$seven_day_budget" "$RESET"
 	fi
 fi
 
-# λ Rate limits (5h%, 7d%)
+# λ Rate limits (5h%, 7d%) — values clamped ≤100 at parse (over-quota shows red 100%)
 if [ -n "$rate_pct" ]; then
 	rate_colored=$(color_value "$(printf '%.0f' "$rate_pct")%" "${rate_pct%.*}" 10 40 70 90)
 	printf ' %b %b%s%b' "$ICON_RATE" "$rate_stale" "$rate_colored" "$RESET"
@@ -754,7 +830,7 @@ if [ -n "$rate_pct" ]; then
 	fi
 fi
 
-# σ Time (session / weekly active)
+# σ Time (session / weekly active) — always shown; time context is never noise
 if [ -n "$elapsed_str" ]; then
 	if [ -n "$weekly_str" ]; then
 		printf ' %b%b %s %s%b' "$weekly_dim" "$ICON_WEEKLY" "$elapsed_str" "$weekly_str" "$RESET"
@@ -772,72 +848,47 @@ fi
 
 runway_icon_printed=""
 
-if [ -n "$five_hour_reset" ]; then
+# EARLY-WARNING GATE (2026-07-06, user design): θ hides only when SAFELY ignorable
+# (pace <0.8× sustainable = on track to make the reset). Appears the moment pace
+# reaches 0.8 — early enough to adjust. Orange 0.8-1.2, red >1.2.
+# NOTHING deleted: STATUSLINE_VERBOSE=1 restores always-on θ with healthy display.
+
+# Default: θ always shown when data exists ("show everything, optimize later").
+# STATUSLINE_MINIMAL=1 hides θ while pace <0.8× sustainable (safely ignorable).
+show_5h="" show_7d=""
+[ -n "$five_hour_reset" ] && show_5h=1
+[ -n "$seven_day_reset" ] && show_7d=1
+if [ -n "${STATUSLINE_MINIMAL:-}" ]; then
+	show_5h="" show_7d=""
+	if [ -n "$five_hour_reset" ] && [ -n "$five_hour_runway" ] && [ -n "$five_hour_pace_ratio" ] \
+		&& [ "$(echo "$five_hour_pace_ratio >= 0.8" | bc -l)" -eq 1 ]; then show_5h=1; fi
+	if [ -n "$seven_day_reset" ] && [ -n "$seven_day_runway" ] && [ -n "$seven_day_pace_ratio" ] \
+		&& [ "$(echo "$seven_day_pace_ratio >= 0.8" | bc -l)" -eq 1 ]; then show_7d=1; fi
+fi
+
+if [ -n "$show_5h" ]; then
 	runway_icon_printed=1
-
-	if [ -n "$five_hour_runway" ] && [ -n "$five_hour_pace_ratio" ]; then
-		# Have runway data — show superscript warning when runway < reset
-		runway_lt_reset=$(echo "$five_hour_runway < $five_hour_reset" | bc -l)
-
-		if [ "$runway_lt_reset" -eq 1 ]; then
-			# Runway < reset: show warning with superscript
-			# Color based on pace ratio: white ≤0.8, orange 0.8-1.2, red >1.2
-			five_hour_color=""
-			if [ "$(echo "$five_hour_pace_ratio > 1.2" | bc -l)" -eq 1 ]; then
-				five_hour_color="$RED"      # critical: pace >1.2× sustainable
-			elif [ "$(echo "$five_hour_pace_ratio > 0.8" | bc -l)" -eq 1 ]; then
-				five_hour_color="$ORANGE"   # warning: pace 0.8-1.2× sustainable
-			elif [ "$(echo "$five_hour_pace_ratio < 0.4" | bc -l)" -eq 1 ]; then
-				five_hour_color="$GRAY"     # very low pace, not interesting
-			fi
-
-			runway_super=$(to_superscript "$five_hour_runway")
-			printf ' %b %b%sh%s%b' "$ICON_RUNWAY" "$five_hour_color" "$five_hour_reset" "$runway_super" "$RESET"
-		else
-			# Runway >= reset: all good, no superscript needed
-			printf ' %b %sh' "$ICON_RUNWAY" "$five_hour_reset"
-		fi
+	if [ "$(echo "${five_hour_pace_ratio:-0} >= 0.8" | bc -l)" -eq 1 ]; then
+		five_hour_color="$ORANGE"
+		[ "$(echo "$five_hour_pace_ratio > 1.2" | bc -l)" -eq 1 ] && five_hour_color="$RED"
+		runway_super=$(to_superscript "$five_hour_runway")
+		printf ' %b %b%sh%s%b' "$ICON_RUNWAY" "$five_hour_color" "$five_hour_reset" "$runway_super" "$RESET"
+	elif [ -n "$five_hour_reset_stale" ]; then
+		printf ' %b %b%sh%b' "$ICON_RUNWAY" "$STRIKE" "$five_hour_reset" "$RESET"
 	else
-		# No runway data (0% usage or window just reset) — show reset time only
-		if [ -n "$five_hour_reset_stale" ]; then
-			printf ' %b %b%sh%b' "$ICON_RUNWAY" "$STRIKE" "$five_hour_reset" "$RESET"
-		else
-			printf ' %b %sh' "$ICON_RUNWAY" "$five_hour_reset"
-		fi
+		printf ' %b %sh' "$ICON_RUNWAY" "$five_hour_reset"   # verbose healthy path
 	fi
 fi
 
-if [ -n "$seven_day_reset" ]; then
-	# Print θ icon if 5h didn't already
-	if [ -z "$runway_icon_printed" ]; then
-		printf ' %b' "$ICON_RUNWAY"
-	fi
-
-	if [ -n "$seven_day_runway" ] && [ -n "$seven_day_pace_ratio" ]; then
-		# Have runway data — show superscript warning when runway < reset
-		runway_lt_reset=$(echo "$seven_day_runway < $seven_day_reset" | bc -l)
-
-		if [ "$runway_lt_reset" -eq 1 ]; then
-			# Runway < reset: show warning with superscript
-			# Color based on pace ratio: white ≤0.8, orange 0.8-1.2, red >1.2
-			seven_day_color=""
-			if [ "$(echo "$seven_day_pace_ratio > 1.2" | bc -l)" -eq 1 ]; then
-				seven_day_color="$RED"      # critical: pace >1.2× sustainable
-			elif [ "$(echo "$seven_day_pace_ratio > 0.8" | bc -l)" -eq 1 ]; then
-				seven_day_color="$ORANGE"   # warning: pace 0.8-1.2× sustainable
-			elif [ "$(echo "$seven_day_pace_ratio < 0.4" | bc -l)" -eq 1 ]; then
-				seven_day_color="$GRAY"     # very low pace, not interesting
-			fi
-
-			runway_super=$(to_superscript "$seven_day_runway")
-			printf ' %b%sd%s%b' "$seven_day_color" "$seven_day_reset" "$runway_super" "$RESET"
-		else
-			# Runway >= reset: all good, no superscript needed
-			printf ' %sd' "$seven_day_reset"
-		fi
+if [ -n "$show_7d" ]; then
+	[ -z "$runway_icon_printed" ] && printf ' %b' "$ICON_RUNWAY"
+	if [ "$(echo "${seven_day_pace_ratio:-0} >= 0.8" | bc -l)" -eq 1 ]; then
+		seven_day_color="$ORANGE"
+		[ "$(echo "$seven_day_pace_ratio > 1.2" | bc -l)" -eq 1 ] && seven_day_color="$RED"
+		runway_super=$(to_superscript "$seven_day_runway")
+		printf ' %b%sd%s%b' "$seven_day_color" "$seven_day_reset" "$runway_super" "$RESET"
 	else
-		# No runway data (0% usage or window just reset) — show reset time only
-		printf ' %sd' "$seven_day_reset"
+		printf ' %sd' "$seven_day_reset"   # verbose healthy path
 	fi
 fi
 
@@ -900,6 +951,18 @@ if [ -n "$cwd" ]; then
 			[ -n "$del" ] && printf ' %b-%s%b' "$RED" "$del" "$RESET"
 		fi
 	fi
+fi
+
+# $ Session value — far right, past pacing. Dim number = API-equivalent ESTIMATE
+# (subscription scoreboard: higher = better). Orange ¢ number = REAL usage-credit
+# spend (post 2026-07-08 Fable draws credits) — only renders when credits burned.
+# Field names defensive (shape unverified until first real credit spend).
+cost_usd=$(echo "$input" | jq -r '.cost.total_cost_usd // empty' 2>/dev/null)
+if [ -n "$cost_usd" ] && awk "BEGIN {exit !($cost_usd >= 0.01)}" 2>/dev/null; then
+	printf ' %b %b%.2f%b' "$ICON_COST" "$DIM" "$cost_usd" "$RESET"
+fi
+if [ -n "$extra_usd" ] && awk "BEGIN {exit !($extra_usd > 0)}" 2>/dev/null; then
+	printf ' %b¢%.2f%b' "$ORANGE" "$extra_usd" "$RESET"
 fi
 
 printf '\n'
