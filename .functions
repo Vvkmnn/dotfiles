@@ -193,11 +193,11 @@
   # so it works on the LAN or any network). Two v-verbs + two extras; no host map —
   # the name is passed straight to mosh/ssh/open, MagicDNS resolves it.
   #
-  #   vj vminim4        v[jump]: mosh into the mini's tmux in a fresh Ghostty window (terminal)
-  #   vw                v[wake]: keep THIS machine awake so its agents run while you travel
-  #   jv vminim4        screen-share the mini (first-party Screen Sharing, full GUI)
+  #   vssh vminim4        v[jump]: mosh into the mini's tmux in a fresh Ghostty window (terminal)
+  #   vwatch                v[wake]: keep THIS machine awake so its agents run while you travel
+  #   vremote vminim4        screen-share the mini (first-party Screen Sharing, full GUI)
   #   jc [host]         Claude + Remote Control (here, or start it on <host>)
-  # Bandwidth: jv screen (highest) · vj terminal (middle) · jc claude (lowest).
+  # Bandwidth: vremote screen (highest) · vssh terminal (middle) · jc claude (lowest).
 
   # _fleet_host <name> — resolve to a reachable form: prefer the bare name (Tailscale
   # MagicDNS, works on any network), fall back to <name>.local (Bonjour, LAN). Lets you
@@ -209,29 +209,29 @@
     else print -- "$h"; fi   # unreachable → return as-is so ssh/open errors clearly
   }
 
-  # vj <host> — v[jump]: open a FRESH Ghostty window that's a DIRECT client to THAT machine's
+  # vssh <host> — v[jump]: open a FRESH Ghostty window that's a DIRECT client to THAT machine's
   # tmux server, over mosh (auto-reconnects across sleep / wifi↔cellular / travel). No local
   # tmux wraps it (`open -e` skips the autostart) → C-a / C-hjkl / prefix / finder all drive the
   # remote, navigate all its windows+panes like you're sitting there. mosh (not ssh): tmux persists
   # server-side and mosh silently resumes the link, so closing the lid mid-session just picks back
   # up. `env -u TMUX` strips leaked tmux vars (no nesting). -A = attach-or-create persistent 'main'.
-  vj() {
-    local host; host=$(_fleet_host "${1:?usage: vj <host>   (e.g. vj vminim4 | vj vbookneo)}")
+  vssh() {
+    local host; host=$(_fleet_host "${1:?usage: vssh <host>   (e.g. vssh vminim4 | vssh vbookneo)}")
     print -P "%F{cyan}→ ${host} (mosh · new window)%f"
     open -na /Applications/Ghostty.app --args -e /bin/zsh -c \
       "env -u TMUX -u TMUX_PANE mosh --family=inet ${(q)host} -- tmux new-session -A -s main"
   }
 
-  # _vw_bar <pct> — 10-cell ASCII charge bar, e.g. [#######---].
-  _vw_bar() {
+  # _vwatch_bar <pct> — 10-cell ASCII charge bar, e.g. [#######---].
+  _vwatch_bar() {
     local p=${1:-0} n i out=""
     (( n = p / 10 )); (( n > 10 )) && n=10
     for (( i = 0; i < 10; i++ )); do (( i < n )) && out+="#" || out+="-"; done
     print -r -- "$out"
   }
 
-  # _vw_render <caffeinate-pid> — one ASCII frame of the vw dashboard (no sudo; pmset/tmux only).
-  _vw_render() {
+  # _vwatch_render <caffeinate-pid> — one ASCII frame of the vwatch dashboard (no sudo; pmset/tmux only).
+  _vwatch_render() {
     local caff=$1 host=${HOST%%.*} batt=$(pmset -g batt)
     local pct=$(print -r -- "$batt" | grep -oE '[0-9]+%' | head -1 | tr -d '%')
     local ac=0; print -r -- "$batt" | grep -q 'AC Power' && ac=1
@@ -246,7 +246,7 @@
     print -n $'\e[H\e[2J'
     print -P "  %B${host}%b · up ${up} · $(date +%H:%M)"
     print -P "$rule"
-    print -P "  power   ${pstate} ${pct:-?}%% [$(_vw_bar ${pct:-0})]   temp ${temp}   load ${load:-?}"
+    print -P "  power   ${pstate} ${pct:-?}%% [$(_vwatch_bar ${pct:-0})]   temp ${temp}   load ${load:-?}"
     if (( hot )); then
       print -P "  wake    %F{red}HOT%f — throttling; open the lid or cut load (still holding awake)"
     elif (( ac )); then
@@ -275,19 +275,19 @@
     print -P "  tmux    ${ns} sessions · ${nw} windows          %F{8}^C to release%f"
   }
 
-  # vw — v[wake]: keep THIS machine available for agentic work by any means, wasting the least
+  # vwatch — v[wake]: keep THIS machine available for agentic work by any means, wasting the least
   # energy possible. `caffeinate -im` holds the SYSTEM awake on AC *and* battery (lid open), but
   # lets the display sleep (no -d = no wasted backlight). On battery it stays up and shows the
   # drain honestly, so you decide when to plug in. Thermal-aware: warns if the fanless chassis
-  # throttles. SINGLE-INSTANCE: if a vw already holds this machine awake, it reports WHERE and
+  # throttles. SINGLE-INSTANCE: if a vwatch already holds this machine awake, it reports WHERE and
   # exits — never competes. Live ASCII dashboard: power, thermal, agents, tmux. `disown`ed +
   # EXIT-trap cleanup: never a stray "running job"; ^C/close -> caffeinate dies, no disk artifact.
-  vw() {
+  vwatch() {
     local existing=$(pgrep -f 'caffeinate -im' 2>/dev/null | head -1)
     if [[ -n "$existing" ]]; then
       local owner=$(ps -o ppid= -p "$existing" 2>/dev/null | tr -d ' ')
       local loc=$(tmux list-panes -a -F '#{pane_pid} #{session_name}:#{window_index}.#{pane_index}' 2>/dev/null | awk -v p="$owner" '$1==p{print $2}')
-      print -P "  %F{yellow}${HOST%%.*} is already awake%f — vw is running in %F{cyan}${loc:-pid $owner}%f (caffeinate ${existing})."
+      print -P "  %F{yellow}${HOST%%.*} is already awake%f — vwatch is running in %F{cyan}${loc:-pid $owner}%f (caffeinate ${existing})."
       print -P "  Go there, or ^C it to release. Exiting."
       return 0
     fi
@@ -299,12 +299,12 @@
     # that aborts the function fires this EXIT trap, killing it + restoring the cursor.
     trap 'kill $caff 2>/dev/null; tput cnorm 2>/dev/null; print -P "\n  %F{cyan}${HOST%%.*} released%f"' EXIT
     tput civis 2>/dev/null
-    while :; do _vw_render "$caff"; sleep 3; done
+    while :; do _vwatch_render "$caff"; sleep 3; done
   }
 
-  # jv <host> — jump visually: open first-party Screen Sharing to a machine.
-  jv() {
-    local host; host=$(_fleet_host "${1:?usage: jv <host>   (e.g. jv vminim4)}")
+  # vremote <host> — jump visually: open first-party Screen Sharing to a machine.
+  vremote() {
+    local host; host=$(_fleet_host "${1:?usage: vremote <host>   (e.g. vremote vminim4)}")
     print -P "%F{cyan}→ ${host} (screen)%f"
     open "vnc://${host}"
   }
