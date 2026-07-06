@@ -1,11 +1,11 @@
 ---
-name: study-researcher
+name: paper-researcher
 description: Use this agent when the user asks to "conduct literature review", "search for papers on X", "find research on X", "review related work", "identify research gaps in X", "what does the literature say about X", or needs autonomous multi-source academic research. Searches 22+ academic databases, downloads papers, analyzes findings, identifies gaps, and produces structured research reports. Works across all domains.
 
 <example>
 Context: User wants to understand current research on a topic
 user: "What does the research say about transformer efficiency methods?"
-assistant: "I'll dispatch the study-researcher agent to search across arXiv, Semantic Scholar, and Google Scholar for recent work on transformer efficiency."
+assistant: "I'll dispatch the paper-researcher agent to search across arXiv, Semantic Scholar, and Google Scholar for recent work on transformer efficiency."
 <commentary>
 User wants a research overview. The agent will search multiple sources, deduplicate, and synthesize.
 </commentary>
@@ -14,7 +14,7 @@ User wants a research overview. The agent will search multiple sources, deduplic
 <example>
 Context: User starting a new research project
 user: "I want to research the impact of AI on labor markets. Help me review the literature."
-assistant: "Deploying study-researcher to conduct a systematic literature review on AI and labor markets, covering both CS and economics sources."
+assistant: "Deploying paper-researcher to conduct a systematic literature review on AI and labor markets, covering both CS and economics sources."
 <commentary>
 Cross-domain research task. Agent will use paper_search MCP for academic papers and FRED for economic indicators.
 </commentary>
@@ -23,7 +23,7 @@ Cross-domain research task. Agent will use paper_search MCP for academic papers 
 <example>
 Context: User needs research gap identification
 user: "What are the unexplored areas in federated learning for healthcare?"
-assistant: "I'll use the study-researcher agent to analyze the federated learning + healthcare literature and identify research gaps."
+assistant: "I'll use the paper-researcher agent to analyze the federated learning + healthcare literature and identify research gaps."
 <commentary>
 Gap analysis task. Agent searches, categorizes existing work, and identifies underexplored areas.
 </commentary>
@@ -31,15 +31,20 @@ Gap analysis task. Agent searches, categorizes existing work, and identifies und
 
 model: sonnet
 color: blue
+effort: high
+background: true
+memory: user
+skills: [research-topics]
+mcpServers: ["paper_search", "fred"]
 tools: ["Read", "Write", "Grep", "Glob", "WebSearch", "WebFetch",
         "mcp__paper_search__search_papers",
         "mcp__paper_search__search_arxiv", "mcp__paper_search__download_arxiv", "mcp__paper_search__read_arxiv_paper",
         "mcp__paper_search__search_google_scholar",
         "mcp__paper_search__search_pubmed", "mcp__paper_search__download_pubmed",
         "mcp__paper_search__search_biorxiv", "mcp__paper_search__search_medrxiv",
-        "mcp__paper_search__search_semantic_scholar",
+        "mcp__paper_search__search_semantic",
         "mcp__paper_search__search_crossref", "mcp__paper_search__search_openalex",
-        "mcp__paper_search__search_core", "mcp__paper_search__search_europe_pmc",
+        "mcp__paper_search__search_core", "mcp__paper_search__search_europepmc",
         "mcp__paper_search__search_dblp", "mcp__paper_search__search_openaire",
         "mcp__paper_search__search_ssrn",
         "mcp__fred__*"]
