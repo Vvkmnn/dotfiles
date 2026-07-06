@@ -405,3 +405,88 @@ Our approach was confirmed correct by web research:
   owner-run in a terminal; the phase_packages "surface the exact command" fallback (layer
   b) is the real fix, front-loading (layer a) is a bonus only for terminal runs.** Don't
   chase askpass for Claude-driven direct sudo again — it's policy-denied by design.
+- **Xcode / menuanywhere — `xcodes` 2FA friction; App Store GUI was the pragmatic one-off.**
+  `~/.ai/setup xcode` (→ `xcodes install --latest` with Apple creds from 1Password via
+  `op run`) failed twice on the 2FA step — the 6-digit code expired (~30s window) before
+  entry. `menuanywhere` needs a FULL `Xcode.app` (CLT's `swiftc` is NOT enough:
+  "A full installation of Xcode.app 12.0 is required"). Resolution: installed Xcode from
+  the **App Store GUI** (the mini's existing iCloud session skipped 2FA), then
+  `brew install acsandmann/tap/menuanywhere` built fine (`xcode-select` already pointed at
+  Xcode.app). Research (2026): `xcodes` IS the fleet CLI tool and **caches the Apple session
+  in the keychain → 2FA is one-time per machine, headless after**; `mas install 497799835`
+  works only after a one-time App Store GUI sign-in; `xcodeinstall` (sebsto) is the
+  headless/EC2-oriented fork. Fleet guidance: expect ONE 2FA for `xcodes` per machine (type
+  the freshest code fast, or `sms`); App Store GUI is the low-friction fallback when present.
+  No CLI path avoids Apple's first-auth 2FA entirely.
+- **doctor false-positive "packages incomplete" — FIXED.** `phase_doctor`'s
+  `brew bundle check` reported yabai/skhd as "needs to be installed or updated" even though
+  both are installed AND running — because `brew bundle check` can't verify a formula's
+  outdated-status when its tap isn't *formula-trusted*, and treats "can't check" as
+  "missing." The tap-level `brew trust` in `phase_packages` isn't enough for the per-formula
+  outdated check. Fix: also run `brew trust --formula koekeishiya/formulae/yabai
+  koekeishiya/formulae/skhd` (applied live → doctor now all-green). Added to `phase_packages`
+  so fresh machines don't get the spurious warning. (uncommitted, with the borders/askpass work.)
+
+## Post-reboot findings — 2026-07-07 (vMiniM4: tmux plugins · Karabiner · coverage-gap audit)
+
+- **tmux "looks vanilla" — plugins never installed (FIXED).** The config
+  (`~/.config/tmux/tmux.conf`, 45 KB) DID load (verified: live server had `mouse on`,
+  `status-position top`, `prefix C-a` — all custom values; OMZ `tmux.extra.conf` chains to
+  it via `source-file $ZSH_TMUX_CONFIG`). But `~/.config/tmux/plugins/` held ONLY `tpm` —
+  all ~19 `@plugin`s (incl. the `minimal-tmux-status` theme, battery, wifi, resurrect,
+  continuum) were missing → bare status bar. ROOT CAUSE: `phase_services` ran
+  `tpm/bin/install_plugins` **without `TMUX_PLUGIN_MANAGER_PATH`**, so tpm targeted the
+  default `~/.tmux/plugins/` (wrong path) and installed nothing — and the blanket
+  `>/dev/null 2>&1 && ok` reported success anyway. Fix (live): 
+  `TMUX_PLUGIN_MANAGER_PATH="$HOME/.config/tmux/plugins/" .../tpm/bin/install_plugins`
+  → all 8 active plugins cloned; `tmux source-file` reloaded → themed. **Fleet fix
+  (phase_services):** export the env var + verify a SENTINEL plugin
+  (`minimal-tmux-status`) actually landed (warn, don't silently ok) + build `tmux-thumbs`
+  (Rust plugin, no vendored binary) when cargo exists. Gotcha for debugging: the OMZ tmux
+  shell wrapper `_zsh_tmux_plugin_run` shadows `tmux` in non-interactive shells — use the
+  full `/opt/homebrew/bin/tmux` binary for diagnostics.
+- **Karabiner remaps don't apply over Screen Sharing — INHERENT, not a bug.** Karabiner is
+  fully healthy on the mini (DriverKit VirtualHIDDevice `[activated enabled]`, services up,
+  20 KB config). It remaps events from *physical HID devices*; keystrokes arriving via
+  Screen Sharing are **synthetic events injected by the screen-sharing agent** and never
+  pass a physical HID device, so Karabiner's driver can't see them. What applies over the
+  wire is the **parent (typing) machine's** Karabiner. → No mini-side fix; put the desired
+  remaps on the machine you share *from* (Air/Neo — the fleet dotfiles already carry
+  `.config/karabiner/`). Verify: a remap works on the mini's own keyboard but follows the
+  parent's config over the share. (Also noted in `.config/karabiner/KARABINER.md`.)
+- **Coverage-gap audit — `~/.ai/setup` skips AI.md's daemon/remote-access phases.** The
+  skill runs packages·fonts·services·macos·gate·doctor (workstation UX) but NOT AI.md
+  P9/P12/P14/P15/P16 — so a machine bootstrapped purely via `dotfiles-setup` is not
+  always-on or fleet-SSH-wired. On vMiniM4:
+  - **pmset — CRITICAL & unaddressed:** `sleep 1` (sleeps ~1 min idle) → drops SSH/
+    screen-share; `womp 1` wake-on-LAN won't reliably wake for those. P12 (server
+    never-sleep) never ran (`v` = workstation). Needs `sudo pmset -a sleep 0 disksleep 0
+    displaysleep 0`; reconsider `autorestart 1` under FileVault (unattended reboot → locked
+    out). **#1 risk for a remote mini.**
+  - **LaunchAgents (P9) not installed:** `com.user.tmux`, `com.claude.mcp-proxy` absent
+    (only brew service plists). MCP works via plugins; the persistent-tmux agent is missing.
+  - **Per-device SSH key (P15) not generated:** no `~/.ssh/id_ed25519_vminim4`, not in
+    1Password → fleet key-based SSH mesh not wired.
+  - Remote Login (P16) — already ON (sshd listening). Mullvad/AdGuard sysext — pending
+    first launch. Tailscale (P14) — deferred to the other machine.
+  **Process fix:** add a `~/.ai/setup server` phase (P9/P12/P15, and P16 verify) for
+  mini/Studio/`eve` server use, OR make the skill+AI.md explicit that a headless mini needs
+  the access phases — "run the skill" currently ≠ "remotely reachable + always-on."
+- **tmux-thumbs removed (unused) + rust moved to mise (2026-07-07).** tmux-thumbs was the
+  only tmux plugin needing a Rust compile, and owner doesn't use it → commented its
+  `@plugin`/`@thumbs-key`/`unbind t` in `~/.config/tmux/tmux.conf`, dropped the build block
+  from `phase_services`, removed the plugin dir via `tpm/bin/clean_plugins`.
+- **Rust was a tracked-binary one-off — now mise-managed.** Discovered `~/.cargo/bin/*`
+  (14 rust binaries: cargo, rustc, rustup, rust-analyzer, clippy, rustfmt, …) **plus
+  `.cargo/env` are COMMITTED into the dotfiles repo** — 15 files, **33 MB** of
+  arch-specific binaries. They check out on every machine but are dead (no `~/.rustup`
+  toolchain is tracked), which is why `cargo` existed but `rustup default` was never set.
+  Fix: added `rust = "stable"` to `~/.config/mise/config.toml` (mise `core:rust` → rustup
+  under the hood); `mise install` (already in P6.5/phase_packages) now provisions
+  rustc/cargo (verified 1.96.1 via mise shim) alongside node/python/cmake — consistent,
+  reproducible, no manual `rustup default`. **CLEANUP PENDING (owner decision):** untrack
+  the 15 `.cargo/*` files (`dotfiles rm --cached .cargo/bin/* .cargo/env`) + gitignore
+  `.cargo/`, so the repo stops shipping 33 MB of dead binaries and mise owns rust cleanly.
+  `mise install` warned to remove the stale `~/.cargo/bin` copies so rustup can manage them.
+  Also: `.shell:189` still sources `~/.cargo/env` (rustup env) — harmless with mise (mise
+  activate wins PATH order) but can be dropped once `.cargo` is untracked.
