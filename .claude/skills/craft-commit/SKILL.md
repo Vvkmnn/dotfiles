@@ -1,8 +1,8 @@
 ---
-name: customized-commit
-description: Use when the user asks to commit, make a git commit, stage and commit, save changes to git, or says "commit this", "lets commit", "commit and push", "push this", "save and push", "ship it", "land this", or any variation implying they want to create a git commit from current changes. Also triggers on "/commit". Handles smart staging, logical grouping, commit message generation matching the repo's existing style, and optional push.
+name: craft-commit
+description: Use when the user asks to commit, make a git commit, stage and commit, save changes to git, or says "commit this", "lets commit", "commit and push", "push this", "save and push", "ship it", "land this", or any variation implying they want to create a git commit from current changes. Also triggers on "/commit". Handles smart staging, logical grouping, commit message generation matching the repo's existing style, and optional push. OWNS the commit step — run verify-work first for non-trivial changes; for the PR afterward use draft-github; plugin commit-commands is the lightweight fallback.
 author: Vvkmnn
-version: 1.0.0
+version: 1.1.0
 ---
 
 # Smart Git Commit

@@ -31,7 +31,7 @@ Always commit to the current branch. Never switch branches without asking.
 | Category | Scope | Key Files |
 |----------|-------|-----------|
 | Shell | `shell` | `.alias`, `.functions`, `.minimal`, `.profile`, `.rc`, `.shell`, `.bashrc`, `.zshrc`, `.zshenv`, `.zimrc`, `.p10k.zsh`, `.fishrc`, `.hushlogin` |
-| Claude Code | `claude` | `.claude/CLAUDE.md`, `PAST.md`, `FUTURE.md`, `settings.json`, `statusline.sh`, `rules/*`, `hooks/*`, `skills/*`, `mcp/MCP.md`, `mcp/config.json` (encrypted), `mcp/mcp.json.bak` (encrypted), `.claudeignore`, `.gitignore` |
+| Claude Code | `claude` | `.claude/CLAUDE.md`, `README.md`, `docs/*` (PAST/FUTURE/PLAYBOOK/MCP/PLUGINS), `settings.json`, `statusline.sh`, `rules/*`, `hooks/*`, `skills/*`, `agents/*`, `mcp/config.json` (encrypted), `mcp/mcp.json.bak` (encrypted), `.claudeignore`, `.gitignore` |
 | Karabiner | `karabiner` | `.config/karabiner/karabiner.json`, `KARABINER.md`, `scripts/*`, `assets/complex_modifications/*`, `automatic_backups/*` |
 | Sketchybar | `sketchybar` | `.config/sketchybar/sketchybarrc`, `plugins/*`, `helpers/*.swift` |
 | WM | `wm` | `.skhdrc`, `.yabairc`, `.config/yabai/*` |
@@ -182,7 +182,7 @@ mise ls | grep -i missing
   as separate `brew` lines. MAS-only apps need owner sign-off (App Store gate).
 - Log non-obvious root causes in `~/.ai/ISSUES.md`. `~/.ai/setup doctor` also flags gaps.
 
-This is the "you help me remember" loop — paired with `dotfiles-setup` (discover/set up).
+This is the "you help me remember" loop — paired with `setup-dotfiles` (discover/set up).
 
 ### Phase 6: Report
 
@@ -279,7 +279,7 @@ jq -s '
 
 **On new machine**, decrypt and register servers in `~/.utcp_config.json` for code-mode.
 
-See `~/.claude/mcp/MCP.md` for full server inventory (36 servers).
+See `~/.claude/docs/CONFIG.md` (MCP section) for full server inventory (14 active / 12 parked).
 
 ### mcp-proxy
 

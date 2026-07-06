@@ -1,13 +1,14 @@
 ---
 name: research-agents
 description: >
-  Use when asked to "research X", "find best practices for", "use research agents",
-  "what's the best way to", or any task requiring knowledge synthesis before
-  implementation. Also triggers on orchestrate.md research protocol: unfamiliar
-  library, persistent error, design decision with unclear trade-offs. Dispatches
-  parallel specialized agents covering: best-in-class online solutions, latest
-  docs/research via MCPs, local codebase patterns, optimizations, and common
-  pitfalls/code smells.
+  Use for TECHNICAL research — "research this library/tool/approach", "find best
+  practices for", "use research agents", "what's the best way to implement", or any
+  codebase/implementation task requiring knowledge synthesis before coding. Also
+  triggers on orchestrate.md research protocol: unfamiliar library, persistent error,
+  design decision with unclear trade-offs. Dispatches parallel specialized agents
+  covering: best-in-class online solutions, latest docs/research via MCPs, local
+  codebase patterns, optimizations, and common pitfalls/code smells. For ACADEMIC
+  research (papers, literature, citations), use study-claude instead.
 ---
 
 # Research Agents

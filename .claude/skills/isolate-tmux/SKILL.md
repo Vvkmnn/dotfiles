@@ -1,8 +1,8 @@
 ---
-name: temp-tmux
+name: isolate-tmux
 author: Vvkmnn
-description: Create an isolated tmux session for testing apps (nvim, TUI, etc.) without affecting existing sessions. Uses a separate tmux server socket so test sessions never appear in the user's session list.
-version: 0.3.0
+description: Use when the user says "test in isolated session", "TUI testing", "separate tmux", "isolated tmux", or when testing apps (nvim, TUI, etc.) that could disturb existing sessions. Creates an isolated tmux session on a separate server socket so test sessions never appear in the user's session list.
+version: 0.4.0
 ---
 
 # Isolated tmux Testing

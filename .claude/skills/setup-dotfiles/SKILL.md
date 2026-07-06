@@ -1,23 +1,23 @@
 ---
-name: dotfiles-setup
-description: Use when owner says "set up this Mac", "bootstrap this Mac", "match the laptop", "make this feel like mine", "/dotfiles-setup", or runs on a fresh macOS install. Front door is the self-contained ~/.ai/setup (inline package list + curated macOS defaults; phases packages·fonts·services·xcode·macos·gate·doctor). Manual gates (TCC, system-extension approvals, config-profile installs, appearance toggles like Reduce Transparency) are relayed IN-CHAT by the driving LLM — open the pane, owner flips it, verify with a probe (NOT the legacy iPhone-ping/read-loop). Every step is idempotent — safe to re-run after interruption, after a dotfiles pull, or any time as a drift check. Profile auto-detected by $USER. ~/.setup/ is frozen reference (see ~/.setup/README.md); ~/.ai/setup never sources it.
+name: setup-dotfiles
+description: Use when owner says "set up this Mac", "bootstrap this Mac", "match the laptop", "make this feel like mine", "/setup-dotfiles", or runs on a fresh macOS install. Front door is the self-contained ~/.ai/setup (inline package list + curated macOS defaults; phases packages·fonts·services·xcode·macos·gate·doctor). Manual gates (TCC, system-extension approvals, config-profile installs, appearance toggles like Reduce Transparency) are relayed IN-CHAT by the driving LLM — open the pane, owner flips it, verify with a probe (NOT the legacy iPhone-ping/read-loop). Every step is idempotent — safe to re-run after interruption, after a dotfiles pull, or any time as a drift check. Profile auto-detected by $USER. ~/.setup/ is frozen reference (see ~/.setup/README.md); ~/.ai/setup never sources it.
 ---
 
-# dotfiles-setup
+# setup-dotfiles
 
 Owner-environment bootstrap orchestrator. **Source of truth: the self-contained `~/.ai/setup`** (inline package list + macOS defaults). `~/.setup/AI.md` is the cold-start runbook (the repo-internal steps `setup` can't do); `~/.setup/` is otherwise frozen reference. This skill drives `~/.ai/setup` and relays its manual gates in-chat.
 
-> **The two skills.** `dotfiles-setup` (this one) = **discover + set up** a machine. `update-dotfiles` = **update + improve** (capture live drift back into `~/.ai/setup` + `ISSUES.md`). When you fix something live that the setup wouldn't reproduce, that's an `update-dotfiles` job.
+> **The two skills.** `setup-dotfiles` (this one) = **discover + set up** a machine. `update-dotfiles` = **update + improve** (capture live drift back into `~/.ai/setup` + `ISSUES.md`). When you fix something live that the setup wouldn't reproduce, that's an `update-dotfiles` job.
 
 ## Activation
 
 Trigger phrases (any of):
-- `/dotfiles-setup`
+- `/setup-dotfiles`
 - "set up this Mac"
 - "bootstrap this Mac"
 - "match the laptop"
 - "make this feel like mine"
-- "run dotfiles-setup"
+- "run setup-dotfiles"
 
 ## The front door: `~/.ai/setup`
 
@@ -47,7 +47,7 @@ cover (Tailscale P14, Remote Login P16, Continuity P17.5). The legacy phase-by-p
    - On a `[GATE]` phase: prefer `ai_gate "<name>" "<deeplink>" "<verify_cmd>" "<help>"` from `gate.sh`. It probes verify first (silent skip if already satisfied), opens the deeplink, sends notification, and runs the done/skip/abort loop.
    - On non-gate failure: surface the actual diagnostic and offer retry/skip/abort.
 5. **No state markers, no manifest.** Idempotency in the actions is the resume mechanism.
-6. **Sub-command**: `/dotfiles-setup doctor` — just runs `bash ~/.setup/ai/doctor.sh`. Exit 0/1/2 (clean/warnings/failures). No actions.
+6. **Sub-command**: `/setup-dotfiles doctor` — just runs `bash ~/.setup/ai/doctor.sh`. Exit 0/1/2 (clean/warnings/failures). No actions.
 
 ## Manual-gate UX — LLM-driven (primary)
 

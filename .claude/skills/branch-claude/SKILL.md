@@ -1,7 +1,7 @@
 ---
 name: branch-claude
 author: Vvkmnn
-description: Branch the current Claude conversation and open the original in a new tmux window. This session becomes the branch; the original resumes in the new window with focus.
+description: Use when the user says "fork this session", "branch off", "save this conversation", "continue in new window", or wants to split the current Claude conversation. Branches via native /branch and opens the original in a new tmux window; this session becomes the branch, the original resumes in the new window with focus.
 version: 0.2.0
 ---
 

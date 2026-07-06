@@ -1,24 +1,23 @@
 ---
-name: devtools-claude
+name: inspect-web
 author: Vvkmnn
-description: Chrome DevTools Protocol workflows for performance testing, Core Web Vitals, network analysis, accessibility validation, and device emulation. Use when debugging web performance, measuring page metrics, or running automated browser testing via chrome-devtools MCP.
-version: 0.1.0
+description: Use when debugging web performance, measuring page metrics, "inspect this page", "check Core Web Vitals", "audit performance", or automated browser work. Routes across claude-in-chrome (interactive), agent-browser CLI (headless), npx lighthouse (audits), and the parked chrome-devtools MCP (deep CDP tracing — un-park when needed). Includes Core Web Vitals reference and CDP workflow runbook.
+version: 0.3.0
 ---
 
-# Chrome DevTools Testing
+# Web Inspection & Testing
 
-## When to Use Which MCP
+## Tool Routing (chrome-devtools MCP parked in fleet decision — docs/CONFIG.md MCP section)
 
 | Task | Use | Why |
 |------|-----|-----|
-| Browse a page, fill forms, take screenshots | `claude-in-chrome` | NLP element finding, GIF recording, high-level |
-| Measure Core Web Vitals, performance trace | `chrome-devtools` | CDP-level perf tracing, LCP/CLS/INP |
-| Monitor network requests, export HAR | `chrome-devtools` | Request timing, headers, filtering |
-| Test accessibility tree | `chrome-devtools` | Full a11y tree with ARIA properties |
-| Emulate mobile device/network/CPU | `chrome-devtools` | Viewport + network + CPU throttling |
-| Read page content, extract text | `claude-in-chrome` | get_page_text, read_page |
+| Browse a page, fill forms, take screenshots | `claude-in-chrome` | NLP element finding, GIF recording, your real browser + auth |
+| Headless/scripted automation from Bash | `agent-browser` CLI | `open <url>` → `snapshot` (@refs) → `click @e1` → `close`; 200-400 tok/page |
+| Core Web Vitals / performance audit (one-shot) | `npx lighthouse <url> --output json` | No standing server needed |
+| Deep CDP work: perf traces, HAR, a11y tree, emulation | `chrome-devtools` MCP — **parked** | Un-park per docs/CONFIG.md restore procedure (move entry back + claude mcp add + kickstart); workflows below are its runbook |
+| Read page content, extract text | `claude-in-chrome` or `agent-browser snapshot` | get_page_text / compact refs |
 
-Both can be used in the same session. `browse-claude` skill handles Chrome session bootstrap.
+> The CDP workflow sections below are kept verbatim as the runbook for un-parked chrome-devtools sessions — the Core Web Vitals reference tables apply regardless of tool. `browse-claude` skill handles Chrome session bootstrap.
 
 ## Core Web Vitals Quick Reference
 

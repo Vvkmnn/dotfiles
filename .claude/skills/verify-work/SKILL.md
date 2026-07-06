@@ -1,7 +1,7 @@
 ---
-name: verification-loop
-description: Run before claiming work is done. 6-phase quality gate that checks build, types, lint, tests, security, and diff review. Produces READY or NOT READY verdict. Use after implementing features, fixing bugs, or before commits.
-version: 1.0.0
+name: verify-work
+description: Run before claiming work is done. Use when the user says "verify this works", "check before commit", "run checks", "quality gate", "is this ready", or before any commit/PR. 6-phase quality gate that checks build, types, lint, tests, security, and diff review. Produces READY or NOT READY verdict. Use after implementing features, fixing bugs, or before commits.
+version: 1.1.0
 ---
 
 # Verification Loop
