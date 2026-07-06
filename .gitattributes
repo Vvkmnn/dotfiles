@@ -2,6 +2,6 @@
 # .claude.json is gitignored (machine-local oauth/session state — community consensus: never track);
 # filter line retired: it wrongly implied the file was tracked+encrypted
 # .claude.json filter=git-crypt diff=git-crypt
-.claude/mcp/mcp.json.bak filter=git-crypt diff=git-crypt
+# .claude/mcp/mcp.json.bak retired 2026-07-06 (deleted; UTCP-era backup, in git history)
 .claude/mcp/config.json filter=git-crypt diff=git-crypt
 .assets/fonts/** filter=git-crypt diff=git-crypt
