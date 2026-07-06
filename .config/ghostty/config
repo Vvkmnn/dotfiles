@@ -10,6 +10,11 @@
 # Unified theme configuration - Kanagawa Wave for consistency
 theme = Kanagawa Wave
 
+# Force readable text on colored backgrounds (Claude Code diff blocks were
+# dark-on-dark-red/green with Kanagawa's muted ANSI palette — 2026-07-06).
+# Ratio 2 = subtle nudge; raise to 3 if diffs are still hard to read.
+minimum-contrast = 2
+
 # Beautiful rose-pine theme switching
 # theme = light:rose-pine-dawn,dark:rose-pine
 

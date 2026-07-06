@@ -1,5 +1,7 @@
 .utcp_config.json filter=git-crypt diff=git-crypt
-.claude.json filter=git-crypt diff=git-crypt
+# .claude.json is gitignored (machine-local oauth/session state — community consensus: never track);
+# filter line retired: it wrongly implied the file was tracked+encrypted
+# .claude.json filter=git-crypt diff=git-crypt
 .claude/mcp/mcp.json.bak filter=git-crypt diff=git-crypt
 .claude/mcp/config.json filter=git-crypt diff=git-crypt
 .assets/fonts/** filter=git-crypt diff=git-crypt

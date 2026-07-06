@@ -395,6 +395,8 @@ dotfiles.key
 # Claude Code - additional runtime/secret gaps (2026-05 audit)
 .claude/mcp/credentials.txt
 .claude/cache/
+# Proxy runtime logs (2026-07-06: logEnabled off, but stderr still lands here)
+.claude/mcp/*.log
 .claude/tasks/
 .claude/teacher/
 .claude/projects/-Users-v/memory/
