@@ -18,7 +18,7 @@ Researched 2026-07-05 (official docs, high confidence unless flagged). One-time 
 
 | # | Check | Surface | Type |
 |---|-------|---------|------|
-| S1 | "Instructions for Claude" mirrors CLAUDE.md tone/preference subset (NO auto-sync — manual re-mirror after material CLAUDE.md changes) | claude.ai | Recurring |
+| S1 | claude.ai Profile matches the canonical mirror in docs/CONFIG.md ("claude.ai Profile" section — the single source; NO auto-sync, re-paste after edits there) | claude.ai | Recurring |
 | S2 | Reusable behaviors encoded as Skills enabled on claude.ai (the ONLY bridge — they auto-load into cloud Code sessions) | claude.ai→cloud | Recurring |
 | S3 | Privacy toggle set intentionally (Settings→Privacy→"Improve Claude": affects retention 30d vs ~5y; wrong compliance config disables Remote Control) | Account | One-time |
 | S4 | GitHub linked for web/teleport: `/web-setup` or GitHub App | Account + per Mac | One-time |
@@ -30,6 +30,7 @@ Researched 2026-07-05 (official docs, high confidence unless flagged). One-time 
 | S10 | Quota awareness: ONE shared Max 20x pool across Code/chat/Cowork/Design — `/usage` + Desktop ring | All | Recurring |
 | S11 | Project `.claude/` carries what cloud sessions need (cloud sees only committed config, never ~/.claude) | Repos | Recurring |
 | S12 | Teleport prerequisites when needed: clean tree, branch pushed, same account | Per repo | Situational |
+| S13 | Google connectors (Gmail/Calendar/Drive) — first-party OAuth: connect ONCE on claude.ai (covers web+desktop), authenticate per-Mac in Claude Code (`/mcp` → OAuth; separate from mcp-proxy fleet). Read/search/draft only, never sends | Account + per Mac | One-time |
 
 ## Facts that shape the checks (verified against official docs)
 
