@@ -207,6 +207,10 @@ phase_packages() {
   for t in koekeishiya/formulae felixkratz/formulae crissnb/dynamicisland acsandmann/tap supabase/tap joachimbrindeau/ccusage-monitor; do
     brew tap "$t" >/dev/null 2>&1; brew trust "$t" >/dev/null 2>&1 && ok "trusted $t"
   done
+  # Per-FORMULA trust for yabai/skhd too: tap-trust alone isn't enough for
+  # `brew bundle check`'s outdated probe, which otherwise false-flags them as
+  # "not installed" in doctor even when installed+running. (See ISSUES.md 2026-07-06.)
+  brew trust --formula koekeishiya/formulae/yabai koekeishiya/formulae/skhd >/dev/null 2>&1 || true
   # sudo .pkg casks FIRST, while need_sudo's credential is freshest. In a no-TTY
   # (Claude-driven) run the credential can't be refreshed and expires during the long
   # formulae install below, so front-load these; any that still miss are surfaced at
@@ -282,7 +286,17 @@ phase_services() {
     command -v "$svc" >/dev/null 2>&1 && { brew services start "$svc" >/dev/null 2>&1; ok "$svc"; }
   done
   if [ -x "$HOME/.config/tmux/plugins/tpm/bin/install_plugins" ]; then
-    "$HOME/.config/tmux/plugins/tpm/bin/install_plugins" >/dev/null 2>&1 && ok "tmux plugins (tpm)"
+    # TMUX_PLUGIN_MANAGER_PATH is REQUIRED for the headless install — without it tpm
+    # targets ~/.tmux/plugins/ (wrong path) and "succeeds" while installing nothing,
+    # leaving a bare/vanilla status bar. Verify a SENTINEL plugin actually landed
+    # rather than trusting the exit code. (See ISSUES.md 2026-07-07.)
+    TMUX_PLUGIN_MANAGER_PATH="$HOME/.config/tmux/plugins/" \
+      "$HOME/.config/tmux/plugins/tpm/bin/install_plugins" >/dev/null 2>&1
+    if [ -d "$HOME/.config/tmux/plugins/minimal-tmux-status" ]; then
+      ok "tmux plugins installed"
+    else
+      warn "tmux plugins did NOT install — run: TMUX_PLUGIN_MANAGER_PATH=\"\$HOME/.config/tmux/plugins/\" \$HOME/.config/tmux/plugins/tpm/bin/install_plugins"
+    fi
   fi
 
   # Hand-authored launch agents — OUR load-bearing daemons, NOT brew-managed like yabai/skhd/
