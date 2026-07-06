@@ -3,6 +3,8 @@ python = "3.13"
 node = "lts"
 cmake = "latest"
 # opam = { version = "latest", asset_pattern = "opam-*-{gnu_arch}-{os}" }
+rust = "stable"   # mise-managed (core:rust → rustup under the hood); replaces the
+                  # tracked .cargo/bin binaries + standalone rustup-with-no-toolchain
 
 [settings]
 python.uv_venv_auto = true
