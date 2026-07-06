@@ -103,7 +103,7 @@ shift + alt - l : yabai -m window --swap east
 # Focus windows in different directions (vim keys)
 alt - h : yabai -m window --focus west
 alt - j : yabai -m window --focus south
-alt - k : yabai -m window --focus north
+# alt - k : yabai -m window --focus north   # released 2026-07-06: unused; alt-k = Claude voice push-to-talk now
 alt - l : yabai -m window --focus east
 
 # Warp (move) window through BSP tree (vim keys)

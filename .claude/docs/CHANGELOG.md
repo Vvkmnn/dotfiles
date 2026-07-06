@@ -16,6 +16,7 @@
 - **Unverified plugin leads** (2026-07-06 discovery sweep degraded by rate limits — agent admitted synthesizing; star counts/repos NOT verified, do not install without checking): hivemind (trace→skill generation), context-compression-lite, mcp-memory-augmented. Verify existence + adoption before considering
 - **¢ statusline field-shape verification** — after the first real credit spend (post 07-08 Fable session), check `jq '.extra_usage' ~/.claude/status/rate_limit.json` against the defensive field list in statusline.sh `_parse_rate_json`; adjust if the real key differs
 - **apple-gtd restructure** — 439 lines, only owner skill over the ≤425 budget (verification sweep 2026-07-06); same move-to-references/ pattern as the other four
+- ~~**Voice**~~ **RESOLVED 2026-07-06 — native /voice WORKING.** Root cause was double: skhd globally intercepted ⌥K (`.skhdrc:106` yabai focus-north, unused — released with annotation) AND the live tmux server predated the `extended-keys on` config (applied live; hold-to-talk needs key-release forwarding). Diagnostic that cracked it: `/bin/cat -v` printing nothing = chord swallowed upstream of every app. SuperWhisper fallback stays documented (one license = unlimited devices, lifetime ~$249.99 reverify) but not needed. Fleet note: vbookneo's tmux server needs the same live `set -s extended-keys on` or a restart after config sync
 
 ## Reference (enable when needed)
 
