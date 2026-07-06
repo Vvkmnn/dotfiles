@@ -464,6 +464,7 @@
     ],
     "defaultMode": "plan"
   },
+  "model": "opus",
   "hooks": {
     "UserPromptSubmit": [
       {
@@ -660,6 +661,7 @@
   "editorMode": "vim",
   "showTurnDuration": true,
   "terminalProgressBarEnabled": true,
+  "remoteControlAtStartup": true,
   "inputNeededNotifEnabled": true,
   "agentPushNotifEnabled": true,
   "skipAutoPermissionPrompt": true,
