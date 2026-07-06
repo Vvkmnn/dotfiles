@@ -18,13 +18,13 @@ trap 'log_error "Script failed at line $LINENO"' ERR
 # │ │││ │       │     │    │         └── σ session elapsed + weekly active
 # │ │││ │       │     │    └── λ 5h% 7d% quota used (clamped ≤100)
 # │ │││ │       │     └── μ daily budget variance
-# │ │││ │       └── κ cache-hit % (green ≥80, orange <50, red <40)
+# │ │││ │       └── κ cache-hit % (blue ≥80, orange <50, red <40)
 # │ │││ └── ψ context % (¹ᴹ superscript = 1M-window session)
 # │ ││└── effort from stdin (ᴹ max, ˣ xhigh, ⁺ high, ⁻ low, omit medium)
 # │ │└── thinking ᵀ (stdin, settings fallback)
 # │ └── Model letter (F/O/S/H)
 # └── ॐ anchor: model icon + vim state by color — ORANGE insert (typing = resting
-#     default), GREEN normal/escaped, gold visual (pairs with hideVimModeIndicator)
+#     default), BLUE normal/escaped, gold visual (pairs with hideVimModeIndicator)
 #
 # DISPLAY MODES: default shows EVERYTHING. STATUSLINE_MINIMAL=1 opts into early-warning
 # hiding: κ hides while ≥70, μ hides while on-pace (0..+5), θ hides while pace <0.8×
@@ -133,7 +133,7 @@ ICON_OMEGA="${B}μ${RESET}"
 ICON_GIT="${B}π${RESET}"
 ICON_CACHE="${B}κ${RESET}"
 ICON_COST="${B}\$${RESET}"
-GREEN='\033[38;2;118;148;106m'   # kanagawa autumnGreen #76946a (was \033[32m)
+BLUE='\033[38;2;126;156;216m'   # kanagawa crystalBlue #7e9cd8 — the 'healthy' accent (user pref 2026-07-07, was autumnGreen)
 
 # ---- Cache paths ----
 DAILY_BUDGET_CACHE="$HOME/.claude/status/daily_budget.json"
@@ -201,7 +201,7 @@ vim_mode=$(echo "$input" | jq -r '.vim.mode // empty' 2>/dev/null)
 case "$vim_mode" in
 	INSERT)                     vim_color="$ORANGE" ;; # typing at the prompt = resting state (user default)
 	VISUAL|"VISUAL LINE")       vim_color="$B" ;;      # gold — selection
-	*)                          vim_color="$GREEN" ;;  # NORMAL (escaped) / vim off — the departure signal
+	*)                          vim_color="$BLUE" ;;  # NORMAL (escaped) / vim off — the departure signal
 esac
 
 # ---- Get context % (native first, transcript fallback) ----
@@ -777,7 +777,7 @@ cache_pct=$(echo "$input" | jq -r '
 # Default: always shown ("show everything, optimize later"). STATUSLINE_MINIMAL=1
 # enables the early-warning gate (hide while ≥70 = safely ignorable).
 if [ -n "$cache_pct" ] && { [ -z "${STATUSLINE_MINIMAL:-}" ] || [ "$cache_pct" -lt 70 ]; }; then
-	if [ "$cache_pct" -ge 80 ]; then cache_col="$GREEN"
+	if [ "$cache_pct" -ge 80 ]; then cache_col="$BLUE"
 	elif [ "$cache_pct" -ge 70 ]; then cache_col=""
 	elif [ "$cache_pct" -ge 40 ]; then cache_col="$ORANGE"
 	else cache_col="$RED"; fi
@@ -947,7 +947,7 @@ if [ -n "$cwd" ]; then
 			elif [ "${untracked:-0}" -gt 0 ]; then
 				ins=$untracked
 			fi
-			[ -n "$ins" ] && printf ' %b+%s%b' "$GREEN" "$ins" "$RESET"
+			[ -n "$ins" ] && printf ' %b+%s%b' "$BLUE" "$ins" "$RESET"
 			[ -n "$del" ] && printf ' %b-%s%b' "$RED" "$del" "$RESET"
 		fi
 	fi
