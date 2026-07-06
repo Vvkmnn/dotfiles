@@ -37,7 +37,9 @@
 ```
   shell ──────── .alias .functions .minimal .profile .rc .shell .zshrc .zshenv .zimrc .p10k.zsh
   editor ─────── .vimrc .config/nvim (submodule → v.nvim)
-  claude ─────── .claude/ (10 rules, 29 skills, 6 hooks, 36 servers)
+  ai ─────────── AI.md .ai/ (shared AI setup, Codex, ChatGPT)
+  codex ──────── .codex/AGENTS.md .codex/skills/improve-codex/ (runtime ignored)
+  claude ─────── .claude/ (thin adapter + Claude-specific rules/skills/hooks)
   git ────────── .gitconfig .gitmessage .gitattributes .gitmodules
   karabiner ──── .config/karabiner/ (json, scripts, assets, automatic_backups)
   sketchybar ─── .config/sketchybar/ (sketchybarrc, helpers, plugins)
@@ -194,6 +196,30 @@ git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
   server ── auto-starts at login via LaunchAgent (see macos > launch agents)
   restore ─ continuum auto-restores sessions on server start
   wrapper ─ ~/.config/tmux/tmux-server.sh (crash recovery, polls socket)
+```
+
+### ai
+
+```
+  shared AI layer ─────────────────────────────────
+
+  AI.md ─────────────── root pointer for AI tools
+  .ai/README.md ─────── shared machine setup charter
+  .ai/codex.md ──────── Codex TUI/App daily-use policy
+  .ai/chatgpt.md ────── ChatGPT macOS/iOS integration
+  .ai/setup ─────────── one setup command
+```
+
+### [codex](https://developers.openai.com/codex)
+
+```
+  .codex/ ─────────────────────────────────────────
+
+  AGENTS.md ───────────────────── Codex compatibility shim → ~/.ai
+  skills/improve-codex/SKILL.md ─ one maintenance skill
+
+  local-only, gitignored:
+  auth · SQLite · logs · history · sessions · plugin caches · app runtime
 ```
 
 ### [claude](https://docs.anthropic.com/en/docs/claude-code)
