@@ -1,5 +1,6 @@
 ---
-name: fleet
+name: ssh-fleet
+version: 1.0.0
 description: Operate the owner's personal 3-Mac fleet (vMiniM4 hub + vBookAirM3 + vBookNeo) from any machine — read/write tmux sessions on any reachable box, hand a task to another machine's Claude, inspect what's running, and route heavy work to the mini — all over Tailscale + mosh with 1Password auth. Use when the user asks to reach/inspect/drive another fleet machine, offload work to the mini, message another Claude ("tell the mini's Claude to…"), see what's running across machines, or wake/keep a machine available.
 ---
 
@@ -79,3 +80,9 @@ This is how "tell the mini's Claude to do X from Neo" works — you're not expos
 3. **Parity:** tmux/nvim/commands are byte-identical everywhere — what works locally works remotely.
 4. **Power stays hands-off** — the owner keeps machines awake on demand with `vwatch`, gracefully per device. Don't force never-sleep.
 5. **mosh persists server-side** — a dropped link resumes on wake; the tmux session is never lost.
+
+## Related
+
+- `isolate-tmux` — local tmux session isolation; this skill is its cross-machine counterpart.
+- `setup-dotfiles` / `update-dotfiles` — the byte-identical-dotfiles parity that makes "works locally = works remotely" true. If a remote machine behaves differently, it's a sync gap — resolve there first.
+- `second-opinion` — the fleet's Claude→Claude handoff is a heavier cousin: delegate to another machine's Claude when the work needs *that* box (the mini's power), not just a fresh model.
