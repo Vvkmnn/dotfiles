@@ -303,7 +303,11 @@ command = /bin/zsh -l
 shell-integration = zsh
 
 # Shell integration features — no-cursor preserves block_hollow, no-title since titlebar hidden
-shell-integration-features = no-cursor,sudo,no-title
+# ssh-terminfo + ssh-env: for `jc`/plain ssh (NOT vssh/mosh — mosh isn't the ssh wrapper),
+# auto-install xterm-ghostty via tic on off-fleet hosts (falls back to xterm-256color) and
+# forward COLORTERM/TERM_PROGRAM* so truecolor + program detection survive the hop. On-fleet
+# every Mac already has the terminfo, so this is insurance for new/off-fleet boxes. (2026-07-08)
+shell-integration-features = no-cursor,sudo,no-title,ssh-terminfo,ssh-env
 
 # Notify when commands finish in unfocused windows (10s+ commands only)
 notify-on-command-finish = unfocused
