@@ -410,6 +410,54 @@ phase_remote() {
   sudo pmset -a sleep 0 displaysleep 30 womp 1 powernap 1 tcpkeepalive 1 autorestart 1
   ok "power: never-sleep (display sleeps after 30m) · wake-on-lan · auto-restart on power loss"
 
+  # Remote Login (sshd) — the transport `vssh`/mosh ride on. FDA-free fallback if
+  # `systemsetup` trips on Full Disk Access. Idempotent.
+  sudo systemsetup -setremotelogin on >/dev/null 2>&1 || {
+    sudo launchctl enable system/com.openssh.sshd 2>/dev/null
+    sudo launchctl bootstrap system /System/Library/LaunchDaemons/ssh.plist 2>/dev/null
+  }
+  ok "remote login (sshd) on — vssh/mosh transport"
+
+  # SSH auth = 1Password, ZERO manual keys. This machine self-qualifies from your vault:
+  # pull the shared ed25519 PUBLIC key from its OWN 1Password agent (no hardcoded string),
+  # authorize it for inbound, and route ssh at the 1P agent. Idempotent.
+  #
+  # 1PASSWORD APP SETTINGS (not scriptable — set once per machine, Settings ▸ Developer):
+  #   • Use the SSH agent: ON            • Integrate with 1Password CLI: ON
+  #   • Ask approval for each new: "application"  (NOT "…and terminal session" — that re-prompts
+  #     on every vssh; "application" = approve Ghostty once, all its windows reuse the key)
+  #   • Remember key approval: "until 1Password locks"  (approve once per unlock, then silent)
+  _op_sock="$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+  _op_pub="$(SSH_AUTH_SOCK="$_op_sock" ssh-add -L 2>/dev/null | grep -F 1password_25519)"
+  if [ -n "$_op_pub" ]; then
+    mkdir -p "$HOME/.ssh" && chmod 700 "$HOME/.ssh"
+    # authorize the shared key for INBOUND vssh/mosh (idempotent)
+    grep -qxF "$_op_pub" "$HOME/.ssh/authorized_keys" 2>/dev/null || printf '%s\n' "$_op_pub" >> "$HOME/.ssh/authorized_keys"
+    chmod 600 "$HOME/.ssh/authorized_keys" 2>/dev/null
+    # route ssh to the 1P agent for fleet hosts (~/.ssh/config is gitignored → written per-machine)
+    if ! grep -q 'com.1password/t/agent.sock' "$HOME/.ssh/config" 2>/dev/null; then
+      cat >> "$HOME/.ssh/config" <<'SSHCFG'
+
+# ── fleet — route ssh to the 1Password agent (auto-written by `setup remote`) ──
+Host vmini* vbook* vstudio* *.local
+  User v
+  IdentityAgent "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+  StrictHostKeyChecking accept-new
+SSHCFG
+    fi
+    ok "ssh auth: 1Password shared key authorized + agent routed — no manual keys"
+  else
+    warn "1Password SSH agent not serving the shared key — unlock 1Password + Developer ▸ 'Use the SSH agent', then re-run 'setup remote'"
+  fi
+
+  # Ghostty terminfo — incoming ssh/mosh arrive as TERM=xterm-ghostty; register it so remote
+  # shells don't warn "can't find terminal definition" (bundled entry is compiled → decompile+tic).
+  if ! infocmp xterm-ghostty >/dev/null 2>&1 && [ -d /Applications/Ghostty.app ]; then
+    infocmp -x -A /Applications/Ghostty.app/Contents/Resources/terminfo xterm-ghostty 2>/dev/null \
+      | tic -x -o "$HOME/.terminfo" - 2>/dev/null && ok "terminfo: xterm-ghostty registered" \
+      || warn "terminfo: couldn't auto-register xterm-ghostty (is Ghostty installed?)"
+  fi
+
   command -v skhd >/dev/null 2>&1 && { skhd --reload >/dev/null 2>&1; ok "skhd reloaded (ctrl+alt-u = fast-switch to login window)"; }
   warn "Tailscale (any-network access) + git-crypt/1Password secrets: see 'setup gate'"
 }
