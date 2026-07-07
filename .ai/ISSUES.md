@@ -490,3 +490,29 @@ Our approach was confirmed correct by web research:
   `mise install` warned to remove the stale `~/.cargo/bin` copies so rustup can manage them.
   Also: `.shell:189` still sources `~/.cargo/env` (rustup env) — harmless with mise (mise
   activate wins PATH order) but can be dropped once `.cargo` is untracked.
+- **GitHub push auth was never set up by `~/.ai/setup` → first push blocked (FIXED).** The
+  P4 clone is **anonymous HTTPS** (public repo, read-only — no creds), so nothing surfaced
+  until we tried to **push back** tonight: `git push` failed `could not read Username for
+  'https://github.com': Device not configured` (HTTPS wants a password, no `gh` login, no
+  cached credential, no TTY to prompt). ROOT CAUSE: push auth lives in **AI.md P15**
+  (per-device SSH key + 1Password SSH agent), one of the access phases `~/.ai/setup` never
+  runs — same coverage gap logged above. The fleet DESIGN is right (1Password serves
+  `1password_25519` via its SSH agent — no tokens), it just wasn't wired by the skill.
+  FIX (applied live + folded into the skill so no machine hits this again):
+  1. `~/.ssh/config` → `Host * / IdentityAgent ~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock`.
+  2. dotfiles remote HTTPS → SSH (`git@github.com:Vvkmnn/dotfiles.git`) — HTTPS is fine for
+     the anon clone, but push needs the agent.
+  3. `remote.origin.fetch = +refs/heads/*:refs/remotes/origin/*` — `git clone --bare` sets
+     NO fetch refspec, so `origin/*` refs never update (this is why the other agent saw an
+     empty `branch -r` and a stale local `v-macos-macbook`). Fixed on this machine + in the skill.
+  4. New **`phase_gitauth`** in `~/.ai/setup` (self-contained: steps 1–3 idempotent, then
+     verifies the agent is serving keys via **`ssh-add -l`** — NOT a real `ssh -T git@github.com`:
+     the 1Password agent needs interactive Touch-ID approval per *signature*, so a scripted
+     `ssh -T` either "agent refused operation" (BatchMode) or **hangs** on the GUI prompt;
+     listing keys needs no approval. If the socket/keys are absent it relays the ONE manual
+     gate — **1Password ▸ Settings ▸ Developer ▸ "Use the SSH agent"** — which a script can't
+     flip). Wired into `all` (after `macos`, before `gate`) + dispatch + usage.
+  Verified live: agent serves `1password_25519`, `ssh -T git@github.com` → "Hi Vvkmnn!",
+  `push origin v-macos-mini` succeeded over SSH (Touch-ID, no token). The only per-machine
+  manual step remaining is the 1Password agent toggle — call it out when deferring P15 so
+  the owner isn't surprised at first push.

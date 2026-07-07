@@ -727,6 +727,42 @@ phase_doctor() {
   command -v colima >/dev/null 2>&1 && { colima status >/dev/null 2>&1 && ok "colima running (docker ready)" || ok "docker idle — run 'colima start' when needed (on-demand by design)"; }
 }
 
+phase_gitauth() {
+  # GitHub + inter-Mac auth via the 1Password SSH agent — no tokens, no gh, no
+  # passwords on disk. The P4 clone is anonymous HTTPS; PUSHING back needs this.
+  # Scriptable here: ssh config + SSH remote + fetch refspec. The ONE manual step
+  # is enabling the agent in the 1Password app — a GUI toggle a script can't flip.
+  # (Full per-device key + 1Password registry is AI.md P15.)  See ISSUES.md 2026-07-07.
+  say "git auth — 1Password SSH agent"
+  mkdir -p ~/.ssh && chmod 700 ~/.ssh
+  if ! grep -q '1password.*agent.sock' ~/.ssh/config 2>/dev/null; then
+    cat >> ~/.ssh/config <<'SSHCFG'
+
+# 1Password SSH agent — serves the GitHub key (1password_25519) + inter-Mac keys.
+Host *
+  IdentityAgent ~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock
+SSHCFG
+    chmod 600 ~/.ssh/config; ok "ssh config → 1Password agent"
+  fi
+  if [ -d ~/.dotfiles ]; then
+    git --git-dir="$HOME/.dotfiles" remote get-url origin 2>/dev/null | grep -q '^https' \
+      && { git --git-dir="$HOME/.dotfiles" remote set-url origin git@github.com:Vvkmnn/dotfiles.git; ok "dotfiles remote → SSH"; }
+    # bare clones set NO fetch refspec → origin/* refs never update; fix it
+    git --git-dir="$HOME/.dotfiles" config remote.origin.fetch '+refs/heads/*:refs/remotes/origin/*'
+  fi
+  # Verify the agent is SERVING the key — do NOT attempt a real `ssh -T git@github.com`:
+  # the 1Password agent requires interactive Touch-ID approval per signature, so in a
+  # script it either "refused operation" (BatchMode) or hangs on the GUI prompt. Listing
+  # keys (ssh-add -l) needs no approval. Real `git push` prompts for approval, as intended.
+  local sock="$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock" keys=""
+  [ -S "$sock" ] && keys=$(SSH_AUTH_SOCK="$sock" ssh-add -l 2>/dev/null)
+  case "$keys" in
+    *1password_25519*|*ED25519*) ok "1Password SSH agent serving keys (push authenticates via Touch-ID)" ;;
+    *) warn "Enable 1Password ▸ Settings ▸ Developer ▸ 'Use the SSH agent', then re-run 'setup gitauth'"
+       open -a "1Password" 2>/dev/null ;;
+  esac
+}
+
 usage() {
   cat <<'EOF'
 
@@ -740,6 +776,7 @@ setup — bring this Mac to fleet parity (self-contained).   ~/.ai/setup [phase]
   macos      apply curated macOS defaults (sudo-free)
   remote     screen sharing + fast switching + remote power policy (sudo, opt-in)
   codex      merge safe Codex defaults + verify guidance files
+  gitauth    GitHub/inter-Mac auth via 1Password SSH agent (one manual toggle)
   gate       open the manual TCC panes + checklist
   doctor     verify the machine (self-contained)
   help       this
@@ -751,7 +788,7 @@ EOF
 
 # ── dispatch ──────────────────────────────────────────────────────────────────
 case "${1:-all}" in
-  all)            phase_packages; phase_fonts; phase_services; phase_macos; phase_codex; phase_gate; phase_doctor ;;
+  all)            phase_packages; phase_fonts; phase_services; phase_macos; phase_gitauth; phase_codex; phase_gate; phase_doctor ;;
   packages)       phase_packages ;;
   fonts)          phase_fonts ;;
   services)       phase_services ;;
@@ -759,6 +796,7 @@ case "${1:-all}" in
   macos)          phase_macos ;;
   remote)         phase_remote ;;
   codex)          phase_codex ;;
+  gitauth)        phase_gitauth ;;
   gate)           phase_gate ;;
   doctor|check)   phase_doctor ;;
   help|-h|--help) usage ;;
