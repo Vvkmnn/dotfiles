@@ -196,8 +196,7 @@
   #   vssh vminim4        v[jump]: mosh into the mini's tmux in a fresh Ghostty window (terminal)
   #   vwatch                v[wake]: keep THIS machine awake so its agents run while you travel
   #   vremote vminim4        screen-share the mini (first-party Screen Sharing, full GUI)
-  #   jc [host]         Claude + Remote Control (here, or start it on <host>)
-  # Bandwidth: vremote screen (highest) · vssh terminal (middle) · jc claude (lowest).
+  # Two ways in: vssh = terminal · vremote = screen.
 
   # _fleet_host <name> — resolve to a reachable form: prefer the bare name (Tailscale
   # MagicDNS, works on any network), fall back to <name>.local (Bonjour, LAN). Lets you
@@ -309,18 +308,6 @@
     open "vnc://${host}"
   }
 
-  # jc [host] — Claude + Remote Control. No arg: start a Remote-Control Claude HERE
-  # (session auto-names by hostname → shows up in the iOS Claude app / claude.ai under
-  # your account, drivable from anywhere, no VPN). With a host: ssh in and start it there.
-  jc() {
-    (_claude_config_backup &) 2>/dev/null
-    if [[ -n "$1" && "$1" != -* ]]; then
-      local host; host=$(_fleet_host "$1"); shift
-      print -P "%F{cyan}→ ${host} (remote-control)%f"
-      exec ssh -t "$host" "tmux new-session -A -s claude -c \"\$HOME\" 'claude --remote-control $*'"
-    fi
-    claude --remote-control "$@"
-  }
 # └─────────────────────────────────────────────────────────────────────────────┘
 
 # ┌────────────────────────────────────────────────────────────────── update ──┐
