@@ -203,9 +203,9 @@
   # type `j vminim4` and have it work on the LAN today and over Tailscale later — no suffix.
   _fleet_host() {
     local h="$1"
-    if ping -c1 -t1 "$h" >/dev/null 2>&1; then print -- "$h"
-    elif ping -c1 -t1 "$h.local" >/dev/null 2>&1; then print -- "$h.local"
-    else print -- "$h"; fi   # unreachable → return as-is so ssh/open errors clearly
+    if ping -c1 -t1 "$h" >/dev/null 2>&1; then print -- "$h"; return 0
+    elif ping -c1 -t1 "$h.local" >/dev/null 2>&1; then print -- "$h.local"; return 0
+    else print -- "$h"; return 1; fi   # unreachable: still print the name, signal via exit code
   }
 
   # vssh <host> — v[jump]: open a FRESH Ghostty window that's a DIRECT client to THAT machine's
@@ -213,12 +213,24 @@
   # tmux wraps it (`open -e` skips the autostart) → C-a / C-hjkl / prefix / finder all drive the
   # remote, navigate all its windows+panes like you're sitting there. mosh (not ssh): tmux persists
   # server-side and mosh silently resumes the link, so closing the lid mid-session just picks back
-  # up. `env -u TMUX` strips leaked tmux vars (no nesting). -A = attach-or-create persistent 'main'.
+  # up. `env -u TMUX` strips leaked tmux vars (no nesting). PRE-FLIGHT reachability runs in THIS
+  # shell BEFORE opening a window, so an asleep/offline machine never spawns a dead hanging window.
+  # Each vssh = a FRESH, auto-numbered session on the target (`tmux new-session` → 0,1,2… like
+  # opening a new local tmux window), independent, never mirroring a previous one. mosh's ssh gets
+  # ConnectTimeout so it fails fast; if the link drops mid-session, mosh resumes THAT window on wake.
   vssh() {
-    local host; host=$(_fleet_host "${1:?usage: vssh <host>   (e.g. vssh vminim4 | vssh vbookneo)}")
-    print -P "%F{cyan}→ ${host} (mosh · new window)%f"
+    local name="${1:?usage: vssh <host>   (e.g. vssh vminim4 | vssh vbookneo)}"
+    local G=$'\e[38;5;114m' Y=$'\e[38;5;179m' D=$'\e[2m' R=$'\e[0m'
+    printf "  ${D}reaching %s…${R}" "$name"
+    local host
+    if host=$(_fleet_host "$name"); then
+      printf "\r  ${G}●${R} %s ${D}up — connecting${R}              \n" "$name"
+    else
+      printf "\r  ${Y}○${R} %s ${D}offline — asleep or off (run \`vwatch\` on it, or wake it)${R}\n" "$name"
+      return 1
+    fi
     open -na /Applications/Ghostty.app --args -e /bin/zsh -c \
-      "env -u TMUX -u TMUX_PANE mosh --family=inet ${(q)host} -- tmux new-session -A -s main"
+      "env -u TMUX -u TMUX_PANE mosh --ssh='ssh -o ConnectTimeout=4' --family=inet ${(q)host} -- tmux new-session"
   }
 
   # _vwatch_bar <pct> — 10-cell ASCII charge bar, e.g. [#######---].
