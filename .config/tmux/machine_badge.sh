@@ -2,18 +2,18 @@
 # machine_badge.sh — machine + session identity badge for the tmux status bar.
 #
 # The left of the status bar is three rounded pills:
-#   OS pill   — white Apple (macOS) / Tux (Linux); flips GOLD while prefix is held
-#               (this is the prefix "mode light" — no ugly full-width highlight box).
-#   chip pill — the FIXED, vivid per-chip colour (M3 teal, M4 blue, A-series violet,
-#               AMD red, …) so every machine is recognisable by hue; `vj` into another
-#               box and the whole badge changes colour. Black bold text.
-#   sess pill — a UNIQUE pale tint DERIVED from the chip colour (blend toward white +
-#               per-channel nudge from a hash of the session name; ~68k combos so
-#               distinct sessions get distinct, related, black-readable colours).
-#               Shows the session as a Roman numeral (numeric sessions) or its name.
+#   apple pill   — the OS glyph (Apple / Tux) in the MACHINE colour.
+#   machine pill — a POWER-TIER SHAPE + the real hostname, in the MACHINE colour.
+#                    shape encodes strength (more sides = more power), auto-detected
+#                    from core count: △≤8  □≤10  ⬠≤12  ⬡≤16  ○≤24  ☆>24.
+#                    colour is PER-MACHINE (curated table + hash-fallback), so two
+#                    same-chip boxes still differ; `vj` into another and the hue changes.
+#   session pill — the session as a Roman numeral (or its name), in a lighter SHADE
+#                    of the machine colour (hue-preserving tint, per-session hash).
+# All three pills flip GOLD while prefix is held — the "mode light", no full-width box.
 # The animal lives on the far right, plain at rest, in a tight white circle only while
-# prefix is held.  All colours resolve at render time via #{@…} vars (verified: colour
-# vars expand inside #[…] styles on tmux 3.6a).  Runs at load + session-created/attached,
+# prefix is held.  Colours resolve at render time via #{@…} vars (verified: colour vars
+# expand inside #[…] styles on tmux 3.6a).  Runs at load + session-created/attached,
 # never on the render path — zero forks per redraw.
 #
 # SAFETY: no #() anywhere (see the SAFETY banner above window-status in tmux.conf).
@@ -23,11 +23,15 @@ command -v "$TMUX_BIN" >/dev/null 2>&1 || TMUX_BIN=tmux
 
 # Glyphs via octal UTF-8 bytes so no editor/transport can strip them (verified round-trip):
 #   apple U+F179 · tux U+F17C · caps U+E0B6/U+E0B4 · zoom U+F0293.
+#   power shapes: triangle U+25B3 · square U+25A1 · pentagon U+2B20 · hexagon U+2B21 ·
+#                 circle U+25CB · star U+2606 (geometric symbols, NOT emoji).
 APPLE=$(printf '\357\205\271')
 TUX=$(printf '\357\205\274')
 LCAP=$(printf '\356\202\266')
 RCAP=$(printf '\356\202\264')
 ZOOM=$(printf '\363\260\212\223')
+TRI=$(printf '\342\226\263'); SQ=$(printf '\342\226\241'); PENT=$(printf '\342\254\240')
+HEX=$(printf '\342\254\241'); CIRC=$(printf '\342\227\213'); STAR=$(printf '\342\230\206')
 GOLD='#e6c384'; WHITE='#fffaf0'; BLACK='#1f1f28'
 
 case "$(uname -s)" in Linux) OSGLYPH="$TUX" ;; *) OSGLYPH="$APPLE" ;; esac
@@ -44,68 +48,74 @@ to_roman() {
 	printf '%s' "$out"
 }
 
-# --- detect the literal chip once, cache bare value in @chip_raw ------------
-chip=$("$TMUX_BIN" show-option -gqv @chip_raw)
-if [ -z "$chip" ]; then
-	raw=$(sysctl -n machdep.cpu.brand_string 2>/dev/null)
-	[ -z "$raw" ] && [ -r /proc/cpuinfo ] && \
-		raw=$(grep -m1 -iE 'model name|^Model' /proc/cpuinfo | sed 's/.*: *//')
-	chip=$(printf '%s' "$raw" | sed '
-		s/^Apple //
-		s/(R)//g; s/(TM)//g
-		s/ @.*//; s/ CPU.*//; s/ [0-9]*-Core.*//; s/ Processor.*//
-		s/AMD Ryzen Threadripper \([0-9][0-9]*\).*/TR\1/
-		s/AMD Ryzen \([0-9]\).*/R\1/
-		s/AMD EPYC.*/EPYC/
-		s/Intel Core //; s/Intel //; s/AMD //
-	')
-	[ -z "$chip" ] && chip='?'
-	"$TMUX_BIN" set-option -g @chip_raw "$chip"
-	"$TMUX_BIN" set-option -g @chip "v$chip"
+# --- POWER-TIER shape from core count (sides = strength; zero fork) ----------
+cores=$(sysctl -n hw.ncpu 2>/dev/null || nproc 2>/dev/null || echo 8)
+if   [ "$cores" -le 8 ];  then SHAPE=$TRI
+elif [ "$cores" -le 10 ]; then SHAPE=$SQ
+elif [ "$cores" -le 12 ]; then SHAPE=$PENT
+elif [ "$cores" -le 16 ]; then SHAPE=$HEX
+elif [ "$cores" -le 24 ]; then SHAPE=$CIRC
+else                           SHAPE=$STAR
 fi
 
-# --- fixed vivid base colour per chip --------------------------------------
-case "$chip" in
-	M1*)     base='#98bb6c' ;;  # green
-	M2*)     base='#7e9cd8' ;;  # indigo
-	M3*)     base='#7aa89f' ;;  # teal
-	M4*)     base='#7fb4ca' ;;  # blue
-	M[5-9]*) base='#d27e99' ;;  # pink
-	A[0-9]*) base='#957fb8' ;;  # violet (Apple A-series)
-	i[0-9]*) base='#c0a36e' ;;  # gold (Intel)
-	R[0-9]*|TR*|EPYC*) base='#e46876' ;;  # red (AMD)
-	*)       base='#727169' ;;  # grey (unknown)
+# --- PER-MACHINE colour (curated table; hash-fallback for any new box) -------
+# Each machine has its OWN stable hue — NOT derived from the chip, so two same-chip
+# machines never collide. Add a machine by dropping a line in the case below; an
+# unrecognised host still auto-gets a unique, stable hue by hashing its name.
+host=$(scutil --get LocalHostName 2>/dev/null || hostname -s 2>/dev/null || echo host)
+hl=$(printf '%s' "$host" | tr '[:upper:]' '[:lower:]')
+case "$hl" in
+	*air*)    machine_color='#7aa89f' ;;   # teal
+	*mini*)   machine_color='#e0a45c' ;;   # amber
+	*neo*)    machine_color='#9d7cc9' ;;   # violet
+	*studio*) machine_color='#c98a6b' ;;   # clay (reserved)
+	*)  machine_color=$(python3 - "$host" 2>/dev/null <<'PY'
+import sys, colorsys, hashlib
+h = int(hashlib.md5(sys.argv[1].encode()).hexdigest(), 16) % 360
+r, g, b = colorsys.hls_to_rgb(h/360, 0.64, 0.45)
+print("#%02x%02x%02x" % (round(r*255), round(g*255), round(b*255)))
+PY
+)
+	    machine_color="${machine_color:-#9a9a9a}" ;;   # grey if python3 missing
 esac
-"$TMUX_BIN" set-option -g @chip_color "$base"
+"$TMUX_BIN" set-option -g @machine_color "$machine_color"
 
-# --- per-session UNIQUE shade of the chip HUE + Roman numeral ---------------
-# Each session = the chip colour lightened toward white by a per-session amount
-# (22..42%, hashed) plus a small per-channel nudge. Lightening LESS than before
-# keeps the saturation, so the shade still reads clearly as the machine's hue
-# (blue chip -> blue sessions, red -> red, …) instead of washing out to grey —
-# and cross-machine the hues stay obviously distinct. Black text stays readable.
-br=$(( 16#${base:1:2} )); bgc=$(( 16#${base:3:2} )); bbc=$(( 16#${base:5:2} ))
-clamp() { local v=$1; [ "$v" -lt 150 ] && v=150; [ "$v" -gt 235 ] && v=235; printf '%s' "$v"; }
+# --- per session: Roman numeral + a lighter SHADE of the machine colour ------
+# The tint lightens the machine colour 22–42% (hue-preserving) with a small per-channel
+# nudge from the session-name hash, so distinct sessions get distinct, related, black-
+# readable colours. python once per session (load-time only, never on redraw); if python
+# is missing the session pill simply falls back to the flat machine colour.
 "$TMUX_BIN" list-sessions -F '#{session_name}' 2>/dev/null | while IFS= read -r s; do
-	h=$(printf '%s' "$s" | cksum | cut -d' ' -f1)
-	bl=$(( 22 + h % 21 ))   # 22..42% toward white — light enough for black text, keeps the hue
-	r=$(clamp $(( br  + (255-br)*bl/100  + (h/100   % 25) - 12 )))
-	g=$(clamp $(( bgc + (255-bgc)*bl/100 + (h/2500  % 25) - 12 )))
-	b=$(clamp $(( bbc + (255-bbc)*bl/100 + (h/62500 % 25) - 12 )))
-	"$TMUX_BIN" set-option -t "$s" @session_color "$(printf '#%02x%02x%02x' "$r" "$g" "$b")"
+	[ -z "$s" ] && continue
 	if printf '%s' "$s" | grep -qE '^[0-9]+$'; then
 		"$TMUX_BIN" set-option -t "$s" @session_roman "$(to_roman "$s")"
 	else
 		"$TMUX_BIN" set-option -t "$s" @session_roman "$s"
 	fi
+	sc=$(python3 - "$machine_color" "$s" 2>/dev/null <<'PY'
+import sys, hashlib
+base = sys.argv[1].lstrip('#'); s = sys.argv[2]
+br, bg, bb = int(base[0:2],16), int(base[2:4],16), int(base[4:6],16)
+h = int(hashlib.md5(s.encode()).hexdigest(), 16); bl = 22 + h % 21
+r = min(235, max(150, br + (255-br)*bl//100 + (h//100    % 25) - 12))
+g = min(235, max(150, bg + (255-bg)*bl//100 + (h//2500   % 25) - 12))
+b = min(235, max(150, bb + (255-bb)*bl//100 + (h//62500  % 25) - 12))
+print("#%02x%02x%02x" % (r, g, b))
+PY
+)
+	"$TMUX_BIN" set-option -t "$s" @session_color "${sc:-$machine_color}"
 done
 
-# --- LEFT badge: OS · chip · session (rounded pills) ------------------------
-osbg="#{?client_prefix,${GOLD},${WHITE}}"
-os_pill="#[fg=${osbg}]${LCAP}#[bg=${osbg} fg=${BLACK}] ${OSGLYPH} #[bg=default fg=${osbg}]${RCAP}#[default]"
-chip_pill="#[fg=#{@chip_color}]${LCAP}#[bg=#{@chip_color} fg=${BLACK} bold] #{@chip} #[bg=default fg=#{@chip_color}]${RCAP}#[default]"
-sess_pill="#[fg=#{@session_color}]${LCAP}#[bg=#{@session_color} fg=${BLACK} bold] #{@session_roman} #[bg=default fg=#{@session_color}]${RCAP}#[default]"
-badge="${os_pill} ${chip_pill} ${sess_pill} "
+# --- LEFT badge: apple · [shape hostname] · session-roman -------------------
+# apple + machine pills = machine colour; session pill = its lighter shade. Every pill
+# flips GOLD while prefix is held (same safe #{?...} pattern — both branches commaless,
+# so it renders inside #[…] styles). SHAPE + OS glyph are literal bytes baked in here.
+mbg="#{?client_prefix,${GOLD},#{@machine_color}}"
+sbg="#{?client_prefix,${GOLD},#{@session_color}}"
+apple_pill="#[fg=${mbg}]${LCAP}#[bg=${mbg} fg=${BLACK} bold] ${OSGLYPH} #[bg=default fg=${mbg}]${RCAP}#[default]"
+machine_pill="#[fg=${mbg}]${LCAP}#[bg=${mbg} fg=${BLACK} bold] ${SHAPE} #{host_short} #[bg=default fg=${mbg}]${RCAP}#[default]"
+session_pill="#[fg=${sbg}]${LCAP}#[bg=${sbg} fg=${BLACK} bold] #{@session_roman} #[bg=default fg=${sbg}]${RCAP}#[default]"
+badge="${apple_pill} ${machine_pill} ${session_pill} "
 # Set @minimal-tmux-status-left (plugin uses it verbatim — no prefix-toggle box) AND
 # status-left directly (immediate, and wins after a plain reload).
 "$TMUX_BIN" set-option -g @minimal-tmux-status-left "$badge"
