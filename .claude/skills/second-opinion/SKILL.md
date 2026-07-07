@@ -32,7 +32,7 @@ Two independent opinions ≈ 70% of the value; a third rarely flips a call. So: 
 
 **CRITICAL — run in the FOREGROUND with a long timeout.** `codex exec` runs a full reasoning turn (2–5 min). Two verified gotchas:
 - Bash's DEFAULT 2-min timeout WILL kill it (the v1.0.0 bug) → pass an extended Bash `timeout` of **420000 ms (7 min)** on the call.
-- **Do NOT use `run_in_background: true`** — verified 2026-07-07 that a backgrounded `codex exec` writes a **0-byte output file** (its output only materializes on the foreground path). Run it foreground and let the extended timeout hold; the turn blocks but returns real output.
+- **Do NOT use `run_in_background: true`** — a detached `codex exec` HANGS then dies (exit 144), never producing output. Root cause is upstream, not ours: codex #19945 (silent 0-byte stdout when detached from TTY, regression since v0.124) + #20919 (hangs on stdin reads in non-TTY). **`-o/--output-last-message FILE` does NOT rescue it** — the process hangs *before* writing the file (verified 2026-07-08, don't re-test this). Run FOREGROUND with the long timeout; that's the only reliable path until codex ships the fix (watch v0.143+).
 
 Add `--skip-git-repo-check` when not inside a git repo (freeform questions from any cwd).
 
