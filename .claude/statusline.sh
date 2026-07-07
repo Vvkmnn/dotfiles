@@ -14,7 +14,7 @@ trap 'log_error "Script failed at line $LINENO"' ERR
 # │ │││ │       │     │    │         │         │              │             └── $ session value (API-equiv, dim) + ¢ REAL
 # │ │││ │       │     │    │         │         │              │                 usage-credit spend (orange, only when >0)
 # │ │││ │       │     │    │         │         │              └── π git branch +ins -del (hidden outside repos)
-# │ │││ │       │     │    │         │         └── θ runway 5h·7d (superscript = pace ratio)
+# │ │││ │       │     │    │         │         └── θ time-to-reset 5h·7d (superscript = runway; color = pace)
 # │ │││ │       │     │    │         └── σ session elapsed + weekly active
 # │ │││ │       │     │    └── λ 5h% 7d% quota used (clamped ≤100)
 # │ │││ │       │     └── μ daily budget variance
@@ -676,8 +676,13 @@ get_runways() {
 	if [ -n "$rate_pct" ] && [ -n "$five_hour_reset" ] && [ -z "$five_hour_reset_stale" ]; then
 		local hours_into_5h=$(awk "BEGIN {printf \"%.2f\", 5 - $five_hour_reset}")
 		if [ "$(echo "$hours_into_5h > 0" | bc -l)" -eq 1 ]; then
-			# Current burn rate (%/h)
-			local burn_rate=$(awk "BEGIN {printf \"%.2f\", $rate_pct / $hours_into_5h}")
+			# Current burn rate (%/h). Floor elapsed at 0.5h (~10% of the window):
+			# right after a reset the denominator is tiny, so a little usage extrapolates
+			# to a wildly inflated rate/runway — assume ≥0.5h of context, don't extrapolate
+			# from noise. A genuine emergency (huge % in minutes) still clears the floor:
+			# even a 100%/h burn accumulates enough % to go red within ~12 min regardless.
+			local elapsed_5h=$(awk "BEGIN {h=$hours_into_5h; printf \"%.2f\", (h < 0.5 ? 0.5 : h)}")
+			local burn_rate=$(awk "BEGIN {printf \"%.2f\", $rate_pct / $elapsed_5h}")
 			if [ "$(echo "$burn_rate > 0" | bc -l)" -eq 1 ]; then
 				five_hour_runway=$(awk "BEGIN {printf \"%.1f\", (100 - $rate_pct) / $burn_rate}")
 				five_hour_runway=${five_hour_runway%.0}
@@ -701,8 +706,10 @@ get_runways() {
 	if [ -n "$weekly_pct" ] && [ -n "$seven_day_reset" ]; then
 		local days_into_week=$(awk "BEGIN {printf \"%.2f\", 7 - $seven_day_reset}")
 		if [ "$(echo "$days_into_week > 0" | bc -l)" -eq 1 ]; then
-			# Current burn rate (%/d)
-			local burn_rate=$(awk "BEGIN {printf \"%.2f\", $weekly_pct / $days_into_week}")
+			# Current burn rate (%/d). Floor elapsed at 0.5d (~7% of the window) — same
+			# early-window noise guard as the 5h path (see above).
+			local elapsed_week=$(awk "BEGIN {d=$days_into_week; printf \"%.2f\", (d < 0.5 ? 0.5 : d)}")
+			local burn_rate=$(awk "BEGIN {printf \"%.2f\", $weekly_pct / $elapsed_week}")
 			if [ "$(echo "$burn_rate > 0" | bc -l)" -eq 1 ]; then
 				seven_day_runway=$(awk "BEGIN {printf \"%.1f\", (100 - $weekly_pct) / $burn_rate}")
 				seven_day_runway=${seven_day_runway%.0}
@@ -868,9 +875,9 @@ fi
 
 if [ -n "$show_5h" ]; then
 	runway_icon_printed=1
-	if [ "$(echo "${five_hour_pace_ratio:-0} >= 0.8" | bc -l)" -eq 1 ]; then
+	if [ "$(echo "${five_hour_pace_ratio:-0} > 1.0" | bc -l)" -eq 1 ]; then
 		five_hour_color="$ORANGE"
-		[ "$(echo "$five_hour_pace_ratio > 1.2" | bc -l)" -eq 1 ] && five_hour_color="$RED"
+		[ "$(echo "$five_hour_pace_ratio > 1.25" | bc -l)" -eq 1 ] && five_hour_color="$RED"
 		runway_super=$(to_superscript "$five_hour_runway")
 		printf ' %b %b%sh%s%b' "$ICON_RUNWAY" "$five_hour_color" "$five_hour_reset" "$runway_super" "$RESET"
 	elif [ -n "$five_hour_reset_stale" ]; then
@@ -882,9 +889,9 @@ fi
 
 if [ -n "$show_7d" ]; then
 	[ -z "$runway_icon_printed" ] && printf ' %b' "$ICON_RUNWAY"
-	if [ "$(echo "${seven_day_pace_ratio:-0} >= 0.8" | bc -l)" -eq 1 ]; then
+	if [ "$(echo "${seven_day_pace_ratio:-0} > 1.0" | bc -l)" -eq 1 ]; then
 		seven_day_color="$ORANGE"
-		[ "$(echo "$seven_day_pace_ratio > 1.2" | bc -l)" -eq 1 ] && seven_day_color="$RED"
+		[ "$(echo "$seven_day_pace_ratio > 1.25" | bc -l)" -eq 1 ] && seven_day_color="$RED"
 		runway_super=$(to_superscript "$seven_day_runway")
 		printf ' %b%sd%s%b' "$seven_day_color" "$seven_day_reset" "$runway_super" "$RESET"
 	else
