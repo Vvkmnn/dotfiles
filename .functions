@@ -203,6 +203,7 @@
   # type `j vminim4` and have it work on the LAN today and over Tailscale later — no suffix.
   _fleet_host() {
     local h="$1"
+    case "$h" in mini) h=vminim4;; air) h=vbookairm3;; neo) h=vbookneoa18;; esac  # friendly → true hostname
     if ping -c1 -t1 "$h" >/dev/null 2>&1; then print -- "$h"; return 0
     elif ping -c1 -t1 "$h.local" >/dev/null 2>&1; then print -- "$h.local"; return 0
     else print -- "$h"; return 1; fi   # unreachable: still print the name, signal via exit code
@@ -320,14 +321,16 @@
     open "vnc://${host}"
   }
 
-  # tab-completion for vssh/vremote — offer the fleet by name so you never memorize hostnames.
-  # Live from Tailscale when available, else the known set. Guarded: no-op if compinit isn't up.
+  # tab-completion for vssh/vremote — friendly aliases (mini/air/neo) AND true hostnames (live
+  # from Tailscale, else the known set), so you never memorize. Guarded: no-op if compinit isn't up.
   _vfleet_hosts() {
+    local -a aliases=('mini:vminim4' 'air:vbookairm3' 'neo:vbookneoa18')
     local -a hosts
     local ts=${commands[tailscale]:-/Applications/Tailscale.app/Contents/MacOS/Tailscale}
     [[ -x "$ts" ]] && hosts=(${(f)"$("$ts" status 2>/dev/null | awk '$1 ~ /^100\./{print $2}')"})
     (( ${#hosts} )) || hosts=(vminim4 vbookairm3 vbookneo)
-    _describe 'fleet host' hosts
+    _describe 'alias' aliases
+    _describe 'hostname' hosts
   }
   (( $+functions[compdef] )) && compdef _vfleet_hosts vssh vremote 2>/dev/null
 

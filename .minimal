@@ -48,6 +48,12 @@ export EDITOR=${EDITOR:-nvim}
 export VISUAL=${VISUAL:-$EDITOR}
 export TERM=${TERM:-xterm-256color}
 
+# mosh client rendering: overwrite speculative local echo instead of inserting it BEFORE
+# zsh-autosuggestions (active) — stops the ghost suggestion being shoved right as you type
+# over `vssh`/mosh. Lives here (not .zprofile) because vssh's `zsh -c` is non-login and only
+# sources .zshenv → .minimal. Client-side only; harmless off-mosh. (2026-07-08)
+export MOSH_PREDICTION_OVERWRITE=${MOSH_PREDICTION_OVERWRITE:-yes}
+
 # GPG for git commits in AI tools
 export GPG_TTY=$(tty)
 
