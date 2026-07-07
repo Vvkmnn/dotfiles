@@ -8,7 +8,7 @@ description: >
   "what would X think", "review this", or "am I missing something"; a change touches risky areas
   (auth, billing, migrations, concurrency, shared state, data loss, public APIs); or you're
   genuinely uncertain about your own solution. A fresh-context model catches what author-context
-  misses. Three zero-cost models available (Codex + Gemini primary, qwen-coder via OpenRouter as optional 3rd lens). Offer it at commit/push time even if unprompted.
+  misses. Free models: Codex (primary) + OpenRouter panel (qwen/nemotron/llama, non-aligned lineages); Gemini optional after Google killed its free OAuth 2026-06-18. Offer it at commit/push time even if unprompted.
 version: 1.4.0
 ---
 
@@ -54,19 +54,15 @@ git diff | codex exec "Second opinion — <focus, e.g. 'auth bypass risks'>. Be 
 
 Keep freeform prompts tight and word-capped (`<250 words`) — it bounds Codex's runtime and output. Runs in Codex's own sandbox; **never** pass `--dangerously-bypass-approvals-and-sandbox` or `--dangerously-bypass-hook-trust` — a read-only opinion needs no write access.
 
-### Gemini path (free, 1M context, different lineage)
+### Gemini path (OPTIONAL — free OAuth was killed 2026-06-18)
 
-Same foreground + long-timeout discipline. `gemini -p` is headless; prefix `GEMINI_TELEMETRY_ENABLED=false` (telemetry is on by default). Reach for Gemini when the input is large (whole files/repo — its 1M window) or you want a non-OpenAI second lineage on a decision.
+⚠️ Google **deprecated free "Login with Google" for individuals on 2026-06-18** (Gemini CLI → Antigravity migration). The only remaining $0 path is a **Google AI Studio free-tier API key** (rate-limited, shared quota, Google actively squeezing it): create at aistudio.google.com/apikey, then `export GEMINI_API_KEY=...`. Do NOT install Antigravity just for a second opinion (it's a full IDE suite), and do NOT pay. If the free key is flaky, **skip Gemini** — Codex + the OpenRouter panel below cover the need without Google.
 
+`gemini -p` is headless (1M context — good for whole-repo review). Prefix `GEMINI_TELEMETRY_ENABLED=false`:
 ```bash
-# Freeform decision second opinion
-GEMINI_TELEMETRY_ENABLED=false gemini -p "Blunt technical second opinion, <250 words: <the question>."
-
-# Review a diff (or a large chunk of code piped in — 1M context)
 git diff | GEMINI_TELEMETRY_ENABLED=false gemini -p "Second opinion — <focus>. Blunt; real problems only, skip nits."
 ```
-
-If Gemini errors with an auth message, it isn't logged in yet — tell the owner to run `gemini` once and pick **Login with Google** (free personal-account tier, no API key). Do not fall back to a paid `GEMINI_API_KEY` path.
+If it errors with an auth message, the free key isn't set — tell the owner; do not fall back to paid billing.
 
 ## How to use the result — synthesize, don't relay
 
