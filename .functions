@@ -316,8 +316,16 @@
 
   # vremote <host> — jump visually: open first-party Screen Sharing to a machine.
   vremote() {
-    local host; host=$(_fleet_host "${1:?usage: vremote <host>   (e.g. vremote vminim4)}")
-    print -P "%F{cyan}→ ${host} (screen)%f"
+    local name="${1:?usage: vremote <host>   (e.g. vremote mini | vremote neo)}"
+    local G=$'\e[38;5;114m' Y=$'\e[38;5;179m' D=$'\e[2m' R=$'\e[0m'
+    printf "  ${D}reaching %s…${R}" "$name"
+    local host
+    if host=$(_fleet_host "$name"); then
+      printf "\r  ${G}●${R} %s ${D}up — opening screen${R}              \n" "$name"
+    else
+      printf "\r  ${Y}○${R} %s ${D}offline — asleep or off (run \`vwatch\` on it, or wake it)${R}\n" "$name"
+      return 1
+    fi
     open "vnc://${host}"
   }
 
