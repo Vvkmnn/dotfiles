@@ -87,4 +87,6 @@ If Codex errors or is unavailable, say so plainly and proceed with your own revi
   ```bash
   git diff | llm -m openrouter/qwen/qwen3-coder:free "Second opinion — <focus>. Blunt, real problems only."
   ```
-  Skip `openai/gpt-oss-120b:free` — strong but OpenAI-lineage, echoes Codex. Use a 3rd lens rarely (seldom flips a call); free-tier rate-limited. GLM has NO free path ($18/mo Lite is a cheap *driver*, not worth it as a 3rd opinion). Grok: no free path. NOTE: free model IDs rotate — if one 404s, refresh via `curl -s openrouter.ai/api/v1/models | jq -r '.data[].id|select(endswith(":free"))'`.
+  Skip `openai/gpt-oss-120b:free` — strong but OpenAI-lineage, echoes Codex. Use a 3rd lens rarely (seldom flips a call). GLM has NO free path ($18/mo Lite is a cheap *driver*, not worth it as a 3rd opinion). Grok: no free path.
+  - **On 429 (free-tier throttle), just try another model** — verified 2026-07-08: qwen + llama share upstream provider "Venice" (throttle together); nemotron is on a separate provider and sails through. Provider-diversity is why the 3-model panel stays available. Don't retry the same 429'd model — switch.
+  - Free model IDs rotate — if one 404s, refresh: `curl -s openrouter.ai/api/v1/models | jq -r '.data[].id|select(endswith(":free"))'`.
