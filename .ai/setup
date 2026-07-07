@@ -404,11 +404,13 @@ phase_remote() {
   fi
   warn "confirm ON: System Settings ▸ General ▸ Sharing ▸ Screen Sharing (not scriptable to verify)"
 
-  # Power — stay reachable for remote screen-sharing/SSH: system never sleeps,
-  # display still sleeps to save the panel, wake-on-lan + auto-restart after a
-  # power failure so an outage doesn't strand the machine unreachable.
-  sudo pmset -a sleep 0 displaysleep 30 womp 1 powernap 1 tcpkeepalive 1 autorestart 1
-  ok "power: never-sleep (display sleeps after 30m) · wake-on-lan · auto-restart on power loss"
+  # Power — SIMPLEST + universal (owner's rule): optimized for fleet reachability, ZERO battery
+  # damage. Just tcpkeepalive so an active ssh/mosh survives brief idle — nothing that forces
+  # never-sleep, wakes the machine, or reboots it (those are mini-only wants, not laptop cruft).
+  # Laptops sleep normally to spare cycles; keeping a machine awake + fleet-available on demand
+  # (or running the mini as the always-on hub) is `vwatch`'s job, elegant + per-device.
+  sudo pmset -a tcpkeepalive 1
+  ok "power: tcpkeepalive only (battery-safe, universal) — vwatch handles any stay-awake, per machine"
 
   # Remote Login (sshd) — the transport `vssh`/mosh ride on. FDA-free fallback if
   # `systemsetup` trips on Full Disk Access. Idempotent.
