@@ -84,8 +84,11 @@ If Codex errors or is unavailable, say so plainly and proceed with your own revi
 - `craft-commit` — reach for this before the commit step on non-trivial changes.
 - `verify-work` — mechanical verification (tests/lint); this is the *judgment* cross-check. Do both on risky work.
 - Gemini CLI installed 2026-07-07 (`@google/gemini-cli` v0.49).
-- **Third lens (free, installed 2026-07-07):** `llm` v0.31 + `llm-openrouter` 0.6 → `qwen/qwen3-coder:free` (480B coding specialist, $0). One-time: `llm keys set openrouter` (free key at openrouter.ai/keys, no card for `:free` models). Invoke:
+- **Third lens (free, installed 2026-07-07):** `llm` v0.31 + `llm-openrouter` 0.6. One-time: `llm keys set openrouter` (free key at openrouter.ai/keys, no card for `:free` models). Pick by role — all $0, all distinct lineage from Codex/Gemini/Claude (verified live on the OpenRouter `:free` list, re-check periodically as free models rotate):
+  - **Code/diff** → `openrouter/qwen/qwen3-coder:free` (coding specialist, 1M ctx, Alibaba)
+  - **Hard reasoning/architecture** → `openrouter/nvidia/nemotron-3-ultra-550b-a55b:free` (550B, 1M ctx, NVIDIA)
+  - **Fast general/quick sanity** → `openrouter/meta-llama/llama-3.3-70b-instruct:free` (proven workhorse, Meta)
   ```bash
   git diff | llm -m openrouter/qwen/qwen3-coder:free "Second opinion — <focus>. Blunt, real problems only."
   ```
-  Use only when you genuinely want a third read (rarely — a 3rd opinion seldom flips a call); free-tier rate-limited. GLM has NO free path ($18/mo Lite exists but only worth it as a cheap *driver*, never as a 3rd opinion). Grok: no free path.
+  Skip `openai/gpt-oss-120b:free` — strong but OpenAI-lineage, echoes Codex. Use a 3rd lens rarely (seldom flips a call); free-tier rate-limited. GLM has NO free path ($18/mo Lite is a cheap *driver*, not worth it as a 3rd opinion). Grok: no free path. NOTE: free model IDs rotate — if one 404s, refresh via `curl -s openrouter.ai/api/v1/models | jq -r '.data[].id|select(endswith(":free"))'`.
