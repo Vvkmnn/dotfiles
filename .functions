@@ -320,6 +320,17 @@
     open "vnc://${host}"
   }
 
+  # tab-completion for vssh/vremote — offer the fleet by name so you never memorize hostnames.
+  # Live from Tailscale when available, else the known set. Guarded: no-op if compinit isn't up.
+  _vfleet_hosts() {
+    local -a hosts
+    local ts=${commands[tailscale]:-/Applications/Tailscale.app/Contents/MacOS/Tailscale}
+    [[ -x "$ts" ]] && hosts=(${(f)"$("$ts" status 2>/dev/null | awk '$1 ~ /^100\./{print $2}')"})
+    (( ${#hosts} )) || hosts=(vminim4 vbookairm3 vbookneo)
+    _describe 'fleet host' hosts
+  }
+  (( $+functions[compdef] )) && compdef _vfleet_hosts vssh vremote 2>/dev/null
+
 # └─────────────────────────────────────────────────────────────────────────────┘
 
 # ┌────────────────────────────────────────────────────────────────── update ──┐
