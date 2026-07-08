@@ -8,8 +8,8 @@ description: >
   "what would X think", "review this", or "am I missing something"; a change touches risky areas
   (auth, billing, migrations, concurrency, shared state, data loss, public APIs); or you're
   genuinely uncertain about your own solution. A fresh-context model catches what author-context
-  misses. Free models: Codex (primary) + OpenRouter panel (qwen/nemotron/llama, non-aligned lineages); Gemini optional after Google killed its free OAuth 2026-06-18. Offer it at commit/push time even if unprompted.
-version: 1.4.0
+  misses. Codex (primary, free) + a full OpenRouter panel — best model of each provider via ONE key (nemotron/qwen free by default; gpt-5.5-pro/gemini-3/grok flagships on prepaid credits). Fan out to several and synthesize. Offer it at commit/push time even if unprompted.
+version: 2.0.0
 ---
 
 # Second Opinion — Codex + Gemini panel
@@ -75,18 +75,35 @@ A second opinion is a cross-check, not an oracle. After Codex responds:
 
 If Codex errors or is unavailable, say so plainly and proceed with your own review — never fabricate its verdict.
 
+## The model panel — best of each provider via ONE gateway (OpenRouter + `llm`)
+
+For a real cross-check across *different minds* (not just Codex), fan out through OpenRouter — **one key = every provider**, async-safe (no codex TTY-hang), fleet-synced. IDs verified live 2026-07-08; they rotate — the weekly cloud audit re-checks them.
+
+| Provider | Model ID (via `openrouter/…`) | Tier |
+|---|---|---|
+| NVIDIA | `nvidia/nemotron-3-ultra-550b-a55b:free` | **free — default** |
+| Alibaba | `qwen/qwen3-coder:free` | **free — default** (code) |
+| DeepSeek | `deepseek/deepseek-v4-pro` | cheap-paid (~$0.003/q) |
+| OpenAI | `openai/gpt-5.5-pro` | flagship — **needs credits** |
+| Google | `google/gemini-3.1-pro-preview` | flagship — enable later |
+| xAI | `x-ai/grok-4.3` | flagship — enable later |
+
+Claude is excluded (we ARE Claude). **Free models work now** (no balance needed). **Paid flagships need OpenRouter credits + the key's spend-cap raised** — until then they 403 "Key limit exceeded" (that cap is the owner's no-surprise-bills guardrail; funding is a one-time owner action at openrouter.ai/credits).
+
+**Fan-out (parallel, then synthesize):** fire the enabled panel models at once, don't serialize —
+```bash
+Q="Second opinion — <focus>. Blunt, real problems only, <200 words."
+for m in nvidia/nemotron-3-ultra-550b-a55b:free qwen/qwen3-coder:free openai/gpt-5.5-pro; do
+  llm -m "openrouter/$m" "$Q" > "/tmp/op_${m//\//_}.txt" 2>&1 &
+done; wait; for f in /tmp/op_*.txt; do echo "── $f"; cat "$f"; done
+```
+Then **synthesize** as with Codex: agreements · real dissents (with your judgment) · net call. A model that 403s (no credits) or 429s (free throttle) → note it and move on; never fabricate a verdict.
+
+**COST GUARDRAIL — default is $0, never auto-spend.** Use ONLY: **Codex** (`codex exec`, the owner's ChatGPT/Codex *subscription* via the local CLI — costs no usage credits, no API billing) + **free OpenRouter models** (`:free`). **NEVER fire a paid flagship** (`gpt-5.5-pro`, `gemini-3.1-pro`, `grok-4.3`) unless the owner EXPLICITLY asks for it AND has funded OpenRouter credits (until then they 403). These are shell-outs — they spend **no Claude/Anthropic usage credits** either. A full flagship fan-out is ~$0.10–0.20; the default free path is $0.
+
 ## Related
 
 - `craft-commit` — reach for this before the commit step on non-trivial changes.
 - `verify-work` — mechanical verification (tests/lint); this is the *judgment* cross-check. Do both on risky work.
-- Gemini CLI installed 2026-07-07 (`@google/gemini-cli` v0.49).
-- **Third lens (free, installed 2026-07-07):** `llm` v0.31 + `llm-openrouter` 0.6. One-time: `llm keys set openrouter` (free key at openrouter.ai/keys, no card for `:free` models). Pick by role — all $0, all distinct lineage from Codex/Gemini/Claude (verified live on the OpenRouter `:free` list, re-check periodically as free models rotate):
-  - **Code/diff** → `openrouter/qwen/qwen3-coder:free` (coding specialist, 1M ctx, Alibaba)
-  - **Hard reasoning/architecture** → `openrouter/nvidia/nemotron-3-ultra-550b-a55b:free` (550B, 1M ctx, NVIDIA)
-  - **Fast general/quick sanity** → `openrouter/meta-llama/llama-3.3-70b-instruct:free` (proven workhorse, Meta)
-  ```bash
-  git diff | llm -m openrouter/qwen/qwen3-coder:free "Second opinion — <focus>. Blunt, real problems only."
-  ```
-  Skip `openai/gpt-oss-120b:free` — strong but OpenAI-lineage, echoes Codex. Use a 3rd lens rarely (seldom flips a call). GLM has NO free path ($18/mo Lite is a cheap *driver*, not worth it as a 3rd opinion). Grok: no free path.
-  - **On 429 (free-tier throttle), just try another model** — verified 2026-07-08: qwen + llama share upstream provider "Venice" (throttle together); nemotron is on a separate provider and sails through. Provider-diversity is why the 3-model panel stays available. Don't retry the same 429'd model — switch.
+- The full model panel is above ("The model panel"). Notes: skip `openai/gpt-oss-120b:free` (OpenAI-lineage, echoes Codex); on **429** (free-tier throttle) switch models, don't retry — free models on the same upstream provider (e.g. "Venice") throttle together, others sail through; on **403** the paid key needs credits + a raised spend-cap. Gemini CLI installed but its free OAuth is dead (2026-06-18) — reach Gemini via `openrouter/google/gemini-3.1-pro-preview` instead.
   - Free model IDs rotate — if one 404s, refresh: `curl -s openrouter.ai/api/v1/models | jq -r '.data[].id|select(endswith(":free"))'`.
