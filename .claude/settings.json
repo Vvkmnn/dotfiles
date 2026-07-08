@@ -464,6 +464,7 @@
     ],
     "defaultMode": "plan"
   },
+  "model": "opus",
   "hooks": {
     "UserPromptSubmit": [
       {
@@ -584,13 +585,13 @@
     "rust-analyzer-lsp@claude-plugins-official": true,
     "shell-scripting@claude-code-workflows": true,
     "swift-lsp@claude-plugins-official": true,
-    "claude-praetorian@claude-emporium": true,
-    "claude-orator@claude-emporium": true,
-    "claude-gladiator@claude-emporium": true,
-    "claude-historian@claude-emporium": true,
-    "claude-oracle@claude-emporium": true,
-    "claude-vigil@claude-emporium": true,
-    "claude-augur@claude-emporium": true,
+    "claude-praetorian@claude-emporium": false,
+    "claude-orator@claude-emporium": false,
+    "claude-gladiator@claude-emporium": false,
+    "claude-historian@claude-emporium": false,
+    "claude-oracle@claude-emporium": false,
+    "claude-vigil@claude-emporium": false,
+    "claude-augur@claude-emporium": false,
     "example-skills@anthropic-agent-skills": true
   },
   "extraKnownMarketplaces": {
@@ -665,6 +666,5 @@
   "inputNeededNotifEnabled": true,
   "agentPushNotifEnabled": true,
   "skipAutoPermissionPrompt": true,
-  "voiceEnabled": true,
-  "model": "opusplan"
+  "voiceEnabled": true
 }

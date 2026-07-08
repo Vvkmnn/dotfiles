@@ -8,18 +8,30 @@
 
 > For the human, not for Claude. Companion: [README.md](../README.md) (what exists) · [CHANGELOG.md](CHANGELOG.md) (why + what is next).
 
-### Model & Effort (Max 20x)
+### Model Operating Matrix (Max 20x + Fable credits)
 
-Your default is **Default** (no model key): Opus 4.8 daily, auto-softens to Sonnet at the Opus rate limit instead of stopping. Reach for the rest deliberately:
+Main = **`opus`** (plain Opus 4.8 end-to-end; on 20x you have the headroom — `opusplan` is a Pro/5x conservation mode that needlessly runs Sonnet for execution). The model choice cascades — pick one and effort / subagent-routing / cost-posture follow. **`/model` is session-scoped (writes nothing); `switch-claude` writes persistent modes.** Verified (code.claude.com): effort default = **high** (Fable/Sonnet-5/Opus-4.8); **Fable thinking is always on**; effort is **model-relative**; `/fast` = Opus-4.8 only, 2.5× faster.
 
-| Move | When |
-|------|------|
-| `/model fable` | Hardest long-horizon runs: overnight goals, gnarliest debugging, huge refactors. ~2× Opus quota burn — spend it like it costs double, because it does |
-| `/effort xhigh` | The hardest 10% of work on any model. `/effort low` for chores/renames |
-| `/fast` | Opus sessions only (not Fable): same model, faster output — great for interactive back-and-forth |
-| `/model` per session | Never re-pin settings.json — session-scoped choices keep Default the baseline |
+| Model | Effort to use | Subagents route → | When | Cost posture |
+|-------|---------------|-------------------|------|--------------|
+| **Opus 4.8** (main) | high daily · **xhigh** hardest-10% · low chores | Sonnet (volume) / Haiku (scans) | **daily driver** | Max quota, ample on 20x |
+| **Fable 5** | high · xhigh ONLY if Opus-xhigh couldn't crack it | **never Fable** → Sonnet/Haiku | hardest long-horizon ONLY | **credits ~2× Opus — deliberate spend** |
+| **Sonnet 5** | high (it IS the volume model) | Haiku (scans) | volume · mechanical · big straightforward passes | cheap, Max quota |
+| **Haiku 4.5** | low/medium | — | cheap deterministic scans, Explore | cheapest |
 
-**Fable rhythm**: give it goal-first, single-message specs (what + constraints + how to verify), not step lists — over-prescription measurably degrades it. Minutes-long turns are normal; that's thinking, not hanging. Check in via iOS Remote Control instead of hovering.
+**Fable-vs-Opus spend rule:** default Opus (high→xhigh); escalate to Fable *only* when Opus-4.8-at-xhigh genuinely couldn't crack it. Fable = credits = "the thing you'd have paid for anyway" — never reflex to it.
+
+**Every knob & where it lives (verified 2026-07-08, both agent errors corrected):**
+- **Effort** — 4 places: session `/effort <low|medium|high|xhigh|max>` · `env.CLAUDE_CODE_EFFORT_LEVEL` in settings.json (persistent default — NOT a top-level `effortLevel` key; that's a phantom Claude Code never writes, statusline reads live `.effort.level` from stdin instead) · agent frontmatter `effort:` (per-subagent) · per-turn keywords. **NOT settable on command/skill frontmatter** — agents only.
+  - **Escalate cheapest-first (keyword/effort before a model bump):** the `ultrathink` prompt keyword boosts reasoning for a single turn (harness-confirmed — the deeper-reasoning reminder fires when it's typed); use it for one hard question instead of flipping the whole session. Then `/effort xhigh` for sustained hard work; `/effort max` is the ceiling (diminishing returns). Only if effort is maxed and Opus still stalls → `/model fable` (credits, ask first). `ultrathink` is a prompt keyword, not a slash command. **UNDOCUMENTED — verify empirically before relying, do NOT encode as fact:** exact `ultrathink`/`ultracode` mechanics (token budgets, whether Opus-only, any Fable interaction).
+- **Model** — `/model` · CLI `--model` · `ANTHROPIC_MODEL` env · `model` settings key · agent frontmatter `model:` · **command frontmatter `model:`** (a `/plan` can pin opus, a `/commit` sonnet) · per-dispatch `model:` param · `ANTHROPIC_DEFAULT_{OPUS,SONNET,HAIKU}_MODEL` env (map an alias to a specific ID) · `/fast` (Opus-only 2.5×). Skills can't pin a model.
+- **Thinking** — `alwaysThinkingEnabled` setting · prompt keywords ("think"/"think hard") · subagents INHERIT the session's (no per-subagent dial) · **Fable is always-on and CANNOT be disabled** (`MAX_THINKING_TOKENS=0` does not override it).
+
+**Subagent model precedence (first-match-wins):** (1) `CLAUDE_CODE_SUBAGENT_MODEL` env [blunt global override — **DON'T set**, it clobbers per-agent pins] → (2) per-dispatch `model:` param [Claude routes each spawn] → (3) agent frontmatter `model:` [per-agent default] → (4) main. Control via **frontmatter pins + per-dispatch choice**, never the global env.
+
+**Token discipline, ranked by impact:** (1) **`/clear` between unrelated tasks** — the biggest lever (a single 2-day session carrying near-1M context every turn was "the $1000"); (2) **cache discipline** — reads don't count vs rate limits + 1h TTL on subs, keep stable prefixes + turns <5min apart; (3) **route subagents to a cheaper model** for mechanical fan-out; (4) **`@file` refs over full reads**; (5) **`/compact` at boundaries, not mid-task**.
+
+**Fable rhythm**: goal-first single-message specs (what + constraints + how to verify), not step lists — over-prescription measurably degrades it. Minutes-long turns are thinking, not hanging; check in via iOS Remote Control instead of hovering.
 
 ### Statusline Legend (your scoreboard)
 
@@ -27,7 +39,7 @@ Your default is **Default** (no model key): Opus 4.8 daily, auto-softens to Sonn
 
 | Glyph | Reads as | Act when |
 |-------|----------|----------|
-| `ॐ` color | vim state: orange insert (typing = resting) · green normal/escaped · gold visual | (replaces -- INSERT --) |
+| `ॐ` color | vim state: orange insert (typing = resting) · blue normal/escaped · gold visual | (replaces -- INSERT --) |
 | `F/O/S/H` + `ᵀ ᴹ ˣ ⁺ ⁻` | model, thinking, effort | wrong model for the task? `/model` |
 | `ψ %` (`¹ᴹ` = 1M session) | context used | >60% orange: wrap up or `/compact Focus on X` |
 | `κ %` | cache-hit efficiency | orange <70: cache breaking — early-context edits or >1h gaps. Cache reads DON'T count against rate limits (subscription sessions get 1-hour TTL) — κ is a quota multiplier |

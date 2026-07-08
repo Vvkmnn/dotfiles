@@ -36,6 +36,17 @@ Request path:
 - "I believe the error is..." → FIND the error, don't guess
 - "The threshold is 80%" → READ file:line first, never assume config values
 
+### UNVERIFIED Is a Stop Sign, Not a Hedge You Can Ship
+An `UNVERIFIED` / "likely" / "probably" flag means **STOP and verify** — it is NOT permission to write the claim down. **Never let a flagged-unverified or assumed claim enter a durable file** (config, docs, rules, skills, plans, commit messages). Before any factual or behavioral claim lands in a tracked file, do ONE of:
+1. **Verify** it against an authoritative source (official docs, the actual code/config you can read) OR an empirical test — then write it as fact with the source; or
+2. **Ask the user to verify** — when the check needs something you can't reach (their account, a paid model like Fable, a runtime/UI test, private data), give them the exact test to run and encode the answer they report. Delegating the check beats omitting; the user is a verification partner, not just an approver. You can also ask them to run a command, paste output, or make a change on your behalf; and
+3. **Omit** it; or
+4. Write it explicitly as an **open question to test** ("undocumented — verify before relying"), never as guidance.
+
+Conversation may hold "unverified, needs testing." A committed file may not present a guess as fact. **Subagent / research-agent output is a LEAD, not a source** — re-verify its load-bearing claims yourself before any of it enters a file (agents fabricate: invented repos, star counts, model IDs, a phantom settings key, and mechanism behavior this session). If you can't verify and can't omit, say so out loud and stop — don't ship the guess.
+
+> Origin (2026-07-08): an UNVERIFIED "ultrathink is a no-op on Fable" guess was written into CONFIG.md + orchestrate.md as guidance. Flagging it unverified did not make it safe — durable files demand verified fact or an explicit open question, nothing in between.
+
 ### Before Claiming Completion
 From `superpowers:verification-before-completion`:
 1. IDENTIFY: What command proves this claim?

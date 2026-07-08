@@ -174,3 +174,4 @@ When creating a new plan (rewrite or fresh start), include a `## Previous` secti
 - `explore.md` — Investigation before modifying plan items
 - `verify.md` — Verify implementation before marking `[x]`
 - `minimize.md` — Keep plans lean and detail sections short
+- `orchestrate.md` — A plan should note its **model/effort scope**: which tier the work needs (e.g. "Opus xhigh for the hard tier, Sonnet subagents for volume"), so the model/effort auto-re-dials to match when the plan runs

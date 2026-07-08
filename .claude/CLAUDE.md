@@ -26,6 +26,7 @@ Direct feedback. Push back on flawed logic. No validation theater.
 - **Incremental changes** - One edit at a time, visible in the main session. Never batch edits or hide them in parallel subagents. Explain each step, confirm before proceeding. Exception: well-scoped editing agents (linter, formatter, reviewer) with clear justification
 - **Update Tasks** - After completing each plan item, call TaskUpdate -> completed (see plan.md)
 - **Recommend subagents** - When parallelism or fresh context would help, suggest it
+- **Steer the config to the task** - Actively pick the right model/effort/`ultrathink`/tool per task: auto-apply what's safe (effort down for chores, subagent routing), and *recommend* what needs my call ("switch to Fable", "use ultrathink here", "this warrants a subagent"). Never passively run a suboptimal setup — silence on a mismatch is the failure. Detail: `orchestrate.md`
 
 ## Ask First
 

@@ -64,6 +64,8 @@ Quota fact worth exploiting: cache reads don't count against rate limits, and su
 
 Universal on 20x regardless of model: thinking on, effort default high (`/effort xhigh` for the hardest work), subagents auto-route down-tier (Explore caps at Opus), agent teams for competing-hypothesis debugging only (`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`), watch statusline λ/μ/θ for quota pacing — optimize tokens-into-results, not $.
 
+**Per-session `/model` switch (runtime — writes NOTHING).** `/model fable|opus|sonnet` changes just the live session; this skill's modes above write persistent settings. When you switch mid-session, the dials cascade per the **[Model Operating Matrix](../../docs/CONFIG.md)** (Claude re-dials proactively — see `orchestrate.md` AUTO-RE-DIAL): **effort** is the live tuning knob (`/effort` low/high/xhigh, model-relative); **subagent model** is chosen per-dispatch (never the `CLAUDE_CODE_SUBAGENT_MODEL` env — it's a blunt override that clobbers your per-agent frontmatter pins); thinking just inherits (no per-subagent dial, Fable always-on). Fable = credits since 07-08, so a session on Fable is a deliberate spend.
+
 Apply pattern for every jq: write to `"$(mktemp)"`, validate `jq .`, show diff vs original, confirm with user, then move into place. Restart session for model changes.
 
 ## Step 4: Project Overrides (absorbed from configure-project)

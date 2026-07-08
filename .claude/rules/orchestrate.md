@@ -29,11 +29,26 @@ Policy: restrict custom agents to read-only unless editing is justified (only bu
 | code-reviewer / security-reviewer | sonnet | medium / high | Fast-pass gates; CE/trailofbits fleets for depth |
 | debugger | inherit | high | Fresh-context verifier beats self-critique |
 | paper-researcher | sonnet | high | background:true, writes results to file |
-| Deterministic file search | haiku | low | Explore now INHERITS main model (capped at Opus) — cheap scans need an explicit haiku override |
+| Deterministic file search | haiku | low | built-in `Explore` inherits main capped at Opus (v2.1.198); our custom `explore` agent pins `model: haiku` to override it — cheap scans stay cheap |
 
-- Agents arrive pre-equipped: their frontmatter carries `skills`/`mcpServers`/`effort` — don't re-instruct these in dispatch prompts
-- Session modes: `switch-claude` skill (pro/5x/20x + per-project overrides)
-- Global subagent cost-cap: `CLAUDE_CODE_SUBAGENT_MODEL` env var
+**AUTO-RE-DIAL on model/scope change (do this proactively, unprompted):** when the owner `/model`-switches mid-session, or a task's scope shifts, re-dial BOTH model-routing AND **effort** to the [Model Operating Matrix](../docs/CONFIG.md), and announce it ("on Fable now → routing subagents to Sonnet, effort high, treating this as credit spend").
+
+**WHEN to switch — recognize the task and act, don't wait to be told:**
+- Chore / rename / format / mechanical edit → `/effort low` (auto-apply, safe); a big mechanical sweep → offer `/model sonnet`.
+- Default coding / analysis → Opus at effort high (the baseline — no action).
+- Hardest ~10% (subtle bug, thorny architecture, tricky concurrency/reasoning) → **offer `/effort xhigh`**.
+- Opus-at-xhigh genuinely stalls on a hard long-horizon/agentic problem → **suggest `/model fable`, flagging it draws credits** — get an ok, never auto-switch to it.
+- Cheap deterministic fan-out (file/pattern search, scans) → route those subagents to `haiku` per-dispatch.
+- Escalation ladder (cheapest-first): single hard turn → suggest prefixing **`ultrathink`** (per-turn reasoning boost) · sustained hard work → `/effort xhigh` · only if effort is maxed and Opus still stalls → `/model fable` (credits, ask first). A keyword/effort bump is cheaper than a model tier bump. (Exact `ultrathink`/`ultracode` mechanics — Opus-only? Fable interaction? — are undocumented; don't assert them, verify first.)
+
+**PROACTIVE OPTIMIZATION — do it, or tell the owner to.** Actively steer the whole config to fit the task: model · effort · reasoning keyword (`ultrathink`) · tool/subagent choice. Never passively run a suboptimal setup. Two modes:
+- **AUTO-APPLY what's safe/reversible** (no ask): effort DOWN for chores, routing a subagent to a cheaper model per-dispatch, reaching for the right tool.
+- **RECOMMEND what costs credits or needs the owner's keystroke** — say it plainly, don't wait to be asked: "this is architecture-level — worth an `ultrathink`", "Opus-xhigh is stalling, this may warrant `/model fable` (credits)", "this warrants a subagent", "drop to Sonnet for this mechanical sweep". Then ASK before effort-UP on a fresh task and ALWAYS before `/model fable`.
+The default posture is: notice the mismatch and act or advise — silence on a suboptimal setup is the failure.
+- **Effort is the primary live dial** — `/effort low` for chores/renames, `high` as default, `xhigh` for the hardest ~10%; it's model-relative ("same level ≠ same value"). Thinking is NOT a per-subagent dial (subagents inherit the session's; Fable's is always-on), so effort is where tuning happens. Per-agent `effort:` frontmatter overrides the session.
+- **Subagent model precedence (verified, first-match-wins):** `CLAUDE_CODE_SUBAGENT_MODEL` env #1 → per-dispatch `model:` param #2 → frontmatter `model:` #3 → main #4. The env is a **blunt global override that CLOBBERS per-agent pins — do NOT set it.** Route routine/plugin subagents cheaper via the Agent tool's per-dispatch `model:` (#2, overrides frontmatter); keep quality roles pinned in frontmatter (#3).
+- Agents arrive pre-equipped: frontmatter carries `skills`/`mcpServers`/`effort`/`model` — don't re-instruct these in dispatch prompts.
+- Session modes: `switch-claude` skill (pro/5x/20x + per-project overrides).
 
 ### Context Window Strategy
 
