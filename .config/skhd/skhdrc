@@ -1,0 +1,285 @@
+#!/usr/bin/env sh
+
+################################################################################
+# SKHD CONFIGURATION FILE
+# https://github.com/koekeishiya/skhd
+#
+# This file contains keyboard shortcuts that integrate with yabai window manager
+# and other macOS applications. It's organized into logical sections:
+#
+# 1. SYSTEM MANAGEMENT - Restart services, reload configs
+# 2. APPLICATION SHORTCUTS - Launch specific applications
+# 3. WINDOW MANAGEMENT - Window operations with yabai
+# 4. SPACE NAVIGATION - Moving between spaces/desktops
+# 5. DISPLAY MANAGEMENT - Multi-monitor controls
+# 6. APPLICATION-SPECIFIC CONTROLS - Browser, music, etc.
+################################################################################
+
+################################################################################
+# 1. SYSTEM MANAGEMENT
+################################################################################
+
+# Restart yabai and skhd services
+# Useful when you've modified configuration files and need to apply changes
+# NOTE: FluidNoti disabled (2026-02-02) - not actively using
+ctrl + cmd - 9 : yabai --restart-service && skhd --restart-service
+ctrl + cmd - 0 : brew services restart sketchybar && yabai --restart-service && skhd --restart-service # && open -na /Applications/FluidNoti.app
+
+################################################################################
+# 2. APPLICATION SHORTCUTS
+################################################################################
+
+# === Favorite Applications ===
+
+# Open Mail.app
+# NOTE: Replaced by menuanyhwere
+# ctrl + cmd - m : open -na /System/Applications/Mail.app
+
+# Open Obsidian
+ctrl + cmd - o : open -na /Applications/Obsidian.app/
+
+# Open Claude Code session on the mini (persistent tmux on vMiniM4)
+# Wrapper tries vminim4.local first, then Tailscale magic-DNS; falls back to local shell.
+ctrl + cmd - m : open -na /Applications/Ghostty.app --args -e /Users/v/.local/bin/claude-mini
+
+# Create Daily Note in Obsidian
+# ctrl + cmd - d : obsidian-cli daily # create "{note-name}"
+
+# Open Windsurf (new window)
+# ctrl + cmd - return : windsurf -n
+
+# Open WezTerm terminal
+ctrl + cmd - space : open -na /Applications/Ghostty.app
+# ctrl + cmd - space : open -na /Applications/Wezterm.app
+
+# === Web Browsers ===
+
+# Open Safari (new window)
+# ctrl + cmd - return : osascript -e 'tell application "Safari" to make new document' -e 'tell application "Safari" to activate'
+ctrl + cmd - return : open -Fn /Applications/Safari.app
+# ctrl + cmd - s : open -na /Applications/Safari.app/
+# ctrl + cmd - 0x27 : open -na /Applications/Safari.app/
+
+# Open Safari in private browsing (currently not working)
+ctrl + cmd - 0x29 : osascript -e 'tell application "Safari" to activate tell application "System Events" tell process "Safari" click menu item "New Private Window" of menu "File" of menu bar 1 end tell end tell'
+
+# Open Zen Browser
+ctrl + cmd - z : open -n /Applications/Zen\ Browser.app/
+
+# Open ChatGPT in Safari (COMMENTED - fn+/ now opens Context Window search instead)
+# fn - 0x2C : osascript -e 'tell application "Safari" to make new document with properties {URL:"https://chat.openai.com/?model=gpt-4"}' -e 'tell application "Safari" to activate'
+
+################################################################################
+# 3. WINDOW MANAGEMENT
+################################################################################
+
+# === Window Control ===
+
+# Toggle fullscreen for current window
+# alt - f : yabai -m window --toggle zoom-fullscreen
+ctrl + cmd - f : yabai -m window --toggle zoom-fullscreen
+
+# Toggle float/tile for current window and center it
+# alt - t : yabai -m window --toggle float --grid 4:4:1:1:2:2
+ctrl + cmd - t : yabai -m window --toggle float --grid 4:4:1:1:2:2
+
+# use BACKSPACE Close application using osascript
+ctrl + cmd - 0x33 : osascript -e "tell application \"Finder\" to set p to item 1 of (get file of (processes whose frontmost = true)) as text" -e "tell application p to quit"
+
+# Kill current tmux session in ghostty, otherwise close app
+ctrl + cmd - delete [
+"ghostty" : osascript -e 'tell application "System Events" to keystroke "b" using control down' -e 'delay 0.2' -e 'tell application "System Events" to keystroke ":"' -e 'delay 0.2' -e 'tell application "System Events" to keystroke "kill-session"' -e 'delay 0.2' -e 'tell application "System Events" to key code 36'
+* : osascript -e 'tell application "Finder" to set p to item 1 of (get file of (processes whose frontmost = true)) as text' -e 'tell application p to quit'
+]
+
+# === Window Movement ===
+
+# Swap windows in different directions (vim keys)
+shift + alt - h : yabai -m window --swap west
+shift + alt - j : yabai -m window --swap south
+shift + alt - k : yabai -m window --swap north
+shift + alt - l : yabai -m window --swap east
+
+# Focus windows in different directions (vim keys)
+alt - h : yabai -m window --focus west
+alt - j : yabai -m window --focus south
+# alt - k : yabai -m window --focus north   # released 2026-07-06: unused; alt-k = Claude voice push-to-talk now
+alt - l : yabai -m window --focus east
+
+# Warp (move) window through BSP tree (vim keys)
+shift + cmd - h : yabai -m window --warp west
+shift + cmd - j : yabai -m window --warp south
+shift + cmd - k : yabai -m window --warp north
+shift + cmd - l : yabai -m window --warp east
+
+# === Floating Window Grid Positioning ===
+
+# Make floating window fill screen
+shift + alt - up : yabai -m window --grid 1:1:0:0:1:1
+
+# Make floating window fill left-half of screen
+shift + alt - left : yabai -m window --grid 1:2:0:0:1:1
+
+# Make floating window fill right-half of screen
+shift + alt - right : yabai -m window --grid 1:2:1:0:1:1
+
+################################################################################
+# 4. SPACE NAVIGATION
+################################################################################
+
+# Move to space based on number
+# NOTE ctrl - left and ctrl - right are default workspace hotkeys
+# ctrl + cmd - left : yabai -m window --space next || yabai -m space --focus next
+# ctrl + cmd - right : yabai -m window --space prev || yabai -m space --focus prev
+
+# ctrl + cmd - left : (yabai -m window --space prev && yabai -m space --focus prev; hs -c "hs.alert.show('Moved Window Previous Space')") || (yabai -m window --space last && yabai -m space --focus last; hs -c "hs.alert.show('Moved Window Last Space')")
+# ctrl + cmd - right : (yabai -m window --space next && yabai -m space --focus next; hs -c "hs.alert.show('Moved Window Next Space')") || (yabai -m window --space first && yabai -m space --focus first; hs -c "hs.alert.show('Moved Window First Space')")
+
+# Move current window between adjacent spaces and follow focus (per yabai Commands wiki)
+ctrl + cmd - left : yabai -m window --space prev --focus || yabai -m window --space last --focus
+ctrl + cmd - right : yabai -m window --space next --focus || yabai -m window --space first --focus
+
+# Down: move focused window to nearest empty space (any direction) + follow. Uses ~/.config/yabai/orbit.sh.
+ctrl + cmd - down : ~/.config/yabai/orbit.sh breathe
+
+# Up: throw focused window to the other display + follow. No-op silently if only one display attached.
+ctrl + cmd - up : yabai -m window --display recent --focus
+
+# Move to previous/next space with wraparound
+ctrl + cmd - j : yabai -m space --focus prev || yabai -m space --focus last
+ctrl + cmd - k : yabai -m space --focus next || yabai -m space --focus first
+
+# Navigate spaces with up/down
+# NOTE: Disabled - using ctrl-left/right instead
+# ctrl - up : yabai -m space --focus prev || yabai -m space --focus last
+# ctrl - down : yabai -m space --focus next || yabai -m space --focus first
+
+# Reorder spaces - move entire space left/right with wraparound
+ctrl + alt - left : idx=$(yabai -m query --spaces --space | jq '.index'); \
+    if [ "$idx" -eq 1 ]; then yabai -m space --move last; else yabai -m space --move prev; fi; \
+    sketchybar -m --trigger space_change
+ctrl + alt - right : idx=$(yabai -m query --spaces --space | jq '.index'); \
+    last=$(yabai -m query --spaces | jq 'map(select(."is-native-fullscreen" == false)) | last | .index'); \
+    if [ "$idx" -eq "$last" ]; then yabai -m space --move first; else yabai -m space --move next; fi; \
+    sketchybar -m --trigger space_change
+
+# Navigate spaces with wraparound (replaces macOS default ctrl-left/right)
+ctrl - left : yabai -m space --focus prev || yabai -m space --focus last
+ctrl - right : yabai -m space --focus next || yabai -m space --focus first
+# Reorder spaces across the bar
+# ctrl + shift - left : (yabai -m space --move prev && sketchybar -m --trigger space_change; hs -c "hs.alert.show('Moved Space Left')") || (yabai -m space --swap last && sketchybar -m --trigger space_change; hs -c "hs.alert.show('Swapped With Last Space')")
+# ctrl + shift - right : (yabai -m space --move next && sketchybar -m --trigger space_change; hs -c "hs.alert.show('Moved Space Right')") || (yabai -m space --swap first && sketchybar -m --trigger space_change; hs -c "hs.alert.show('Swapped With First Space')")
+
+# Reorder spaces - physically move current space left/right in Mission Control (vim keys)
+# NOTE: Disabled - using ctrl+alt+arrow instead (see above)
+# ctrl + cmd - h : yabai -m space --move prev && sketchybar -m --trigger space_change
+# ctrl + cmd - l : yabai -m space --move next && sketchybar -m --trigger space_change
+
+# Destroy/close current space (windows move to another space)
+# NOTE: yabai --destroy doesn't work on macOS 26 Tahoe - scripting addition not yet supported
+# See: https://github.com/koekeishiya/yabai/issues/2634
+# ctrl + cmd - w : yabai -m space --destroy && sketchybar -m --trigger space_change
+
+# AppleScript workaround (FAILED - screen flashes but doesn't close space)
+# Issue: Mission Control UI doesn't respond to cmd+w keyboard commands
+# Spaces can only be closed via mouse hover + click X button in Mission Control
+# ctrl + cmd - w : osascript -e 'tell application "System Events"' \
+#                           -e 'key code 160' \
+#                           -e 'delay 0.5' \
+#                           -e 'keystroke "w" using command down' \
+#                           -e 'end tell' && \
+#                  sketchybar -m --trigger space_change
+
+# Focus the most recently used space
+# ctrl + cmd - tab : yabai -m space --focus recent
+ctrl + cmd - tab : yabai -m display --focus recent
+
+# Create new space at end of list and jump to it
+ctrl + cmd - n : yabai -m space --create && \
+	index="$(yabai -m query --spaces --display | jq -r 'map(select(."is-native-fullscreen" == false))[-1].index')" && \
+	yabai -m space --focus "${index}" && \
+	sketchybar -m --trigger space_change
+
+# Move current window to next empty space (0 windows) and follow it on current display
+# If no empty space exists, creates a new one at the end
+# Excludes current space from search (will be empty after window moves anyway)
+ctrl + cmd - x : current="$(yabai -m query --spaces | jq -r 'map(select(.["has-focus"] == true)) | .[0].index')" && \
+	empty_space="$(yabai -m query --spaces --display | jq -r --arg cur "$current" 'map(select(."is-native-fullscreen" == false and ."windows" == [] and (.index | tostring) != $cur)) | .[0].index // empty')" && \
+	if [ -z "$empty_space" ]; then \
+		yabai -m space --create && \
+		empty_space="$(yabai -m query --spaces --display | jq -r 'map(select(."is-native-fullscreen" == false))[-1].index')"; \
+	fi && \
+	yabai -m window --space "${empty_space}" && \
+	yabai -m space --focus "${empty_space}" && \
+	sketchybar -m --trigger space_change
+
+# OLD create space bindings (commented)
+# ctrl + alt - t : yabai -m space --create && focus it
+# ctrl + shift - t : yabai -m space --create && move window there
+
+# Move window to previous/next space and follow with focus
+# cmd + ctrl - j : yabai -m window --space prev || yabai -m window --space last sleep 0.3 yabai -m space --focus prev || yabai -m space --focus last
+# cmd + ctrl - k : yabai -m window --space next || yabai -m window --space first sleep 0.3 yabai -m space --focus next || yabai -m space --focus first
+
+################################################################################
+# 5. DISPLAY MANAGEMENT
+################################################################################
+
+# Switch to most recently used display (monitor)
+# TODO This should be ctrl + cmd - tab, not x (conflicts with move-to-empty-space binding)
+# ctrl + alt - x : yabai -m display --focus recent
+# ctrl + cmd - x : yabai -m display --focus recent
+
+# Directional display focus (commented - use ctrl+cmd-x for quick switching)
+# shift + ctrl - j : yabai -m display --focus west
+# shift + ctrl - h : yabai -m display --focus east
+
+# Focus specific display numbers (commented - use ctrl+cmd-x for quick switching)
+# ctrl + alt - 1 : yabai -m display --focus 1
+# ctrl + alt - 2 : yabai -m display --focus 2
+# ctrl + alt - 3 : yabai -m display --focus 3
+
+# Previous/Next display (commented - use ctrl+cmd-x for quick switching)
+# ctrl + alt - j : yabai -m display --focus prev
+# ctrl + alt - k : yabai -m display --focus next
+
+# Move window to display (commented)
+# ctrl + cmd - h : yabai -m window --display prev
+# ctrl + cmd - l : yabai -m window --display next
+
+################################################################################
+# 6. APPLICATION-SPECIFIC CONTROLS
+################################################################################
+
+# Fix MacOS screenshot interactions
+# cmd + shift - 4 - chunkc border::clear >:
+
+################################################################################
+# 7. RAYCAST DEEPLINKS (modifier: ctrl + alt)
+#    Home row: a=apps  s=tmux  d=tabs  f=(free)
+################################################################################
+
+# a — Switch Windows (all open windows across all apps and spaces)
+ctrl + alt - a : open 'raycast://extensions/raycast/navigation/switch-windows'
+
+# s — tmux window picker (search by name, e.g. "claude (~/.alfred)")
+ctrl + alt - s : open 'raycast://extensions/louishuyng/tmux-sessioner/manage_tmux_windows'
+
+# d — Search Safari tabs (find and jump to any open tab)
+ctrl + alt - d : open 'raycast://extensions/koinzhang/browser-tabs/index'
+
+# f — Search Files (Spotlight-powered file search)
+ctrl + alt - f : open 'raycast://extensions/raycast/file-search/search-files'
+
+# v — Clipboard history
+ctrl + alt - v : open 'raycast://extensions/raycast/clipboard-history/clipboard-history'
+
+# Confetti (-g = background, no UI needed)
+ctrl + alt - 8 : open -g 'raycast://confetti'
+
+################################################################################
+# 8. SYSTEM (modifier: ctrl + alt)
+################################################################################
+
+# u — Fast User Switch (login window without logout; eve's daemons keep running)
+ctrl + alt - u : /System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resources/CGSession -suspend

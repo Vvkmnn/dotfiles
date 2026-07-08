@@ -390,3 +390,26 @@ echo "yabai configuration loaded.."
   sketchybar --remove space.$YABAI_SPACE_ID
   sketchybar --trigger space_change
 '
+
+################################################################################
+# 6. DEBUG LOGGING (append-only, comment block out to disable)
+################################################################################
+# Every meaningful yabai event is timestamped and appended to
+#   ~/.local/state/yabai/debug.log
+# via the tiny logger at ~/.config/yabai/debug-log.sh.
+# Noisy events (window_focused, application_activated) are intentionally omitted.
+# Read with:  tail -f ~/.local/state/yabai/debug.log
+################################################################################
+
+/opt/homebrew/bin/yabai -m signal --add event=space_changed          action='$HOME/.config/yabai/debug-log.sh space_changed          "now=$YABAI_SPACE_ID from_recent=$YABAI_RECENT_SPACE_ID"'
+/opt/homebrew/bin/yabai -m signal --add event=window_created         action='$HOME/.config/yabai/debug-log.sh window_created         "id=$YABAI_WINDOW_ID"'
+/opt/homebrew/bin/yabai -m signal --add event=window_destroyed       action='$HOME/.config/yabai/debug-log.sh window_destroyed       "id=$YABAI_WINDOW_ID"'
+/opt/homebrew/bin/yabai -m signal --add event=window_moved           action='$HOME/.config/yabai/debug-log.sh window_moved           "id=$YABAI_WINDOW_ID"'
+/opt/homebrew/bin/yabai -m signal --add event=application_launched   action='$HOME/.config/yabai/debug-log.sh application_launched   "pid=$YABAI_PROCESS_ID"'
+/opt/homebrew/bin/yabai -m signal --add event=application_terminated action='$HOME/.config/yabai/debug-log.sh application_terminated "pid=$YABAI_PROCESS_ID"'
+/opt/homebrew/bin/yabai -m signal --add event=display_added          action='$HOME/.config/yabai/debug-log.sh display_added          "display=$YABAI_DISPLAY_ID"'
+/opt/homebrew/bin/yabai -m signal --add event=display_removed        action='$HOME/.config/yabai/debug-log.sh display_removed        "display=$YABAI_DISPLAY_ID"'
+/opt/homebrew/bin/yabai -m signal --add event=display_changed        action='$HOME/.config/yabai/debug-log.sh display_changed        "display=$YABAI_DISPLAY_ID recent=$YABAI_RECENT_DISPLAY_ID"'
+/opt/homebrew/bin/yabai -m signal --add event=space_created          action='$HOME/.config/yabai/debug-log.sh space_created          "id=$YABAI_SPACE_ID"'
+/opt/homebrew/bin/yabai -m signal --add event=mission_control_enter  action='$HOME/.config/yabai/debug-log.sh mission_control_enter  ""'
+/opt/homebrew/bin/yabai -m signal --add event=mission_control_exit   action='$HOME/.config/yabai/debug-log.sh mission_control_exit   ""'
