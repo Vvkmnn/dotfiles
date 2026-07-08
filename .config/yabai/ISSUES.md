@@ -57,3 +57,47 @@ yabai -m query --windows | jq 'map({id, app, space, sticky: ."is-sticky", floati
 
 `~/.claude/plans/this-is-aprt-of-sparkling-charm.md` — item ⑥ (empty-space diagnose) is
 the meta-tracker for this class of symptom. This file is the concrete evidence log.
+
+---
+
+## `ctrl+cmd+0` silently fails — brew tap trust file XDG split
+
+**Symptom.** Bind at `~/.config/skhd/skhdrc:26` (`brew services restart sketchybar && yabai
+--restart-service && skhd --restart-service`) does nothing visible. Same command works
+perfectly in an interactive shell.
+
+**Root cause.** From `brew trust --help`:
+
+> Trusted entries are stored in `${XDG_CONFIG_HOME}/homebrew/trust.json` if
+> `$XDG_CONFIG_HOME` is set **or `~/.homebrew/trust.json` otherwise.**
+
+Interactive zsh has `XDG_CONFIG_HOME=/Users/v/.config`, so `brew trust felixkratz/formulae`
+wrote to `~/.config/homebrew/trust.json`. skhd's launchd environment does NOT export
+`XDG_CONFIG_HOME` → brew reads from `~/.homebrew/trust.json` → file doesn't exist → tap
+refused → whole `&&`-chain short-circuits silently.
+
+Reproduce:
+```sh
+env -i HOME="$HOME" USER="$USER" PATH=/opt/homebrew/bin:/usr/bin:/bin \
+    brew services restart sketchybar
+# Error: Refusing to load formula felixkratz/formulae/sketchybar from untrusted tap
+```
+
+**Fix (applied).** Symlink so both env classes find the same trust data:
+```sh
+mkdir -p ~/.homebrew
+ln -sfn ~/.config/homebrew/trust.json ~/.homebrew/trust.json
+```
+
+Track the symlink in dotfiles so it survives fresh-machine bootstrap.
+
+**Alternative** (not chosen). Rewrite the bind to skip brew entirely:
+```
+ctrl + cmd - 0 : launchctl kickstart -k gui/$UID/homebrew.mxcl.sketchybar && ...
+```
+Simpler but couples to the LaunchAgent label; also means future brew workflows that touch
+this bind hit the same wall.
+
+**Prevention.** Any time you run `brew trust ...` from an interactive shell, the write goes
+to the XDG path; the fallback path stays empty. If the symlink ever breaks (or on a fresh
+machine), re-run this line. Consider adding to `~/.setup/` bootstrap.
