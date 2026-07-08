@@ -282,13 +282,12 @@
                         ]
                     },
                     {
-                        "description": "Right Option: tmux prefix (Ctrl+A) — disabled, toggle enabled:true to activate",
+                        "description": "Right Option: tmux prefix (Ctrl+A) — disabled, awkward thumb reach on laptop; explore alternatives",
                         "enabled": false,
                         "manipulators": [
                             {
                                 "from": {
-                                    "key_code": "right_option",
-                                    "modifiers": { "optional": ["any"] }
+                                    "key_code": "right_option"
                                 },
                                 "to": [
                                     {
@@ -298,6 +297,33 @@
                                     }
                                 ],
                                 "type": "basic"
+                            }
+                        ]
+                    },
+                    {
+                        "description": "Backtick: (disabled) — was tmux prefix. Replaced by Ghostty keybind Cmd+; sending C-a.",
+                        "enabled": false,
+                        "manipulators": [
+                            {
+                                "type": "basic",
+                                "from": {
+                                    "key_code": "grave_accent_and_tilde",
+                                    "modifiers": { "mandatory": ["option"] }
+                                },
+                                "to": [
+                                    { "key_code": "grave_accent_and_tilde" }
+                                ]
+                            },
+                            {
+                                "type": "basic",
+                                "from": { "key_code": "grave_accent_and_tilde" },
+                                "to": [
+                                    {
+                                        "key_code": "a",
+                                        "modifiers": ["left_control"],
+                                        "repeat": false
+                                    }
+                                ]
                             }
                         ]
                     },
@@ -355,7 +381,7 @@
                         ]
                     },
                     {
-                        "description": "Caps Lock -> Control+Shift, Caps Lock -> Escape (if held alone for > 500 ms)",
+                        "description": "Caps Lock → Ctrl (hold) / Escape (tap alone within 150ms — tightened from default 1000ms to reduce leak during fast C-a sequences)",
                         "manipulators": [
                             {
                                 "from": {
@@ -369,6 +395,9 @@
                                         "key_code": "escape"
                                     }
                                 ],
+                                "parameters": {
+                                    "basic.to_if_alone_timeout_milliseconds": 150
+                                },
                                 "type": "basic"
                             }
                         ]
