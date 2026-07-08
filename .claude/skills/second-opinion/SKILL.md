@@ -75,28 +75,35 @@ A second opinion is a cross-check, not an oracle. After Codex responds:
 
 If Codex errors or is unavailable, say so plainly and proceed with your own review — never fabricate its verdict.
 
-## The model panel — best of each provider via ONE gateway (OpenRouter + `llm`)
+## The model panel — best of each provider, all $0-marginal on subs already held
 
-For a real cross-check across *different minds* (not just Codex), fan out through OpenRouter — **one key = every provider**, async-safe (no codex TTY-hang), fleet-synced. IDs verified live 2026-07-08; they rotate — the weekly cloud audit re-checks them.
+Principle: **maximize what the owner already pays for; never buy per-token what a subscription covers.** Three engines:
+- **Claude** — the harness (this session). We ARE this; not in the panel.
+- **OpenAI → codex-sub** — `codex exec --model gpt-5.5` uses the owner's ChatGPT **Plus** subscription (flat-rate, $0 marginal). This is THE OpenAI lens. **Do NOT route OpenAI through OpenRouter** (`openai/*` there is per-token = paying twice).
+- **Everyone else → OpenRouter `llm`** — one key, async-safe, fleet-synced. Free models need no balance; non-OpenAI *flagships* are "later, when he funds credits" (no sub for them yet).
 
-| Provider | Model ID (via `openrouter/…`) | Tier |
+| Provider | How | Tier |
 |---|---|---|
-| NVIDIA | `nvidia/nemotron-3-ultra-550b-a55b:free` | **free — default** |
-| Alibaba | `qwen/qwen3-coder:free` | **free — default** (code) |
-| DeepSeek | `deepseek/deepseek-v4-pro` | cheap-paid (~$0.003/q) |
-| OpenAI | `openai/gpt-5.5-pro` | flagship — **needs credits** |
-| Google | `google/gemini-3.1-pro-preview` | flagship — enable later |
-| xAI | `x-ai/grok-4.3` | flagship — enable later |
+| OpenAI | `codex exec --model gpt-5.5` (Plus sub) | **primary, $0, on now** |
+| NVIDIA | `openrouter/nvidia/nemotron-3-ultra-550b-a55b:free` | **free — default** |
+| Alibaba | `openrouter/qwen/qwen3-coder:free` | **free — default** (code) |
+| Google | `openrouter/google/gemini-3.1-pro-preview` | later (~$0.03/q, needs credits) |
+| xAI | `openrouter/x-ai/grok-4.3` | later (~$0.008/q, needs credits) |
+| DeepSeek | `openrouter/deepseek/deepseek-v4-pro` | optional (~$0.003/q) |
 
-Claude is excluded (we ARE Claude). **Free models work now** (no balance needed). **Paid flagships need OpenRouter credits + the key's spend-cap raised** — until then they 403 "Key limit exceeded" (that cap is the owner's no-surprise-bills guardrail; funding is a one-time owner action at openrouter.ai/credits).
+**Today's complete $0 panel = codex-sub (OpenAI) + free OpenRouter (nemotron/qwen). No OpenRouter credits needed.** The paid rows 403 "Key limit exceeded" until the owner funds credits + raises the key cap (a one-time owner action at openrouter.ai/credits) — reserve them for when he wants Gemini/Grok specifically. IDs verified live 2026-07-08; they rotate — the weekly cloud audit re-checks them.
 
-**Fan-out (parallel, then synthesize):** fire the enabled panel models at once, don't serialize —
+**Fan-out (parallel, then synthesize)** — fire codex (OpenAI) + free OpenRouter at once. Use `codex -o` for a CLEAN answer (plain `>` captures 43KB of TUI trace — verified 2026-07-08):
 ```bash
-Q="Second opinion — <focus>. Blunt, real problems only, <200 words."
-for m in nvidia/nemotron-3-ultra-550b-a55b:free qwen/qwen3-coder:free openai/gpt-5.5-pro; do
+Q="Second opinion — <focus>. Blunt, real problems only, <150 words."
+codex exec --skip-git-repo-check -o /tmp/op_codex.txt "$Q" >/dev/null 2>&1 &   # OpenAI, Plus sub, clean via -o
+for m in nvidia/nemotron-3-ultra-550b-a55b:free qwen/qwen3-coder:free; do
   llm -m "openrouter/$m" "$Q" > "/tmp/op_${m//\//_}.txt" 2>&1 &
-done; wait; for f in /tmp/op_*.txt; do echo "── $f"; cat "$f"; done
+done; wait; for f in /tmp/op_*.txt; do echo "── $f"; cat "$f"; done; rm -f /tmp/op_*.txt
 ```
+`codex exec` via `&` inside a FOREGROUND Bash call works (verified); the #19945/#20919 hang only bites `run_in_background` (whole call detached). codex + llm concurrently = two subs at once.
+
+**RELIABILITY & PRIVACY (dogfooded 2026-07-08 — the honest truth GPT-5.5 flagged):** treating "$0 marginal" as a reliable substrate is the trap. **codex-sub is the ONE dependable lens** (but flat-rate ≠ unlimited — Plus throttles). **Free OpenRouter models are BEST-EFFORT** — in a real run BOTH nemotron + qwen 429'd at once; expect 1-2 of N to fail, note them, don't retry the same one. **PRIVACY: never send proprietary/sensitive code to free third-party models** (nemotron/qwen/etc. — unknown retention). And **synthesize, don't vote-count** — weigh the reasoning, a 2-1 "majority" of weaker models doesn't beat one strong dissent.
 Then **synthesize** as with Codex: agreements · real dissents (with your judgment) · net call. A model that 403s (no credits) or 429s (free throttle) → note it and move on; never fabricate a verdict.
 
 **COST GUARDRAIL — default is $0, never auto-spend.** Use ONLY: **Codex** (`codex exec`, the owner's ChatGPT/Codex *subscription* via the local CLI — costs no usage credits, no API billing) + **free OpenRouter models** (`:free`). **NEVER fire a paid flagship** (`gpt-5.5-pro`, `gemini-3.1-pro`, `grok-4.3`) unless the owner EXPLICITLY asks for it AND has funded OpenRouter credits (until then they 403). These are shell-outs — they spend **no Claude/Anthropic usage credits** either. A full flagship fan-out is ~$0.10–0.20; the default free path is $0.
