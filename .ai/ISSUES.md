@@ -516,3 +516,38 @@ Our approach was confirmed correct by web research:
   `push origin v-macos-mini` succeeded over SSH (Touch-ID, no token). The only per-machine
   manual step remaining is the 1Password agent toggle — call it out when deferring P15 so
   the owner isn't surprised at first push.
+## Fleet dotfiles unification + git-auth gotchas — 2026-07-11 (vBookNeo/Neo)
+
+Captured while surfacing Neo's work for the fleet union (mini is the unifier, builds on
+`v-macos`; Neo manages its own `v-macos-neo`). The "what bit us and the fix" log.
+
+- **Bare repo shipped NO fetch refspec → `origin/<branch>` refs LIED.** `git --git-dir` bare
+  clones can lack `remote.origin.fetch`, so cached `origin/*` never updates and divergence math
+  is wrong. Fix: `git config remote.origin.fetch '+refs/heads/*:refs/remotes/origin/*'` then
+  `fetch`. Until then trust `gh api repos/Vvkmnn/dotfiles/git/refs/heads` (or `ls-remote`) for
+  real tips — never `origin/<branch>`.
+- **1Password SSH agent locked = every SSH git op fails, and `ls-remote` HANGS.** `~/.ssh/config`
+  `Host * IdentityAgent …/1password/t/agent.sock` routes all keys through 1Password; when the app
+  is locked (e.g. driving Neo remotely over mosh from the Air — no GUI to unlock it) signing
+  fails ("communication with agent failed") and `ls-remote` blocks until timeout. No plain
+  `~/.ssh/*.pub` fallback exists. **Workaround that works — push/fetch over HTTPS via gh:**
+  `git -c credential.helper='!gh auth git-credential' -c remote.origin.pushurl=https://github.com/Vvkmnn/dotfiles.git push origin <branch>`
+  (one-shot; nothing persisted; gh is keyring-authed with `repo` scope). A future plain `push`
+  reverts to SSH and fails again until 1Password is unlocked on the machine itself.
+- **zsh does NOT word-split unquoted vars.** `DG="git --git-dir=…"; $DG status` fails with "no
+  such file or directory" (whole string treated as one command). Use a function
+  `D(){ /usr/bin/git --git-dir="$HOME/.dotfiles" --work-tree="$HOME" "$@"; }` or export
+  `GIT_DIR`/`GIT_WORK_TREE` and call plain `git`.
+- **borders turned OFF fleet-wide.** Commented out (NOT deleted) in `~/.ai/setup` — install
+  line, service-start loop, doctor health-check — with a short why-note; `.config/borders/
+  bordersrc` kept tracked so revival is a one-line uncomment. Neo runtime: LaunchAgent unloaded
+  + process killed. CAVEAT: `brew services stop borders` is REFUSED (untrusted tap) — use
+  `launchctl unload ~/Library/LaunchAgents/homebrew.mxcl.borders.plist`; the plist persists so
+  borders may relaunch at login → `brew uninstall borders` removes binary + plist for good.
+  mini had already dropped borders (`5e4d0e5b`); the union carries none.
+- **Fleet union state.** origin/v-macos is STALE (`07dff110`); the real consolidation lives on
+  `v-macos-neo` (~159 commits ahead — Neo was de-facto integrator). Union merge flags:
+  `settings.json` = 3-way keep-both (our plugin roster + voice AND fleet hooks/perms/model);
+  `.functions` = dedupe vs macbook's fleet-SSH commits; DROP the cargo-artifacts +
+  marketplace-timestamp commits. `known_marketplaces.json` churns its `lastUpdated` timestamps
+  constantly — leave it uncommitted (noise).
