@@ -229,11 +229,21 @@ phase_packages() {
   # Mop-up pass: re-run bundle once to catch transient parallel-lock failures
   # (e.g. fd/lf losing a race for cmake/go's Cellar lock). Idempotent — skips installed.
   brew bundle install --file=<(_brewfile) >/dev/null 2>&1 && ok "mop-up pass clean" || true
-  # Materialize mise-managed runtimes (python · node · cmake) from the tracked
+  # Materialize mise-managed runtimes (python · node · cmake · rust) from the tracked
   # ~/.config/mise/config.toml. brew installs `mise` but never populates it — without
   # this, python3 is missing → the shell warns every init and p10k instant prompt breaks.
+  # rust (core:rust) also sets the rustup default toolchain → `cargo` works afterward.
   if command -v mise >/dev/null 2>&1; then
-    mise install -y >/dev/null 2>&1 && ok "mise tools installed (python · node · cmake)" || warn "mise install had issues — run 'mise install'"
+    mise install -y >/dev/null 2>&1 && ok "mise tools installed (python · node · cmake · rust)" || warn "mise install had issues — run 'mise install'"
+  fi
+
+  # cargo-installed tools (not in Homebrew). Needs the rust toolchain above; --locked is
+  # idempotent (no-op when current). Future cargo tools just join the `for` list.
+  if command -v cargo >/dev/null 2>&1; then
+    local c
+    for c in terminal_gameboy; do
+      cargo install --locked "$c" >/dev/null 2>&1 && ok "cargo: $c" || warn "cargo install $c failed"
+    done
   fi
   # Surface any sudo .pkg casks that still didn't install — never a silent buried
   # failure. In a no-TTY run, .pkg sudo can't complete; print the exact command to
@@ -416,6 +426,11 @@ phase_macos() {
   defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
   chflags nohidden "$HOME/Library" 2>/dev/null || true
   ok "finder"
+  # iCloud Drive reach — ~/icloud symlink so `cd icloud` / `z icloud` work (logical
+  # path contains "icloud" → zoxide indexes it; raw CloudDocs path never matches).
+  [ -L "$HOME/icloud" ] || ln -s "$HOME/Library/Mobile Documents/com~apple~CloudDocs" "$HOME/icloud"
+  command -v zoxide >/dev/null && zoxide add "$HOME/icloud" 2>/dev/null
+  ok "icloud reach (~/icloud)"
   # Dock — small, autohide, no clutter, WM-friendly
   defaults write com.apple.dock tilesize -int 36
   defaults write com.apple.dock magnification -bool true
