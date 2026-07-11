@@ -1,6 +1,7 @@
 ## Custom
 .emacs.d/.local/*
 */tmux/plugins/*
+/icloud
 
 ## From https://github.com/github/gitignore
 
