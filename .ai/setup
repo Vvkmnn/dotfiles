@@ -155,7 +155,7 @@ brew "supabase/tap/supabase"
 brew "koekeishiya/formulae/yabai"
 brew "koekeishiya/formulae/skhd"
 brew "felixkratz/formulae/sketchybar"
-# brew "felixkratz/formulae/borders"   # removed 2026-07-06: fleet no longer uses window borders
+# brew "felixkratz/formulae/borders"   # off fleet-wide 2026-07-11 — sketchybar signals focus; borders were noise
 brew "crissnb/dynamicisland/dynamicislandsketchybar"
 brew "acsandmann/tap/menuanywhere"
 brew "macmon"                                    # Apple Silicon power/temp/cpu/gpu telemetry — sketchybar bar-daemon pipes it (helpers/bar-daemon.swift:917)
@@ -292,7 +292,7 @@ phase_services() {
     fi
   fi
   local svc
-  for svc in sketchybar menuanywhere; do   # borders removed 2026-07-06 (fleet no longer uses it)
+  for svc in sketchybar menuanywhere; do   # borders off (see _brewfile)
     command -v "$svc" >/dev/null 2>&1 && { brew services start "$svc" >/dev/null 2>&1; ok "$svc"; }
   done
   if [ -x "$HOME/.config/tmux/plugins/tpm/bin/install_plugins" ]; then
