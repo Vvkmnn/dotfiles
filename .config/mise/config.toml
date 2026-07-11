@@ -2,6 +2,7 @@
 python = "3.13"
 node = "lts"
 cmake = "latest"
+rust = "stable"
 
 [settings]
 python.uv_venv_auto = true
