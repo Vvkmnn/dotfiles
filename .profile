@@ -136,10 +136,12 @@
       export CPATH=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include
 
       # ───────────────────────────────────────────────────────────────── go ──
-      # NOTE: GOBIN=~/.local/bin (already on PATH via ~/.minimal)
+      # Clean-home pattern: ~/Local is for WORK/projects (visible); toolchain caches stay
+      # hidden in $HOME (like .cargo/.npm). Go's GOPATH (module cache + compiled bins) → ~/.go.
       export GOROOT="$(brew --prefix go 2>/dev/null)/libexec"
-      export GOPATH="$HOME/.local/share/go"
-      export GOBIN="$HOME/.local/bin"
+      export GOPATH="$HOME/.go"
+      export GOBIN="$HOME/.go/bin"
+      export PATH="$GOBIN:$PATH"
 
       # ────────────────────────────────────────────────────────────── python ──
       # uv's standalone installer drops ~/.local/bin/env; brew-managed uv does not.
