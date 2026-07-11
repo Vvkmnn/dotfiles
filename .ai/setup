@@ -4,7 +4,7 @@
 #   ~/.ai/setup            run all: packages → fonts → services → macos → gate → doctor
 #   ~/.ai/setup packages   brew bundle (inline list, tap-trust, one sudo, Xcode 2nd pass)
 #   ~/.ai/setup fonts      install vendored SFMono Nerd Font → ~/Library/Fonts
-#   ~/.ai/setup services   yabai/skhd/sketchybar/borders/menuanywhere + tmux plugins
+#   ~/.ai/setup services   yabai/skhd/sketchybar/menuanywhere + tmux plugins
 #   ~/.ai/setup xcode      headless Xcode via xcodes (Apple ID from 1Password) — one 2FA code
 #   ~/.ai/setup macos      apply curated macOS defaults (sudo-free)
 #   ~/.ai/setup gate       open the manual TCC panes + checklist
@@ -133,7 +133,7 @@ brew "supabase/tap/supabase"
 brew "koekeishiya/formulae/yabai"
 brew "koekeishiya/formulae/skhd"
 brew "felixkratz/formulae/sketchybar"
-brew "felixkratz/formulae/borders"
+# brew "felixkratz/formulae/borders"   # off fleet-wide 2026-07-11 — sketchybar signals focus; borders were noise
 brew "crissnb/dynamicisland/dynamicislandsketchybar"
 brew "acsandmann/tap/menuanywhere"
 brew "macmon"                                    # Apple Silicon power/temp/cpu/gpu telemetry — sketchybar bar-daemon pipes it (helpers/bar-daemon.swift:917)
@@ -247,7 +247,7 @@ phase_services() {
     fi
   fi
   local svc
-  for svc in sketchybar borders menuanywhere; do
+  for svc in sketchybar menuanywhere; do   # borders off (see _brewfile)
     command -v "$svc" >/dev/null 2>&1 && { brew services start "$svc" >/dev/null 2>&1; ok "$svc"; }
   done
   if [ -x "$HOME/.config/tmux/plugins/tpm/bin/install_plugins" ]; then
@@ -416,7 +416,7 @@ phase_doctor() {
   say "doctor — did setup work?"
   brew bundle check --file=<(_brewfile) >/dev/null 2>&1 && ok "all packages installed" || warn "packages incomplete — run 'setup packages'"
   local p
-  for p in yabai skhd sketchybar borders; do pgrep -x "$p" >/dev/null && ok "$p running" || warn "$p not running (grant Accessibility, then 'setup services')"; done
+  for p in yabai skhd sketchybar; do pgrep -x "$p" >/dev/null && ok "$p running" || warn "$p not running (grant Accessibility, then 'setup services')"; done
   if ls "$HOME/Library/Fonts/"SFMono*Nerd*Font* >/dev/null 2>&1; then ok "SFMono Nerd Font installed"; else warn "SFMono Nerd Font missing — run 'setup fonts'"; fi
   local t miss=0
   for t in tmux nvim git gh mise uv node rg fzf jq; do command -v "$t" >/dev/null 2>&1 || { warn "missing: $t"; miss=1; }; done
@@ -435,7 +435,7 @@ setup — bring this Mac to fleet parity (self-contained).   ~/.ai/setup [phase]
   (none)     run all: packages → fonts → services → macos → gate → doctor
   packages   brew bundle (inline list, tap-trust, one sudo, Xcode 2nd pass)
   fonts      install vendored SFMono Nerd Font → ~/Library/Fonts
-  services   yabai/skhd/sketchybar/borders/menuanywhere + tmux plugins
+  services   yabai/skhd/sketchybar/menuanywhere + tmux plugins
   xcode      headless Xcode via xcodes (Apple ID from 1Password) — one 2FA code
   macos      apply curated macOS defaults (sudo-free)
   gate       open the manual TCC panes + checklist
