@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# JankyBorders — minimal Kanagawa Wave, matches sketchybarrc palette.
+# Read automatically by the Homebrew LaunchAgent (runs `borders` with no args).
+options=(
+	style=round
+	width=2.0
+	hidpi=on
+	active_color=0xffDCD7BA      # fujiWhite — same as bar $WHITE
+	inactive_color=0x4054546D    # sumiInk4 @ ~25% — faint, so focus brightens not pops
+	background_color=0x4D1F1F28  # sumiInk1 @ ~30% — subtle theme-bg wash
+)
+
+borders "${options[@]}"
