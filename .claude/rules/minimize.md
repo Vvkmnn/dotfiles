@@ -96,7 +96,7 @@ BAD: Write everything at once → hope it works
 **Add comments that answer:**
 - What does this do? (one-line purpose for functions/classes)
 - Why this approach? (decisions, trade-offs, alternatives rejected)
-- What broke before? (comment out failed code with explanation)
+- Why not the obvious alternative? (the constraint that rules it out — not "we tried X on date Y"; that history is the commit's job, see `code.md` no-edit-history-in-comments)
 - What else depends on this? (cross-file references with file:line)
 - What are the edge cases? (race conditions, timing, quirks)
 

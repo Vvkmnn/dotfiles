@@ -94,7 +94,8 @@ Converged practice across frontier coding tools (Cursor/Devin/Windsurf system pr
 
 - **Default is zero comments.** Add one only for: non-obvious complexity, a decision/trade-off (why this approach), or a footgun (race, timing, quirk)
 - **WHY, never WHAT.** A comment restating the next line is noise; self-documenting names carry the WHAT
-- **Verify every comment you write** — LLM-generated comments are wrong ~20% of the time (arXiv 2406.14836); a wrong comment is worse than none
+- **No edit-history in comments.** A comment documents why the code *is* this way, not what you just changed. Meta-tags describing the edit (`UPGRADE:`/`REVERT:`/`SHADOWED:`/`DISABLED:`, dated stamps like `(2026-07-11)`) belong in the commit (`.gitmessage` types) or CHANGELOG — git blame/`log -L` own the timeline. Keep the functional part (a reversibility/alternative note is fine: `# pane-only alternative: swap these 4 for the 4 below`); drop the tag+date shell. What stays out is edit-*narration*, not dates themselves — a date is welcome wherever it informs, written quiet and inline: *provenance* of a claim/measurement (`# ~3x speedup (benchmarked 2026-03)`, `# confirmed working 2026-07`), or an *as-of* freshness marker when no natural condition fits. When a note does have a natural shelf-life, prefer a self-invalidating **condition** (version/OS: `# no scripting-addition — broken on Tahoe`) over a date — it expires on its own. (House rule — follows from WHY-not-WHAT + git-owns-history, not a citable industry convention.)
+- **Verify every comment you write** — LLM-generated comments are wrong ~20% of the time (arXiv 2406.14836); a wrong comment is worse than none (empirically ~1.5× more bug-introducing when code and comment diverge — Wen et al., ICPC 2019)
 - **LSP docstrings are the contract, not the HOW**: purpose, params, return, raises — never implementation narration
 - **No unprompted doc files.** Never create README/DESIGN/NOTES files unless asked
 
@@ -112,6 +113,7 @@ Converged practice across frontier coding tools (Cursor/Devin/Windsurf system pr
 | Loops with accumulator mutation | map/filter/reduce pipelines |
 | Class with hidden state | Pure functions over plain data |
 | Comments explaining WHAT | Self-documenting names |
+| Edit-history/date-tags in comments (`REVERT (2026-…):`) | WHY-it-is in the comment, what-changed in the commit |
 | `let` / `var` everywhere | `const` / `val` / `final` default |
 | Swallowing errors silently | Fail loudly at point of failure |
 | Generic names (`data`, `tmp`, `val`) | Intent-revealing names scaled to scope |
