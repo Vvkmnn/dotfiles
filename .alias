@@ -152,6 +152,12 @@
   # alias wz!!='wezterm -n start -- bash --norc'
 # └────────────────────────────────────────────────────────────────────────────┘
 
+# ┌──────────────────────────────────────────────────────────────────── games ─┐
+  # terminal_gameboy from ~/Local/games — append a ROM name (relative names work):
+  #   gameboy "Legend of Zelda, The - Oracle of Ages (USA).gbc"
+  alias gameboy='cd ~/Local/games && terminal_gameboy'
+# └────────────────────────────────────────────────────────────────────────────┘
+
 # ┌─────────────────────────────────────────────────────────────── platform ───┐
   case "$(uname -s)" in
   Darwin)
