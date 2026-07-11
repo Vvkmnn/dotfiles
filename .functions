@@ -188,6 +188,177 @@
   }
 # └─────────────────────────────────────────────────────────────────────────────┘
 
+# ┌──────────────────────────────────────────────────────────────────── fleet ──┐
+  # Reach any fleet Mac by its real device name (resolved via Tailscale MagicDNS,
+  # so it works on the LAN or any network). Two v-verbs + two extras; no host map —
+  # the name is passed straight to mosh/ssh/open, MagicDNS resolves it.
+  #
+  #   vj vminim4        v[jump]: mosh into the mini's tmux in a fresh Ghostty window (terminal)
+  #   vw                v[wake]: keep THIS machine awake so its agents run while you travel
+  #   jv vminim4        screen-share the mini (first-party Screen Sharing, full GUI)
+  #   jc [host]         Claude + Remote Control (here, or start it on <host>)
+  # Bandwidth: jv screen (highest) · vj terminal (middle) · jc claude (lowest).
+
+  # _fleet_host <name> — resolve to a reachable form: prefer the bare name (Tailscale
+  # MagicDNS, works on any network), fall back to <name>.local (Bonjour, LAN). Lets you
+  # type `j vminim4` and have it work on the LAN today and over Tailscale later — no suffix.
+  _fleet_host() {
+    local h="$1"
+    case "$h" in mini) h=vminim4;; air) h=vbookairm3;; neo) h=vbookneoa18;; esac  # friendly → true hostname
+    if ping -c1 -t1 "$h" >/dev/null 2>&1; then print -- "$h"; return 0
+    elif ping -c1 -t1 "$h.local" >/dev/null 2>&1; then print -- "$h.local"; return 0
+    else print -- "$h"; return 1; fi   # unreachable: still print the name, signal via exit code
+  }
+
+  # vssh <host> — v[ssh]: open a FRESH Ghostty window that's a DIRECT client to THAT machine's
+  # tmux server, over mosh (auto-reconnects across sleep / wifi↔cellular / travel). Friendly names
+  # (mini/air/neo) resolve to true hostnames. PRE-FLIGHT reachability runs in THIS shell BEFORE
+  # opening a window, so an asleep/offline machine never spawns a dead one. Each vssh = a FRESH,
+  # auto-numbered session on the target. mosh's ssh gets ConnectTimeout so it fails fast.
+  vssh() {
+    local name="${1:?usage: vssh <host>   (e.g. vssh mini | vssh vminim4)}"
+    local G=$'\e[38;5;114m' Y=$'\e[38;5;179m' D=$'\e[2m' R=$'\e[0m'
+    printf "  ${D}reaching %s…${R}" "$name"
+    local host
+    if host=$(_fleet_host "$name"); then
+      printf "\r  ${G}●${R} %s ${D}up — connecting${R}              \n" "$name"
+    else
+      printf "\r  ${Y}○${R} %s ${D}offline — asleep or off (run \`vw\` on it, or wake it)${R}\n" "$name"
+      return 1
+    fi
+    open -na /Applications/Ghostty.app --args -e /bin/zsh -c \
+      "env -u TMUX -u TMUX_PANE mosh --ssh='ssh -o ConnectTimeout=4' --family=inet ${(q)host} -- tmux new-session"
+  }
+
+  # vremote <host> — jump visually: open first-party Screen Sharing (VNC) to a machine.
+  vremote() {
+    local name="${1:?usage: vremote <host>   (e.g. vremote mini | vremote neo)}"
+    local G=$'\e[38;5;114m' Y=$'\e[38;5;179m' D=$'\e[2m' R=$'\e[0m'
+    printf "  ${D}reaching %s…${R}" "$name"
+    local host
+    if host=$(_fleet_host "$name"); then
+      printf "\r  ${G}●${R} %s ${D}up — opening screen${R}              \n" "$name"
+    else
+      printf "\r  ${Y}○${R} %s ${D}offline — asleep or off (run \`vw\` on it, or wake it)${R}\n" "$name"
+      return 1
+    fi
+    open "vnc://${host}"
+  }
+
+  # vj <host> — v[jump]: open a FRESH Ghostty window that's a DIRECT client to THAT machine's
+  # tmux server, over mosh (auto-reconnects across sleep / wifi↔cellular / travel). No local
+  # tmux wraps it (`open -e` skips the autostart) → C-a / C-hjkl / prefix / finder all drive the
+  # remote, navigate all its windows+panes like you're sitting there. mosh (not ssh): tmux persists
+  # server-side and mosh silently resumes the link, so closing the lid mid-session just picks back
+  # up. `env -u TMUX` strips leaked tmux vars (no nesting). -A = attach-or-create persistent 'main'.
+  vj() {
+    local host; host=$(_fleet_host "${1:?usage: vj <host>   (e.g. vj vminim4 | vj vbookneo)}")
+    print -P "%F{cyan}→ ${host} (mosh · new window)%f"
+    open -na /Applications/Ghostty.app --args -e /bin/zsh -c \
+      "env -u TMUX -u TMUX_PANE mosh --family=inet ${(q)host} -- tmux new-session -A -s main"
+  }
+
+  # _vw_bar <pct> — 10-cell ASCII charge bar, e.g. [#######---].
+  _vw_bar() {
+    local p=${1:-0} n i out=""
+    (( n = p / 10 )); (( n > 10 )) && n=10
+    for (( i = 0; i < 10; i++ )); do (( i < n )) && out+="#" || out+="-"; done
+    print -r -- "$out"
+  }
+
+  # _vw_render <caffeinate-pid> — one ASCII frame of the vw dashboard (no sudo; pmset/tmux only).
+  _vw_render() {
+    local caff=$1 host=${HOST%%.*} batt=$(pmset -g batt)
+    local pct=$(print -r -- "$batt" | grep -oE '[0-9]+%' | head -1 | tr -d '%')
+    local ac=0; print -r -- "$batt" | grep -q 'AC Power' && ac=1
+    local lim=$(pmset -g therm 2>/dev/null | grep -oE 'CPU_Speed_Limit *= *[0-9]+' | grep -oE '[0-9]+$')
+    local hot=0; [[ -n "$lim" && "$lim" != 100 ]] && hot=1
+    local load=$(sysctl -n vm.loadavg 2>/dev/null | awk '{print $2}')
+    local up=$(uptime | sed -E 's/.*up +//; s/, *[0-9]+ users?.*//')
+    local ns=$(tmux list-sessions 2>/dev/null | grep -c .) nw=$(tmux list-windows -a 2>/dev/null | grep -c .)
+    local rule="  $(printf -- '-%.0s' {1..54})"
+    local pstate; (( ac )) && pstate="AC     " || pstate="battery"
+    local temp; (( hot )) && temp="%F{red}THROTTLING ${lim}%%%f" || temp="%F{green}ok%f"
+    print -n $'\e[H\e[2J'
+    print -P "  %B${host}%b · up ${up} · $(date +%H:%M)"
+    print -P "$rule"
+    print -P "  power   ${pstate} ${pct:-?}%% [$(_vw_bar ${pct:-0})]   temp ${temp}   load ${load:-?}"
+    if (( hot )); then
+      print -P "  wake    %F{red}HOT%f — throttling; open the lid or cut load (still holding awake)"
+    elif (( ac )); then
+      print -P "  wake    %F{green}AVAILABLE%f — held awake on AC (no battery cost)"
+    else
+      print -P "  wake    %F{yellow}AVAILABLE%f — held awake on battery (${pct:-?}%%, draining) — plug in to spare it"
+    fi
+    print -P "$rule"
+    print -P "  agents"
+    local agents=$(tmux list-windows -a -F '#{session_name}:#{window_index}|#{window_name}|#{pane_current_command}|#{@agent_status}' 2>/dev/null | grep -iE '\|[^|]*(claude|codex)')
+    if [[ -n "$agents" ]]; then
+      print -r -- "$agents" | while IFS='|' read -r loc name cmd st; do
+        local g
+        case "$st" in
+          busy)    g="%F{red}*%f";;
+          waiting) g="%F{yellow}?%f";;
+          done)    g="%F{green}=%f";;
+          *)       g="%F{8}.%f"; st="idle";;
+        esac
+        print -P "    ${g} ${(r:11:)name}%F{8}${loc}%f ${st}"
+      done
+    else
+      print -P "    %F{8}(no agents running)%f"
+    fi
+    print -P "$rule"
+    print -P "  tmux    ${ns} sessions · ${nw} windows          %F{8}^C to release%f"
+  }
+
+  # vw — v[wake]: keep THIS machine available for agentic work by any means, wasting the least
+  # energy possible. `caffeinate -im` holds the SYSTEM awake on AC *and* battery (lid open), but
+  # lets the display sleep (no -d = no wasted backlight). On battery it stays up and shows the
+  # drain honestly, so you decide when to plug in. Thermal-aware: warns if the fanless chassis
+  # throttles. SINGLE-INSTANCE: if a vw already holds this machine awake, it reports WHERE and
+  # exits — never competes. Live ASCII dashboard: power, thermal, agents, tmux. `disown`ed +
+  # EXIT-trap cleanup: never a stray "running job"; ^C/close -> caffeinate dies, no disk artifact.
+  vw() {
+    local existing=$(pgrep -f 'caffeinate -im' 2>/dev/null | head -1)
+    if [[ -n "$existing" ]]; then
+      local owner=$(ps -o ppid= -p "$existing" 2>/dev/null | tr -d ' ')
+      local loc=$(tmux list-panes -a -F '#{pane_pid} #{session_name}:#{window_index}.#{pane_index}' 2>/dev/null | awk -v p="$owner" '$1==p{print $2}')
+      print -P "  %F{yellow}${HOST%%.*} is already awake%f — vw is running in %F{cyan}${loc:-pid $owner}%f (caffeinate ${existing})."
+      print -P "  Go there, or ^C it to release. Exiting."
+      return 0
+    fi
+    # caffeinate -im: keep the SYSTEM awake for work on AC *and* battery (unlike -s = AC-only),
+    # but NOT -d — let the display sleep so we waste the least energy. `disown` so it's never a
+    # tracked shell job (no "you have running jobs" on exit).
+    caffeinate -im & local caff=$!; disown
+    # cleanup on ANY exit (Ctrl-C, error, normal) so caffeinate never leaks — even a render error
+    # that aborts the function fires this EXIT trap, killing it + restoring the cursor.
+    trap 'kill $caff 2>/dev/null; tput cnorm 2>/dev/null; print -P "\n  %F{cyan}${HOST%%.*} released%f"' EXIT
+    tput civis 2>/dev/null
+    while :; do _vw_render "$caff"; sleep 3; done
+  }
+
+  # jv <host> — jump visually: open first-party Screen Sharing to a machine.
+  jv() {
+    local host; host=$(_fleet_host "${1:?usage: jv <host>   (e.g. jv vminim4)}")
+    print -P "%F{cyan}→ ${host} (screen)%f"
+    open "vnc://${host}"
+  }
+
+  # jc [host] — Claude + Remote Control. No arg: start a Remote-Control Claude HERE
+  # (session auto-names by hostname → shows up in the iOS Claude app / claude.ai under
+  # your account, drivable from anywhere, no VPN). With a host: ssh in and start it there.
+  jc() {
+    (_claude_config_backup &) 2>/dev/null
+    if [[ -n "$1" && "$1" != -* ]]; then
+      local host; host=$(_fleet_host "$1"); shift
+      print -P "%F{cyan}→ ${host} (remote-control)%f"
+      exec ssh -t "$host" "tmux new-session -A -s claude -c \"\$HOME\" 'claude --remote-control $*'"
+    fi
+    claude --remote-control "$@"
+  }
+# └─────────────────────────────────────────────────────────────────────────────┘
+
 # ┌────────────────────────────────────────────────────────────────── update ──┐
   # update all: mas, brew, apt, fnm, uv, rustup, nvim
   update_all() {
@@ -268,21 +439,136 @@
 # └────────────────────────────────────────────────────────────────────────────┘
 
 # ┌────────────────────────────────────────────────────────────────── coffee ──┐
-  # prevent sleep with lid closed (Ctrl+C to restore)
+  # Stay awake with the lid closed (headless), reachable over Tailscale + mosh,
+  # with a live dashboard so you SEE the cost to the machine while it runs
+  # (drain rate, ETA to battery floor, wear, who's connected). Ctrl+C restores.
+  #
+  # Does NOT touch yabai/sketchybar or any of your services — only flips the one
+  # sleep setting the original `coffee` flipped. Telemetry is 100% sudo-free
+  # (pmset + one ioreg dump + loadavg), so the dashboard works fine over mosh.
+  #   COFFEE_FLOOR=NN  battery %% at which it auto-restores on battery (default 20)
+  #   COFFEE_BLANK=1   blank the internal panel now (sudo-free); else just close
+  #                    the lid to turn it off
+  #   NO_COLOR         monochrome
+  #   sudo footprint = identical to the original: one `pmset -a disablesleep 1/0`.
+  #   Run inside tmux for walk-away use so it survives a dropped mosh link.
   coffee() {
     [[ "$OSTYPE" != darwin* ]] && echo "macOS only" && return 1
+    local floor=${COFFEE_FLOOR:-20} start=$SECONDS start_pct=""
+    _COFFEE_OFF=0    # reset idempotent-restore guard (process-local, no disk state)
+    local B=$'\e[1m' D=$'\e[2m' R=$'\e[0m'
+    local G=$'\e[38;5;114m' Y=$'\e[38;5;179m' RD=$'\e[38;5;174m' CO=$'\e[38;5;173m' HR=$'\e[38;5;238m'
+    [[ -n "$NO_COLOR" ]] && { B= D= R= G= Y= RD= CO= HR=; }
+
+    # safety pre-flight: don't go headless already-doomed on battery
+    local pf_pct pf_ac
+    pf_pct=$(pmset -g batt | grep -Eo '[0-9]+%' | head -1 | tr -d '%')
+    pmset -g batt | grep -qi 'AC Power' && pf_ac=1 || pf_ac=0
+    if (( ! pf_ac )) && (( pf_pct <= floor )); then
+      echo -e "$(get_colored_face) Battery ${pf_pct}% ≤ floor ${floor}% on battery — plug in first."
+      return 1
+    fi
+
     echo -e "$(get_colored_face) Disabling lid sleep..."
-    sudo pmset -a disablesleep 1
-    echo -e "$(get_colored_face) Lid sleep disabled. Ctrl+C to restore."
-    trap '_coffee_restore' INT
-    cat
+
+    # stay awake — the SAME single sudo command the original `coffee` used, so any
+    # existing passwordless sudoers rule still matches. Only this needs root.
+    sudo pmset -a disablesleep 1 || return 1
+
+    # remote surface (verify, don't install)
+    local user tsip; user=$(whoami)
+    tsip=$(command -v tailscale >/dev/null && tailscale ip -4 2>/dev/null | head -1)
+    [[ -z "$tsip" ]] && tsip="<run: tailscale up>"
+    [[ -n "$COFFEE_BLANK" ]] && pmset displaysleepnow   # sudo-free immediate panel-off (opt-in)
+    echo -e "$(get_colored_face) Lid can close now. Reconnect: ${B}mosh ${user}@${tsip}${R}"
+    echo    "$(get_colored_face) Floor ${floor}% · close lid to blank panel · Ctrl+C to stop"
+
+    # live dashboard = the hold loop + battery-floor watchdog (11-line panel)
+    local stop=0 first=1 i=0 H=11
+    local steam=('˚ ' ' ˳' '° ' ' ‧')
+    local tsstate="up"; [[ "$tsip" == \<* ]] && tsstate="down"
+    # INT = Ctrl+C; HUP/TERM = mosh/ssh dropped WITHOUT tmux — restore while sudo
+    # creds are still cached (~5min) so the machine doesn't stay stuck awake.
+    trap 'stop=1' INT HUP TERM
+    tput civis 2>/dev/null
+
+    while (( ! stop )); do
+      local pct dir cyc health watts ncc volt load
+      pct=$(pmset -g batt | grep -Eo '[0-9]+%' | head -1 | tr -d '%')
+      [[ -z "$start_pct" ]] && start_pct=$pct
+      read cyc health watts dir ncc volt <<<"$(ioreg -rn AppleSmartBattery | awk -F'= ' '
+        /"CycleCount"/{c=$2} /"InstantAmperage"/{a=$2} /"Voltage"/{v=$2}
+        /"NominalChargeCapacity"/{n=$2} /"DesignCapacity"/{d=$2}
+        END{ if(a>2^63)a-=2^64;
+             printf "%d %.0f %.2f %s %d %d\n", c,(d?n/d*100:0),(a<0?-a:a)*v/1e6,(a<0?"dis":"chg"),n,v }')"
+      load=$(sysctl -n vm.loadavg | awk -v n=$(sysctl -n hw.ncpu) '{gsub(/[{}]/,"");printf "%.0f",$1/n*100}')
+
+      # who's attached right now (sudo-free): mosh procs, established ssh:22 / vnc:5900
+      # NB: macOS pgrep has no -c flag — count with wc -l.
+      local mosh ssh vnc
+      mosh=$(pgrep -f mosh-server 2>/dev/null | wc -l | tr -d ' ')
+      read ssh vnc <<<"$(netstat -an -p tcp 2>/dev/null | awk '$NF=="ESTABLISHED"{
+        n=split($4,a,".");p=a[n]; if(p==22)s++; else if(p==5900)v++} END{print s+0, v+0}')"
+
+      # thermal throttle alarm (fanless Air, lid-closed): CPU_Speed_Limit appears only
+      # when the SoC is throttling. <100 = being held back by heat. Sudo-free.
+      local therm=100
+      therm=$(pmset -g therm 2>/dev/null | awk -F'= ' '/CPU_Speed_Limit/{print $2+0; exit}'); : ${therm:=100}
+
+      local eta arrow bc
+      if [[ "$dir" == dis ]] && (( pct > floor )); then
+        eta=$(awk -v w=$watts -v ncc=$ncc -v v=$volt -v p=$pct -v fl=$floor 'BEGIN{
+          wh=ncc/1000*v/1000; if(w<=0||wh<=0){print "discharging";exit}
+          pph=w/wh*100; h=(p-fl)/pph;
+          printf "~%dh%02dm to %d%% floor", int(h), int((h-int(h))*60), fl }')
+        arrow="↓"; bc=$G; (( pct<=50 )) && bc=$Y; (( pct<=floor+5 )) && bc=$RD
+      else
+        eta="on AC — banking charge"; arrow="↑"; bc=$G
+      fi
+      local delta=$(( start_pct - pct )) dsign="−"
+      (( delta < 0 )) && { dsign="+"; delta=$(( -delta )); }
+      local el; el=$(printf '%02d:%02d:%02d' $(((SECONDS-start)/3600)) $(((SECONDS-start)%3600/60)) $(((SECONDS-start)%60)))
+
+      (( first )) || { tput cuu $H 2>/dev/null; tput ed 2>/dev/null; }
+      print -r -- ""
+      print -r -- "   ☕${steam[i%4+1]}  ${B}coffee${R}                         awake  ${el}"
+      print -r -- ""
+      print -r -- "   battery  ${bc}${B}${pct}%${R} ${arrow}  ${watts}W        ${D}${dsign}${delta}% since brewing${R}"
+      print -r -- "   ${bc}$(_coffee_bar $pct 22)${R}  ${D}${eta}${R}"
+      print -r -- ""
+      print -r -- "   wear     ${B}${health}%${R} health ${D}·${R} ${cyc} cycles"
+      local thermtag=""; (( therm < 100 )) && thermtag="   ${RD}${B}⚠ thermal ${therm}%${R}"
+      print -r -- "   load     ${B}${load}%${R} cpu${thermtag}"
+      print -r -- "   $(_coffee_bar $load 22)"
+      print -r -- ""
+      local lm=$D lv=$D; (( mosh>0 )) && lm=$G; (( vnc>0 )) && lv=$G
+      print -r -- "   link     ${lm}mosh×${mosh}${R} ${D}ssh×${ssh}${R} ${lv}vnc×${vnc}${R}   ${D}· tailscale ${tsstate}${R}"
+      first=0
+
+      (( pct <= floor )) && [[ "$dir" == dis ]] && stop=1
+      (( stop )) && break
+      (( i++ )); sleep 2
+    done
+
+    _coffee_restore
   }
+
+  # filled/empty progress bar: $1=percent $2=width
+  _coffee_bar() {
+    local p=$1 w=$2 f e i out=""
+    (( f = p*w/100 )); (( f>w )) && f=$w; (( f<0 )) && f=0; (( e = w-f ))
+    for ((i=0;i<f;i++)) out+="█"; for ((i=0;i<e;i++)) out+="░"
+    print -rn -- "▕${out}▏"
+  }
+
+  # restore: the ONLY sudo is the exact original-coffee `disablesleep 0`.
+  # Touches nothing else.
   _coffee_restore() {
+    tput cnorm 2>/dev/null; trap - INT
     echo ""
     echo -e "$(get_colored_face) Restoring lid sleep..."
     sudo pmset -a disablesleep 0
     echo -e "$(get_colored_face) Sleep restored."
-    trap - INT
   }
 # └────────────────────────────────────────────────────────────────────────────┘
 
