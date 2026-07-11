@@ -22,13 +22,13 @@ TMUX_BIN=/opt/homebrew/bin/tmux
 command -v "$TMUX_BIN" >/dev/null 2>&1 || TMUX_BIN=tmux
 
 # Glyphs via octal UTF-8 bytes so no editor/transport can strip them (verified round-trip):
-#   apple U+F179 · tux U+F17C · caps U+E0B6/U+E0B4 · zoom U+F0293.
+#   apple U+F179 · tux U+F17C · caps U+E0B6/U+E0B4 (rounded powerline) · zoom U+F0293.
 #   power shapes: triangle U+25B3 · square U+25A1 · pentagon U+2B20 · hexagon U+2B21 ·
 #                 circle U+25CB · star U+2606 (geometric symbols, NOT emoji).
 APPLE=$(printf '\357\205\271')
 TUX=$(printf '\357\205\274')
-LCAP=$(printf '\356\202\266')
-RCAP=$(printf '\356\202\264')
+LCAP=$(printf '\356\202\266')   # U+E0B6 left  half-circle — rounded LEFT cap
+RCAP=$(printf '\356\202\264')   # U+E0B4 right half-circle — rounded RIGHT cap
 ZOOM=$(printf '\363\260\212\223')
 TRI=$(printf '\342\226\263'); SQ=$(printf '\342\226\241'); PENT=$(printf '\342\254\240')
 HEX=$(printf '\342\254\241'); CIRC=$(printf '\342\227\213'); STAR=$(printf '\342\230\206')
@@ -122,12 +122,18 @@ badge="${apple_pill} ${machine_pill} ${session_pill} "
 "$TMUX_BIN" set-option -g status-left-length 140
 "$TMUX_BIN" set-option -g status-left "$badge"
 
-# --- RIGHT: animal (tight white circle only on prefix) then the date -------
-circ="#[fg=${WHITE}]${LCAP}#[bg=${WHITE}]#{@random_animal}#[bg=default fg=${WHITE}]${RCAP}#[default]"
-animal="#{?client_prefix,${circ}, #{@random_animal} }"
-# Set via @minimal-tmux-status-right so the plugin bakes it and continuum can still
-# prepend its autosave #() — do NOT set status-right directly (that would drop autosave).
-"$TMUX_BIN" set-option -g @minimal-tmux-status-right "${animal} #(~/.config/tmux/morbid_year all)"
+# --- RIGHT: animal, then save-health chip, then the date -------------------
+# The chip is the fading save-freshness age (right of the animal): tmux-save-guard.sh renders it,
+# launchd runs the actual saves. Gold brighter than morbid_year's first entry, fading to red (and
+# a loud ! on a failed/unverified save) so the 4-day silent gap that lost everything can't recur.
+# Set BOTH @minimal-tmux-status-right (survives a plain reload) AND status-right directly — the
+# plugin only bakes the option at load, before this script runs, so status-right must be set here
+# too or the chip never reaches the bar (exactly the left-side pattern at status-left above).
+animal=" #{@random_animal} "
+right="${animal}#(~/.config/tmux/tmux-save-guard.sh chip) #(~/.config/tmux/morbid_year all)"
+"$TMUX_BIN" set-option -g @minimal-tmux-status-right "$right"
+"$TMUX_BIN" set-option -g status-right-length 300
+"$TMUX_BIN" set-option -g status-right "$right"
 
 # --- window pills (glyphs stay strip-safe here; content has NO #() ) -------
 WLABEL="#{?#{m:[0-9]*,#{pane_current_command}},claude,#{?#{m:codex*,#{pane_current_command}},codex,#{pane_current_command}}}"
@@ -139,3 +145,19 @@ wscf="#[fg=#e6c384]${LCAP}#[bg=#e6c384 fg=#1f1f28] #I│${WLABEL}│#{b:pane_cur
 "$TMUX_BIN" set-option -g @minimal-tmux-window-status-format "$wsf"
 "$TMUX_BIN" set-option -gw window-status-format "$wsf"
 "$TMUX_BIN" set-option -gw window-status-current-format "$wscf"
+
+# --- pane pills (bottom border, right-aligned) — three rounded pills per pane ----
+# The top bar already carries cmd + path per window, so the bottom shows DIFFERENT, pane-local
+# facts: pane INDEX · SIZE (WxH) · PID. Colour graduates bright→grey (index lit, size muted, pid
+# grey) so the active pane's index reads first; an inactive pane greys all three. Padded both
+# sides (left inset + right float). Hidden when the window has only 1 pane. No #() — pure format,
+# zero forks per redraw. Branches stay comma-free so they render inside the #{?pane_active,…,…}
+# selector (commas are the selector's separator).
+PLPAD='  '   # left inset off the border line
+PGAP='   '   # right float off the edge
+# active-pane row: index bright → size muted → pid grey (black text on lit, off-white on dim)
+pa="#[fg=#957FB8]${LCAP}#[bg=#957FB8 fg=#1f1f28] #{pane_index} #[bg=default fg=#957FB8]${RCAP} #[fg=#54546d]${LCAP}#[bg=#54546d fg=#dcd7ba] #{pane_width}x#{pane_height} #[bg=default fg=#54546d]${RCAP} #[fg=#2a2a37]${LCAP}#[bg=#2a2a37 fg=#dcd7ba] #{pane_pid} #[bg=default fg=#2a2a37]${RCAP}"
+# inactive-pane row: all three dark-grey
+pi="#[fg=#2a2a37]${LCAP}#[bg=#2a2a37 fg=#dcd7ba] #{pane_index} #[bg=default fg=#2a2a37]${RCAP} #[fg=#2a2a37]${LCAP}#[bg=#2a2a37 fg=#dcd7ba] #{pane_width}x#{pane_height} #[bg=default fg=#2a2a37]${RCAP} #[fg=#2a2a37]${LCAP}#[bg=#2a2a37 fg=#dcd7ba] #{pane_pid} #[bg=default fg=#2a2a37]${RCAP}"
+pbf="#{?#{e|>:#{window_panes},1},#[align=right]${PLPAD}#{?pane_active,${pa},${pi}}${PGAP}#[default],}"
+"$TMUX_BIN" set-option -g pane-border-format "$pbf"
