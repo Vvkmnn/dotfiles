@@ -1,6 +1,7 @@
 ## Custom
 .emacs.d/.local/*
 */tmux/plugins/*
+/icloud
 
 ## claude runtime caches (generated, not config)
 .claude/praetorian/compactions/
