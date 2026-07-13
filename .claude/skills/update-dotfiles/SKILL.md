@@ -1,7 +1,7 @@
 ---
 name: update-dotfiles
 author: Vvkmnn
-description: Use when user says "update dotfiles", "commit dotfiles", "sync dotfiles", "push dotfiles", or asks to save/backup their config — and whenever Claude itself proposes updating dotfiles. Manages bare git repo at ~/.dotfiles with logical commits, security checks, config discovery, and a plan-artifact/launch-daemon capture pass so recent machine-config work is reproducible on fresh machines.
+description: Use when user says "update dotfiles", "commit dotfiles", "sync dotfiles", "push dotfiles", "update docs and dotfiles", "add to docs and dotfiles", "docs and dotfiles", or asks to save/backup their config — and whenever Claude itself proposes updating dotfiles OR docs. Runs a DOCS-FIRST pass (accurate function docstrings/comments in the code you just changed, then relevant project docs — README/CHANGELOG/memory), THEN the dotfiles commit. Manages the bare git repo at ~/.dotfiles with logical commits, security checks, config discovery, and a plan-artifact/launch-daemon capture pass so recent machine-config work is reproducible on fresh machines.
 version: 0.5.0
 ---
 
@@ -47,6 +47,22 @@ Always commit to the current branch. Never switch branches without asking.
 | Meta | `dotfiles` | `.github/README.md`, `.logo`, `.theme`, `.assets/*`, `.utcp_config.json` |
 
 ## Workflow
+
+### Phase 0: Docs first (do BEFORE staging anything)
+
+When the trigger mentions "docs" (e.g. "update docs and dotfiles"), OR any code changed this session,
+sweep docs before the commit — the commit should capture accurate docs, not stale ones:
+
+1. **Function docs** — for every function/block you touched, confirm its docstring/header comment still
+   matches what the code does (params, return, behaviour, gotchas). Fix drift; a wrong comment is worse
+   than none. Don't add docs to code you didn't change.
+2. **Project docs** — update whatever the change makes stale: a module README, `~/.claude/docs/CHANGELOG.md`,
+   the project's memory (`~/.claude/projects/<slug>/memory/` + `MEMORY.md` index) for non-obvious learnings
+   or hard-won gotchas, and `~/.github/README.md` tree counts if `.claude/` structure changed (see Phase 6).
+3. **Then** proceed to the dotfiles commit below — the doc edits ride in the same logical commit(s) as the
+   code they document (same scope), or their own `DOCS(scope):`/`CHORE(scope):` commit if standalone.
+
+Skip only if nothing changed and the ask is a pure sync. "docs and dotfiles" always runs this phase.
 
 ### Phase 1: Analyze
 
