@@ -470,3 +470,6 @@ dotfiles.key
 # never track private keys (public repo; .pub is fine)
 .ssh/id_*
 .ssh/*.pem
+
+# docker machine-state (regenerated; never config)
+.docker/.token_seed*
