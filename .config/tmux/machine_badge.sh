@@ -103,14 +103,14 @@ badge="${apple_pill} ${machine_pill} ${session_pill} "
 "$TMUX_BIN" set-option -g status-left "$badge"
 
 # --- RIGHT: animal, then save-health chip, then the date -------------------
-# The chip is the fading save-freshness age (right of the animal): tmux-save-guard.sh renders it,
+# The chip is the fading save-freshness age (right of the animal): lambda.sh renders it,
 # launchd runs the actual saves. Gold brighter than morbid_year's first entry, fading to red (and
 # a loud ! on a failed/unverified save) so the 4-day silent gap that lost everything can't recur.
 # Set BOTH @minimal-tmux-status-right (survives a plain reload) AND status-right directly — the
 # plugin only bakes the option at load, before this script runs, so status-right must be set here
 # too or the chip never reaches the bar (exactly the left-side pattern at status-left above).
 animal=" #{@random_animal} "
-right="${animal}#(~/.config/tmux/tmux-save-guard.sh chip) #(~/.config/tmux/morbid_year all)"
+right="${animal}#(~/.config/tmux/lambda.sh chip) #(~/.config/tmux/morbid_year all)"
 "$TMUX_BIN" set-option -g @minimal-tmux-status-right "$right"
 "$TMUX_BIN" set-option -g status-right-length 300
 "$TMUX_BIN" set-option -g status-right "$right"

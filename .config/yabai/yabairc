@@ -18,13 +18,12 @@
 ################################################################################
 # 1. SCRIPTING ADDITION SETUP
 ################################################################################
-# The scripting addition requires sudo permissions to be properly configured
-# See: https://github.com/koekeishiya/yabai/wiki/Installing-yabai-(latest-release)#configure-scripting-addition
-#
-# This signal ensures yabai's scripting addition is reloaded when the Dock restarts
-yabai -m signal --add event=dock_did_restart action="sudo /opt/homebrew/bin/yabai --load-sa"
-sudo /opt/homebrew/bin/yabai --load-sa
-# https://github.com/koekeishiya/yabai/wiki/Installing-yabai-(latest-release)#macos-big-sur---automatically-load-scripting-addition-on-startup
+# DISABLED: no scripting-addition — it's broken on Tahoe, so yabai runs in "basic" mode.
+# These lines only prompted for sudo every startup and loaded nothing. Basic mode still gives
+# BSP tiling / spaces / signals / window--space moves; only SA-only ops are gone
+# (space --move & --destroy, real borders, window opacity). Leave commented unless SA returns.
+# yabai -m signal --add event=dock_did_restart action="sudo /opt/homebrew/bin/yabai --load-sa"
+# sudo /opt/homebrew/bin/yabai --load-sa
 
 ################################################################################
 # 2. WINDOW FOCUS BEHAVIOR
@@ -86,10 +85,12 @@ sudo /opt/homebrew/bin/yabai --load-sa
 ################################################################################
 # 4. GLOBAL CONFIGURATION SETTINGS
 ################################################################################
-# Focus and mouse behavior
-# 'autoraise' mode only focuses windows on the current space when mouse hovers (doesn't switch spaces)
-/opt/homebrew/bin/yabai -m config mouse_follows_focus on        # Move mouse cursor with window focus
-/opt/homebrew/bin/yabai -m config focus_follows_mouse autoraise # Focus windows on current space only when mouse hovers
+# Focus and mouse behavior.
+# Mental model: tiled windows never overlap (BSP tiles them side-by-side), so z-order / "raise"
+# is a no-op for them — autoraise's raise only ever affects FLOATING windows (Calculator, dialogs).
+# So 'autoraise' is safe here and won't feel jumpy in normal 1-3 window tiling.
+/opt/homebrew/bin/yabai -m config mouse_follows_focus on        # Keyboard focus warps the cursor to the newly-focused window
+/opt/homebrew/bin/yabai -m config focus_follows_mouse autoraise # Hover a window on current space -> it gets focus (+raise; raise only matters for floaters)
 
 # Window placement and appearance
 /opt/homebrew/bin/yabai -m config window_origin_display default # Place new windows on the current display
