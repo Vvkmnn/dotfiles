@@ -1,7 +1,7 @@
 #!/bin/sh
 # backup — one-command dotfiles history snapshot → iCloud root Dotfiles/Backups/<machine> .
 # Bundle stores GIT OBJECTS: git-crypt files stay ciphertext — secret-safe by
-# construction (never a plaintext working-tree zip). Keeps the last 5 bundles.
+# construction (never a plaintext working-tree zip). Keeps the last 3 bundles.
 # Run BEFORE any sweeping/destructive git operation; update-dotfiles +
 # dotfiles-setup skills reference this as the canonical recovery path.
 # Restore:  git clone <bundle> recovered && cd recovered
@@ -17,8 +17,8 @@ mkdir -p "$DIR"
 git --git-dir="$HOME/.dotfiles" bundle create "$OUT" --all
 git --git-dir="$HOME/.dotfiles" bundle verify "$OUT" >/dev/null && echo "✓ $OUT (verified)"
 
-# prune to the newest 5 timestamped bundles (never touches the named ALL/prebuild ones)
-ls -t "$DIR"/dotfiles-2*.bundle 2>/dev/null | tail -n +6 | while IFS= read -r old; do
+# prune to the newest 3 timestamped bundles (never touches the named ALL/prebuild ones)
+ls -t "$DIR"/dotfiles-2*.bundle 2>/dev/null | tail -n +4 | while IFS= read -r old; do
   rm -f "$old" && echo "pruned $(basename "$old")"
 done
 echo "restore: git clone <bundle> recovered && git-crypt unlock <iCloud>/Dotfiles/git-crypt-key-dotfiles"

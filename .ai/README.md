@@ -100,7 +100,7 @@ and tracked settings instead of committing generated plugin state.
 
 `~/.ai/backup` — one command, run it before any sweeping git operation. Bundles the
 FULL repo history (all refs; git-crypt files stay ciphertext — secret-safe) to the
-iCloud shelf and keeps the last 5:
+iCloud shelf and keeps the last 3:
 
     iCloud Drive → Dotfiles/
       Backups/<machine>/    per-machine bundles + pre-merge snapshots (this command)
