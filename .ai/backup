@@ -1,15 +1,15 @@
 #!/bin/sh
-# backup — one-command dotfiles history snapshot → ~/Documents/Dotfiles (iCloud).
+# backup — one-command dotfiles history snapshot → iCloud root Dotfiles/Backups/<machine> .
 # Bundle stores GIT OBJECTS: git-crypt files stay ciphertext — secret-safe by
 # construction (never a plaintext working-tree zip). Keeps the last 5 bundles.
 # Run BEFORE any sweeping/destructive git operation; update-dotfiles +
 # dotfiles-setup skills reference this as the canonical recovery path.
 # Restore:  git clone <bundle> recovered && cd recovered
-#           git-crypt unlock ~/Documents/Dotfiles/git-crypt-key-dotfiles
+#           git-crypt unlock "~/Library/Mobile Documents/com~apple~CloudDocs/Dotfiles/git-crypt-key-dotfiles"
 # 2026-07-13 — created during the v-macos unification.
 
 set -eu
-DIR="$HOME/Documents/Dotfiles"
+DIR="$HOME/Library/Mobile Documents/com~apple~CloudDocs/Dotfiles/Backups/$(hostname -s)"
 STAMP=$(date -u +%Y%m%dT%H%M%SZ)
 OUT="$DIR/dotfiles-$STAMP.bundle"
 mkdir -p "$DIR"
@@ -21,4 +21,4 @@ git --git-dir="$HOME/.dotfiles" bundle verify "$OUT" >/dev/null && echo "✓ $OU
 ls -t "$DIR"/dotfiles-2*.bundle 2>/dev/null | tail -n +6 | while IFS= read -r old; do
   rm -f "$old" && echo "pruned $(basename "$old")"
 done
-echo "restore: git clone <bundle> recovered && git-crypt unlock $DIR/git-crypt-key-dotfiles"
+echo "restore: git clone <bundle> recovered && git-crypt unlock <iCloud>/Dotfiles/git-crypt-key-dotfiles"
