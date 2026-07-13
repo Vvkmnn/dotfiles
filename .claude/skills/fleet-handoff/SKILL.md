@@ -1,5 +1,5 @@
 ---
-name: apple-handoff
+name: fleet-handoff
 description: Use when coordinating with a Claude on ANOTHER machine in the fleet (vBook ↔ vNeo ↔ mini) — when the owner says "handoff", "give me the handoff", "ask the other claude", "relay to the laptop/mini", "paste this there", "add it to my clipboard", or when you need a different machine's Claude to run something (commit files, dump config, install, diff state). ALWAYS pbcopy the handoff message so the owner can paste it into the other machine's Claude via macOS Universal Clipboard / Handoff. The owner is the transport between machines — you never reach the other machine directly, so a message that isn't on the clipboard didn't get handed off.
 ---
 
