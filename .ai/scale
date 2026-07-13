@@ -31,15 +31,14 @@ elif [ "$SCALE_MEM_GB" -ge 20 ]; then SCALE_TIER=std;   SCALE_NODE_HEAP_MB=12288
 elif [ "$SCALE_MEM_GB" -ge 12 ]; then SCALE_TIER=mid;   SCALE_NODE_HEAP_MB=8192;  SCALE_TMUX_HISTORY=50000
 else                                  SCALE_TIER=small; SCALE_NODE_HEAP_MB=4096;  SCALE_TMUX_HISTORY=20000
 fi
-SCALE_JOBS=$SCALE_CPUS
-SCALE_COLIMA_CPU=$(( SCALE_CPUS / 2 )); [ "$SCALE_COLIMA_CPU" -lt 2 ] && SCALE_COLIMA_CPU=2
-SCALE_COLIMA_MEM=$(( SCALE_MEM_GB / 2 )); [ "$SCALE_COLIMA_MEM" -lt 2 ] && SCALE_COLIMA_MEM=2
-# heavy-parallel AI agents: parallelism ∝ RAM, NOT cores — on small boxes RAM
-# binds well before any core-based cap. These are FRESH-STATE ceilings: long
-# uptimes erode live headroom (periodic session-preserving restarts keep it honest).
-case "$SCALE_TIER" in
-  small) SCALE_AGENTS=2 ;; mid) SCALE_AGENTS=4 ;; std) SCALE_AGENTS=6 ;; *) SCALE_AGENTS=8 ;;
-esac
+# ── spare knobs — commented until a real consumer exists (don't export speculation) ──
+# SCALE_JOBS=$SCALE_CPUS                                     # build -j; nothing reads it yet
+# SCALE_COLIMA_CPU=$(( SCALE_CPUS / 2 ))                     # colima skills; wire when used
+# SCALE_COLIMA_MEM=$(( SCALE_MEM_GB / 2 ))
+# case "$SCALE_TIER" in                                      # heavy-agent width ∝ RAM, not cores;
+#   small) SCALE_AGENTS=2 ;; mid) SCALE_AGENTS=4 ;;          # fresh-state ceilings — uncomment when
+#   std) SCALE_AGENTS=6 ;; *) SCALE_AGENTS=8 ;;              # orchestration actually consumes it
+# esac
 
 # ── role: $USER is the stable signal (survives hostname/DHCP churn) ──────────
 case "$USER" in
@@ -48,7 +47,7 @@ case "$USER" in
 esac
 
 # ── form factor / GUI (laptop vs headless desktop) ───────────────────────────
-case "$SCALE_MODEL" in *Book*) SCALE_BATTERY=1 ;; *) SCALE_BATTERY=0 ;; esac
+# case "$SCALE_MODEL" in *Book*) SCALE_BATTERY=1 ;; *) SCALE_BATTERY=0 ;; esac   # spare: no consumer yet
 if [ "$(launchctl managername 2>/dev/null)" = "Aqua" ] || pgrep -qx WindowServer 2>/dev/null; then
   SCALE_GUI=1
 else
@@ -57,8 +56,8 @@ fi
 [ "$SCALE_ROLE" = server ] && SCALE_GUI=0   # server role never drives a WM
 
 # ── mutable facts: cheap re-runnable helpers, NOT frozen exports ─────────────
-scale_ssd() { [ -d /Volumes/vSSD ] && echo 1 || echo 0; }
-SCALE_SSD=$(scale_ssd)
+# scale_ssd() { [ -d /Volumes/vSSD ] && echo 1 || echo 0; }   # spare: .profile colima block self-detects today
+# SCALE_SSD=$(scale_ssd)
 
 # EXTEND: chip/GPU (machdep.cpu.brand_string → ML threads/gpu layers) — when used
 # EXTEND: display/DPI (system_profiler SPDisplaysDataType → font size, WM gaps) — when it matters
@@ -67,14 +66,14 @@ SCALE_SSD=$(scale_ssd)
 #   promote to a real SCALE gate when the pattern settles.
 
 export SCALE_MEM_GB SCALE_CPUS SCALE_MODEL SCALE_CHIP SCALE_ARCH \
-       SCALE_TIER SCALE_NODE_HEAP_MB SCALE_TMUX_HISTORY SCALE_JOBS SCALE_AGENTS \
-       SCALE_COLIMA_CPU SCALE_COLIMA_MEM SCALE_ROLE SCALE_BATTERY SCALE_GUI SCALE_SSD
+       SCALE_TIER SCALE_NODE_HEAP_MB SCALE_TMUX_HISTORY \
+       SCALE_ROLE SCALE_GUI
 
 # ── doctor: the parity oracle (`~/.ai/scale doctor`) ─────────────────────────
 if [ "${1:-}" = doctor ]; then
-  printf 'TIER=%s MEM=%sGB CPUS=%s ROLE=%s GUI=%s BATTERY=%s SSD=%s\n' \
-    "$SCALE_TIER" "$SCALE_MEM_GB" "$SCALE_CPUS" "$SCALE_ROLE" "$SCALE_GUI" "$SCALE_BATTERY" "$SCALE_SSD"
-  printf 'HEAP=%sMB TMUX_HISTORY=%s JOBS=%s AGENTS=%s COLIMA=%scpu/%sGB\n' \
-    "$SCALE_NODE_HEAP_MB" "$SCALE_TMUX_HISTORY" "$SCALE_JOBS" "$SCALE_AGENTS" "$SCALE_COLIMA_CPU" "$SCALE_COLIMA_MEM"
+  printf 'TIER=%s MEM=%sGB CPUS=%s ROLE=%s GUI=%s\n' \
+    "$SCALE_TIER" "$SCALE_MEM_GB" "$SCALE_CPUS" "$SCALE_ROLE" "$SCALE_GUI"
+  printf 'HEAP=%sMB TMUX_HISTORY=%s\n' \
+    "$SCALE_NODE_HEAP_MB" "$SCALE_TMUX_HISTORY"
   printf 'MODEL=%s CHIP=%s ARCH=%s\n' "$SCALE_MODEL" "$SCALE_CHIP" "$SCALE_ARCH"
 fi
