@@ -45,10 +45,15 @@
 #   WHY macos is sudo-free: every curated default is user-domain. Only `packages`
 #     needs sudo (casks + xcode-select), via need_sudo's one-prompt keep-alive.
 #
+# 2026-07-13 — repo-wide dotfiles changelog stood up at ~/.github/LOG.md (peer to the
+#   Claude-config log at ~/.claude/docs/CHANGELOG.md). THIS block stays the setup-runner's
+#   own WHY log; LOG.md is the human-facing record of every dotfiles change across scopes.
+#
 # MAINTENANCE: edit `_brewfile()` (packages) + `phase_macos()` (defaults) here — they
 #   are the source of truth. Keep `~/.setup/` as reference. Log gotchas in
 #   ~/.ai/ISSUES.md so they aren't re-hit. After any edit: `bash -n ~/.ai/setup`.
-#   When you change something, add a dated line to this changelog explaining WHY.
+#   When you change something, add a dated line to this changelog explaining WHY, and a
+#   terse user-facing bullet to ~/.github/LOG.md.
 # ─────────────────────────────────────────────────────────────────────────────
 
 set -uo pipefail

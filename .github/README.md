@@ -50,7 +50,7 @@
   fish ───────── .config/ (fish, fisher, omf)
   docker ─────── .docker/
   setup ──────── .setup/ (36 scripts, Brewfile)
-  meta ────────── .github/README.md .logo .theme .assets/
+  meta ────────── .github/README.md .github/LOG.md .logo .theme .assets/
 
   ~1136 files
 ```

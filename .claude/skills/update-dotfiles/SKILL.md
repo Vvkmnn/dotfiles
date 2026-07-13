@@ -44,7 +44,7 @@ Always commit to the current branch. Never switch branches without asking.
 | Setup | `setup` | **`.ai/*` (LIVE: setup · README · ISSUES · vProfile.mobileconfig)** + `.setup/*` (frozen reference) |
 | Docker | `docker` | `.docker/*` |
 | Fish | `fish` | `.config/fish/*`, `.config/fisher/*`, `.config/omf/*` |
-| Meta | `dotfiles` | `.github/README.md`, `.logo`, `.theme`, `.assets/*`, `.utcp_config.json` |
+| Meta | `dotfiles` | `.github/README.md`, `.github/LOG.md` (repo-wide changelog), `.logo`, `.theme`, `.assets/*`, `.utcp_config.json` |
 
 ## Workflow
 
@@ -59,7 +59,12 @@ sweep docs before the commit — the commit should capture accurate docs, not st
 2. **Project docs** — update whatever the change makes stale: a module README, `~/.claude/docs/CHANGELOG.md`,
    the project's memory (`~/.claude/projects/<slug>/memory/` + `MEMORY.md` index) for non-obvious learnings
    or hard-won gotchas, and `~/.github/README.md` tree counts if `.claude/` structure changed (see Phase 6).
-3. **Then** proceed to the dotfiles commit below — the doc edits ride in the same logical commit(s) as the
+3. **Repo changelog** — add a terse entry to `~/.github/LOG.md` (the repo-wide dotfiles changelog, peer to
+   the Claude-config `.claude/docs/CHANGELOG.md`). Newest first, under a `## YYYY-MM-DD` heading (reuse
+   today's if it exists). One bullet per user-visible change across ANY scope — shell, terminal, wm, setup —
+   not just fleet; hard-won gotchas go in a `### notes` sub-list. Match its lowercase README tone. This entry
+   rides in the same commit as the change it documents (or the standalone `DOCS(dotfiles):` commit).
+4. **Then** proceed to the dotfiles commit below — the doc edits ride in the same logical commit(s) as the
    code they document (same scope), or their own `DOCS(scope):`/`CHORE(scope):` commit if standalone.
 
 Skip only if nothing changed and the ask is a pure sync. "docs and dotfiles" always runs this phase.
