@@ -2,6 +2,12 @@
 .emacs.d/.local/*
 */tmux/plugins/*
 
+## claude runtime caches (generated, not config)
+.claude/praetorian/compactions/
+.claude/plugins/plugin-catalog-cache.json
+.claude/plugins/.last_inuse_sweep
+.claude/plugins/blocklist.json
+
 ## From https://github.com/github/gitignore
 
 ## Google
@@ -378,6 +384,7 @@ tags
 .claude/plugins/cache/
 .claude/plugins/marketplaces/
 .claude/plugins/installed_plugins.json
+.claude/plugins/known_marketplaces.json
 .claude/backups/
 
 # Codeium/Windsurf
