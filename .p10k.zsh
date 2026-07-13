@@ -62,9 +62,13 @@ function prompt_morbidtime() {
   # Zsh >= 5.1 is required.
   [[ $ZSH_VERSION == (5.<1->*|<6->.*) ]] || return
 
-  # Instant prompt: quiet suppresses warning about console output during init
-  # (intentional output from ~/.logo banner and fnm LTS notification)
-  # To revert: change 'quiet' to 'verbose' to see the warning again
+  # Instant prompt: 'quiet' suppresses the console-output warning dialog.
+  # NOTE: .logo (~/.rc:34) runs BEFORE .shell (~/.rc:35) reaches the instant-prompt
+  # block at .shell:97 — so .logo output is NOT captured by P10K. The actual leaker
+  # lives in .shell:100+ or a deferred hook (candidates: zvm_after_init at .shell:112,
+  # mise upgrade WARN, atuin migration notices). Instrumentation at the end of .shell
+  # snapshots any capture to ~/.cache/p10k-init-leaks.log for diagnosis.
+  # To reveal the warning again: change 'quiet' to 'verbose'.
   typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
 
   # Prompt colors.

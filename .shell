@@ -182,6 +182,13 @@
       # ──────────────────────────────────────────────────────────────── rust ──
       [ -d "$HOME/.cargo" ] && . "$HOME/.cargo/env"
 
+      # ──────────────────────────────────────────────────────────────── opam ──
+      # OCaml package manager — sets PATH for ocamllsp, ocamlformat, dune, etc.
+      # Installed via: brew install opam && opam init
+      # Tools: opam install ocaml-lsp-server ocamlformat
+      # Loaded BEFORE mise so mise's shims prepend on top and win PATH priority.
+      [[ ! -r "$HOME/.opam/opam-init/init.zsh" ]] || source "$HOME/.opam/opam-init/init.zsh" > /dev/null 2> /dev/null
+
       # ──────────────────────────────────────────────────────────────── mise ──
       # mise replaces fnm/nvm/pyenv/rbenv — one tool for all versions.
       # Reads .node-version, .nvmrc, .python-version, .tool-versions, .mise.toml
@@ -189,18 +196,12 @@
       # npx available at: ~/.local/share/mise/installs/node/*/bin/npx
       eval "$(mise activate zsh)"
 
-      # ──────────────────────────────────────────────────────────────── opam ──
-      # OCaml package manager — sets PATH for ocamllsp, ocamlformat, dune, etc.
-      # Installed via: brew install opam && opam init
-      # Tools: opam install ocaml-lsp-server ocamlformat
-      [[ ! -r "$HOME/.opam/opam-init/init.zsh" ]] || source "$HOME/.opam/opam-init/init.zsh" > /dev/null 2> /dev/null
-
       # ──────────────────────────────────────────────────────────── platform ──
       case "$(uname -s)" in
       Darwin)
           # GPG: ensure GUI + VS Code shells can reach the agent and tty
           export GPG_TTY=$(tty)
-          export SSH_AUTH_SOCK="$HOME/.gnupg/S.gpg-agent.ssh"
+          # SSH_AUTH_SOCK now set once in .zshenv/.minimal → 1Password; the old gpg-agent SSH socket was dead.
           # Homebrew
           eval "$(/opt/homebrew/bin/brew shellenv)"
           ;;

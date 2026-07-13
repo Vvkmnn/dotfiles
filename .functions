@@ -41,6 +41,20 @@
   [[ -n "$ZSH_VERSION" ]] && precmd_functions+=(_recover_cwd)
 # └────────────────────────────────────────────────────────────────────────────┘
 
+# ┌─────────────────────────────────────────────────────────── leaked mouse ──┐
+  # tmux copy-on-highlight silently no-ops when a TUI (Claude Code, nvim, fzf…)
+  # exits without resetting mouse reporting: mouse_any_flag stays 1 on a bare
+  # shell, so tmux forwards the drag to the app instead of entering copy-mode
+  # and copy-selection never fires. Clear the mouse-tracking DECRST modes at
+  # every prompt (1004 focus-events left alone — tmux relies on it) so a leaked
+  # TUI can never persist past the command that spawned it. Check: a `zsh` pane
+  # with `tmux display -p '#{mouse_any_flag}'` == 1 is stuck.
+  # /dev/tty, not stdout: the first precmd runs inside p10k's instant-prompt fd1/2
+  # capture, and any bytes there trip its "console output during init" warning.
+  _reset_mouse() { printf '\033[?1000l\033[?1002l\033[?1003l\033[?1006l\033[?1015l' > /dev/tty }
+  [[ -n "$ZSH_VERSION" ]] && precmd_functions+=(_reset_mouse)
+# └────────────────────────────────────────────────────────────────────────────┘
+
 # ┌──────────────────────────────────────────────────────────────────── fnm ────┐
   # weekly background LTS check - writes notification for NEXT shell startup
   _fnm_lts_check() {
@@ -104,6 +118,7 @@
       tmux_window=$(/opt/homebrew/bin/tmux display-message -p '#{window_index}' 2>/dev/null)
     fi
     local checker="$HOME/.config/tmux/claude-idle-checker.sh"
+    local _rapid=0   # consecutive sub-2s exits → crash-loop guard
 
     while true; do
       case "$mode" in
@@ -119,15 +134,23 @@
         _checker_pid=$!
       fi
 
-      # Run Claude in foreground (TUI requires it)
-      local _claude_exit=0
+      # Run Claude in foreground (TUI requires it). Capture exit for ALL modes so
+      # new/force get the same resume prompt as continue — previously only `continue`
+      # captured $?, so cl/cc silently fell through to the shell on any crash.
+      local _claude_exit=0 _start=$SECONDS
       case "$mode" in
         continue)
           claude --continue "$@"
           _claude_exit=$?
           ;;
-        new)      claude "$@" ;;
-        force)    claude --continue "$@" ;;
+        new)
+          claude "$@"
+          _claude_exit=$?
+          ;;
+        force)
+          claude --continue "$@"
+          _claude_exit=$?
+          ;;
       esac
 
       # Clean up checker
@@ -138,10 +161,27 @@
         _checker_exit=$?
       fi
 
-      # Any non-zero exit with existing sessions → show resume prompt, never auto-create
+      # Non-zero exit → offer resume. This block is the crab fix. Three guards, in order:
+      #   1. [[ -t 0 && -t 1 ]] — only prompt when interactive; piped/non-tty → bail, never loop.
+      #   2. crash-loop floor — if claude keeps dying in <2s, drop to shell after 3 tries so an
+      #      unattended crash can't spin.
+      #   3. drain queued input, then read the keypress from /dev/tty (NOT inherited stdin).
+      #      The runaway spam was `read -r` consuming buffered terminal keystrokes one-per-loop;
+      #      draining first + reading the real tty makes it block on an actual human keypress.
       if (( _claude_exit != 0 )); then
+        [[ -t 0 && -t 1 ]] || break
+        if (( SECONDS - _start < 2 )); then
+          if (( ++_rapid >= 3 )); then
+            echo -e "\n${dim}(\/) (x_x) (\/)${r} claude keeps exiting immediately ${dim}— dropping to shell${r}"
+            break
+          fi
+        else
+          _rapid=0
+        fi
         echo -e "\n${dim}(\/) (~_~) (\/)${r} session ended ${dim}— press Enter to resume, Ctrl+C for shell${r}"
-        read -r || break
+        local _drain=0
+        while (( _drain++ < 4096 )) && read -t 0 -k 1 -u 0 2>/dev/null; do :; done
+        read -r _ </dev/tty || break
         continue
       fi
 
@@ -198,12 +238,47 @@
   #   vremote vminim4        screen-share the mini (first-party Screen Sharing, full GUI)
   # Two ways in: vssh = terminal · vremote = screen.
 
+  # ── transport rationale: why MOSH, not ssh or et (decided — don't re-litigate) ───────────────
+  #  Three ways to hold a remote shell; they are NOT interchangeable:
+  #
+  #    ssh  — TCP, ephemeral. A dropped link sends SIGHUP → the remote shell AND its children
+  #           (nvim, claude, builds) DIE. Right for scripts / git / `ssh -L` tunnels / one-shot
+  #           commands; wrong for a live session meant to survive a flaky link. ssh is still the
+  #           BOOTSTRAP under mosh (`mosh --ssh=…`) and how the 1Password key reaches a remote.
+  #    mosh — UDP, roaming. Survives IP changes (wifi↔cellular), sleep, and travel; the remote
+  #           mosh-server keeps your tmux alive and mosh silently resumes on wake. On a drop it
+  #           shows a dimmed "Last contact: N s ago" overlay — the ONE built-in visual cue that
+  #           you're disconnected. Predictive local echo hides lag. THIS IS THE DEFAULT.
+  #    et   — TCP byte-stream (Eternal Terminal). Reconnects too, but SILENTLY: on a drop the
+  #           screen just freezes with no indication (can't tell frozen from slow). Its one real
+  #           edge over mosh is native client scrollback — which tmux gives us anyway, so it buys
+  #           nothing here. Evaluated and dropped: silent-freeze is worse UX for us, and it costs
+  #           an etserver:2022 daemon + a fussier 1Password-agent handshake. Not used.
+  #
+  #  Disconnect freeze is FUNDAMENTAL to both mosh and et: both are raw-mode state-sync clients
+  #  with no local scrollback during a drop — the scrollback buffer lives in the remote tmux, on
+  #  the far side of the dead link, so nothing repaints until the link is back. Content is safe
+  #  on the remote and returns intact on reconnect; you just can't scroll while frozen. A live
+  #  disconnect indicator can only live OUTSIDE the terminal (a local menu-bar cue) — mosh's
+  #  overlay is the closest built-in, which is why mosh wins until such a widget exists.
+  #
+  #  tmux: not launched by us. The remote login shell autostarts a FRESH session itself
+  #  (ZSH_TMUX_AUTOSTART=true, AUTOCONNECT=false, AUTOQUIT=true in ~/.shell), so `vj` passes NO
+  #  command — avoiding a "tmux new-session" echo into the interactive shell. The remote `tmux`
+  #  is an oh-my-zsh alias (_zsh_tmux_plugin_run), so `exec tmux` / `et -c 'tmux …'` misfire.
+  #
+  #  Auth: the 1Password SSH agent (SSH_AUTH_SOCK, set in ~/.minimal/.zshenv) gives Touch-ID and
+  #  no password — but ONLY while the 1Password DESKTOP APP is running (menu-bar on). If it's
+  #  quit, the socket file lingers, the agent is dead, and every ssh/mosh falls back to a
+  #  password. See the SSH_AUTH_SOCK gotcha in ~/.minimal.
+  # ─────────────────────────────────────────────────────────────────────────────────────────────
+
   # _fleet_host <name> — resolve to a reachable form: prefer the bare name (Tailscale
   # MagicDNS, works on any network), fall back to <name>.local (Bonjour, LAN). Lets you
   # type `j vminim4` and have it work on the LAN today and over Tailscale later — no suffix.
   _fleet_host() {
     local h="$1"
-    case "$h" in mini) h=vminim4;; air) h=vbookairm3;; neo) h=vbookneoa18;; esac  # friendly → true hostname
+    case "$h" in mini|m4) h=vminim4;; air|m3) h=vbookairm3;; neo|a18) h=vbookneoa18;; esac  # friendly → true hostname
     if ping -c1 -t1 "$h" >/dev/null 2>&1; then print -- "$h"; return 0
     elif ping -c1 -t1 "$h.local" >/dev/null 2>&1; then print -- "$h.local"; return 0
     else print -- "$h"; return 1; fi   # unreachable: still print the name, signal via exit code
@@ -220,7 +295,7 @@
   # opening a new local tmux window), independent, never mirroring a previous one. mosh's ssh gets
   # ConnectTimeout so it fails fast; if the link drops mid-session, mosh resumes THAT window on wake.
   vssh() {
-    local name="${1:?usage: vssh <host>   (e.g. vssh vminim4 | vssh vbookneo)}"
+    local name="${1:?usage: vssh <host>   (e.g. vssh vminim4 | vssh vbookneoa18)}"
     local G=$'\e[38;5;114m' Y=$'\e[38;5;179m' D=$'\e[2m' R=$'\e[0m'
     printf "  ${D}reaching %s…${R}" "$name"
     local host
@@ -232,6 +307,168 @@
     fi
     open -na /Applications/Ghostty.app --args -e /bin/zsh -c \
       "env -u TMUX -u TMUX_PANE mosh --ssh='ssh -o ConnectTimeout=4' --family=inet ${(q)host} -- tmux new-session"
+  }
+
+  # ┌──────────────────────────────────────────────────────── fleet (vj·vr·vw) ──┐
+  #  Shared helpers for the 3 fleet verbs. `_fleet_map` is pure (no I/O) so the
+  #  spinner stays smooth; the spinner + Kanagawa palette are common so vj/vr/vw
+  #  all look and feel identical.
+
+  # _fleet_map <name> — chip/friendly alias → true hostname (map only, no ping).
+  _fleet_map() {
+    case "${1:l}" in
+      mini|m4)  print -r -- vminim4 ;;
+      air|m3)   print -r -- vbookairm3 ;;
+      neo|a18)  print -r -- vbookneoa18 ;;
+      *)        print -r -- "$1" ;;   # already a hostname / unknown — pass through
+    esac
+  }
+
+  # _fleet_chip <hostname> — human chip label for the reveal ("Apple M4").
+  _fleet_chip() {
+    case "${1:l}" in
+      *m4)  print -r -- "Apple M4" ;;
+      *m3)  print -r -- "Apple M3" ;;
+      *a18) print -r -- "Apple A18" ;;
+      *)    print -r -- "" ;;
+    esac
+  }
+
+  # _fleet_spin <pid> <label> — braille throbber over a background probe; spins ONLY while the
+  # probe is actually running (zero added latency — a direct `tailscale ping` returns in ~5ms and
+  # this just exits), so it never delays the real path. The guaranteed eye-candy is the post-open
+  # settle in `vj` (decoupled: window opens first, animation is a pure nice-to-have after).
+  _fleet_spin() {
+    local f=(⠋ ⠙ ⠹ ⠸ ⠼ ⠴ ⠦ ⠧ ⠇ ⠏) i=0
+    local aqua=$'\e[38;2;122;168;159m' dim=$'\e[38;2;114;116;124m' R=$'\e[0m'
+    tput civis 2>/dev/null
+    while kill -0 "$1" 2>/dev/null; do
+      printf "\r  ${aqua}%s${R}  ${dim}%s${R}" "${f[i++%10+1]}" "$2"; sleep 0.06
+    done
+    tput cnorm 2>/dev/null; printf "\r\e[K"
+  }
+
+  # _fleet_poll — one concurrent sweep of the WHOLE fleet, feeding both vj's picker and vw's tree.
+  # Emits a flat, |-delimited record stream that both consumers parse:
+  #   HOST|<friendly>|<hostname>                              one per machine, in display order
+  #   PWR|<ac|batt>|<pct>|<cool|hot>|<load>                  vitals (pct=? on a desktop, no battery)
+  #   WIN|<session:index>|<name>|<cmd>|<agent_status>        one per tmux window
+  #   ASLEEP                                                  replaces PWR/WIN when a peer times out
+  # This box is probed locally; peers over ssh with a short ConnectTimeout that IS the reachability
+  # test (one round-trip, no separate ping). Peers run concurrently → a temp dir, read back in order,
+  # dir wiped on any exit. The probe is pure reads (pmset/sysctl/tmux) so it's cheap to repeat in the
+  # vw refresh loop. Agent windows are classified downstream by name/cmd (@agent_status is optional).
+  _fleet_poll() {
+    local -a order=(mini air neo)
+    local -A host=( mini vminim4 air vbookairm3 neo vbookneoa18 )
+    local self=${${HOST%%.*}:l}
+    # ONE probe string, run by whichever shell finally evaluates it (local sh, or the peer's shell
+    # over ssh). Single-quoted so nothing expands here; the inner $(...) reach the far side intact.
+    local probe='
+      batt=$(pmset -g batt 2>/dev/null)
+      pct=$(printf "%s" "$batt" | grep -oE "[0-9]+%" | head -1 | tr -d "%")
+      ac=batt; printf "%s" "$batt" | grep -q "AC Power" && ac=ac
+      lim=$(pmset -g therm 2>/dev/null | grep -oE "CPU_Speed_Limit *= *[0-9]+" | grep -oE "[0-9]+$")
+      therm=cool; [ -n "$lim" ] && [ "$lim" != 100 ] && therm=hot
+      set -- $(sysctl -n vm.loadavg 2>/dev/null | tr -d "{}"); load=$1
+      printf "PWR|%s|%s|%s|%s\n" "$ac" "${pct:-?}" "$therm" "${load:-?}"
+      tmux list-windows -a -F "WIN|#{session_name}:#{window_index}|#{window_name}|#{pane_current_command}|#{@agent_status}" 2>/dev/null
+    '
+    local dir; dir=$(mktemp -d) || return 1
+    {
+      local f
+      for f in $order; do
+        if [[ ${host[$f]:l} == $self ]]; then
+          ( sh -c "$probe" >"$dir/$f" 2>/dev/null ) &
+        else
+          ( ssh -o ConnectTimeout=3 -o BatchMode=yes "${host[$f]}" "$probe" >"$dir/$f" 2>/dev/null ) &
+        fi
+      done
+      wait
+      for f in $order; do
+        print -r -- "HOST|$f|${host[$f]}"
+        if [[ -s "$dir/$f" ]]; then cat -- "$dir/$f"; else print -r -- "ASLEEP"; fi
+      done
+    } always { rm -rf -- "$dir" }
+  }
+  # └────────────────────────────────────────────────────────────────────────────┘
+
+  # vj <host> — v[jump]: one smart, beautiful jump. A braille throbber spins while
+  # Tailscale races the paths (`tailscale ping`; plain `ping` when off-tailnet), then it
+  # settles into a face · host · chip · transport · quality. Transport is MOSH (∿, UDP) — the
+  # sole transport by choice: it roams across wifi↔cellular / sleep / IP changes and shows a
+  # dimmed "Last contact" overlay on a drop, the ONE built-in disconnect cue. et was evaluated
+  # and dropped (reconnects silently → no cue; its only edge, native scrollback, is nullified
+  # by tmux; see the "transport rationale" block at the top of this fleet section for the full
+  # ssh/mosh/et reasoning).
+  # Fresh session each jump via the remote's own tmux autostart. 1Password SSH agent
+  # (SSH_AUTH_SOCK from .zshenv) → Touch ID, no password, when the 1Password desktop app runs.
+  vj() {
+    local name="${1:?usage: vj <host>   (e.g. vj m4 | vj mini)}"
+    local host; host=$(_fleet_map "$name")
+    local blu=$'\e[38;2;126;156;216m'
+    local dim=$'\e[38;2;114;116;124m' bold=$'\e[1m' R=$'\e[0m'
+
+    # ── probe path quality under the spinner (Tailscale first, LAN fallback) ──
+    # no_monitor/no_notify: silence the interactive `[2] 12345` / `[2] + done` job-control
+    # chatter from the backgrounded probe so it never corrupts the spinner line.
+    setopt local_options no_monitor no_notify
+    local tmp; tmp=$(mktemp)
+    ( tailscale ping -c 3 "$host" >"$tmp" 2>/dev/null ) &
+    local pid=$!
+    trap 'kill $pid 2>/dev/null; tput cnorm 2>/dev/null; rm -f "$tmp"' INT TERM
+    _fleet_spin "$pid" "reaching ${name}…"
+    wait $pid 2>/dev/null; trap - INT TERM
+    local out; out=$(<"$tmp"); rm -f "$tmp"
+
+    local last rtt reach=0 direct=0
+    last=$(print -r -- "$out" | grep -iE 'pong|via' | tail -1)
+    if [[ -n "$last" ]]; then
+      reach=1
+      rtt=$(print -r -- "$last" | grep -oE '[0-9]+ms' | head -1 | grep -oE '[0-9]+')
+      [[ "$last" == *"via "* && "$last" != *DERP* && "$last" != *relay* ]] && direct=1
+    else
+      # off-tailnet / LAN: plain ping (bare then .local); a live LAN counts as a clean pipe
+      local rt
+      if rt=$(ping -c1 -t1 "$host" 2>/dev/null | grep -oE 'time=[0-9.]+' | head -1); then
+        reach=1; direct=1; rtt=${${rt#time=}%%.*}
+      elif rt=$(ping -c1 -t1 "$host.local" 2>/dev/null | grep -oE 'time=[0-9.]+' | head -1); then
+        reach=1; direct=1; rtt=${${rt#time=}%%.*}; host="$host.local"
+      fi
+    fi
+
+    local chip; chip=$(_fleet_chip "$host")
+
+    if (( ! reach )); then
+      printf "  %s  ${bold}%s${R} ${dim}· asleep or off — \`vw %s\` to wake${R}\n" \
+        "$(get_colored_face)" "$host" "$name"
+      return 1
+    fi
+
+    local pathw
+    (( direct )) && pathw=direct || pathw=relay
+    local badge="${blu}∿ mosh${R}"
+
+    # ── REAL WORK: open the mosh window NOW, before any animation (decoupled → 0 cost to the jump). ──
+    # mosh (UDP) is the sole transport: it roams across wifi↔cellular / sleep / IP changes, and a drop
+    # shows a dimmed "Last contact" overlay — the ONE built-in disconnect cue. et was dropped because it
+    # reconnects SILENTLY (no cue → you can't tell you're frozen) and its only real edge, native
+    # scrollback, is nullified by tmux. NO command passed — the remote login shell autostarts a FRESH
+    # tmux itself (ZSH_TMUX_AUTOSTART in .shell), landing exactly as if sitting at the machine.
+    # SSH_AUTH_SOCK → 1Password (from .zshenv/.minimal, sourced by this `zsh -c`) → Touch ID, no password.
+    open -na /Applications/Ghostty.app --args -e /bin/zsh -c \
+      "env -u TMUX -u TMUX_PANE mosh --ssh='ssh -o ConnectTimeout=4' --family=inet ${(q)host}"
+
+    # ── COSMETIC settle: a brief braille flourish → the reveal. Pure nice-to-have — the window is
+    #    already opening, so this only delays the origin prompt's return, never the real jump. ──
+    local aqua=$'\e[38;2;122;168;159m' fr=(⠋ ⠙ ⠹ ⠸ ⠼ ⠴ ⠦ ⠧ ⠇ ⠏)
+    tput civis 2>/dev/null
+    for i in {1..12}; do
+      printf "\r  ${aqua}%s${R}  ${dim}reaching %s…${R}" "${fr[i%10+1]}" "$name"; sleep 0.04
+    done
+    tput cnorm 2>/dev/null
+    printf "\r\e[K  %s  ${bold}%s${R} ${dim}%s${R}   %s   ${dim}%s %sms${R}\n" \
+      "$(get_colored_face)" "$host" "$chip" "$badge" "$pathw" "${rtt:-?}"
   }
 
   # _vwatch_bar <pct> — 10-cell ASCII charge bar, e.g. [#######---].
@@ -303,6 +540,20 @@
       print -P "  Go there, or ^C it to release. Exiting."
       return 0
     fi
+    # ── wakeability gate (one-time, consent) ──────────────────────────────────────
+    # caffeinate holds this machine awake only WHILE vwatch runs; once it exits and the machine
+    # sleeps, the fleet reaches it again only if wake-for-network (womp) is on. If the AC profile
+    # has womp off, offer to enable it once. pmset state IS the memory — silent when already on,
+    # no flag, no nag. Skipped when non-interactive (a scripted/ssh run without a tty).
+    if [[ -o interactive && -t 0 ]]; then
+      local ac_womp=$(pmset -g custom 2>/dev/null | awk '/AC Power/{f=1} /Battery Power/{f=0} f&&/womp/{print $2; exit}')
+      if [[ "$ac_womp" == 0 ]]; then
+        print -P "  %F{yellow}${HOST%%.*} isn't wakeable after sleep%f — wake-for-network is off on AC."
+        print -Pn "  Enable it so the fleet can wake this machine from sleep? %F{cyan}[y/N]%f "
+        local reply; read -k1 reply 2>/dev/null; print
+        [[ "$reply" == [yY] ]] && { sudo pmset -c womp 1 && print -P "  %F{green}✓ wakeable on AC%f — asleep-but-reachable from now on."; }
+      fi
+    fi
     # caffeinate -im: keep the SYSTEM awake for work on AC *and* battery (unlike -s = AC-only),
     # but NOT -d — let the display sleep so we waste the least energy. `disown` so it's never a
     # tracked shell job (no "you have running jobs" on exit).
@@ -329,6 +580,85 @@
     open "vnc://${host}"
   }
 
+  # vdebug <host> [--logs] — v[diagnose]: one-shot, READ-ONLY health triage of a fleet machine,
+  # born from the day Neo looked "broken" after a reboot and turned out to be a self-resolving
+  # macOS-update storm. Same reachability gate + Kanagawa reveal as vj/vssh (never hangs on a
+  # sleeping box). ONE ssh round-trip pulls load, the top CPU hogs, process counts, system-extension
+  # health (Karabiner + Tailscale must read `activated enabled` after a reboot), and the tmux window
+  # map. It VERDICTS the common case for you: uptime < 30 min + top procs are Spotlight/UpdateBrain/
+  # iCloud daemons → "post-reboot storm — self-resolving, leave it" (the exact lesson from that
+  # scare). READ-ONLY by design — it never kicks a daemon or re-activates an extension; it triages,
+  # then YOU decide. `--logs` appends a slower error+fault tail from the unified log (off by default
+  # so the fast path stays fast). Escalate a REAL bug on the box with `sysdiagnose` / `log collect`.
+  vdebug() {
+    local want_logs=0 name="" a
+    for a in "$@"; do case "$a" in --logs) want_logs=1 ;; *) [[ -z "$name" ]] && name="$a" ;; esac; done
+    : ${name:?usage: vdebug <host> [--logs]   (e.g. vdebug neo | vdebug mini --logs)}
+    local G=$'\e[38;5;114m' Y=$'\e[38;5;179m' D=$'\e[2m' R=$'\e[0m'
+
+    local host
+    if ! host=$(_fleet_host "$name"); then
+      printf "  ${Y}○${R} %s ${D}offline — asleep or off (run \`vwatch\` on it, or wake it)${R}\n" "$name"
+      return 1
+    fi
+
+    # ── the remote probe: single-quoted so NOTHING expands locally; the $(...) / $vars run on the
+    #    FAR side when ssh hands this ONE arg to the remote shell (parameter expansion of "$probe"
+    #    is not recursive, so its inner `$` reach the remote intact). Pure reads, output-capped. ──
+    local probe='
+      NC=$(sysctl -n hw.ncpu 2>/dev/null)
+      BOOT=$(sysctl -n kern.boottime 2>/dev/null | grep -oE "sec = [0-9]+" | head -1 | grep -oE "[0-9]+"); NOW=$(date +%s)
+      [ -z "$BOOT" ] && BOOT=$NOW; UPS=$(( NOW - BOOT )); UPM=$(( UPS / 60 ))
+      set -- $(sysctl -n vm.loadavg 2>/dev/null | tr -d "{}"); L1=$1; L5=$2; L15=$3
+      HOT=$(awk -v l="$L1" -v n="$NC" "BEGIN{ print (l > 1.5*n) ? 1 : 0 }")
+      TOP=$(ps -Ao pcpu,comm -r 2>/dev/null | sed -n "2,7p")
+      DAEMON="UpdateBrain|MobileSoftwareUpdate|spotlight|corespotlight|mds|fileproviderd|cloudd|bird|backupd|Mail|photoanalysisd|mediaanalysisd|assetsubscriptiond|suggestd"
+      STORM=0; { echo "$TOP" | grep -qiE "$DAEMON"; } && [ "$UPS" -lt 1800 ] && STORM=1
+      P=$(ps -A 2>/dev/null | grep -c .); Z=$(pgrep -x zsh 2>/dev/null | grep -c .)
+      TM=$(pgrep -x tmux 2>/dev/null | grep -c .); ND=$(pgrep -i node 2>/dev/null | grep -c .)
+      KB=$(pgrep -i karabiner 2>/dev/null | grep -c .)
+      EXT=$(systemextensionsctl list 2>/dev/null)
+      kar=BAD; { echo "$EXT" | grep -i karabiner | grep -q "activated enabled"; } && kar=OK
+      tsc=BAD; { echo "$EXT" | grep -i tailscale | grep -q "activated enabled"; } && tsc=OK
+      TW=$(tmux list-windows -a -F "#{session_name}:#{window_index} #{window_name} [#{pane_current_command}]" 2>/dev/null); TWC=$(echo "$TW" | grep -c .)
+      Rr=$(printf "\033[0m"); RED=$(printf "\033[38;5;203m"); GRN=$(printf "\033[38;5;114m"); YEL=$(printf "\033[38;5;179m"); DIM=$(printf "\033[2m")
+      [ "$HOT" = 1 ] && LC=$RED || LC=$GRN
+      printf "  ${DIM}up${Rr} %sm   ${DIM}load${Rr} ${LC}%s${Rr} %s %s   ${DIM}(%s cores)${Rr}\n" "$UPM" "$L1" "$L5" "$L15" "$NC"
+      if [ "$STORM" = 1 ]; then
+        printf "  ${YEL}post-reboot storm${Rr} ${DIM}— indexing/update/iCloud daemons; self-resolving, leave it${Rr}\n"
+      elif [ "$HOT" = 1 ]; then
+        printf "  ${RED}elevated load${Rr} ${DIM}— check the top processes below${Rr}\n"
+      else
+        printf "  ${GRN}healthy${Rr}\n"
+      fi
+      printf "  ${DIM}top${Rr}\n"; echo "$TOP" | while read pc cm; do printf "    %5s%%  %s\n" "$pc" "${cm##*/}"; done
+      printf "  ${DIM}procs${Rr} %s  ${DIM}zsh${Rr} %s  ${DIM}tmux${Rr} %s  ${DIM}node${Rr} %s  ${DIM}karabiner${Rr} %s\n" "$P" "$Z" "$TM" "$ND" "$KB"
+      [ "$kar" = OK ] && kc=$GRN || kc=$RED; [ "$tsc" = OK ] && tc=$GRN || tc=$RED
+      printf "  ${DIM}ext${Rr}  karabiner ${kc}%s${Rr}   tailscale ${tc}%s${Rr}\n" "$kar" "$tsc"
+      printf "  ${DIM}tmux${Rr} %s windows\n" "$TWC"; echo "$TW" | sed -n "1,12p" | sed "s/^/    /"
+    '
+    if (( want_logs )); then
+      probe+='
+      Rr=$(printf "\033[0m"); DIM=$(printf "\033[2m")
+      printf "  ${DIM}faults+errors (last 10m)${Rr}\n"
+      log show --last 10m --predicate "messageType == 16 || messageType == 17" 2>/dev/null | tail -12 | sed "s/^/    /"
+      '
+    fi
+
+    # spin over the probe (real latency = the ssh round-trip), then reveal like vj.
+    setopt local_options no_monitor no_notify
+    local tmp; tmp=$(mktemp)
+    ( ssh -o ConnectTimeout=6 -o BatchMode=yes "$host" "$probe" >"$tmp" 2>&1 ) &
+    local pid=$!
+    trap 'kill $pid 2>/dev/null; tput cnorm 2>/dev/null; rm -f "$tmp"' INT TERM
+    _fleet_spin "$pid" "probing ${name}…"
+    wait $pid 2>/dev/null; trap - INT TERM
+
+    local chip; chip=$(_fleet_chip "${host%.local}")
+    printf "\r\e[K  %s  ${D}%s${R}  ${D}%s${R}\n" "$(get_colored_face)" "$host" "$chip"
+    cat "$tmp"; rm -f "$tmp"
+  }
+
   # tab-completion for vssh/vremote — friendly aliases (mini/air/neo) AND true hostnames (live
   # from Tailscale, else the known set), so you never memorize. Guarded: no-op if compinit isn't up.
   _vfleet_hosts() {
@@ -336,11 +666,11 @@
     local -a hosts
     local ts=${commands[tailscale]:-/Applications/Tailscale.app/Contents/MacOS/Tailscale}
     [[ -x "$ts" ]] && hosts=(${(f)"$("$ts" status 2>/dev/null | awk '$1 ~ /^100\./{print $2}')"})
-    (( ${#hosts} )) || hosts=(vminim4 vbookairm3 vbookneo)
+    (( ${#hosts} )) || hosts=(vminim4 vbookairm3 vbookneoa18)
     _describe 'alias' aliases
     _describe 'hostname' hosts
   }
-  (( $+functions[compdef] )) && compdef _vfleet_hosts vssh vremote 2>/dev/null
+  (( $+functions[compdef] )) && compdef _vfleet_hosts vssh vremote vdebug 2>/dev/null
 
 # └─────────────────────────────────────────────────────────────────────────────┘
 

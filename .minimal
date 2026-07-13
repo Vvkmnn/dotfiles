@@ -32,7 +32,14 @@
 # └────────────────────────────────────────────────────────────────────────────┘
 #  Purpose: Bare essentials for restricted/sandbox environments
 #           Used when AI_SANDBOX_ONLY=1 or minimal shell needed
-#  Contains: Basic PATH, EDITOR, TERM settings
+#  Also:    This file IS ~/.zshenv (symlinked) — the ONE startup file zsh sources on EVERY
+#           invocation, including a non-login `zsh -c "…"`. That's the key case: `vj`/`vssh` open
+#           the remote window as `ghostty -e /bin/zsh -c "…mosh/et…"`, which sources ONLY this
+#           file — never .zprofile (login) / .zshrc (interactive → where .profile/.shell/.functions
+#           load). So any env a REMOTE JUMP needs (SSH_AUTH_SOCK, MOSH_PREDICTION_OVERWRITE, TERM)
+#           must live HERE, not in .shell/.zshrc.
+#             man zshall › STARTUP FILES:  .zshenv=always · .zprofile/.zlogin=login · .zshrc=interactive
+#  Contains: Basic PATH, EDITOR, TERM  +  MOSH_PREDICTION_OVERWRITE, SSH_AUTH_SOCK(→1Password), GPG_TTY
 
 # GUARD Prevent double-sourcing (shell-local, fresh per new shell)
 #       No AI_SANDBOX_ONLY check - this file SETS that flag
@@ -47,12 +54,42 @@ export PATH="$HOME/.local/share/mise/shims:/opt/homebrew/bin:/opt/homebrew/sbin:
 export EDITOR=${EDITOR:-nvim}
 export VISUAL=${VISUAL:-$EDITOR}
 export TERM=${TERM:-xterm-256color}
+# A jump (vssh/mosh from Ghostty) forwards TERM=xterm-ghostty. If THIS machine lacks that terminfo
+# entry, zsh's line editor errors ("can't find terminal definition"). Fall back so it never does —
+# tmux sets its own TERM inside a session, so this only touches the pre-tmux outer shell. Gated to
+# ghostty TERMs (the only forwarded value that bites), so it costs one infocmp on jumps, nothing else.
+case "$TERM" in ghostty|xterm-ghostty|*-ghostty)
+  command infocmp "$TERM" >/dev/null 2>&1 || export TERM=xterm-256color ;;
+esac
+
+# ── remote-launch env: why it lives HERE (.zshenv) ──────────────────────────────
+#  A non-login, non-interactive `zsh -c "…"` sources ONLY .zshenv — which is exactly how
+#  `vj`/`vssh` open the remote window (`ghostty -e zsh -c "…mosh/et…"`). `.zprofile` (login-
+#  only) and `.zshrc` (interactive-only → where .profile/.shell/.functions get sourced) never
+#  run there. So any env a remote jump needs must live in this file, not .shell/.zshrc.
+#    man zshall › STARTUP FILES:  .zshenv=always · .zprofile/.zlogin=login · .zshrc=interactive
+# ────────────────────────────────────────────────────────────────────────────────
 
 # mosh client rendering: overwrite speculative local echo instead of inserting it BEFORE
 # zsh-autosuggestions (active) — stops the ghost suggestion being shoved right as you type
 # over `vssh`/mosh. Lives here (not .zprofile) because vssh's `zsh -c` is non-login and only
-# sources .zshenv → .minimal. Client-side only; harmless off-mosh. (2026-07-08)
+# sources .zshenv → .minimal. Client-side only; harmless off-mosh.
 export MOSH_PREDICTION_OVERWRITE=${MOSH_PREDICTION_OVERWRITE:-yes}
+
+# SSH agent → 1Password (your real key store). The old gpg-agent SSH socket (formerly exported
+# in .profile/.shell/.zprofile) was DEAD — a socket that doesn't exist + no enable-ssh-support —
+# which is why et/git fell back to a password. Set 1P here in .zshenv so EVERY shell reaches it,
+# including vj's non-login `zsh -c` et window (only .zshenv is sourced there). GUARD `-S`: never
+# clobber a LIVE forwarded agent inside `ssh -A` — that's how git on a remote box uses YOUR
+# laptop's key so Touch-ID pops where you are (no screen-sharing). Path = 1Password's universal
+# id (no secret). Single source of truth: the .profile/.shell/.zprofile copies were removed.
+#
+# GOTCHA: this socket is served by the 1Password DESKTOP APP. If the app isn't running, the socket
+# FILE still lingers — so the `-S` guard below PASSES — yet nothing answers it, and every ssh/mosh/et
+# falls back to a PASSWORD with no Touch-ID. Keep the app alive: 1Password ▸ Settings ▸ General ▸
+# "Keep 1Password in the menu bar" + "Start at login" both ON. Diagnose: `ssh-add -l` on this socket
+# → key list = agent alive; "Connection refused" = app not running.
+[[ -S "$SSH_AUTH_SOCK" ]] || export SSH_AUTH_SOCK="$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
 
 # GPG for git commits in AI tools
 export GPG_TTY=$(tty)

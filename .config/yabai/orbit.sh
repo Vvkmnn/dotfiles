@@ -4,8 +4,8 @@
 # Move the focused window to another space, preferring an EMPTY space:
 #   left / right - first empty walking in that direction, wrap at the ends
 #   breathe      - closest empty in either direction (ties: right wins)
-# Fallback when no empty space exists anywhere: the space with the fewest windows.
-# Skips native-fullscreen spaces. Never creates a new space.
+# Fallback when no empty space exists anywhere: create a new empty space on the current display
+# (space --create works sans scripting-addition on Tahoe; we never destroy). Skips fullscreen spaces.
 #
 # On Tahoe (no scripting-addition), --focus flag on window-move focuses the window
 # but does not switch the display; we follow with an explicit space --focus.
@@ -38,6 +38,16 @@ done < <(jq -r --argjson w "$windows_json" '
                        and ."is-minimized" == false)) | length) as $cnt
     | "\($s.index) \($cnt)"
 ' <<< "$spaces_json")
+
+# Query-only mode: print the index of the first truly-empty space (tiled-count 0), or
+# nothing if every space is occupied. Shared "empty" definition for the Screen Sharing
+# signal so it means the same thing here and in the keybind. Moves no windows.
+if [[ "$mode" == "--empty-index" ]]; then
+    for i in "${!indices[@]}"; do
+        if (( counts[i] == 0 )); then printf '%s\n' "${indices[$i]}"; exit 0; fi
+    done
+    exit 0
+fi
 
 n=${#indices[@]}
 if (( n <= 1 )); then exit 0; fi
@@ -77,18 +87,15 @@ case "$mode" in
         ;;
 esac
 
-# Fallback: no empty available -> pick space with fewest windows (not current)
+# Fallback: no empty space anywhere -> create one on the current display. Adding a space
+# renumbers indices across displays, so identify the new space by its stable id (diff against
+# the pre-create snapshot) rather than assuming it's the highest index.
 if [[ -z "$target" ]]; then
-    min_n=99999
-    min_i=-1
-    for i in "${!indices[@]}"; do
-        if (( i == current_pos )); then continue; fi
-        if (( counts[i] < min_n )); then
-            min_n=${counts[i]}
-            min_i=$i
-        fi
-    done
-    if (( min_i >= 0 )); then target=${indices[$min_i]}; fi
+    before_ids=$(jq -c '[.[].id]' <<< "$spaces_json")
+    yabai -m space --create
+    target=$(yabai -m query --spaces \
+        | jq -r --argjson before "$before_ids" \
+            'map(select(.id as $id | $before | index($id) | not)) | .[0].index // empty')
 fi
 
 if [[ -z "$target" ]] || (( target == current )); then exit 0; fi

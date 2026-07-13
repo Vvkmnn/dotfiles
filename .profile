@@ -96,7 +96,7 @@
 
 # ┌─────────────────────────────────────────────────────────────── security ───┐
   export GPG_TTY=$(tty)
-  export SSH_AUTH_SOCK=~/.gnupg/S.gpg-agent.ssh
+  # SSH_AUTH_SOCK set once in .zshenv/.minimal → 1Password; the old gpg-agent SSH socket was dead.
 # └────────────────────────────────────────────────────────────────────────────┘
 
 # ┌─────────────────────────────────────────────────────────────── platform ───┐

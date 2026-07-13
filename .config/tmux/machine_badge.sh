@@ -21,17 +21,18 @@
 TMUX_BIN=/opt/homebrew/bin/tmux
 command -v "$TMUX_BIN" >/dev/null 2>&1 || TMUX_BIN=tmux
 
+# Shared iconography contract (power-tier shape + per-machine hue), also read by ~/.fleet — ONE source
+# of truth so the status bar and the fleet tree never drift. Defines fleet_shape() and fleet_hex().
+. "$HOME/.config/fleet/badge.sh"
+
 # Glyphs via octal UTF-8 bytes so no editor/transport can strip them (verified round-trip):
-#   apple U+F179 · tux U+F17C · caps U+E0B6/U+E0B4 (rounded powerline) · zoom U+F0293.
-#   power shapes: triangle U+25B3 · square U+25A1 · pentagon U+2B20 · hexagon U+2B21 ·
-#                 circle U+25CB · star U+2606 (geometric symbols, NOT emoji).
+#   apple U+F179 · tux U+F17C · caps U+2590/U+258C (square half-blocks) · zoom U+F0293.
+#   power-tier shapes (△□⬠⬡○☆) live in badge.sh now, shared with ~/.fleet.
 APPLE=$(printf '\357\205\271')
 TUX=$(printf '\357\205\274')
 LCAP=$(printf '\356\202\266')   # U+E0B6 left  half-circle — rounded LEFT cap
 RCAP=$(printf '\356\202\264')   # U+E0B4 right half-circle — rounded RIGHT cap
 ZOOM=$(printf '\363\260\212\223')
-TRI=$(printf '\342\226\263'); SQ=$(printf '\342\226\241'); PENT=$(printf '\342\254\240')
-HEX=$(printf '\342\254\241'); CIRC=$(printf '\342\227\213'); STAR=$(printf '\342\230\206')
 GOLD='#e6c384'; WHITE='#fffaf0'; BLACK='#1f1f28'
 
 case "$(uname -s)" in Linux) OSGLYPH="$TUX" ;; *) OSGLYPH="$APPLE" ;; esac
@@ -48,36 +49,15 @@ to_roman() {
 	printf '%s' "$out"
 }
 
-# --- POWER-TIER shape from core count (sides = strength; zero fork) ----------
+# --- POWER-TIER shape from core count (sides = strength) — mapping shared with ~/.fleet via badge.sh -
 cores=$(sysctl -n hw.ncpu 2>/dev/null || nproc 2>/dev/null || echo 8)
-if   [ "$cores" -le 8 ];  then SHAPE=$TRI
-elif [ "$cores" -le 10 ]; then SHAPE=$SQ
-elif [ "$cores" -le 12 ]; then SHAPE=$PENT
-elif [ "$cores" -le 16 ]; then SHAPE=$HEX
-elif [ "$cores" -le 24 ]; then SHAPE=$CIRC
-else                           SHAPE=$STAR
-fi
+SHAPE=$(fleet_shape "$cores")
 
-# --- PER-MACHINE colour (curated table; hash-fallback for any new box) -------
-# Each machine has its OWN stable hue — NOT derived from the chip, so two same-chip
-# machines never collide. Add a machine by dropping a line in the case below; an
-# unrecognised host still auto-gets a unique, stable hue by hashing its name.
+# --- PER-MACHINE colour — table + hash-fallback shared with ~/.fleet via badge.sh (fleet_hex) --------
+# Each machine has its OWN stable hue (NOT chip-derived, so two same-chip boxes never collide); an
+# unrecognised host still auto-gets a unique, stable hue by hashing its name. Edit the table in badge.sh.
 host=$(scutil --get LocalHostName 2>/dev/null || hostname -s 2>/dev/null || echo host)
-hl=$(printf '%s' "$host" | tr '[:upper:]' '[:lower:]')
-case "$hl" in
-	*air*)    machine_color='#7aa89f' ;;   # teal
-	*mini*)   machine_color='#e0a45c' ;;   # amber
-	*neo*)    machine_color='#9d7cc9' ;;   # violet
-	*studio*) machine_color='#c98a6b' ;;   # clay (reserved)
-	*)  machine_color=$(python3 - "$host" 2>/dev/null <<'PY'
-import sys, colorsys, hashlib
-h = int(hashlib.md5(sys.argv[1].encode()).hexdigest(), 16) % 360
-r, g, b = colorsys.hls_to_rgb(h/360, 0.64, 0.45)
-print("#%02x%02x%02x" % (round(r*255), round(g*255), round(b*255)))
-PY
-)
-	    machine_color="${machine_color:-#9a9a9a}" ;;   # grey if python3 missing
-esac
+machine_color="#$(fleet_hex "$host")"
 "$TMUX_BIN" set-option -g @machine_color "$machine_color"
 
 # --- per session: Roman numeral + a lighter SHADE of the machine colour ------

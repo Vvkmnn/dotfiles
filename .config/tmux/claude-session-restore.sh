@@ -29,7 +29,7 @@ _session_info() {
   [ -z "$sid" ] && return
   local resolved_cwd
   resolved_cwd=$(cd "$_intended_cwd" 2>/dev/null && pwd -P || echo "$_intended_cwd")
-  local project_dir="$HOME/.claude/projects/$(echo "$resolved_cwd" | sed 's|/|-|g; s|\.||g')"
+  local project_dir="$HOME/.claude/projects/$(echo "$resolved_cwd" | sed 's|/|-|g; s|\.|-|g')"
   local jsonl="$project_dir/${sid}.jsonl"
   [ -f "$jsonl" ] || return
   python3 -c "
@@ -124,7 +124,7 @@ fi
 
 # Resolve project dir early (needed by all lookup strategies)
 _resolved_cwd=$(cd "$PWD" 2>/dev/null && pwd -P || echo "$PWD")
-_project_dir="$HOME/.claude/projects/$(echo "$_resolved_cwd" | sed 's|/|-|g; s|\.||g')"
+_project_dir="$HOME/.claude/projects/$(echo "$_resolved_cwd" | sed 's|/|-|g; s|\.|-|g')"
 
 # --- Session lookup: find the best session for this pane ---
 # Strategy: try exact match first, then broaden, always validate against JSONL
@@ -181,13 +181,26 @@ _idle_checker() {
 
 /opt/homebrew/bin/tmux rename-window "claude" 2>/dev/null
 
+_rapid=0   # consecutive sub-2s claude exits → crash-loop guard
+
 while true; do
     if [ -n "$SESSION_ID" ]; then
         _prompt "claude --resume $SESSION_ID"
     else
         _prompt "claude --continue"
     fi
-    read -r || break
+
+    # Wait for the human before (re)starting claude. Read the keypress from the
+    # TERMINAL, not inherited stdin — buffered keystrokes there drove a runaway
+    # restart loop. Drain any queued input first so held/pasted Enters can't
+    # auto-advance. Non-interactive or EOF (Ctrl+D) → drop to a login shell,
+    # matching the INT trap above (never fall off the end and close the pane).
+    if [[ ! -t 0 || ! -t 1 ]]; then
+        printf '\033[0m\n'; exec "$SHELL" -l 2>/dev/null || exit 0
+    fi
+    _drain=0
+    while (( _drain++ < 4096 )) && read -rsn1 -t 0.005 _ 2>/dev/null; do :; done
+    read -r _ </dev/tty || { printf '\033[0m\n'; exec "$SHELL" -l 2>/dev/null || exit 0; }
 
     [[ -d "$_intended_cwd" ]] && cd "$_intended_cwd" 2>/dev/null
     /opt/homebrew/bin/tmux set-window-option automatic-rename on 2>/dev/null
@@ -196,16 +209,50 @@ while true; do
     _idle_checker &
     _checker_pid=$!
 
-    # Run Claude in foreground (preserves TUI)
+    # Pre-flight: only resume if the transcript is really there. A stale mapfile pointing at a
+    # deleted/empty jsonl made `claude --resume` fail and then blind-fall to `claude --continue`,
+    # which silently resumes whatever is NEWEST in this cwd -- the wrong session. Re-derive from the
+    # newest real transcript before giving up (same fallback as the initial lookup, :153-158).
     if [ -n "$SESSION_ID" ]; then
-        claude --resume "$SESSION_ID" 2>/dev/null || claude --continue
+        _sf="$_project_dir/${SESSION_ID}.jsonl"
+        if [ ! -s "$_sf" ] || ! grep -q '"type":"user"' "$_sf" 2>/dev/null; then
+            _latest=$(ls -t "$_project_dir"/*.jsonl 2>/dev/null | head -1)
+            if [ -n "$_latest" ] && grep -q '"type":"user"' "$_latest" 2>/dev/null; then
+                SESSION_ID=$(basename "$_latest" .jsonl)
+                printf '  \033[38;2;224;175;104mmapping was stale -- resuming newest transcript (%s)\033[0m\n' "${SESSION_ID:0:8}"
+            else
+                SESSION_ID=""
+                printf '  \033[38;2;224;175;104mno transcript for this pane -- starting fresh\033[0m\n'
+            fi
+        fi
+    fi
+
+    # Run Claude in foreground (preserves TUI). Surface resume errors (no 2>/dev/null) and do NOT
+    # blind-fallback to --continue -- a failed resume is handled below via exit code + timing.
+    _start=$SECONDS
+    if [ -n "$SESSION_ID" ]; then
+        claude --resume "$SESSION_ID"
     else
         claude --continue
     fi
+    _rc=$?
 
     # Clean up checker
     kill "$_checker_pid" 2>/dev/null
     wait "$_checker_pid" 2>/dev/null
+
+    # Crash-loop floor: claude dying in <2s repeatedly → drop to a shell so a broken
+    # resume can't spin the pane (mirrors the __claude_run guard in ~/.functions).
+    if (( SECONDS - _start < 2 )); then
+        # A fast non-zero exit right after a resume is a resume FAILURE, not a normal session end.
+        # Say so (instead of the old silent 2>/dev/null) so a bad/corrupt transcript is debuggable.
+        if [ -n "$SESSION_ID" ] && (( _rc != 0 )); then
+            printf '\033[0m  \033[38;2;247;118;142mresume of %s exited immediately (code %d)\033[0m\n' "${SESSION_ID:0:8}" "$_rc"
+        fi
+        (( ++_rapid >= 3 )) && { printf '\033[0m\n  claude keeps exiting immediately — dropping to shell\n'; exec "$SHELL" -l 2>/dev/null || exit 0; }
+    else
+        _rapid=0
+    fi
 
     # Re-read session mapping for next restart (exact match, then path-only)
     SESSION_ID=$(awk -v key="${TMUX_SESSION}:${TMUX_WINDOW}:${_intended_cwd} " \

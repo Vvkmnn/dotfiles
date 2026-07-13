@@ -11,9 +11,10 @@
 theme = Kanagawa Wave
 
 # Force readable text on colored backgrounds (Claude Code diff blocks were
-# dark-on-dark-red/green with Kanagawa's muted ANSI palette — 2026-07-06).
-# Ratio 2 = subtle nudge; raise to 3 if diffs are still hard to read.
-minimum-contrast = 2
+# dark-on-dark-red/green with Kanagawa's muted ANSI palette). Range 1.0-21.0.
+# Ratio 3 forces legible glyphs on the diff green/red and lifts dim gray UI text;
+# drop to 2 if it looks washed out, raise toward 4 if diffs are still hard to read.
+minimum-contrast = 3
 
 # Beautiful rose-pine theme switching
 # theme = light:rose-pine-dawn,dark:rose-pine
@@ -33,10 +34,6 @@ minimum-contrast = 2
 
 # Background blur - reduced for better performance
 # background-blur-radius = 40
-
-# Minimum contrast ratio for text readability (1.0-21.0)
-# 1.3 improves dim element readability (comments, inactive UI) — try if Kanagawa feels too dim
-minimum-contrast = 1.1
 
 # Color space for rendering — display-p3 unlocks wide gamut on Apple Silicon P3 displays
 window-colorspace = display-p3
