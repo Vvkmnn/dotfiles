@@ -261,7 +261,10 @@ phase_services() {
     plist="$la/$label.plist"
     sed "s#__HOME__#$HOME#g" "$tmpl" > "$plist"
     launchctl bootout "$gui/$label" 2>/dev/null            # unload if already present (idempotent)
-    launchctl bootstrap "$gui" "$plist" 2>/dev/null && ok "$label" || warn "$label bootstrap failed"
+    # bootout is async: a re-bootstrap of an already-running KeepAlive service can race and return
+    # non-zero, so treat "loaded afterwards" as success — only warn if it's genuinely not loaded.
+    launchctl bootstrap "$gui" "$plist" 2>/dev/null
+    if launchctl print "$gui/$label" >/dev/null 2>&1; then ok "$label"; else warn "$label bootstrap failed"; fi
   done
 }
 
