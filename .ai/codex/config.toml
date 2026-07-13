@@ -2,23 +2,28 @@
 # Copy/merge selected keys into ~/.codex/config.toml with ~/.ai/setup codex.
 # Do not replace the whole local file: Codex.app writes local plugin/runtime blocks.
 
-model = "gpt-5.5"
-model_reasoning_effort = "high"
+model = "gpt-5.6-sol"
+model_reasoning_effort = "medium"
 plan_mode_reasoning_effort = "high"
 model_reasoning_summary = "auto"
 model_verbosity = "medium"
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
 
 # Persistent Fast mode is intentionally unset. Use /fast on only per session.
 # service_tier = "fast"
 
-# Context hygiene: compact before quality degrades, without trying to burn max tokens.
-model_auto_compact_token_limit = 90000
+# Context hygiene: leave auto-compaction to the active model's current defaults.
 tool_output_token_limit = 8000
 
 # Let repo-level AI.md work without adding a root AGENTS.md.
 project_doc_fallback_filenames = ["AI.md", "CLAUDE.md"]
 
+[sandbox_workspace_write]
+network_access = true
+
 [tui]
+vim_mode_default = true
 notifications = ["agent-turn-complete", "approval-requested"]
 notification_method = "auto"
 notification_condition = "unfocused"

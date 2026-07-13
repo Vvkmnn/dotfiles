@@ -68,6 +68,7 @@ After those, setup should run unattended. If a mid-run prompt appears, log it in
 | `README.md` | shared charter, contracts, secrets, setup map |
 | `codex.md` | Codex TUI/App daily-use policy and setup |
 | `chatgpt.md` | ChatGPT macOS/iOS integration, remote control, appshots |
+| `fleet.md` | shared multi-machine and multi-AI handoff contract |
 | `codex/config.toml` | safe Codex template; setup merges selected keys locally |
 | `setup` | one command: `~/.ai/setup [packages·fonts·services·xcode·macos·remote·codex·gate·doctor]` |
 | `ISSUES.md` | failures and gotchas across machine setups |
@@ -91,6 +92,10 @@ Codex-specific local files such as `~/.codex/auth.json`, SQLite DBs, logs,
 history, sessions, plugin cache, and app runtime state are machine-local and
 must stay untracked.
 
+Claude's installed-plugin registry, marketplace checkout, cache, and timestamped
+marketplace state are also machine-local. Reproduce integrations through setup
+and tracked settings instead of committing generated plugin state.
+
 ## Fresh Mac flow
 
 1. Install any capable AI CLI/app you plan to use: Codex, Claude, or another tool.
@@ -98,7 +103,10 @@ must stay untracked.
 3. Unlock 1Password and run the bare-repo/git-crypt cold start.
 4. Run `~/.ai/setup`; use `~/.ai/setup codex` after Codex is installed.
 5. Grant macOS gates from `~/.ai/setup gate`.
-6. Restart, then run `~/.ai/setup doctor` and `codex doctor --all`.
+6. If Claude is installed, restart it after the Codex phase and run
+   `/codex:setup --disable-review-gate` once to verify the official Claude↔Codex
+   bridge while preserving selective, on-demand review.
+7. Restart the Mac, then run `~/.ai/setup doctor` and `codex doctor --all`.
 
 For Codex specifics, read `codex.md`. For ChatGPT macOS/iOS integration, read
-`chatgpt.md`.
+`chatgpt.md`. For Claude/Codex work across machines, read `fleet.md`.

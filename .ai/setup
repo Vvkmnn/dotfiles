@@ -408,9 +408,30 @@ phase_remote() {
   # damage. Just tcpkeepalive so an active ssh/mosh survives brief idle — nothing that forces
   # never-sleep, wakes the machine, or reboots it (those are mini-only wants, not laptop cruft).
   # Laptops sleep normally to spare cycles; keeping a machine awake + fleet-available on demand
-  # (or running the mini as the always-on hub) is `vwatch`'s job, elegant + per-device.
+  # (or running the mini as the always-on hub) is `vw`'s job, elegant + per-device.
   sudo pmset -a tcpkeepalive 1
-  ok "power: tcpkeepalive only (battery-safe, universal) — vwatch handles any stay-awake, per machine"
+  ok "power: tcpkeepalive only (battery-safe, universal) — vw handles any stay-awake, per machine"
+
+  # Passwordless pmset — lets `vw` toggle `disablesleep` (hold THIS machine awake, lid closed, for
+  # fleet/agent work) without a password prompt on every start and stop. Scoped to the single
+  # power-only binary /usr/bin/pmset: pmset can't read files, run code, or escalate, so NOPASSWD here
+  # grants nothing beyond power settings (the same narrow pattern Amphetamine ships as its
+  # amphetamine_PowerProtect rule). vw restores normal sleep the moment it exits, so the machine is a
+  # normal laptop whenever vw isn't running. Validated with `visudo -cf` before it counts — a rule
+  # that fails to parse is removed immediately so a bad file can never wedge sudo.
+  local pmset_rule=/etc/sudoers.d/pmset u; u=$(id -un)
+  if sudo test -f "$pmset_rule"; then
+    ok "passwordless pmset already present ($pmset_rule)"
+  else
+    printf '%s ALL=(root) NOPASSWD: /usr/bin/pmset\n' "$u" | sudo tee "$pmset_rule" >/dev/null
+    sudo chmod 0440 "$pmset_rule"
+    if sudo visudo -cf "$pmset_rule" >/dev/null 2>&1; then
+      ok "passwordless pmset installed — vw holds this machine awake without a prompt"
+    else
+      sudo rm -f "$pmset_rule"
+      warn "pmset sudoers rule failed validation — removed; vw falls back to caffeinate (lid must stay open)"
+    fi
+  fi
 
   # Remote Login (sshd) — the transport `vssh`/mosh ride on. FDA-free fallback if
   # `systemsetup` trips on Full Disk Access. Idempotent.
@@ -484,29 +505,19 @@ phase_codex() {
   fi
 
   mkdir -p "$HOME/.codex"
-  if python3 - "$cfg" <<'PY'
+  if python3 - "$cfg" "$template" <<'PY'
 from pathlib import Path
+import tomllib
 import sys
 
 path = Path(sys.argv[1]).expanduser()
+template_path = Path(sys.argv[2]).expanduser()
 lines = path.read_text().splitlines() if path.exists() else []
+template_lines = template_path.read_text().splitlines()
+tomllib.loads(template_path.read_text())
 
-top = {
-    "model": '"gpt-5.5"',
-    "model_reasoning_effort": '"high"',
-    "plan_mode_reasoning_effort": '"high"',
-    "model_reasoning_summary": '"auto"',
-    "model_verbosity": '"medium"',
-    "model_auto_compact_token_limit": "90000",
-    "tool_output_token_limit": "8000",
-    "project_doc_fallback_filenames": '["AI.md", "CLAUDE.md"]',
-}
-tui = {
-    "notifications": '["agent-turn-complete", "approval-requested"]',
-    "notification_method": '"auto"',
-    "notification_condition": '"unfocused"',
-    "status_line": '["model-with-reasoning", "context-remaining", "git-branch", "current-dir"]',
-    "terminal_title": '["spinner", "project", "git-branch"]',
+obsolete_top = {
+    "model_auto_compact_token_limit",
 }
 
 def table_name(line: str) -> str | None:
@@ -515,42 +526,89 @@ def table_name(line: str) -> str | None:
         return stripped.strip("[]")
     return None
 
+managed: dict[str, list[tuple[str, str]]] = {"": []}
+current = ""
+for line in template_lines:
+    found = table_name(line)
+    if found is not None:
+        current = found
+        managed.setdefault(current, [])
+        continue
+    if "=" not in line or line.lstrip().startswith("#"):
+        continue
+    key, value = line.split("=", 1)
+    managed[current].append((key.strip(), value.strip()))
+
+managed_keys = {
+    table: {key for key, _ in values}
+    for table, values in managed.items()
+}
+
 filtered: list[str] = []
 current = ""
 for line in lines:
+    if line.strip() == "# Managed by ~/.ai/setup codex; preserve Codex.app-generated blocks below.":
+        continue
     found = table_name(line)
     if found is not None:
         current = found
     key = line.split("=", 1)[0].strip() if "=" in line and not line.lstrip().startswith("#") else ""
-    if current == "" and key in top:
-        continue
-    if current == "tui" and key in tui:
+    if key in managed_keys.get(current, set()) or (current == "" and key in obsolete_top):
         continue
     filtered.append(line)
 
 first_table = next((i for i, line in enumerate(filtered) if table_name(line) is not None), len(filtered))
 top_block = [
     "# Managed by ~/.ai/setup codex; preserve Codex.app-generated blocks below.",
-    *[f"{key} = {value}" for key, value in top.items()],
-    "",
+    *[f"{key} = {value}" for key, value in managed[""]],
 ]
 filtered[first_table:first_table] = top_block
 
-tui_header = next((i for i, line in enumerate(filtered) if table_name(line) == "tui"), None)
-tui_block = [f"{key} = {value}" for key, value in tui.items()]
-if tui_header is None:
-    insert_at = next((i for i, line in enumerate(filtered) if table_name(line) is not None), len(filtered))
-    filtered[insert_at:insert_at] = ["[tui]", *tui_block, ""]
-else:
-    filtered[tui_header + 1:tui_header + 1] = tui_block + [""]
+def merge_table(name: str, values: list[tuple[str, str]]) -> None:
+    header = next((i for i, line in enumerate(filtered) if table_name(line) == name), None)
+    block = [f"{key} = {value}" for key, value in values]
+    if header is None:
+        filtered.extend(["", f"[{name}]", *block])
+    else:
+        filtered[header + 1:header + 1] = block
 
-path.write_text("\n".join(filtered).rstrip() + "\n")
+for name, values in managed.items():
+    if name:
+        merge_table(name, values)
+
+normalized: list[str] = []
+for line in filtered:
+    if not line.strip() and normalized and not normalized[-1].strip():
+        continue
+    normalized.append(line)
+
+path.write_text("\n".join(normalized).rstrip() + "\n")
 PY
   then
     ok "merged safe defaults into ~/.codex/config.toml"
   else
     warn "could not write ~/.codex/config.toml — check sandbox/permissions, then re-run 'setup codex'"
   fi
+
+  if command -v claude >/dev/null 2>&1; then
+    if claude plugin list 2>/dev/null | grep -q 'codex@openai-codex'; then
+      claude plugin enable codex@openai-codex >/dev/null 2>&1 || true
+      ok "Claude bridge: codex@openai-codex installed"
+    else
+      if ! claude plugin marketplace list 2>/dev/null | grep -q 'openai-codex'; then
+        claude plugin marketplace add openai/codex-plugin-cc >/dev/null 2>&1 \
+          || warn "Claude bridge: could not add OpenAI Codex marketplace"
+      fi
+      if claude plugin install --scope user codex@openai-codex >/dev/null 2>&1; then
+        ok "Claude bridge: installed codex@openai-codex (restart Claude to load)"
+      else
+        warn "Claude bridge: plugin install failed — retry from Claude with /plugin install codex@openai-codex"
+      fi
+    fi
+  else
+    warn "Claude CLI missing — skipped optional Claude↔Codex bridge"
+  fi
+
   codex doctor --summary 2>/dev/null || warn "codex doctor reported issues — run 'codex doctor --all'"
 }
 
