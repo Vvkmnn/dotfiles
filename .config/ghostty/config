@@ -512,7 +512,10 @@ image-storage-limit = 50000000
 
 # Custom keybindings
 # keybind = ctrl+shift+n=new_window
-keybind = super+enter=unbind
+# ignore (not unbind): unbind FORWARDS cmd+enter to the pty, where it reached tmux and doubled the
+# Alt-Enter window-pop; ignore black-holes it at Ghostty so only Option+Enter (via macos-option-as-alt)
+# pops a window. (Ghostty docs: unbind = send key through; ignore = do nothing.)
+keybind = super+enter=ignore
 
 # Link URL handling
 link-url = true
