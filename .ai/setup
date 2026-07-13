@@ -329,6 +329,20 @@ s_services() {
     launchctl bootstrap "$gui" "$plist" 2>/dev/null
     if launchctl print "$gui/$label" >/dev/null 2>&1; then ok "$label"; else warn "$label bootstrap failed"; fi
   done
+
+  # Tailscale at login — the whole vj/vr/vd fleet mesh resolves through Tailscale MagicDNS, so a
+  # down tailnet silently breaks every picker (root-caused after a fleet restart: Tailscale.app was
+  # not a login item → the tailnet never came up → vj/mosh died on all three machines). Make the app
+  # a login item so the tailnet auto-connects every boot, and nudge it up now. Idempotent, no sudo.
+  if [ -d "/Applications/Tailscale.app" ]; then
+    if osascript -e 'tell application "System Events" to get the name of every login item' 2>/dev/null | grep -qi tailscale; then
+      ok "tailscale login item present"
+    else
+      osascript -e 'tell application "System Events" to make login item at end with properties {path:"/Applications/Tailscale.app", hidden:false}' >/dev/null 2>&1 \
+        && ok "tailscale added to login items" || warn "tailscale login item add failed — add in System Settings ▸ General ▸ Login Items"
+    fi
+    open -ga Tailscale 2>/dev/null   # bring the tailnet up now if it is not already
+  fi
 }
 
 s_xcode() {
@@ -740,6 +754,10 @@ s_doctor() {
   [ -f "$HOME/.codex/skills/improve-codex/SKILL.md" ] && ok "improve-codex skill present" || warn "improve-codex skill missing"
   # docker is on-demand via colima (not autostarted) — note, don't fail
   command -v colima >/dev/null 2>&1 && { colima status >/dev/null 2>&1 && ok "colima running (docker ready)" || ok "docker idle — run 'colima start' when needed (on-demand by design)"; }
+  # tailscale up? the fleet mesh (vj/vr/vd) resolves ONLY via Tailscale MagicDNS — a silent-down
+  # tailnet is exactly what broke jumps after the last restart, so surface it loudly here.
+  local ts; ts=$(command -v tailscale 2>/dev/null || echo /Applications/Tailscale.app/Contents/MacOS/Tailscale)
+  if [ -x "$ts" ] && "$ts" status >/dev/null 2>&1; then ok "tailscale up (fleet mesh reachable)"; else warn "tailscale DOWN — vj/vr/vd can't reach peers; open Tailscale.app (now a login item)"; fi
 }
 
 s_gitauth() {
