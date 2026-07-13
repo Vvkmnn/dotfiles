@@ -22,7 +22,7 @@
 # DESIGN NOTES & CHANGELOG  (read before editing — keep this current)
 #
 # 2026-06-26 — created + consolidated for vBookNeo (8GB A18 Pro, macOS 26 Tahoe).
-#   WHY self-contained: the package list (_brewfile) + macOS defaults (phase_macos)
+#   WHY self-contained: the package list (_brewfile) + macOS defaults (lambda_macos)
 #     live INLINE so a future Claude edits ONE place. `~/.setup/` (the laptop's
 #     fuller macos.sh ~886L + Brewfile) is FROZEN REFERENCE — inspiration/maintenance,
 #     not called at runtime. Collapsed 3 parallel impls (this, an old `ai.sh`, and
@@ -49,7 +49,7 @@
 #   Claude-config log at ~/.claude/docs/CHANGELOG.md). THIS block stays the setup-runner's
 #   own WHY log; LOG.md is the human-facing record of every dotfiles change across scopes.
 #
-# MAINTENANCE: edit `_brewfile()` (packages) + `phase_macos()` (defaults) here — they
+# MAINTENANCE: edit `_brewfile()` (packages) + `lambda_macos()` (defaults) here — they
 #   are the source of truth. Keep `~/.setup/` as reference. Log gotchas in
 #   ~/.ai/ISSUES.md so they aren't re-hit. After any edit: `bash -n ~/.ai/setup`.
 #   When you change something, add a dated line to this changelog explaining WHY, and a
@@ -198,7 +198,7 @@ BREW
 }
 
 # ── phases ────────────────────────────────────────────────────────────────────
-phase_packages() {
+lambda_packages() {
   pgrep -f 'Library/Homebrew/brew' >/dev/null 2>&1 && die "another brew is running — let it finish, then re-run"
   command -v brew >/dev/null 2>&1 || die "Homebrew not found — install it first (AI.md P2)"
   need_sudo
@@ -256,7 +256,7 @@ phase_packages() {
   fi
 }
 
-phase_fonts() {
+lambda_fonts() {
   # Family must be exactly "SFMono Nerd Font" for sketchybar + Ghostty. Vendored
   # .otf (git-crypt) in .assets/fonts — the epk cask registers as "SF Mono" (wrong).
   say "fonts — install vendored SFMono Nerd Font"
@@ -275,7 +275,7 @@ phase_fonts() {
   warn "quit + relaunch Ghostty to pick up the font"
 }
 
-phase_services() {
+lambda_services() {
   say "services — window manager + tmux plugins"
   command -v yabai >/dev/null 2>&1 && { yabai --start-service 2>/dev/null; ok "yabai"; }
   command -v skhd  >/dev/null 2>&1 && { skhd  --start-service 2>/dev/null; ok "skhd"; }
@@ -331,7 +331,7 @@ phase_services() {
   done
 }
 
-phase_xcode() {
+lambda_xcode() {
   say "Xcode — headless install via xcodes (Apple ID from 1Password)"
   local xc; xc=$(ls -d /Applications/Xcode*.app 2>/dev/null | sort -V | tail -1)
   [ -n "$xc" ] && { ok "already present: $(basename "$xc")"; return 0; }
@@ -342,7 +342,7 @@ phase_xcode() {
     op run -- xcodes install --latest || warn "xcodes failed (retry with a fresh 2FA code)"
 }
 
-phase_macos() {
+lambda_macos() {
   # Curated UX defaults (sudo-free — user domain only). Source of truth; the
   # laptop's fuller ~/.setup/macos.sh is frozen reference for anything deeper.
   say "macOS defaults — curated UX"
@@ -466,12 +466,12 @@ phase_macos() {
   ok "applied (Dock/Finder restarted; menu-bar autohide may need a re-login to fully take)"
 }
 
-phase_remote() {
+lambda_remote() {
   # First-party remote access: Screen Sharing (same-iCloud Apple-ID discovery,
   # no VNC password to manage) + Fast User Switching + a power policy that keeps
   # a screen-shared machine reachable. Ported from ~/.setup/AI.md P11.5/P12.
-  # Sudo-gated (unlike phase_macos, which is deliberately sudo-free) — opt-in via
-  # `setup remote`, not part of the default `all` chain (same pattern as phase_xcode).
+  # Sudo-gated (unlike lambda_macos, which is deliberately sudo-free) — opt-in via
+  # `setup remote`, not part of the default `all` chain (same pattern as lambda_xcode).
   say "remote — screen sharing + fast user switching + power policy + remote login"
   need_sudo
 
@@ -574,7 +574,7 @@ SSHCFG
   warn "Tailscale (any-network access) + git-crypt/1Password secrets: see 'setup gate'"
 }
 
-phase_codex() {
+lambda_codex() {
   say "codex — safe defaults, guidance, and local-state hygiene"
   local template="$HOME/.ai/codex/config.toml"
   local cfg="$HOME/.codex/config.toml"
@@ -701,7 +701,7 @@ PY
   codex doctor --summary 2>/dev/null || warn "codex doctor reported issues — run 'codex doctor --all'"
 }
 
-phase_gate() {
+lambda_gate() {
   # macOS won't let a script grant TCC, approve a system extension, install a
   # config profile, or hide notification previews — and it can't reliably verify
   # them either (reading TCC.db needs Full Disk Access, itself a gate). So this
@@ -723,7 +723,7 @@ phase_gate() {
   warn "after granting: yabai --restart-service && skhd --restart-service"
 }
 
-phase_doctor() {
+lambda_doctor() {
   # Self-contained "did my setup work" check. No external deps.
   say "doctor — did setup work?"
   brew bundle check --file=<(_brewfile) >/dev/null 2>&1 && ok "all packages installed" || warn "packages incomplete — run 'setup packages'"
@@ -742,7 +742,7 @@ phase_doctor() {
   command -v colima >/dev/null 2>&1 && { colima status >/dev/null 2>&1 && ok "colima running (docker ready)" || ok "docker idle — run 'colima start' when needed (on-demand by design)"; }
 }
 
-phase_gitauth() {
+lambda_gitauth() {
   # GitHub + inter-Mac auth via the 1Password SSH agent — no tokens, no gh, no
   # passwords on disk. The P4 clone is anonymous HTTPS; PUSHING back needs this.
   # Scriptable here: ssh config + SSH remote + fetch refspec. The ONE manual step
@@ -803,17 +803,17 @@ EOF
 
 # ── dispatch ──────────────────────────────────────────────────────────────────
 case "${1:-all}" in
-  all)            phase_packages; phase_fonts; phase_services; phase_macos; phase_gitauth; phase_codex; phase_gate; phase_doctor ;;
-  packages)       phase_packages ;;
-  fonts)          phase_fonts ;;
-  services)       phase_services ;;
-  xcode)          phase_xcode ;;
-  macos)          phase_macos ;;
-  remote)         phase_remote ;;
-  codex)          phase_codex ;;
-  gitauth)        phase_gitauth ;;
-  gate)           phase_gate ;;
-  doctor|check)   phase_doctor ;;
+  all)            lambda_packages; lambda_fonts; lambda_services; lambda_macos; lambda_gitauth; lambda_codex; lambda_gate; lambda_doctor ;;
+  packages)       lambda_packages ;;
+  fonts)          lambda_fonts ;;
+  services)       lambda_services ;;
+  xcode)          lambda_xcode ;;
+  macos)          lambda_macos ;;
+  remote)         lambda_remote ;;
+  codex)          lambda_codex ;;
+  gitauth)        lambda_gitauth ;;
+  gate)           lambda_gate ;;
+  doctor|check)   lambda_doctor ;;
   help|-h|--help) usage ;;
   *)              warn "unknown phase: $1"; usage; exit 1 ;;
 esac
