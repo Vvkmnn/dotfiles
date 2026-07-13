@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- Machine-agnostic template. Render + load on a new machine:
+       sed 's#__HOME__#'"$HOME"'#g' com.user.tmux-save.plist.template \
+         > ~/Library/LaunchAgents/com.user.tmux-save.plist
+       launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.user.tmux-save.plist
+     Runs the tmux save-loop (lambda.sh) every SAVE_INTERVAL seconds. -->
+<plist version="1.0">
+<dict>
+	<key>EnvironmentVariables</key>
+	<dict>
+		<key>HOME</key>
+		<string>__HOME__</string>
+		<key>LANG</key>
+		<string>en_US.UTF-8</string>
+		<key>LC_ALL</key>
+		<string>en_US.UTF-8</string>
+		<key>PATH</key>
+		<string>/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+		<key>SAVE_INTERVAL</key>
+		<string>180</string>
+	</dict>
+	<key>KeepAlive</key>
+	<true/>
+	<key>Label</key>
+	<string>com.user.tmux-save</string>
+	<key>LowPriorityIO</key>
+	<true/>
+	<key>Nice</key>
+	<integer>10</integer>
+	<key>ProcessType</key>
+	<string>Background</string>
+	<key>ProgramArguments</key>
+	<array>
+		<string>__HOME__/.config/tmux/lambda.sh</string>
+		<string>loop</string>
+	</array>
+	<key>RunAtLoad</key>
+	<true/>
+	<key>StandardErrorPath</key>
+	<string>__HOME__/.local/state/tmux-save/launchd.err.log</string>
+	<key>StandardOutPath</key>
+	<string>/dev/null</string>
+	<key>ThrottleInterval</key>
+	<integer>10</integer>
+</dict>
+</plist>

@@ -4,7 +4,7 @@
 #   ~/.ai/setup            run all: packages → fonts → services → macos → codex → gate → doctor
 #   ~/.ai/setup packages   brew bundle (inline list, tap-trust, one sudo, Xcode 2nd pass)
 #   ~/.ai/setup fonts      install vendored SFMono Nerd Font → ~/Library/Fonts
-#   ~/.ai/setup services   yabai/skhd/sketchybar/borders/menuanywhere + tmux plugins
+#   ~/.ai/setup services   yabai/skhd/sketchybar/borders/menuanywhere + tmux plugins + launch agents
 #   ~/.ai/setup xcode      headless Xcode via xcodes (Apple ID from 1Password) — one 2FA code
 #   ~/.ai/setup macos      apply curated macOS defaults (sudo-free)
 #   ~/.ai/setup codex      merge safe Codex defaults + verify guidance files
@@ -245,6 +245,24 @@ phase_services() {
   if [ -x "$HOME/.config/tmux/plugins/tpm/bin/install_plugins" ]; then
     "$HOME/.config/tmux/plugins/tpm/bin/install_plugins" >/dev/null 2>&1 && ok "tmux plugins (tpm)"
   fi
+
+  # Hand-authored launch agents — OUR load-bearing daemons, NOT brew-managed like yabai/skhd/
+  # sketchybar above. Their definitions are tracked in the config domain as *.plist.template
+  # (the __HOME__ token → $HOME at install); ~/Library/LaunchAgents is an install target, never
+  # tracked. Render each into place + (re)bootstrap. Idempotent.
+  #   com.user.tmux-save   — the λ save-loop (lambda.sh loop, every SAVE_INTERVAL s)
+  #   com.user.tmux        — resident tmux server (tmux-server.sh)
+  #   com.claude.mcp-proxy — MCP proxy (start-proxy.sh)
+  local la="$HOME/Library/LaunchAgents" gui="gui/$(id -u)" tmpl label plist
+  mkdir -p "$la"
+  for tmpl in "$HOME"/.config/tmux/com.*.plist.template "$HOME"/.claude/mcp/com.*.plist.template; do
+    [ -f "$tmpl" ] || continue                             # unmatched glob → skip
+    label=$(basename "$tmpl" .plist.template)
+    plist="$la/$label.plist"
+    sed "s#__HOME__#$HOME#g" "$tmpl" > "$plist"
+    launchctl bootout "$gui/$label" 2>/dev/null            # unload if already present (idempotent)
+    launchctl bootstrap "$gui" "$plist" 2>/dev/null && ok "$label" || warn "$label bootstrap failed"
+  done
 }
 
 phase_xcode() {
@@ -661,7 +679,7 @@ setup — bring this Mac to fleet parity (self-contained).   ~/.ai/setup [phase]
   (none)     run all: packages → fonts → services → macos → codex → gate → doctor
   packages   brew bundle (inline list, tap-trust, one sudo, Xcode 2nd pass)
   fonts      install vendored SFMono Nerd Font → ~/Library/Fonts
-  services   yabai/skhd/sketchybar/borders/menuanywhere + tmux plugins
+  services   yabai/skhd/sketchybar/borders/menuanywhere + tmux plugins + launch agents
   xcode      headless Xcode via xcodes (Apple ID from 1Password) — one 2FA code
   macos      apply curated macOS defaults (sudo-free)
   remote     screen sharing + fast switching + remote power policy (sudo, opt-in)

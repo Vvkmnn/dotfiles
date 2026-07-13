@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# tmux-save-guard.sh -- crash-proof, high-fidelity tmux persistence for the DEFAULT server.
+# lambda.sh (λ) -- crash-proof, high-fidelity tmux persistence for the DEFAULT server, plus the
+# status-bar λ chip (save-freshness heartbeat + machine uptime).
 #
 # WHY: tmux keeps ZERO on-disk state; a server death loses every session. tmux-continuum's
 # autosave silently disarms whenever ANOTHER tmux server exists (e.g. `tmux -L` sockets from
@@ -102,6 +103,14 @@ swap_pct() {
 	}'
 }
 
+# cpu_load_9: current CPU load as a single 0-9 digit -- the 1-min loadavg normalized to cores, where
+# 0 = idle and 9 = fully loaded or oversubscribed (>= 1.0 runnable per core, back off). A compact load
+# meter. Cheap (sysctl); safe to read live each render. Distinct from memory risk (that is (N)'s colour).
+cpu_load_9() {
+	sysctl -n vm.loadavg 2>/dev/null | awk -v n="$(sysctl -n hw.logicalcpu 2>/dev/null || echo 8)" \
+		'{ d = ($2 / n) * 9; if (d > 9) d = 9; printf "%d", d + 0.5 }'
+}
+
 # risk_level: single crash-risk verdict 0=ok 1=warn 2=crit -- the WORST of three real signals so no
 # one stale reading hides danger: heavy-proc count vs RAM-scaled thresholds (warn GB/2, crit
 # round(11*GB/16), anchored to the 11-proc storm on 16GB), kernel pressure, and swap fill. Prints
@@ -132,69 +141,108 @@ last_result() {
 	esac
 }
 
-# breathe_color: gentle luminance swell around a base hex on a ~28s triangle cycle, so the healthy
-# fisheye visibly breathes in/out at each 7s repaint on top of the slow hue fade. Brightness rides
-# 85%->115%->85%; the freshest (brightest) colour breathes most, the dim "due" end least -- a natural
-# "more alive when fresh" feel. Pure integer math + one printf; safe to call on every status redraw.
-breathe_color() {
-	local hx="$1" now="$2" t tri bf r g b
-	t=$(( now % 28 )); [ "$t" -lt 14 ] && tri=$t || tri=$(( 28 - t ))   # 0..14..0 triangle wave
-	bf=$(( 85 + tri * 30 / 14 ))                                        # 85..115..85 brightness %
-	r=$(( 16#${hx:1:2} * bf / 100 )); g=$(( 16#${hx:3:2} * bf / 100 )); b=$(( 16#${hx:5:2} * bf / 100 ))
-	[ "$r" -gt 255 ] && r=255; [ "$g" -gt 255 ] && g=255; [ "$b" -gt 255 ] && b=255
-	printf '#%02x%02x%02x' "$r" "$g" "$b"
+# grad: smooth colour at position p across [0,pmax] through ordered anchor hexes (>=2). Pure integer
+# math, result via printf -v (global _G, NO subshell) -- a perfectly smooth gradient costs no more than
+# a hard step and adds zero forks. Drives the gold->rose->purple frame and the dim-gray->red dials.
+grad() {   # $1=p $2=pmax ; $3.. anchors -> sets _G
+	local p=$1 pmax=$2; shift 2
+	local -a k=( "$@" ); local segs=$(( ${#k[@]} - 1 ))
+	[ "$pmax" -le 0 ] && pmax=1
+	[ "$p" -lt 0 ] && p=0; [ "$p" -gt "$pmax" ] && p=$pmax
+	local seg=$(( p * segs / pmax )); [ "$seg" -ge "$segs" ] && seg=$(( segs - 1 ))
+	local lo=$(( seg * pmax / segs )) hi=$(( (seg + 1) * pmax / segs ))
+	(( hi > lo )) || hi=$(( lo + 1 ))   # total-function guard: never divide by zero if pmax < segments
+	local t=$(( (p - lo) * 1000 / (hi - lo) )) a=${k[$seg]} b=${k[$((seg + 1))]}
+	printf -v _G '#%02x%02x%02x' \
+		$(( 16#${a:1:2} + (16#${b:1:2} - 16#${a:1:2}) * t / 1000 )) \
+		$(( 16#${a:3:2} + (16#${b:3:2} - 16#${a:3:2}) * t / 1000 )) \
+		$(( 16#${a:5:2} + (16#${b:5:2} - 16#${a:5:2}) * t / 1000 ))
 }
 
-# chip: the breathing save-timer for the status bar (right of the animal), rendered as `λ(N)` -- a
+
+# chip: the breathing save-timer for the status bar (right of the animal), rendered as `λ(N)(U)` -- a
 # lambda whose colour IS the save freshness, applied to the count of dangerous (heavy) processes it's
-# guarding against. Read-only and CHEAP: it renders each status tick (status-interval 15) + on activity
+# guarding against. Read-only and CHEAP: it renders each status tick (status-interval 30) + on activity
 # and forks nothing heavy. Freshness is the last real save's `epoch` from telemetry, NOT `last`'s mtime
 # (resurrect freezes `last` on a static layout while saves keep succeeding, so mtime would look falsely
-# stale). Healthy = the λ pulses bright crystalBlue the instant a save lands and fades cool
-# (blue->violet->comet dim) across the save interval, breathing all the while; a save that's late or
-# FAILED verification turns λ loud (red/amber) and prefixes the human age, so the silent 4-day gap that
-# cost everything can never look healthy. The (N) danger count is read straight from telemetry (the save
-# loop computes it once per save), never recomputed here -- keeping the redraw free of a `ps -Ao`.
+# stale). Healthy = the λ frame sweeps smoothly from a deep Kanagawa blue "just saved" to a grape purple
+# as the next save comes "due", breathing all the while (capped, never a pale wash); a save that's late
+# or FAILED turns the whole frame loud red and prefixes the human age, so the silent 4-day gap that cost
+# everything can never look healthy. The (N) danger count is read straight from telemetry (the save loop
+# computes it once per save), never recomputed here -- keeping the redraw free of a `ps -Ao`.
+# Curried fields λ(Nᵖ)(Uᵀ)(Lᴸ), each value carrying a superscript unit: Nᵖ = heavy-process count (colour
+# = memory-crash risk), Uᵀ = uptime in mach Teraticks (mach ticks / 10^12, floored to min 1 so a fresh
+# boot reads 1ᵀ not 0), Lᴸ = CPU Load 0-9 (1-min loadavg normalized to cores, 9 = at/over capacity). The
+# three values share one monochrome dim-gray -> red ramp; only they carry it, the frame stays gold/purple.
+# All colour math is pure integer + printf -v (grad/breathe set _G, no subshell) so smoothness is free.
+# Display-only; boottime + loadavg via cheap sysctls, so the save path is untouched.
 mode_chip() {
-	local line epoch interval result risk heavy now age idx lcolor ncolor lead="" n_fade
+	local line epoch interval result risk heavy now age lcolor ncolor lead="" _G
 	local -a f
+	# shared palette: the frame swings gold (each save) -> deep rose -> deep royal purple (midpoint),
+	# cosine-eased -- the rose bridge keeps the sweep saturated so it NEVER desaturates to a pale/white mid
+	# (linear gold->purple does). The three inner dials are a MONOCHROME dim-gray -> red ramp (invisible
+	# when safe, red when it matters -- no amber). Gold is DEEPENED from the badge's light #e6c384 to a
+	# muted antique gold so the frame never reads as light/white -- only the red alarm is allowed to be
+	# bright; the calm states all stay medium-dark.
+	local GOLD='#a8863c' BRIDGE='#b3577f' FGRAPE='#5e35b1' GRAY='#54524d' RED='#ff5d62'
 	line="$(tail -n 5 "$LOG" 2>/dev/null | grep -v '"result":"skip"' | tail -1)"
 	if [ -z "$line" ]; then printf '#[fg=#e82424]\xce\xbb never#[default]'; return; fi
 	read -r -a f <<< "$(printf '%s' "$line" | sed -E 's/.*"epoch":([0-9]+),"interval":([0-9]+),"result":"([a-z]+)".*"risk":(-?[0-9]+),"heavy":([0-9]+).*/\1 \2 \3 \4 \5/')"
 	epoch=${f[0]:-0}; interval=${f[1]:-180}; result=${f[2]:-none}; risk=${f[3]:-0}; heavy=${f[4]:-0}
 	now=$(date +%s); age=$(( now - epoch ))
 
-	# Kanagawa Wave breathing gradient: crystalBlue "just saved" pulse -> oniViolet mid -> comet dim
-	# "due". The lambda fades across the FULL save interval, and its luminance breathes (breathe_color)
-	# so it mirrors real save freshness -- information, not decor. Cool blue/violet, never green.
-	local -a fade=( '#7e9cd8' '#7d94cc' '#7e8cc0' '#8a82ba' '#957fb8' '#8574a4' '#726690' '#615c7e' '#54536d' )
-	local LAMBDA=$'\xce\xbb'   # U+03BB -- the save heartbeat; colour = freshness, (N) = its argument
-	n_fade=${#fade[@]}
-	# lcolor = the lambda's colour (freshness/alarm); lead = an optional age+! shown ONLY when unhealthy.
+	# machine uptime for the curried λ(N)(U) group: seconds since boot, coloured by "too long".
+	# boottime read fork-light -- one sysctl + pure param-expansion (no sed), keeping the tick cheap.
+	local bt up ucolor="" ustr=""
+	bt=$(sysctl -n kern.boottime 2>/dev/null); bt=${bt#*sec = }; bt=${bt%%,*}
+	if [ -n "$bt" ] && [ "$bt" -gt 0 ] 2>/dev/null && [ "$now" -gt "$bt" ]; then
+		up=$(( now - bt ))
+		# U = mach_absolute_time in TERATICKS -- the machine's own monotonic tick counter (mach ticks =
+		# up x hw.tbfrequency, ~24MHz on Apple Silicon), scaled by 10^12. The truest machine clock; a pure
+		# number that climbs (~1 per 11.6h at 24MHz), 3 digits up to ~482 days. Colour ramps dim gray ->
+		# red by days-up (a reboot nudge), shared with the N/L dials; clamps full red past 21d.
+		local tbf tt; tbf=$(sysctl -n hw.tbfrequency 2>/dev/null || echo 1000000000)
+		grad "$(( up / 86400 ))" 21 "$GRAY" "$RED"; ucolor=$_G
+		tt=$(( up * tbf / 1000000000000 )); (( tt < 1 )) && tt=1   # min 1: under a teratick still reads 1ᵀ
+		ustr="${tt}"$'\xe1\xb5\x80'                                # teraticks + superscript T (Tera/trillion)
+	fi
+
+	# third curried field: live CPU load as a 0-9 digit ("current load", 1-min loadavg normalized to
+	# cores; 9 = at/over capacity -> back off). CPU axis only; memory/crash risk is (N)'s colour.
+	local ld pcolor pstr
+	ld=$(cpu_load_9); [ -n "$ld" ] || ld=0
+	grad "$ld" 9 "$GRAY" "$RED"; pcolor=$_G
+	pstr="${ld}"$'\xe1\xb4\xb8'   # load digit + superscript L (load)
+
+	# The frame timer: a raised-cosine swing between Kanagawa GOLD at each save and deep PURPLE at the
+	# midpoint (the moment furthest from any save), driven by the real save phase -- so it eases gold ->
+	# purple -> gold with NO snap, once per ~3-min save cycle. No manufactured oscillator: the save clock
+	# IS the rhythm; the cosine is only the easing. Pure integer LUT, fork-free.
+	local LAMBDA=$'\xce\xbb'   # U+03BB -- the save heartbeat; frame colour = the save timer
+	# lcolor = the lambda/frame colour; lead = an optional age+! shown ONLY when a save is late/failed.
 	if   [ "$result" = "fail" ];                       then lcolor="#e82424"; lead="#[fg=#e82424]!$(human_age "$age") #[default]"
 	elif [ "$epoch" -le 0 ] || [ "$interval" -le 0 ];  then lcolor="#e82424"; lead="#[fg=#e82424]never #[default]"
-	elif [ "$age" -le $(( interval + interval / 4 )) ]; then                                    # healthy -- breathing λ, no lead
-		# grace = interval/4: the loop sleeps `interval` AFTER each save completes, so the true
-		# period is interval + save-time + jitter (~189s for a 180s interval). Without this margin λ
-		# flashed amber for those few seconds every single cycle -- a false "late". Fade still clamps
-		# to dim comet past `interval`, so 100%-125% of the window holds "due" until the save lands.
-		idx=$(( age * (n_fade - 1) / interval )); [ "$idx" -ge "$n_fade" ] && idx=$(( n_fade - 1 ))
-		lcolor="$(breathe_color "${fade[$idx]}" "$now")"
+	elif [ "$age" -le $(( interval + interval / 4 )) ]; then                                    # healthy -- gold<->purple swing
+		# grace = interval/4: the loop sleeps `interval` AFTER each save, so the true period is
+		# interval + save-time + jitter (~189s for 180s). COS[k] = (1-cos(2π·k/24))·500 = 0 at each save
+		# (phase 0 & interval), 1000 at the midpoint. Past `interval` the index clamps to the gold end
+		# (a save is due, so we hold gold rather than false-alarming).
+		local -a COS=(0 17 67 146 250 371 500 629 750 854 933 983 1000 983 933 854 750 629 500 371 250 146 67 17)
+		local ci=$(( age * 24 / interval )); (( ci > 23 )) && ci=23
+		grad "${COS[$ci]}" 1000 "$GOLD" "$BRIDGE" "$FGRAPE"; lcolor=$_G
 	elif [ "$age" -lt $(( interval * 2 )) ];           then lcolor="#dca561"; lead="#[fg=#dca561]$(human_age "$age") #[default]"   # a window late -- autumnYellow
 	elif [ "$age" -lt $(( interval * 5 )) ];           then lcolor="#ff9e3b"; lead="#[fg=#ff9e3b]$(human_age "$age") #[default]"   # slipping -- roninYellow
 	else                                                    lcolor="#ff5d62"; lead="#[fg=#ff5d62]$(human_age "$age") #[default]"   # stalled -- peachRed alarm
 	fi
 
-	# The dangerous-process gauge is the NUMBER only (heavy RSS count), Kanagawa: comet dim safe ->
-	# carpYellow warn -> peachRed "too risky to pile on". The λ and its parens share the freshness
-	# colour (one save unit); only the count inside is risk-coloured -- so λ( and ) read as one glyph
-	# and the number is the single thing that changes on danger: λ(N).
-	case "$risk" in
-		2) ncolor="#ff5d62" ;;
-		1) ncolor="#e6c384" ;;
-		*) ncolor="#54536d" ;;
-	esac
-	printf '%s#[fg=%s]%s(#[fg=%s]%s#[fg=%s])#[default]' "$lead" "$lcolor" "$LAMBDA" "$ncolor" "$heavy" "$lcolor"
+	# N (danger), U (uptime), L (load) share ONE monochrome ramp -- dim gray -> red (no amber). N maps
+	# risk 0/1/2 across it; the λ and its parens stay the frame colour, so only the values inside change.
+	grad "$risk" 2 "$GRAY" "$RED"; ncolor=$_G
+	local nstr="${heavy}"$'\xe1\xb5\x96' up_grp="" p_grp=""   # heavy count + superscript p (processes)
+	[ -n "$ustr" ] && up_grp="#[fg=${lcolor}](#[fg=${ucolor}]${ustr}#[fg=${lcolor}])"
+	p_grp="#[fg=${lcolor}](#[fg=${pcolor}]${pstr}#[fg=${lcolor}])"
+	printf '%s#[fg=%s]%s(#[fg=%s]%s#[fg=%s])%s%s#[default]' "$lead" "$lcolor" "$LAMBDA" "$ncolor" "$nstr" "$lcolor" "$up_grp" "$p_grp"
 }
 
 log_line() { mkdir -p "$(dirname "$LOG")"; printf '%s\n' "$1" >> "$LOG"; }
@@ -239,29 +287,27 @@ mode_save() {
 		return 0
 	fi
 
-	local start rc=0 dur windows panes count newtxt newfile newest _f snap_ts verify="ok" risk heavy
+	local start rc=0 dur windows panes count newtxt newfile snap_ts verify="ok" risk heavy
 	local interval="${SAVE_INTERVAL:-$SAVE_INTERVAL_DEFAULT}"   # recorded so the chip fades over the real window
 	start=$(date +%s)
 	mkdir -p "$(dirname "$SAVE_ERR")"
 	"$SAVE_SCRIPT" quiet >/dev/null 2>"$SAVE_ERR" || rc=$?
 	dur=$(( $(date +%s) - start ))
 
-	# VERIFY the save actually landed. save.sh can exit 0 yet leave an empty snapshot -- the
-	# precise silent failure that cost us 4 days. Two independent checks:
-	#   1. `last` (the restore target) points at a non-empty file holding real `pane` records.
-	#   2. save.sh WROTE a fresh timestamped file THIS run (proves it actually executed).
-	# We check freshness on the newest written file, NOT on `last`: resurrect only re-points
-	# `last` when the snapshot CHANGED (save_all's `files_differ` guard). An unchanged layout
-	# leaves `last` at a still-valid older file -- correct behaviour, not a failure. Checking
-	# `last`'s mtime here false-flagged every no-change save as "stale" (verified: tmux#files_differ).
+	# VERIFY the RESTORE TARGET is good -- that is what actually protects you. save.sh can exit 0 yet
+	# leave an empty snapshot (the silent failure that cost us 4 days), so we validate `last` directly:
+	#   1. `last` points at a non-empty file...
+	#   2. ...holding real `pane` records.
+	# We deliberately do NOT require a fresh timestamped file each run: resurrect DELETES the new dump
+	# when the layout is unchanged (save_all's `files_differ` -> rm), a legitimate no-op success -- the
+	# existing `last` is still the correct, current restore target. Demanding a per-run file false-
+	# reddened every static-layout save (reproduced: "save-not-written" with a valid 13-pane `last`).
+	# Protection freshness is tracked by `epoch` (the chip's fade), not by whether a file was written.
 	newtxt="$(readlink "${RESURRECT_DIR}/last" 2>/dev/null || true)"
 	newfile="${RESURRECT_DIR}/${newtxt}"
-	newest=""  # timestamped filenames sort lexically == chronologically; last match is newest
-	for _f in "${RESURRECT_DIR}"/tmux_resurrect_*.txt; do [ -e "$_f" ] && newest="$_f"; done
 	if [ "$rc" -eq 0 ]; then
-		if   [ -z "$newtxt" ] || [ ! -s "$newfile" ];                                   then rc=1; verify="no-snapshot"
-		elif ! grep -q '^pane' "$newfile";                                              then rc=1; verify="empty-snapshot"
-		elif [ -z "$newest" ] || [ "$(stat -f %m "$newest" 2>/dev/null || echo 0)" -lt "$start" ]; then rc=1; verify="save-not-written"
+		if   [ -z "$newtxt" ] || [ ! -s "$newfile" ]; then rc=1; verify="no-snapshot"
+		elif ! grep -q '^pane' "$newfile";            then rc=1; verify="empty-snapshot"
 		fi
 	fi
 
