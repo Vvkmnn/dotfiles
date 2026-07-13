@@ -186,7 +186,10 @@
       command -v ngrok &>/dev/null && eval "$(ngrok completion)"
 
       # ──────────────────────────────────────────────────────────────── rust ──
-      [ -d "$HOME/.cargo" ] && . "$HOME/.cargo/env"
+      # guard the FILE not the dir: rust is mise-managed now (shims in mise), and
+      # ~/.cargo/env only exists on machines with a rustup-standalone install —
+      # `[ -d ~/.cargo ]` was true but the env file absent → source error (Neo 2026-07-14).
+      [ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
 
       # ──────────────────────────────────────────────────────────────── opam ──
       # OCaml package manager — sets PATH for ocamllsp, ocamlformat, dune, etc.
