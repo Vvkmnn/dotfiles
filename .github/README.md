@@ -58,12 +58,11 @@
 ### branches
 
 ```
-  master ─────────── base
-  v-macos-macbook ── MacBook
-  v-macos-studio ─── Mac Studio
-  v-macos ────────── generic macOS
+  master ─────────── front page
+  v-macos ────────── every Mac — one branch, ~/.ai/scale tunes each machine
   v-debian ────────── Debian
   v-debian-wsl ───── WSL
+  archive/* ──────── every retired branch, kept forever
 ```
 
 ### commands
@@ -333,7 +332,7 @@ pipx install virtualenv
 
 ### configure
 
-#### [scripts](https://github.com/Vvkmnn/dotfiles/tree/v-macos-macbook/.setup)
+#### [scripts](https://github.com/Vvkmnn/dotfiles/tree/v-macos/.setup)
 
 ```sh
 chmod +x ~/.setup/*.sh
