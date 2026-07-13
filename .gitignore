@@ -466,3 +466,7 @@ dotfiles.key
 # Ghostty vendored shader libraries (large, fetched at install)
 .config/ghostty/shaders/community/
 .config/ghostty/shaders/cursor/
+
+# never track private keys (public repo; .pub is fine)
+.ssh/id_*
+.ssh/*.pem
