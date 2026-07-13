@@ -48,6 +48,10 @@ Always commit to the current branch. Never switch branches without asking.
 
 ## Workflow
 
+**Backup rail:** before any sweeping/force operation (history rewrite, branch surgery,
+mass deletion), run `~/.ai/backup` first — full-history bundle to iCloud
+`Dotfiles/Backups/<machine>/` (secret-safe; keeps last 3). See `~/.ai/README.md § Backups`.
+
 ### Phase 0: Docs first (do BEFORE staging anything)
 
 When the trigger mentions "docs" (e.g. "update docs and dotfiles"), OR any code changed this session,

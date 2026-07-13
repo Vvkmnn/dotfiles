@@ -96,6 +96,19 @@ Claude's installed-plugin registry, marketplace checkout, cache, and timestamped
 marketplace state are also machine-local. Reproduce integrations through setup
 and tracked settings instead of committing generated plugin state.
 
+## Backups
+
+`~/.ai/backup` — one command, run it before any sweeping git operation. Bundles the
+FULL repo history (all refs; git-crypt files stay ciphertext — secret-safe) to the
+iCloud shelf and keeps the last 5:
+
+    iCloud Drive → Dotfiles/
+      Backups/<machine>/    per-machine bundles + pre-merge snapshots (this command)
+      Build/                fleet-unification working area (transient)
+      git-crypt-key-…       local key copy — CANONICAL copy lives in 1Password
+
+Restore anywhere: `git clone <bundle> x && cd x && git-crypt unlock <key>`.
+
 ## Fresh Mac flow
 
 1. Install any capable AI CLI/app you plan to use: Codex, Claude, or another tool.
