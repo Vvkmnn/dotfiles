@@ -122,8 +122,35 @@ function isPlaceholderCode(text) {
 
 // Strip global flags that can be inserted between command and subcommand to bypass patterns.
 // e.g. `git -C /path commit` → `git commit`, `chmod -R 777` → `chmod 777`
+//
+// Also canonicalize git *wrappers* → `git`, so the ask/deny rules below (which look for a literal
+// adjacent `git <subcommand>`) can't be dodged by indirection. Two real vectors this closes:
+//   • the `dotfiles` bare-repo alias  (`dotfiles commit` has no `git` token at all)
+//   • an inline wrapper function       (`G(){ git --git-dir=.. "$@"; }; G commit` — the subcommand
+//     attaches to `G`, never adjacent to `git`).
+// LIMIT (documented, not solvable statically): a *persistent* wrapper whose name isn't registered
+// below and shows no git flags, or any `eval`/`sh -c`/base64-obfuscated form, cannot be detected
+// from the command string. This closes accidental + coordination-script bypasses, not an adversary.
 function normalizeCmd(cmd) {
   let n = cmd;
+  // Command-position anchor: start, or just after a shell separator (`; & | ( && || newline`).
+  // Requiring this means `cd ~/.dotfiles`, `echo dotfiles`, `~/.dotfiles/x` are NOT rewritten.
+  const sep = String.raw`(^|[;&|(]\s*|&&\s*|\|\|\s*|\n\s*)`;
+  // (a) Known git-expanding shell aliases → git, so the rules see the real subcommand. These must be
+  //     ENUMERATED (aliases are shell expansion, invisible to static analysis). REFRESH this list when
+  //     you add a git alias:  alias | grep -iE '=.?git|dotfiles'  (read-only `ds`/`gs` status aliases
+  //     need no entry). Current: dotfiles→git --git-dir=~/.dotfiles --work-tree=~ · d→dotfiles · g→git.
+  //   `,git-undo` = `git clean -fd && git reset --hard` (destructive, takes no subcommand) → surface
+  //     the hard reset so the deny below fires.
+  n = n.replace(new RegExp(`${sep},git-undo\\b`, 'g'), '$1git reset --hard');
+  const GIT_WRAPPERS = ['dotfiles', 'd', 'g'];
+  for (const name of GIT_WRAPPERS) {
+    n = n.replace(new RegExp(`${sep}${name}\\s+`, 'g'), '$1git ');
+  }
+  // (b) Inline function wrapping git → rewrite its call sites to `git`. The definition `NAME(){`
+  //     is not matched (NAME is followed by `(`, not whitespace), so only the call is rewritten.
+  const w = n.match(/\b([A-Za-z_]\w*)\s*\(\)\s*\{[^}]*\bgit\b[^}]*\}/);
+  if (w) n = n.replace(new RegExp(`${sep}${w[1]}\\s+`, 'g'), '$1git ');
   // Git: strip global flags before subcommand (flags that go between `git` and the subcommand)
   n = n.replace(
     /\bgit\b((?:\s+(?:-C\s+\S+|-c\s+\S+|--git-dir[= ]\S+|--work-tree[= ]\S+|--namespace[= ]\S+|--config-env[= ]\S+|--exec-path[= ]\S*|--no-pager|--bare|--no-replace-objects|--literal-pathspecs|--glob-pathspecs|--noglob-pathspecs|--icase-pathspecs|--no-optional-locks|-[pP]))+)/g,
@@ -255,6 +282,19 @@ function processToolRequest(data) {
     }
     if (/git\s+push\b/.test(n)) {
       return ask('Pushing to remote repository. Confirm before approving.');
+    }
+
+    // Defense-in-depth backstop: a bare-repo git write whose wrapper we did NOT canonicalize in
+    // normalizeCmd (an unregistered persistent name, or an obscured form) still shows the bare-repo
+    // signature — the --git-dir/--work-tree flag pair or the GIT_DIR/GIT_WORK_TREE env pair. Reaching
+    // here means no adjacent-`git` rule matched. Known + inline wrappers already get the full ask/deny
+    // treatment above; this only ever asks — never a silent allow.
+    const bareRepoSig = (/--git-dir\b/.test(cmd) && /--work-tree\b/.test(cmd))
+                     || (/\bGIT_DIR=/.test(cmd) && /\bGIT_WORK_TREE=/.test(cmd));
+    const gitWriteVerb = /\b(commit|add|push|reset|rebase|restore|checkout|clean|switch|update-ref|filter-branch|filter-repo)\b/.test(cmd)
+                      || /\bstash\s+drop\b/.test(cmd) || /\bbranch\s+-[a-zA-Z]*D\b/.test(cmd);
+    if (bareRepoSig && gitWriteVerb) {
+      return ask('Bare-repo git write (dotfiles / --git-dir). Confirm the exact command before approving.');
     }
 
     // Secure deletion and system daemon management
