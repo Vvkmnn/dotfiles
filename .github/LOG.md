@@ -20,6 +20,11 @@ this one is the repo-wide one.)
   left intact — its surviving client drops to the nearest window on the **left** and
   any copy-mode is cancelled, so it never lands frozen (`[0/N]`).
 - **ghostty `super+enter=ignore`** — stops `cmd+enter` doubling the `⌥⏎` pop.
+- **fleet verbs collapsed to `vj·vw·vr·vd`.** the old `~/.functions` set — `vssh` (→`vj`),
+  `vwatch` (→`vw`), `vremote` (→`vr`), `vdebug` (→`vd`), `coffee` (engine folded into
+  `vw`) — is deprecated and commented out, each with a pointer to its `~/.fleet`
+  successor. `.fleet` is self-contained and sourced after `.functions`, so it fully
+  supersedes the old block.
 - **this log** — stood up `~/.github/LOG.md` as the repo-wide dotfiles changelog.
 
 ### notes

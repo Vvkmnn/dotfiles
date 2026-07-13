@@ -276,13 +276,14 @@
   # _fleet_host <name> — resolve to a reachable form: prefer the bare name (Tailscale
   # MagicDNS, works on any network), fall back to <name>.local (Bonjour, LAN). Lets you
   # type `j vminim4` and have it work on the LAN today and over Tailscale later — no suffix.
-  _fleet_host() {
-    local h="$1"
-    case "$h" in mini|m4) h=vminim4;; air|m3) h=vbookairm3;; neo|a18) h=vbookneoa18;; esac  # friendly → true hostname
-    if ping -c1 -t1 "$h" >/dev/null 2>&1; then print -- "$h"; return 0
-    elif ping -c1 -t1 "$h.local" >/dev/null 2>&1; then print -- "$h.local"; return 0
-    else print -- "$h"; return 1; fi   # unreachable: still print the name, signal via exit code
-  }
+  # _fleet_host → _fleet_map/_fleet_reach in ~/.fleet. deprecated, parked below.
+  # _fleet_host() {
+    # local h="$1"
+    # case "$h" in mini|m4) h=vminim4;; air|m3) h=vbookairm3;; neo|a18) h=vbookneoa18;; esac  # friendly → true hostname
+    # if ping -c1 -t1 "$h" >/dev/null 2>&1; then print -- "$h"; return 0
+    # elif ping -c1 -t1 "$h.local" >/dev/null 2>&1; then print -- "$h.local"; return 0
+    # else print -- "$h"; return 1; fi   # unreachable: still print the name, signal via exit code
+  # }
 
   # vssh <host> — v[jump]: open a FRESH Ghostty window that's a DIRECT client to THAT machine's
   # tmux server, over mosh (auto-reconnects across sleep / wifi↔cellular / travel). No local
@@ -294,20 +295,21 @@
   # Each vssh = a FRESH, auto-numbered session on the target (`tmux new-session` → 0,1,2… like
   # opening a new local tmux window), independent, never mirroring a previous one. mosh's ssh gets
   # ConnectTimeout so it fails fast; if the link drops mid-session, mosh resumes THAT window on wake.
-  vssh() {
-    local name="${1:?usage: vssh <host>   (e.g. vssh vminim4 | vssh vbookneoa18)}"
-    local G=$'\e[38;5;114m' Y=$'\e[38;5;179m' D=$'\e[2m' R=$'\e[0m'
-    printf "  ${D}reaching %s…${R}" "$name"
-    local host
-    if host=$(_fleet_host "$name"); then
-      printf "\r  ${G}●${R} %s ${D}up — connecting${R}              \n" "$name"
-    else
-      printf "\r  ${Y}○${R} %s ${D}offline — asleep or off (run \`vwatch\` on it, or wake it)${R}\n" "$name"
-      return 1
-    fi
-    open -na /Applications/Ghostty.app --args -e /bin/zsh -c \
-      "env -u TMUX -u TMUX_PANE mosh --ssh='ssh -o ConnectTimeout=4' --family=inet ${(q)host} -- tmux new-session"
-  }
+  # vssh → vj  (now in ~/.fleet). deprecated 2026-07-13, parked below.
+  # vssh() {
+    # local name="${1:?usage: vssh <host>   (e.g. vssh vminim4 | vssh vbookneoa18)}"
+    # local G=$'\e[38;5;114m' Y=$'\e[38;5;179m' D=$'\e[2m' R=$'\e[0m'
+    # printf "  ${D}reaching %s…${R}" "$name"
+    # local host
+    # if host=$(_fleet_host "$name"); then
+      # printf "\r  ${G}●${R} %s ${D}up — connecting${R}              \n" "$name"
+    # else
+      # printf "\r  ${Y}○${R} %s ${D}offline — asleep or off (run \`vwatch\` on it, or wake it)${R}\n" "$name"
+      # return 1
+    # fi
+    # open -na /Applications/Ghostty.app --args -e /bin/zsh -c \
+      # "env -u TMUX -u TMUX_PANE mosh --ssh='ssh -o ConnectTimeout=4' --family=inet ${(q)host} -- tmux new-session"
+  # }
 
   # ┌──────────────────────────────────────────────────────── fleet (vj·vr·vw) ──┐
   #  Shared helpers for the 3 fleet verbs. `_fleet_map` is pure (no I/O) so the
@@ -531,54 +533,56 @@
   # throttles. SINGLE-INSTANCE: if a vwatch already holds this machine awake, it reports WHERE and
   # exits — never competes. Live ASCII dashboard: power, thermal, agents, tmux. `disown`ed +
   # EXIT-trap cleanup: never a stray "running job"; ^C/close -> caffeinate dies, no disk artifact.
-  vwatch() {
-    local existing=$(pgrep -f 'caffeinate -im' 2>/dev/null | head -1)
-    if [[ -n "$existing" ]]; then
-      local owner=$(ps -o ppid= -p "$existing" 2>/dev/null | tr -d ' ')
-      local loc=$(tmux list-panes -a -F '#{pane_pid} #{session_name}:#{window_index}.#{pane_index}' 2>/dev/null | awk -v p="$owner" '$1==p{print $2}')
-      print -P "  %F{yellow}${HOST%%.*} is already awake%f — vwatch is running in %F{cyan}${loc:-pid $owner}%f (caffeinate ${existing})."
-      print -P "  Go there, or ^C it to release. Exiting."
-      return 0
-    fi
+  # vwatch → vw  (now in ~/.fleet). deprecated 2026-07-13, parked below.
+  # vwatch() {
+    # local existing=$(pgrep -f 'caffeinate -im' 2>/dev/null | head -1)
+    # if [[ -n "$existing" ]]; then
+      # local owner=$(ps -o ppid= -p "$existing" 2>/dev/null | tr -d ' ')
+      # local loc=$(tmux list-panes -a -F '#{pane_pid} #{session_name}:#{window_index}.#{pane_index}' 2>/dev/null | awk -v p="$owner" '$1==p{print $2}')
+      # print -P "  %F{yellow}${HOST%%.*} is already awake%f — vwatch is running in %F{cyan}${loc:-pid $owner}%f (caffeinate ${existing})."
+      # print -P "  Go there, or ^C it to release. Exiting."
+      # return 0
+    # fi
     # ── wakeability gate (one-time, consent) ──────────────────────────────────────
     # caffeinate holds this machine awake only WHILE vwatch runs; once it exits and the machine
     # sleeps, the fleet reaches it again only if wake-for-network (womp) is on. If the AC profile
     # has womp off, offer to enable it once. pmset state IS the memory — silent when already on,
     # no flag, no nag. Skipped when non-interactive (a scripted/ssh run without a tty).
-    if [[ -o interactive && -t 0 ]]; then
-      local ac_womp=$(pmset -g custom 2>/dev/null | awk '/AC Power/{f=1} /Battery Power/{f=0} f&&/womp/{print $2; exit}')
-      if [[ "$ac_womp" == 0 ]]; then
-        print -P "  %F{yellow}${HOST%%.*} isn't wakeable after sleep%f — wake-for-network is off on AC."
-        print -Pn "  Enable it so the fleet can wake this machine from sleep? %F{cyan}[y/N]%f "
-        local reply; read -k1 reply 2>/dev/null; print
-        [[ "$reply" == [yY] ]] && { sudo pmset -c womp 1 && print -P "  %F{green}✓ wakeable on AC%f — asleep-but-reachable from now on."; }
-      fi
-    fi
+    # if [[ -o interactive && -t 0 ]]; then
+      # local ac_womp=$(pmset -g custom 2>/dev/null | awk '/AC Power/{f=1} /Battery Power/{f=0} f&&/womp/{print $2; exit}')
+      # if [[ "$ac_womp" == 0 ]]; then
+        # print -P "  %F{yellow}${HOST%%.*} isn't wakeable after sleep%f — wake-for-network is off on AC."
+        # print -Pn "  Enable it so the fleet can wake this machine from sleep? %F{cyan}[y/N]%f "
+        # local reply; read -k1 reply 2>/dev/null; print
+        # [[ "$reply" == [yY] ]] && { sudo pmset -c womp 1 && print -P "  %F{green}✓ wakeable on AC%f — asleep-but-reachable from now on."; }
+      # fi
+    # fi
     # caffeinate -im: keep the SYSTEM awake for work on AC *and* battery (unlike -s = AC-only),
     # but NOT -d — let the display sleep so we waste the least energy. `disown` so it's never a
     # tracked shell job (no "you have running jobs" on exit).
-    caffeinate -im & local caff=$!; disown
+    # caffeinate -im & local caff=$!; disown
     # cleanup on ANY exit (Ctrl-C, error, normal) so caffeinate never leaks — even a render error
     # that aborts the function fires this EXIT trap, killing it + restoring the cursor.
-    trap 'kill $caff 2>/dev/null; tput cnorm 2>/dev/null; print -P "\n  %F{cyan}${HOST%%.*} released%f"' EXIT
-    tput civis 2>/dev/null
-    while :; do _vwatch_render "$caff"; sleep 3; done
-  }
+    # trap 'kill $caff 2>/dev/null; tput cnorm 2>/dev/null; print -P "\n  %F{cyan}${HOST%%.*} released%f"' EXIT
+    # tput civis 2>/dev/null
+    # while :; do _vwatch_render "$caff"; sleep 3; done
+  # }
 
   # vremote <host> — jump visually: open first-party Screen Sharing to a machine.
-  vremote() {
-    local name="${1:?usage: vremote <host>   (e.g. vremote mini | vremote neo)}"
-    local G=$'\e[38;5;114m' Y=$'\e[38;5;179m' D=$'\e[2m' R=$'\e[0m'
-    printf "  ${D}reaching %s…${R}" "$name"
-    local host
-    if host=$(_fleet_host "$name"); then
-      printf "\r  ${G}●${R} %s ${D}up — opening screen${R}              \n" "$name"
-    else
-      printf "\r  ${Y}○${R} %s ${D}offline — asleep or off (run \`vwatch\` on it, or wake it)${R}\n" "$name"
-      return 1
-    fi
-    open "vnc://${host}"
-  }
+  # vremote → vr  (now in ~/.fleet). deprecated 2026-07-13, parked below.
+  # vremote() {
+    # local name="${1:?usage: vremote <host>   (e.g. vremote mini | vremote neo)}"
+    # local G=$'\e[38;5;114m' Y=$'\e[38;5;179m' D=$'\e[2m' R=$'\e[0m'
+    # printf "  ${D}reaching %s…${R}" "$name"
+    # local host
+    # if host=$(_fleet_host "$name"); then
+      # printf "\r  ${G}●${R} %s ${D}up — opening screen${R}              \n" "$name"
+    # else
+      # printf "\r  ${Y}○${R} %s ${D}offline — asleep or off (run \`vwatch\` on it, or wake it)${R}\n" "$name"
+      # return 1
+    # fi
+    # open "vnc://${host}"
+  # }
 
   # vdebug <host> [--logs] — v[diagnose]: one-shot, READ-ONLY health triage of a fleet machine,
   # born from the day Neo looked "broken" after a reboot and turned out to be a self-resolving
@@ -590,87 +594,89 @@
   # scare). READ-ONLY by design — it never kicks a daemon or re-activates an extension; it triages,
   # then YOU decide. `--logs` appends a slower error+fault tail from the unified log (off by default
   # so the fast path stays fast). Escalate a REAL bug on the box with `sysdiagnose` / `log collect`.
-  vdebug() {
-    local want_logs=0 name="" a
-    for a in "$@"; do case "$a" in --logs) want_logs=1 ;; *) [[ -z "$name" ]] && name="$a" ;; esac; done
-    : ${name:?usage: vdebug <host> [--logs]   (e.g. vdebug neo | vdebug mini --logs)}
-    local G=$'\e[38;5;114m' Y=$'\e[38;5;179m' D=$'\e[2m' R=$'\e[0m'
-
-    local host
-    if ! host=$(_fleet_host "$name"); then
-      printf "  ${Y}○${R} %s ${D}offline — asleep or off (run \`vwatch\` on it, or wake it)${R}\n" "$name"
-      return 1
-    fi
-
+  # vdebug → vd  (now in ~/.fleet). deprecated 2026-07-13, parked below.
+  # vdebug() {
+    # local want_logs=0 name="" a
+    # for a in "$@"; do case "$a" in --logs) want_logs=1 ;; *) [[ -z "$name" ]] && name="$a" ;; esac; done
+    # : ${name:?usage: vdebug <host> [--logs]   (e.g. vdebug neo | vdebug mini --logs)}
+    # local G=$'\e[38;5;114m' Y=$'\e[38;5;179m' D=$'\e[2m' R=$'\e[0m'
+#
+    # local host
+    # if ! host=$(_fleet_host "$name"); then
+      # printf "  ${Y}○${R} %s ${D}offline — asleep or off (run \`vwatch\` on it, or wake it)${R}\n" "$name"
+      # return 1
+    # fi
+#
     # ── the remote probe: single-quoted so NOTHING expands locally; the $(...) / $vars run on the
     #    FAR side when ssh hands this ONE arg to the remote shell (parameter expansion of "$probe"
     #    is not recursive, so its inner `$` reach the remote intact). Pure reads, output-capped. ──
-    local probe='
-      NC=$(sysctl -n hw.ncpu 2>/dev/null)
-      BOOT=$(sysctl -n kern.boottime 2>/dev/null | grep -oE "sec = [0-9]+" | head -1 | grep -oE "[0-9]+"); NOW=$(date +%s)
-      [ -z "$BOOT" ] && BOOT=$NOW; UPS=$(( NOW - BOOT )); UPM=$(( UPS / 60 ))
-      set -- $(sysctl -n vm.loadavg 2>/dev/null | tr -d "{}"); L1=$1; L5=$2; L15=$3
-      HOT=$(awk -v l="$L1" -v n="$NC" "BEGIN{ print (l > 1.5*n) ? 1 : 0 }")
-      TOP=$(ps -Ao pcpu,comm -r 2>/dev/null | sed -n "2,7p")
-      DAEMON="UpdateBrain|MobileSoftwareUpdate|spotlight|corespotlight|mds|fileproviderd|cloudd|bird|backupd|Mail|photoanalysisd|mediaanalysisd|assetsubscriptiond|suggestd"
-      STORM=0; { echo "$TOP" | grep -qiE "$DAEMON"; } && [ "$UPS" -lt 1800 ] && STORM=1
-      P=$(ps -A 2>/dev/null | grep -c .); Z=$(pgrep -x zsh 2>/dev/null | grep -c .)
-      TM=$(pgrep -x tmux 2>/dev/null | grep -c .); ND=$(pgrep -i node 2>/dev/null | grep -c .)
-      KB=$(pgrep -i karabiner 2>/dev/null | grep -c .)
-      EXT=$(systemextensionsctl list 2>/dev/null)
-      kar=BAD; { echo "$EXT" | grep -i karabiner | grep -q "activated enabled"; } && kar=OK
-      tsc=BAD; { echo "$EXT" | grep -i tailscale | grep -q "activated enabled"; } && tsc=OK
-      TW=$(tmux list-windows -a -F "#{session_name}:#{window_index} #{window_name} [#{pane_current_command}]" 2>/dev/null); TWC=$(echo "$TW" | grep -c .)
-      Rr=$(printf "\033[0m"); RED=$(printf "\033[38;5;203m"); GRN=$(printf "\033[38;5;114m"); YEL=$(printf "\033[38;5;179m"); DIM=$(printf "\033[2m")
-      [ "$HOT" = 1 ] && LC=$RED || LC=$GRN
-      printf "  ${DIM}up${Rr} %sm   ${DIM}load${Rr} ${LC}%s${Rr} %s %s   ${DIM}(%s cores)${Rr}\n" "$UPM" "$L1" "$L5" "$L15" "$NC"
-      if [ "$STORM" = 1 ]; then
-        printf "  ${YEL}post-reboot storm${Rr} ${DIM}— indexing/update/iCloud daemons; self-resolving, leave it${Rr}\n"
-      elif [ "$HOT" = 1 ]; then
-        printf "  ${RED}elevated load${Rr} ${DIM}— check the top processes below${Rr}\n"
-      else
-        printf "  ${GRN}healthy${Rr}\n"
-      fi
-      printf "  ${DIM}top${Rr}\n"; echo "$TOP" | while read pc cm; do printf "    %5s%%  %s\n" "$pc" "${cm##*/}"; done
-      printf "  ${DIM}procs${Rr} %s  ${DIM}zsh${Rr} %s  ${DIM}tmux${Rr} %s  ${DIM}node${Rr} %s  ${DIM}karabiner${Rr} %s\n" "$P" "$Z" "$TM" "$ND" "$KB"
-      [ "$kar" = OK ] && kc=$GRN || kc=$RED; [ "$tsc" = OK ] && tc=$GRN || tc=$RED
-      printf "  ${DIM}ext${Rr}  karabiner ${kc}%s${Rr}   tailscale ${tc}%s${Rr}\n" "$kar" "$tsc"
-      printf "  ${DIM}tmux${Rr} %s windows\n" "$TWC"; echo "$TW" | sed -n "1,12p" | sed "s/^/    /"
-    '
-    if (( want_logs )); then
-      probe+='
-      Rr=$(printf "\033[0m"); DIM=$(printf "\033[2m")
-      printf "  ${DIM}faults+errors (last 10m)${Rr}\n"
-      log show --last 10m --predicate "messageType == 16 || messageType == 17" 2>/dev/null | tail -12 | sed "s/^/    /"
-      '
-    fi
-
+    # local probe='
+      # NC=$(sysctl -n hw.ncpu 2>/dev/null)
+      # BOOT=$(sysctl -n kern.boottime 2>/dev/null | grep -oE "sec = [0-9]+" | head -1 | grep -oE "[0-9]+"); NOW=$(date +%s)
+      # [ -z "$BOOT" ] && BOOT=$NOW; UPS=$(( NOW - BOOT )); UPM=$(( UPS / 60 ))
+      # set -- $(sysctl -n vm.loadavg 2>/dev/null | tr -d "{}"); L1=$1; L5=$2; L15=$3
+      # HOT=$(awk -v l="$L1" -v n="$NC" "BEGIN{ print (l > 1.5*n) ? 1 : 0 }")
+      # TOP=$(ps -Ao pcpu,comm -r 2>/dev/null | sed -n "2,7p")
+      # DAEMON="UpdateBrain|MobileSoftwareUpdate|spotlight|corespotlight|mds|fileproviderd|cloudd|bird|backupd|Mail|photoanalysisd|mediaanalysisd|assetsubscriptiond|suggestd"
+      # STORM=0; { echo "$TOP" | grep -qiE "$DAEMON"; } && [ "$UPS" -lt 1800 ] && STORM=1
+      # P=$(ps -A 2>/dev/null | grep -c .); Z=$(pgrep -x zsh 2>/dev/null | grep -c .)
+      # TM=$(pgrep -x tmux 2>/dev/null | grep -c .); ND=$(pgrep -i node 2>/dev/null | grep -c .)
+      # KB=$(pgrep -i karabiner 2>/dev/null | grep -c .)
+      # EXT=$(systemextensionsctl list 2>/dev/null)
+      # kar=BAD; { echo "$EXT" | grep -i karabiner | grep -q "activated enabled"; } && kar=OK
+      # tsc=BAD; { echo "$EXT" | grep -i tailscale | grep -q "activated enabled"; } && tsc=OK
+      # TW=$(tmux list-windows -a -F "#{session_name}:#{window_index} #{window_name} [#{pane_current_command}]" 2>/dev/null); TWC=$(echo "$TW" | grep -c .)
+      # Rr=$(printf "\033[0m"); RED=$(printf "\033[38;5;203m"); GRN=$(printf "\033[38;5;114m"); YEL=$(printf "\033[38;5;179m"); DIM=$(printf "\033[2m")
+      # [ "$HOT" = 1 ] && LC=$RED || LC=$GRN
+      # printf "  ${DIM}up${Rr} %sm   ${DIM}load${Rr} ${LC}%s${Rr} %s %s   ${DIM}(%s cores)${Rr}\n" "$UPM" "$L1" "$L5" "$L15" "$NC"
+      # if [ "$STORM" = 1 ]; then
+        # printf "  ${YEL}post-reboot storm${Rr} ${DIM}— indexing/update/iCloud daemons; self-resolving, leave it${Rr}\n"
+      # elif [ "$HOT" = 1 ]; then
+        # printf "  ${RED}elevated load${Rr} ${DIM}— check the top processes below${Rr}\n"
+      # else
+        # printf "  ${GRN}healthy${Rr}\n"
+      # fi
+      # printf "  ${DIM}top${Rr}\n"; echo "$TOP" | while read pc cm; do printf "    %5s%%  %s\n" "$pc" "${cm##*/}"; done
+      # printf "  ${DIM}procs${Rr} %s  ${DIM}zsh${Rr} %s  ${DIM}tmux${Rr} %s  ${DIM}node${Rr} %s  ${DIM}karabiner${Rr} %s\n" "$P" "$Z" "$TM" "$ND" "$KB"
+      # [ "$kar" = OK ] && kc=$GRN || kc=$RED; [ "$tsc" = OK ] && tc=$GRN || tc=$RED
+      # printf "  ${DIM}ext${Rr}  karabiner ${kc}%s${Rr}   tailscale ${tc}%s${Rr}\n" "$kar" "$tsc"
+      # printf "  ${DIM}tmux${Rr} %s windows\n" "$TWC"; echo "$TW" | sed -n "1,12p" | sed "s/^/    /"
+    # '
+    # if (( want_logs )); then
+      # probe+='
+      # Rr=$(printf "\033[0m"); DIM=$(printf "\033[2m")
+      # printf "  ${DIM}faults+errors (last 10m)${Rr}\n"
+      # log show --last 10m --predicate "messageType == 16 || messageType == 17" 2>/dev/null | tail -12 | sed "s/^/    /"
+      # '
+    # fi
+#
     # spin over the probe (real latency = the ssh round-trip), then reveal like vj.
-    setopt local_options no_monitor no_notify
-    local tmp; tmp=$(mktemp)
-    ( ssh -o ConnectTimeout=6 -o BatchMode=yes "$host" "$probe" >"$tmp" 2>&1 ) &
-    local pid=$!
-    trap 'kill $pid 2>/dev/null; tput cnorm 2>/dev/null; rm -f "$tmp"' INT TERM
-    _fleet_spin "$pid" "probing ${name}…"
-    wait $pid 2>/dev/null; trap - INT TERM
-
-    local chip; chip=$(_fleet_chip "${host%.local}")
-    printf "\r\e[K  %s  ${D}%s${R}  ${D}%s${R}\n" "$(get_colored_face)" "$host" "$chip"
-    cat "$tmp"; rm -f "$tmp"
-  }
+    # setopt local_options no_monitor no_notify
+    # local tmp; tmp=$(mktemp)
+    # ( ssh -o ConnectTimeout=6 -o BatchMode=yes "$host" "$probe" >"$tmp" 2>&1 ) &
+    # local pid=$!
+    # trap 'kill $pid 2>/dev/null; tput cnorm 2>/dev/null; rm -f "$tmp"' INT TERM
+    # _fleet_spin "$pid" "probing ${name}…"
+    # wait $pid 2>/dev/null; trap - INT TERM
+#
+    # local chip; chip=$(_fleet_chip "${host%.local}")
+    # printf "\r\e[K  %s  ${D}%s${R}  ${D}%s${R}\n" "$(get_colored_face)" "$host" "$chip"
+    # cat "$tmp"; rm -f "$tmp"
+  # }
 
   # tab-completion for vssh/vremote — friendly aliases (mini/air/neo) AND true hostnames (live
   # from Tailscale, else the known set), so you never memorize. Guarded: no-op if compinit isn't up.
-  _vfleet_hosts() {
-    local -a aliases=('mini:vminim4' 'air:vbookairm3' 'neo:vbookneoa18')
-    local -a hosts
-    local ts=${commands[tailscale]:-/Applications/Tailscale.app/Contents/MacOS/Tailscale}
-    [[ -x "$ts" ]] && hosts=(${(f)"$("$ts" status 2>/dev/null | awk '$1 ~ /^100\./{print $2}')"})
-    (( ${#hosts} )) || hosts=(vminim4 vbookairm3 vbookneoa18)
-    _describe 'alias' aliases
-    _describe 'hostname' hosts
-  }
-  (( $+functions[compdef] )) && compdef _vfleet_hosts vssh vremote vdebug 2>/dev/null
+  # _vfleet_hosts → _fleet_complete in ~/.fleet. deprecated, parked below.
+  # _vfleet_hosts() {
+    # local -a aliases=('mini:vminim4' 'air:vbookairm3' 'neo:vbookneoa18')
+    # local -a hosts
+    # local ts=${commands[tailscale]:-/Applications/Tailscale.app/Contents/MacOS/Tailscale}
+    # [[ -x "$ts" ]] && hosts=(${(f)"$("$ts" status 2>/dev/null | awk '$1 ~ /^100\./{print $2}')"})
+    # (( ${#hosts} )) || hosts=(vminim4 vbookairm3 vbookneoa18)
+    # _describe 'alias' aliases
+    # _describe 'hostname' hosts
+  # }
+  # (( $+functions[compdef] )) && compdef _vfleet_hosts vssh vremote vdebug 2>/dev/null
 
 # └─────────────────────────────────────────────────────────────────────────────┘
 
@@ -767,106 +773,107 @@
   #   NO_COLOR         monochrome
   #   sudo footprint = identical to the original: one `pmset -a disablesleep 1/0`.
   #   Run inside tmux for walk-away use so it survives a dropped mosh link.
-  coffee() {
-    [[ "$OSTYPE" != darwin* ]] && echo "macOS only" && return 1
-    local floor=${COFFEE_FLOOR:-20} start=$SECONDS start_pct=""
-    _COFFEE_OFF=0    # reset idempotent-restore guard (process-local, no disk state)
-    local B=$'\e[1m' D=$'\e[2m' R=$'\e[0m'
-    local G=$'\e[38;5;114m' Y=$'\e[38;5;179m' RD=$'\e[38;5;174m' CO=$'\e[38;5;173m' HR=$'\e[38;5;238m'
-    [[ -n "$NO_COLOR" ]] && { B= D= R= G= Y= RD= CO= HR=; }
-
+  # coffee → vw  (keep-awake engine folded into `vw` in ~/.fleet). deprecated 2026-07-13, parked below.
+  # coffee() {
+    # [[ "$OSTYPE" != darwin* ]] && echo "macOS only" && return 1
+    # local floor=${COFFEE_FLOOR:-20} start=$SECONDS start_pct=""
+    # _COFFEE_OFF=0    # reset idempotent-restore guard (process-local, no disk state)
+    # local B=$'\e[1m' D=$'\e[2m' R=$'\e[0m'
+    # local G=$'\e[38;5;114m' Y=$'\e[38;5;179m' RD=$'\e[38;5;174m' CO=$'\e[38;5;173m' HR=$'\e[38;5;238m'
+    # [[ -n "$NO_COLOR" ]] && { B= D= R= G= Y= RD= CO= HR=; }
+#
     # safety pre-flight: don't go headless already-doomed on battery
-    local pf_pct pf_ac
-    pf_pct=$(pmset -g batt | grep -Eo '[0-9]+%' | head -1 | tr -d '%')
-    pmset -g batt | grep -qi 'AC Power' && pf_ac=1 || pf_ac=0
-    if (( ! pf_ac )) && (( pf_pct <= floor )); then
-      echo -e "$(get_colored_face) Battery ${pf_pct}% ≤ floor ${floor}% on battery — plug in first."
-      return 1
-    fi
-
-    echo -e "$(get_colored_face) Disabling lid sleep..."
-
+    # local pf_pct pf_ac
+    # pf_pct=$(pmset -g batt | grep -Eo '[0-9]+%' | head -1 | tr -d '%')
+    # pmset -g batt | grep -qi 'AC Power' && pf_ac=1 || pf_ac=0
+    # if (( ! pf_ac )) && (( pf_pct <= floor )); then
+      # echo -e "$(get_colored_face) Battery ${pf_pct}% ≤ floor ${floor}% on battery — plug in first."
+      # return 1
+    # fi
+#
+    # echo -e "$(get_colored_face) Disabling lid sleep..."
+#
     # stay awake — the SAME single sudo command the original `coffee` used, so any
     # existing passwordless sudoers rule still matches. Only this needs root.
-    sudo pmset -a disablesleep 1 || return 1
-
+    # sudo pmset -a disablesleep 1 || return 1
+#
     # remote surface (verify, don't install)
-    local user tsip; user=$(whoami)
-    tsip=$(command -v tailscale >/dev/null && tailscale ip -4 2>/dev/null | head -1)
-    [[ -z "$tsip" ]] && tsip="<run: tailscale up>"
-    [[ -n "$COFFEE_BLANK" ]] && pmset displaysleepnow   # sudo-free immediate panel-off (opt-in)
-    echo -e "$(get_colored_face) Lid can close now. Reconnect: ${B}mosh ${user}@${tsip}${R}"
-    echo    "$(get_colored_face) Floor ${floor}% · close lid to blank panel · Ctrl+C to stop"
-
+    # local user tsip; user=$(whoami)
+    # tsip=$(command -v tailscale >/dev/null && tailscale ip -4 2>/dev/null | head -1)
+    # [[ -z "$tsip" ]] && tsip="<run: tailscale up>"
+    # [[ -n "$COFFEE_BLANK" ]] && pmset displaysleepnow   # sudo-free immediate panel-off (opt-in)
+    # echo -e "$(get_colored_face) Lid can close now. Reconnect: ${B}mosh ${user}@${tsip}${R}"
+    # echo    "$(get_colored_face) Floor ${floor}% · close lid to blank panel · Ctrl+C to stop"
+#
     # live dashboard = the hold loop + battery-floor watchdog (11-line panel)
-    local stop=0 first=1 i=0 H=11
-    local steam=('˚ ' ' ˳' '° ' ' ‧')
-    local tsstate="up"; [[ "$tsip" == \<* ]] && tsstate="down"
+    # local stop=0 first=1 i=0 H=11
+    # local steam=('˚ ' ' ˳' '° ' ' ‧')
+    # local tsstate="up"; [[ "$tsip" == \<* ]] && tsstate="down"
     # INT = Ctrl+C; HUP/TERM = mosh/ssh dropped WITHOUT tmux — restore while sudo
     # creds are still cached (~5min) so the machine doesn't stay stuck awake.
-    trap 'stop=1' INT HUP TERM
-    tput civis 2>/dev/null
-
-    while (( ! stop )); do
-      local pct dir cyc health watts ncc volt load
-      pct=$(pmset -g batt | grep -Eo '[0-9]+%' | head -1 | tr -d '%')
-      [[ -z "$start_pct" ]] && start_pct=$pct
-      read cyc health watts dir ncc volt <<<"$(ioreg -rn AppleSmartBattery | awk -F'= ' '
-        /"CycleCount"/{c=$2} /"InstantAmperage"/{a=$2} /"Voltage"/{v=$2}
-        /"NominalChargeCapacity"/{n=$2} /"DesignCapacity"/{d=$2}
-        END{ if(a>2^63)a-=2^64;
-             printf "%d %.0f %.2f %s %d %d\n", c,(d?n/d*100:0),(a<0?-a:a)*v/1e6,(a<0?"dis":"chg"),n,v }')"
-      load=$(sysctl -n vm.loadavg | awk -v n=$(sysctl -n hw.ncpu) '{gsub(/[{}]/,"");printf "%.0f",$1/n*100}')
-
+    # trap 'stop=1' INT HUP TERM
+    # tput civis 2>/dev/null
+#
+    # while (( ! stop )); do
+      # local pct dir cyc health watts ncc volt load
+      # pct=$(pmset -g batt | grep -Eo '[0-9]+%' | head -1 | tr -d '%')
+      # [[ -z "$start_pct" ]] && start_pct=$pct
+      # read cyc health watts dir ncc volt <<<"$(ioreg -rn AppleSmartBattery | awk -F'= ' '
+        # /"CycleCount"/{c=$2} /"InstantAmperage"/{a=$2} /"Voltage"/{v=$2}
+        # /"NominalChargeCapacity"/{n=$2} /"DesignCapacity"/{d=$2}
+        # END{ if(a>2^63)a-=2^64;
+             # printf "%d %.0f %.2f %s %d %d\n", c,(d?n/d*100:0),(a<0?-a:a)*v/1e6,(a<0?"dis":"chg"),n,v }')"
+      # load=$(sysctl -n vm.loadavg | awk -v n=$(sysctl -n hw.ncpu) '{gsub(/[{}]/,"");printf "%.0f",$1/n*100}')
+#
       # who's attached right now (sudo-free): mosh procs, established ssh:22 / vnc:5900
       # NB: macOS pgrep has no -c flag — count with wc -l.
-      local mosh ssh vnc
-      mosh=$(pgrep -f mosh-server 2>/dev/null | wc -l | tr -d ' ')
-      read ssh vnc <<<"$(netstat -an -p tcp 2>/dev/null | awk '$NF=="ESTABLISHED"{
-        n=split($4,a,".");p=a[n]; if(p==22)s++; else if(p==5900)v++} END{print s+0, v+0}')"
-
+      # local mosh ssh vnc
+      # mosh=$(pgrep -f mosh-server 2>/dev/null | wc -l | tr -d ' ')
+      # read ssh vnc <<<"$(netstat -an -p tcp 2>/dev/null | awk '$NF=="ESTABLISHED"{
+        # n=split($4,a,".");p=a[n]; if(p==22)s++; else if(p==5900)v++} END{print s+0, v+0}')"
+#
       # thermal throttle alarm (fanless Air, lid-closed): CPU_Speed_Limit appears only
       # when the SoC is throttling. <100 = being held back by heat. Sudo-free.
-      local therm=100
-      therm=$(pmset -g therm 2>/dev/null | awk -F'= ' '/CPU_Speed_Limit/{print $2+0; exit}'); : ${therm:=100}
-
-      local eta arrow bc
-      if [[ "$dir" == dis ]] && (( pct > floor )); then
-        eta=$(awk -v w=$watts -v ncc=$ncc -v v=$volt -v p=$pct -v fl=$floor 'BEGIN{
-          wh=ncc/1000*v/1000; if(w<=0||wh<=0){print "discharging";exit}
-          pph=w/wh*100; h=(p-fl)/pph;
-          printf "~%dh%02dm to %d%% floor", int(h), int((h-int(h))*60), fl }')
-        arrow="↓"; bc=$G; (( pct<=50 )) && bc=$Y; (( pct<=floor+5 )) && bc=$RD
-      else
-        eta="on AC — banking charge"; arrow="↑"; bc=$G
-      fi
-      local delta=$(( start_pct - pct )) dsign="−"
-      (( delta < 0 )) && { dsign="+"; delta=$(( -delta )); }
-      local el; el=$(printf '%02d:%02d:%02d' $(((SECONDS-start)/3600)) $(((SECONDS-start)%3600/60)) $(((SECONDS-start)%60)))
-
-      (( first )) || { tput cuu $H 2>/dev/null; tput ed 2>/dev/null; }
-      print -r -- ""
-      print -r -- "   ☕${steam[i%4+1]}  ${B}coffee${R}                         awake  ${el}"
-      print -r -- ""
-      print -r -- "   battery  ${bc}${B}${pct}%${R} ${arrow}  ${watts}W        ${D}${dsign}${delta}% since brewing${R}"
-      print -r -- "   ${bc}$(_coffee_bar $pct 22)${R}  ${D}${eta}${R}"
-      print -r -- ""
-      print -r -- "   wear     ${B}${health}%${R} health ${D}·${R} ${cyc} cycles"
-      local thermtag=""; (( therm < 100 )) && thermtag="   ${RD}${B}⚠ thermal ${therm}%${R}"
-      print -r -- "   load     ${B}${load}%${R} cpu${thermtag}"
-      print -r -- "   $(_coffee_bar $load 22)"
-      print -r -- ""
-      local lm=$D lv=$D; (( mosh>0 )) && lm=$G; (( vnc>0 )) && lv=$G
-      print -r -- "   link     ${lm}mosh×${mosh}${R} ${D}ssh×${ssh}${R} ${lv}vnc×${vnc}${R}   ${D}· tailscale ${tsstate}${R}"
-      first=0
-
-      (( pct <= floor )) && [[ "$dir" == dis ]] && stop=1
-      (( stop )) && break
-      (( i++ )); sleep 2
-    done
-
-    _coffee_restore
-  }
+      # local therm=100
+      # therm=$(pmset -g therm 2>/dev/null | awk -F'= ' '/CPU_Speed_Limit/{print $2+0; exit}'); : ${therm:=100}
+#
+      # local eta arrow bc
+      # if [[ "$dir" == dis ]] && (( pct > floor )); then
+        # eta=$(awk -v w=$watts -v ncc=$ncc -v v=$volt -v p=$pct -v fl=$floor 'BEGIN{
+          # wh=ncc/1000*v/1000; if(w<=0||wh<=0){print "discharging";exit}
+          # pph=w/wh*100; h=(p-fl)/pph;
+          # printf "~%dh%02dm to %d%% floor", int(h), int((h-int(h))*60), fl }')
+        # arrow="↓"; bc=$G; (( pct<=50 )) && bc=$Y; (( pct<=floor+5 )) && bc=$RD
+      # else
+        # eta="on AC — banking charge"; arrow="↑"; bc=$G
+      # fi
+      # local delta=$(( start_pct - pct )) dsign="−"
+      # (( delta < 0 )) && { dsign="+"; delta=$(( -delta )); }
+      # local el; el=$(printf '%02d:%02d:%02d' $(((SECONDS-start)/3600)) $(((SECONDS-start)%3600/60)) $(((SECONDS-start)%60)))
+#
+      # (( first )) || { tput cuu $H 2>/dev/null; tput ed 2>/dev/null; }
+      # print -r -- ""
+      # print -r -- "   ☕${steam[i%4+1]}  ${B}coffee${R}                         awake  ${el}"
+      # print -r -- ""
+      # print -r -- "   battery  ${bc}${B}${pct}%${R} ${arrow}  ${watts}W        ${D}${dsign}${delta}% since brewing${R}"
+      # print -r -- "   ${bc}$(_coffee_bar $pct 22)${R}  ${D}${eta}${R}"
+      # print -r -- ""
+      # print -r -- "   wear     ${B}${health}%${R} health ${D}·${R} ${cyc} cycles"
+      # local thermtag=""; (( therm < 100 )) && thermtag="   ${RD}${B}⚠ thermal ${therm}%${R}"
+      # print -r -- "   load     ${B}${load}%${R} cpu${thermtag}"
+      # print -r -- "   $(_coffee_bar $load 22)"
+      # print -r -- ""
+      # local lm=$D lv=$D; (( mosh>0 )) && lm=$G; (( vnc>0 )) && lv=$G
+      # print -r -- "   link     ${lm}mosh×${mosh}${R} ${D}ssh×${ssh}${R} ${lv}vnc×${vnc}${R}   ${D}· tailscale ${tsstate}${R}"
+      # first=0
+#
+      # (( pct <= floor )) && [[ "$dir" == dis ]] && stop=1
+      # (( stop )) && break
+      # (( i++ )); sleep 2
+    # done
+#
+    # _coffee_restore
+  # }
 
   # filled/empty progress bar: $1=percent $2=width
   _coffee_bar() {
