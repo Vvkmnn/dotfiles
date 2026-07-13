@@ -461,6 +461,7 @@
     ],
     "defaultMode": "plan"
   },
+  "model": "fable",
   "hooks": {
     "SessionStart": [
       {
@@ -606,8 +607,12 @@
     "mode": "auto-allow"
   },
   "alwaysThinkingEnabled": true,
+  "tui": "fullscreen",
+  "voice": {
+    "enabled": true,
+    "mode": "hold"
+  },
   "editorMode": "vim",
   "skipAutoPermissionPrompt": true,
-  "voiceEnabled": true,
-  "tui": "fullscreen"
+  "voiceEnabled": true
 }
