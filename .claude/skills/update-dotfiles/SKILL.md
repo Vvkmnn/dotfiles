@@ -1,8 +1,8 @@
 ---
 name: update-dotfiles
 author: Vvkmnn
-description: Use when user says "update dotfiles", "commit dotfiles", "sync dotfiles", "push dotfiles", or asks to save/backup their config. Manages bare git repo at ~/.dotfiles with logical commits, security checks, and config discovery.
-version: 0.4.0
+description: Use when user says "update dotfiles", "commit dotfiles", "sync dotfiles", "push dotfiles", or asks to save/backup their config — and whenever Claude itself proposes updating dotfiles. Manages bare git repo at ~/.dotfiles with logical commits, security checks, config discovery, and a plan-artifact/launch-daemon capture pass so recent machine-config work is reproducible on fresh machines.
+version: 0.5.0
 ---
 
 # Dotfiles Update
@@ -160,7 +160,7 @@ done
 - New apps in `~/.config/` not yet tracked
 - Changes to `~/Library/Application Support/` (VS Code, Cursor)
 - New shell dotfiles (`.tool-versions`, `.mise.toml`, etc.)
-- `~/Library/LaunchAgents/` — check but do NOT track auto-generated plists (machine-specific paths confuse fresh installs)
+- `~/Library/LaunchAgents/` — do NOT track auto-generated or third-party plists (Google/Alfred/brew/CleanMyMac/Steam) or a live hand-authored plist verbatim (its absolute `/Users/<you>/…` paths break a fresh install). DO capture each hand-authored **load-bearing** daemon (`com.user.*`, `com.claude.*` — e.g. the tmux `lambda.sh` save-loop) as a machine-agnostic **`.plist.template`** (paths → `$HOME`). See Phase 5c for the sweep that catches these.
 - Sketchybar `helpers/*.swift` sources (track source, not compiled binaries)
 
 **Ask:** "Found N untracked config files in [dirs]. Want to review them for tracking?"
@@ -187,6 +187,61 @@ mise ls | grep -i missing
 - Log non-obvious root causes in `~/.ai/ISSUES.md`. `~/.ai/setup doctor` also flags gaps.
 
 This is the "you help me remember" loop — paired with `setup-dotfiles` (discover/set up).
+
+### Phase 5c: Plan-artifact capture — did recent work actually LAND?
+
+Machine-config work spread across sessions produces artifacts that live OUTSIDE the files a
+plain `diff` surfaces — launchd daemons in `~/Library/LaunchAgents/`, standalone scripts,
+`defaults write` keys, WM configs. A plan can read "done" while its runner was never tracked.
+
+> Canonical miss (2026-07): the tmux save-loop was reworked into `~/.config/tmux/lambda.sh`,
+> driven by `~/Library/LaunchAgents/com.user.tmux-save.plist` — both untracked. The dotfiles
+> even held a committed *older* `tmux-save-guard.sh`, so the tree looked consistent while the
+> LIVE λ daemon + script + the `machine_badge.sh` that calls them were all uncommitted. A fresh
+> checkout would run the stale design and start no daemon at all.
+
+**Run this whenever dotfiles are updated — including any time Claude proposes or merely mentions
+"update dotfiles" / "updating dotfiles", not just on an explicit request.**
+
+1. Enumerate recent machine-config / dotfiles plans (heuristic: last ~13 by mtime); keep the
+   ones about machine config, setup, tmux, wm/yabai, sketchybar, karabiner, launchd, fleet:
+   ```bash
+   ls -t ~/.claude/plans/*.md | head -13
+   ```
+2. For each relevant plan, list the artifacts it PRODUCED — scripts, plists/daemons, `defaults`
+   keys, new config files — and confirm each is tracked (empty output = a gap):
+   ```bash
+   dotfiles ls-files <path>
+   ```
+3. Sweep the external stores a diff won't show:
+   ```bash
+   # hand-authored daemons (com.user.* / com.claude.*) — is each captured as a template?
+   ls ~/Library/LaunchAgents/com.user.*.plist ~/Library/LaunchAgents/com.claude.*.plist 2>/dev/null
+   # a tracked file deleted on disk = a likely rename/rework whose new file is untracked
+   dotfiles status --porcelain=v1 -uno | grep '^ D'
+   # what each daemon actually runs — verify that target script is tracked
+   grep -A1 ProgramArguments ~/Library/LaunchAgents/com.user.*.plist 2>/dev/null
+   ```
+4. Capture each gap so BOTH the repo and a fresh machine can RECREATE it — being *aware* isn't
+   enough, the setup must be reproducible. Capture differs by daemon type:
+   - **Hand-authored daemon** (`com.user.*`, `com.claude.*` — e.g. tmux `lambda.sh` save-loop):
+     track the **script** + a machine-agnostic **`.plist.template`** (paths → `$HOME`), AND
+     record the install step in `~/.ai/setup` so `setup-dotfiles` loads it on a new machine:
+     ```bash
+     # repo renders the __HOME__ token at install time (see mcp/*.plist.template)
+     sed 's#__HOME__#'"$HOME"'#g' ~/.config/tmux/com.user.tmux-save.plist.template \
+       > ~/Library/LaunchAgents/com.user.tmux-save.plist
+     launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.user.tmux-save.plist
+     ```
+   - **brew-managed daemon** (yabai/skhd/sketchybar): do NOT track its plist — it's regenerated
+     by `brew services start <name>`; capture THAT as the setup step instead.
+   - **`defaults write` keys / one-off scripts**: fold into `~/.ai/setup` (the curated
+     macOS-defaults + script list), not just the dotfiles tree.
+
+   A plan is "done" only when its artifacts AND their recreation recipe are captured. Verify with
+   a dry-run mental checkout: *"fresh machine → clone → git-crypt unlock → `~/.ai/setup` → does
+   this daemon come back on its own?"* If no, the recipe is incomplete. This makes both the repo
+   AND `setup-dotfiles`/`~/.ai/setup` aware of every daemon and how to stand it up on any machine.
 
 ### Phase 6: Report
 
