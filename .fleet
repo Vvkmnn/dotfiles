@@ -1,0 +1,836 @@
+# ~/.fleet — the fleet suite. One flat file, sourced fleet-wide from ~/.zshrc, shipped in dotfiles.
+#
+#   vj [host]   jump   — mosh into a machine's tmux in a fresh Ghostty window. No arg → picker.
+#   vw          wake   — keep THIS machine awake for agent work (battery/thermal-safe) + a LIVE
+#                        fleet-wide tmux tree (every machine's sessions/windows/agents, ~3s refresh).
+#   vr [host]   remote — first-party Screen Sharing (VNC GUI). No arg → picker.
+#   vd [host]   debug  — read-only health triage over one ssh round-trip. No arg → picker.
+#
+# Auth footprint: the pickers reach machines with ping only (never ssh), so browsing with vj/vr/vd
+# never touches 1Password until you pick a host. vw is the one live view — it ssh-polls every peer
+# on a timer to draw the tree, so it authenticates each peer ONCE on start (1Password then caches
+# until it locks) and every refresh after that rides a multiplexed socket (ssh ControlMaster in
+# ~/.ssh/config) — silent and instant. Nothing polls unless vw is on-screen and running.
+#
+# Transport is MOSH, not ssh/et. ssh is ephemeral (a drop SIGHUPs the remote shell + children) but
+# bootstraps mosh and carries the 1Password key. mosh is UDP/roaming: survives wifi↔cellular / sleep
+# / travel, silently resumes, and its dimmed "Last contact" overlay is the one built-in disconnect
+# cue. et reconnects silently (no cue) and its scrollback edge is nullified by tmux → dropped. tmux
+# is not launched by us: the remote login shell autostarts a fresh session (ZSH_TMUX_AUTOSTART), so
+# vj passes no command. Auth = the 1Password SSH agent (SSH_AUTH_SOCK from ~/.minimal), live only
+# while the 1Password desktop app runs.
+#
+# ── the stack (identical on every machine — one dotfiles bare repo, ~/.dotfiles, work tree ~/) ──────
+# What a jump lands you in, bottom to top. Because the dotfiles are shipped fleet-wide, mini/air/neo
+# run byte-identical configs — the only difference is the machine's name, chip hue, and power state.
+#
+#   ghostty   the terminal window. vj/vr open a NEW Ghostty (`open -na Ghostty`); GPU-drawn, our
+#             theme + the machine badge. The one surface the whole stack renders into.
+#   zsh       the login shell. Sources ~/.minimal → ~/.profile → ~/.functions → ~/.fleet → …; it is
+#             what autostarts tmux (ZSH_TMUX_AUTOSTART) and what carries SSH_AUTH_SOCK for the agent.
+#   tmux      the multiplexer — ONE server per machine, session `main`, never centralized. This is
+#             what makes a jump durable: the session outlives the mosh link, so a drop/resume rejoins
+#             exactly where you were. vj deliberately passes no command so the remote shell owns it.
+#   nvim      the editor, launched inside tmux. OSC-52 yank is wired to cross mosh (see tmux `Ms`).
+#   claude    Claude Code — the agent work itself, run in tmux windows. vw exists to keep a machine
+#             awake for these; the pickers/tree classify a window as an agent by name/cmd
+#             (claude|codex|aider|cursor), since @agent_status is often empty.
+#
+# The three peers (symmetric mesh — every machine reaches every other, none is a hub):
+#   mini · vMiniM4     · M4  · usually on AC, so usually the reachable one — but just a peer.
+#   air  · vBookAirM3  · M3  · sleeps to save battery; held awake on demand with vw.
+#   neo  · vBookNeoA18 · A18 · same on-demand availability, held awake with vw.
+
+# ── roster ──────────────────────────────────────────────────────────────────────
+# friendly / chip aliases → true Tailscale-MagicDNS hostname. Add a machine here and it flows to
+# every verb + picker at once. Hostnames encode the chip, so the chip map below is 1:1.
+_fleet_roster=(mini air neo)
+# vwake's fixed loopback port — doubles as its singleton lock (one vw per machine: a second vw finds
+# the port bound and refuses) AND the address its live refresher POSTs reload to. Released when the
+# picker closes, so no disk lockfile is ever needed.
+_fleet_wake_port=27182
+# The fleet's shared iconography contract (power-tier shape + per-machine hue) — the SAME file the tmux
+# badge reads (~/.config/tmux/machine_badge.sh sources it too), so tree and status bar never drift.
+source ~/.config/fleet/badge.sh
+_fleet_map() {
+  case "${1:l}" in
+    mini|m4)  print -r -- vminim4 ;;
+    air|m3)   print -r -- vbookairm3 ;;
+    neo|a18)  print -r -- vbookneoa18 ;;
+    *)        print -r -- "$1" ;;   # already a hostname / unknown — pass through
+  esac
+}
+_fleet_chip() {
+  case "${1:l}" in
+    *m4)  print -r -- "Apple M4" ;;
+    *m3)  print -r -- "Apple M3" ;;
+    *a18) print -r -- "Apple A18" ;;
+    *)    print -r -- "" ;;
+  esac
+}
+
+# ── reachability (AUTH-FREE) ─────────────────────────────────────────────────────
+# Resolve <name> to a reachable form and signal up/down by exit code, WITHOUT ssh. Bare MagicDNS
+# name first (Tailscale, works on any network), then <name>.local (Bonjour, LAN). ping -c1 -t1 is a
+# 1s-timeout single packet — no 1Password, no hang. Prints the name even when unreachable (asleep/off
+# still get a label); the exit code carries up/down.
+_fleet_reach() {
+  local h; h=$(_fleet_map "$1")
+  if ping -c1 -t1 "$h" >/dev/null 2>&1;        then print -r -- "$h";        return 0; fi
+  if ping -c1 -t1 "$h.local" >/dev/null 2>&1;  then print -r -- "$h.local";  return 0; fi
+  print -r -- "$h"; return 1
+}
+
+# ── braille spinner over a background probe (zero added latency — spins only while it runs) ───────
+_fleet_spin() {
+  local f=(⠋ ⠙ ⠹ ⠸ ⠼ ⠴ ⠦ ⠧ ⠇ ⠏) i=0
+  local aqua=$'\e[38;2;122;168;159m' dim=$'\e[38;2;114;116;124m' R=$'\e[0m'
+  tput civis 2>/dev/null
+  while kill -0 "$1" 2>/dev/null; do
+    printf "\r  ${aqua}%s${R}  ${dim}%s${R}" "${f[i++%10+1]}" "$2"; sleep 0.06
+  done
+  tput cnorm 2>/dev/null; printf "\r\e[K"
+}
+
+# ── _fleet_menu — auth-free fzf machine picker (ping only). Prints the chosen friendly name, or
+#    returns 1 on cancel. Reachability (● up / ○ asleep) is probed concurrently so it opens instantly.
+#    Shared by the no-arg forms of vj / vr / vd — one place to keep the look and the roster.
+_fleet_menu() {
+  command -v fzf >/dev/null 2>&1 || { print -u2 "  fzf not found"; return 2; }
+  local g=$'\e[38;2;122;168;159m' dim=$'\e[38;2;114;116;124m' R=$'\e[0m'
+  local dir; dir=$(mktemp -d) || return 1
+  {
+    local f
+    for f in $_fleet_roster; do
+      ( _fleet_reach "$f" >/dev/null 2>&1 && echo up >"$dir/$f" || echo down >"$dir/$f" ) &
+    done
+    wait
+    local list=""
+    for f in $_fleet_roster; do
+      local host chip glyph state
+      host=$(_fleet_map "$f"); chip=$(_fleet_chip "$host")
+      if [[ "$(cat "$dir/$f" 2>/dev/null)" == up ]]; then glyph="${g}●${R}"; state=up; else glyph="${dim}○${R}"; state=asleep; fi
+      list+="${f}"$'\t'"${glyph} $(printf '%-5s' "$f") ${dim}${host} · ${chip:-—} · ${state}${R}"$'\n'
+    done
+    local pick
+    pick=$(print -rn -- "$list" | fzf --ansi --delimiter=$'\t' --with-nth=2 \
+      --layout=reverse --highlight-line --pointer='▶' \
+      --border-label='  vFleet ' --border-label-pos=3 \
+      --header='  ↑↓ pick a machine · ⏎ go · esc cancel' --header-border=bottom \
+      --prompt='  ' --info=inline-right \
+      --color 'bg+:#2d4f67,fg+:#c8c093,hl:#7e9cd8,hl+:#7e9cd8:bold' \
+      --color 'border:#54546d,label:#7aa89f,header:#54546d,prompt:#7aa89f,pointer:#e46876') || return 1
+    print -r -- "${pick%%$'\t'*}"
+  } always { rm -rf -- "$dir" }
+}
+
+# ── _fleet_probe — the read-only vitals+windows probe, evaluated by whichever shell finally runs it
+#    (local `sh` for this box, or the peer's shell over ssh). Single-quoted at definition so nothing
+#    expands here; the inner $(...) reach the far side intact. Plain global (not readonly) so a
+#    re-source never errors. Shared by _fleet_poll (whole fleet) and _fleet_poll_self (this box only).
+_fleet_probe='
+  batt=$(pmset -g batt 2>/dev/null)
+  pct=$(printf "%s" "$batt" | grep -oE "[0-9]+%" | head -1 | tr -d "%")
+  ac=batt; printf "%s" "$batt" | grep -q "AC Power" && ac=ac
+  rem=$(printf "%s" "$batt" | grep -oE "[0-9]+:[0-9]+" | head -1)
+  lim=$(pmset -g therm 2>/dev/null | grep -oE "CPU_Speed_Limit *= *[0-9]+" | grep -oE "[0-9]+$")
+  therm=cool; [ -n "$lim" ] && [ "$lim" != 100 ] && therm=hot
+  set -- $(sysctl -n vm.loadavg 2>/dev/null | tr -d "{}"); l1=$1; l5=$2; l15=$3
+  nc=$(sysctl -n hw.ncpu 2>/dev/null)
+  mfree=$(memory_pressure 2>/dev/null | grep -i "free percentage" | grep -oE "[0-9]+" | head -1)
+  boot=$(sysctl -n kern.boottime 2>/dev/null | grep -oE "sec = [0-9]+" | head -1 | grep -oE "[0-9]+")
+  printf "PWR|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s\n" "$ac" "${pct:-?}" "$therm" "${l1:-?}" "${l5:-?}" "${l15:-?}" "${nc:-?}" "${mfree:-?}" "${boot:-?}" "${rem:-}"
+  tmux list-windows -a -F "WIN|#{session_name}:#{window_index}|#{window_name}|#{pane_current_command}|#{window_panes}|#{window_flags}|#{window_activity}" 2>/dev/null
+'
+
+# ── _fleet_poll_self — THIS box only: its HOST line + one LOCAL probe, no ssh, no 1Password, no wait.
+#    Same |-stream shape _fleet_tree parses, so the picker paints `this` machine at t≈0 instead of
+#    sitting blank while the full-fleet ssh sweep + Touch-ID resolve. The refresher swaps in the rest.
+_fleet_poll_self() {
+  local self=${${HOST%%.*}:l} f h
+  for f in $_fleet_roster; do
+    h=$(_fleet_map "$f")
+    [[ ${h:l} == $self ]] || continue
+    print -r -- "HOST|$f|$h"
+    sh -c "$_fleet_probe" 2>/dev/null || print -r -- "ASLEEP"
+    return
+  done
+}
+
+# ── _fleet_poll — the ONE place in this suite that ssh's peers. One concurrent sweep of the whole
+#    fleet, feeding vw's fleet view (and, later, vj's picker preview). Emits a flat |-delimited
+#    stream both consumers parse:
+#      HOST|<friendly>|<hostname>                        one per machine, display order
+#      PWR|<ac|batt>|<pct>|<cool|hot>|<l1>|<l5>|<l15>|<cores>|<memfree%>|<boot_epoch>|<batt_remaining>
+#                                                         vitals: 1/5/15-min load (sparkline, normalized to cores) +
+#                                                         mem free % · boot epoch (uptime) · battery time (self detail)
+#      WIN|<session:index>|<name>|<cmd>|<panes>|<flags>|<activity_epoch>
+#                                                         one per tmux window; activity_epoch = last output (idle clock)
+#      ASLEEP                                            replaces PWR/WIN when a peer times out
+#    This box is probed locally; peers over ssh with a short ConnectTimeout that IS the reachability
+#    test (one round-trip, no separate ping). Peers run concurrently via a temp dir, read back in
+#    order, dir wiped on any exit. Pure reads (pmset/sysctl/tmux) so it's cheap to repeat. NEVER on a
+#    background timer — only fired by a deliberate keypress (vw's `f`), so 1Password stays quiet.
+_fleet_poll() {
+  local -a order=($_fleet_roster)
+  local self=${${HOST%%.*}:l}
+  local dir; dir=$(mktemp -d) || return 1
+  {
+    local f h
+    for f in $order; do
+      h=$(_fleet_map "$f")
+      if [[ ${h:l} == $self ]]; then
+        ( sh -c "$_fleet_probe" >"$dir/$f" 2>/dev/null ) &
+      else
+        ( ssh -o ConnectTimeout=3 -o BatchMode=yes "$h" "$_fleet_probe" >"$dir/$f" 2>/dev/null ) &
+      fi
+    done
+    wait
+    for f in $order; do
+      print -r -- "HOST|$f|$(_fleet_map "$f")"
+      if [[ -s "$dir/$f" ]]; then cat -- "$dir/$f"; else print -r -- "ASLEEP"; fi
+    done
+  } always { rm -rf -- "$dir" }
+}
+
+# ── vj — jump. No arg → auth-free picker. <host> → mosh into a fresh Ghostty window. The reveal
+#    probes path quality with tailscale/ping (auth-free); only the mosh open touches 1Password.
+#    No command is passed — the remote login shell autostarts a fresh tmux session itself.
+vj() {
+  if (( $# == 0 )); then
+    local pick; pick=$(_fleet_menu) || return
+    [[ -n "$pick" ]] && vj "$pick"
+    return
+  fi
+  local name="$1"
+  local host; host=$(_fleet_map "$name")
+  local blu=$'\e[38;2;126;156;216m' dim=$'\e[38;2;114;116;124m' bold=$'\e[1m' R=$'\e[0m'
+
+  setopt local_options no_monitor no_notify
+  local tmp; tmp=$(mktemp)
+  ( tailscale ping -c 3 "$host" >"$tmp" 2>/dev/null ) &
+  local pid=$!
+  trap 'kill $pid 2>/dev/null; tput cnorm 2>/dev/null; rm -f "$tmp"' INT TERM
+  _fleet_spin "$pid" "reaching ${name}…"
+  wait $pid 2>/dev/null; trap - INT TERM
+  local out; out=$(<"$tmp"); rm -f "$tmp"
+
+  local last rtt reach=0 direct=0
+  last=$(print -r -- "$out" | grep -iE 'pong|via' | tail -1)
+  if [[ -n "$last" ]]; then
+    reach=1
+    rtt=$(print -r -- "$last" | grep -oE '[0-9]+ms' | head -1 | grep -oE '[0-9]+')
+    [[ "$last" == *"via "* && "$last" != *DERP* && "$last" != *relay* ]] && direct=1
+  else
+    local rt
+    if rt=$(ping -c1 -t1 "$host" 2>/dev/null | grep -oE 'time=[0-9.]+' | head -1); then
+      reach=1; direct=1; rtt=${${rt#time=}%%.*}
+    elif rt=$(ping -c1 -t1 "$host.local" 2>/dev/null | grep -oE 'time=[0-9.]+' | head -1); then
+      reach=1; direct=1; rtt=${${rt#time=}%%.*}; host="$host.local"
+    fi
+  fi
+
+  local chip; chip=$(_fleet_chip "$host")
+  if (( ! reach )); then
+    printf "  %s  ${bold}%s${R} ${dim}· asleep or off — \`vw\` on it, or wake it${R}\n" \
+      "$(get_colored_face)" "$host"
+    return 1
+  fi
+
+  local pathw; (( direct )) && pathw=direct || pathw=relay
+  local badge="${blu}∿ mosh${R}"
+
+  # open the mosh window NOW, before the cosmetic settle (decoupled → 0 cost to the jump).
+  open -na /Applications/Ghostty.app --args -e /bin/zsh -c \
+    "env -u TMUX -u TMUX_PANE mosh --ssh='ssh -o ConnectTimeout=4' --family=inet ${(q)host}"
+
+  local aqua=$'\e[38;2;122;168;159m' fr=(⠋ ⠙ ⠹ ⠸ ⠼ ⠴ ⠦ ⠧ ⠇ ⠏)
+  tput civis 2>/dev/null
+  for i in {1..12}; do
+    printf "\r  ${aqua}%s${R}  ${dim}reaching %s…${R}" "${fr[i%10+1]}" "$name"; sleep 0.04
+  done
+  tput cnorm 2>/dev/null
+  printf "\r\e[K  %s  ${bold}%s${R} ${dim}%s${R}   %s   ${dim}%s %sms${R}\n" \
+    "$(get_colored_face)" "$host" "$chip" "$badge" "$pathw" "${rtt:-?}"
+}
+
+# ── vr — remote. No arg → picker. <host> → first-party Screen Sharing (full GUI). VNC has its own
+#    auth (Apple Screen Sharing), so this never touches 1Password.
+vr() {
+  # No arg → VNC into THIS machine: the box the shell runs on, or — inside an ssh session — the host
+  # you're sshed INTO ($HOST is the remote name there). `vr <host>` targets any peer. Screen Sharing
+  # opens where the shell runs, so a no-arg `vr` from within an ssh session is loopback on that host;
+  # run it from a LOCAL shell to bring up the target's screen on your display.
+  local name="${1:-${${HOST%%.*}:l}}"
+  local G=$'\e[38;5;114m' Y=$'\e[38;5;179m' D=$'\e[2m' R=$'\e[0m'
+  printf "  ${D}reaching %s…${R}" "$name"
+  local host
+  if host=$(_fleet_reach "$name"); then
+    printf "\r  ${G}●${R} %s ${D}up — opening screen${R}              \n" "$name"
+  else
+    printf "\r  ${Y}○${R} %s ${D}offline — asleep or off (\`vw\` on it, or wake it)${R}\n" "$name"
+    return 1
+  fi
+  open "vnc://${host}"
+}
+
+# ── vd — debug. No arg → picker. <host> [--logs] → ONE read-only ssh round-trip: load, top CPU,
+#    process counts, system-extension health (Karabiner/Tailscale must read "activated enabled" after
+#    a reboot), the tmux window map, and a verdict for the common "post-reboot storm" (uptime <30m +
+#    Spotlight/UpdateBrain/iCloud daemons → self-resolving, leave it). READ-ONLY: triages, never acts.
+vd() {
+  local want_logs=0 name="" a
+  for a in "$@"; do case "$a" in --logs) want_logs=1 ;; *) [[ -z "$name" ]] && name="$a" ;; esac; done
+  if [[ -z "$name" ]]; then
+    local pick; pick=$(_fleet_menu) || return
+    [[ -n "$pick" ]] || return
+    (( want_logs )) && vd "$pick" --logs || vd "$pick"
+    return
+  fi
+  local Y=$'\e[38;5;179m' D=$'\e[2m' R=$'\e[0m'
+
+  local host
+  if ! host=$(_fleet_reach "$name"); then
+    printf "  ${Y}○${R} %s ${D}offline — asleep or off (\`vw\` on it, or wake it)${R}\n" "$name"
+    return 1
+  fi
+
+  # single-quoted so nothing expands locally; the $(...) run on the FAR side when ssh hands this one
+  # arg to the remote shell. Pure reads, output-capped.
+  local probe='
+    NC=$(sysctl -n hw.ncpu 2>/dev/null)
+    BOOT=$(sysctl -n kern.boottime 2>/dev/null | grep -oE "sec = [0-9]+" | head -1 | grep -oE "[0-9]+"); NOW=$(date +%s)
+    [ -z "$BOOT" ] && BOOT=$NOW; UPS=$(( NOW - BOOT )); UPM=$(( UPS / 60 ))
+    set -- $(sysctl -n vm.loadavg 2>/dev/null | tr -d "{}"); L1=$1; L5=$2; L15=$3
+    HOT=$(awk -v l="$L1" -v n="$NC" "BEGIN{ print (l > 1.5*n) ? 1 : 0 }")
+    TOP=$(ps -Ao pcpu,comm -r 2>/dev/null | sed -n "2,7p")
+    DAEMON="UpdateBrain|MobileSoftwareUpdate|spotlight|corespotlight|mds|fileproviderd|cloudd|bird|backupd|Mail|photoanalysisd|mediaanalysisd|assetsubscriptiond|suggestd"
+    STORM=0; { echo "$TOP" | grep -qiE "$DAEMON"; } && [ "$UPS" -lt 1800 ] && STORM=1
+    P=$(ps -A 2>/dev/null | grep -c .); Z=$(pgrep -x zsh 2>/dev/null | grep -c .)
+    TM=$(pgrep -x tmux 2>/dev/null | grep -c .); ND=$(pgrep -i node 2>/dev/null | grep -c .)
+    KB=$(pgrep -i karabiner 2>/dev/null | grep -c .)
+    EXT=$(systemextensionsctl list 2>/dev/null)
+    kar=BAD; { echo "$EXT" | grep -i karabiner | grep -q "activated enabled"; } && kar=OK
+    tsc=BAD; { echo "$EXT" | grep -i tailscale | grep -q "activated enabled"; } && tsc=OK
+    TW=$(tmux list-windows -a -F "#{session_name}:#{window_index} #{window_name} [#{pane_current_command}]" 2>/dev/null); TWC=$(echo "$TW" | grep -c .)
+    Rr=$(printf "\033[0m"); RED=$(printf "\033[38;5;203m"); GRN=$(printf "\033[38;5;114m"); YEL=$(printf "\033[38;5;179m"); DIM=$(printf "\033[2m")
+    [ "$HOT" = 1 ] && LC=$RED || LC=$GRN
+    printf "  ${DIM}up${Rr} %sm   ${DIM}load${Rr} ${LC}%s${Rr} %s %s   ${DIM}(%s cores)${Rr}\n" "$UPM" "$L1" "$L5" "$L15" "$NC"
+    if [ "$STORM" = 1 ]; then
+      printf "  ${YEL}post-reboot storm${Rr} ${DIM}— indexing/update/iCloud daemons; self-resolving, leave it${Rr}\n"
+    elif [ "$HOT" = 1 ]; then
+      printf "  ${RED}elevated load${Rr} ${DIM}— check the top processes below${Rr}\n"
+    else
+      printf "  ${GRN}healthy${Rr}\n"
+    fi
+    printf "  ${DIM}top${Rr}\n"; echo "$TOP" | while read pc cm; do printf "    %5s%%  %s\n" "$pc" "${cm##*/}"; done
+    printf "  ${DIM}procs${Rr} %s  ${DIM}zsh${Rr} %s  ${DIM}tmux${Rr} %s  ${DIM}node${Rr} %s  ${DIM}karabiner${Rr} %s\n" "$P" "$Z" "$TM" "$ND" "$KB"
+    [ "$kar" = OK ] && kc=$GRN || kc=$RED; [ "$tsc" = OK ] && tc=$GRN || tc=$RED
+    printf "  ${DIM}ext${Rr}  karabiner ${kc}%s${Rr}   tailscale ${tc}%s${Rr}\n" "$kar" "$tsc"
+    printf "  ${DIM}tmux${Rr} %s windows\n" "$TWC"; echo "$TW" | sed -n "1,12p" | sed "s/^/    /"
+  '
+  if (( want_logs )); then
+    probe+='
+    Rr=$(printf "\033[0m"); DIM=$(printf "\033[2m")
+    printf "  ${DIM}faults+errors (last 10m)${Rr}\n"
+    log show --last 10m --predicate "messageType == 16 || messageType == 17" 2>/dev/null | tail -12 | sed "s/^/    /"
+    '
+  fi
+
+  setopt local_options no_monitor no_notify
+  local tmp; tmp=$(mktemp)
+  ( ssh -o ConnectTimeout=6 -o BatchMode=yes "$host" "$probe" >"$tmp" 2>&1 ) &
+  local pid=$!
+  trap 'kill $pid 2>/dev/null; tput cnorm 2>/dev/null; rm -f "$tmp"' INT TERM
+  _fleet_spin "$pid" "probing ${name}…"
+  wait $pid 2>/dev/null; trap - INT TERM
+
+  local D2=$'\e[2m' chip; chip=$(_fleet_chip "${host%.local}")
+  printf "\r\e[K  %s  ${D2}%s${R}  ${D2}%s${R}\n" "$(get_colored_face)" "$host" "$chip"
+  cat "$tmp"; rm -f "$tmp"
+}
+
+# ── va — wake a sleeping peer with a Wake-on-LAN magic packet. No arg → auth-free picker.
+#    TODO(va): UNVERIFIED on hardware — each target needs one-time setup before this can work:
+#      • `sudo pmset -a womp 1`   enable wake-on-magic-packet (Ethernet is reliable; Apple-Silicon
+#                                 Wi-Fi WoL is flaky — prefer a wired target)
+#      • a 1Password item `fleet-macs` in the Private vault with a field per machine (mini/air/neo)
+#        holding that machine's MAC — read at call time via `op read`, so no hardware IDs land in
+#        this PUBLIC dotfiles repo.
+#    Tailscale can't carry the packet (a magic packet is an L2 broadcast; it won't cross the L3
+#    tailnet), so it's emitted ON the target's LAN: broadcast locally (covers a shared LAN + a home
+#    Bonjour Sleep Proxy — Apple TV / HomePod — which does the actual wake), and also bounced through
+#    the mini (the usually-home node) when the mini isn't this box. Hard limit: a laptop roaming off
+#    its home LAN with no on-site emitter cannot be woken.
+va() {
+  if (( $# == 0 )); then
+    local pick; pick=$(_fleet_menu) || return
+    [[ -n "$pick" ]] && va "$pick"
+    return
+  fi
+  command -v op >/dev/null 2>&1 || { print -u2 "  va needs the 1Password CLI — brew install --cask 1password-cli"; return 2; }
+  local name="$1" G=$'\e[38;5;114m' Y=$'\e[38;5;179m' D=$'\e[2m' R=$'\e[0m'
+  local host; host=$(_fleet_map "$name")
+
+  # already awake? nothing to wake — ping is auth-free.
+  if ping -c1 -t1 "$host" >/dev/null 2>&1 || ping -c1 -t1 "$host.local" >/dev/null 2>&1; then
+    printf "  ${G}●${R} %s ${D}already up${R}\n" "$name"; return 0
+  fi
+
+  # MAC from 1Password (Touch-ID). Empty → the item/field isn't set up yet (the TODO above).
+  local mac; mac=$(op read "op://Private/fleet-macs/${name:l}" 2>/dev/null | tr -d '[:space:]')
+  if [[ -z "$mac" ]]; then
+    print -u2 "  ${Y}○${R} no MAC for ${name} — add field '${name:l}' to op://Private/fleet-macs first"
+    return 1
+  fi
+
+  # 102-byte magic packet: 6×0xFF then the MAC ×16, UDP-broadcast to port 9. python3 so there's no
+  # wakeonlan dependency. Single-quoted so \xff stays literal until python reads it.
+  local emit='import socket,sys
+mac=sys.argv[1].replace(":","").replace("-","")
+pkt=b"\xff"*6+bytes.fromhex(mac)*16
+s=socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+s.setsockopt(socket.SOL_SOCKET,socket.SO_BROADCAST,1)
+s.sendto(pkt,("255.255.255.255",9))'
+  printf "  ${D}waking %s…${R}\n" "$name"
+  python3 -c "$emit" "$mac" 2>/dev/null
+  local mini; mini=$(_fleet_map mini)
+  if [[ ${mini:l} != ${${HOST%%.*}:l} ]] && ping -c1 -t1 "$mini" >/dev/null 2>&1; then
+    ssh -o ConnectTimeout=3 -o BatchMode=yes "$mini" "python3 -c ${(q)emit} ${(q)mac}" 2>/dev/null
+  fi
+
+  # poll for it to answer (WoL + resume from sleep is a few seconds).
+  local i
+  for i in {1..15}; do
+    ping -c1 -t1 "$host" >/dev/null 2>&1 && { printf "  ${G}●${R} %s ${D}awake — \`vj %s\` to jump in${R}\n" "$name" "$name"; return 0; }
+    sleep 2
+  done
+  printf "  ${Y}○${R} %s ${D}no answer after 30s — check womp/MAC setup, or it's off its home LAN${R}\n" "$name"
+  return 1
+}
+
+# ── _fleet_hue — a machine's signature colour as a truecolor ANSI prefix for the tree. The hue itself
+#    comes from the shared fleet_hex (badge.sh) — same table the tmux badge uses — so tree and status
+#    bar are one design; this only formats the 6-hex into an \e[38;2;R;G;Bm escape.
+_fleet_hue() {
+  local hex; hex=$(fleet_hex "$1")
+  printf '\e[38;2;%d;%d;%dm' $(( 16#${hex:0:2} )) $(( 16#${hex:2:2} )) $(( 16#${hex:4:2} ))
+}
+
+# ── _fleet_shape — the machine's power-tier silhouette. The core→shape mapping lives in the shared
+#    fleet_shape (badge.sh). Asleep peers report no cores, so fall back to the roster's known counts
+#    (M3 air 8 · M4 mini 10 · A18 neo 6) — the shape is a stable identity, so a slept machine still
+#    shows its true silhouette, just dimmed. Truly unknown → shared fleet_shape draws hollow ◇.
+_fleet_shape() {
+  local cores=$1 name=$2
+  if [[ $cores != <-> ]]; then
+    case ${name:l} in
+      *air*)  cores=8 ;;
+      *mini*) cores=10 ;;
+      *neo*)  cores=6 ;;
+      *)      cores="" ;;
+    esac
+  fi
+  fleet_shape "$cores"
+}
+
+# ── vitals math — two tiny pure helpers shared by every row, so all machines read the same way.
+#    _fleet_loadx — 1-min load average per core, as "0.35×": the real Unix run-queue KPI (processes
+#    running or waiting on a core), normalized to core count so 1.00× = fully committed on any machine,
+#    >1× = more work queued than cores. Instant to read (no sampling), unlike CPU%. Float-forced (+0.0)
+#    so an integer-valued load doesn't integer-divide to 0.
+_fleet_loadx() {
+  local l=$1 cores=$2
+  [[ $l == '?' || -z $l ]] && l=0
+  [[ $cores == '?' || -z $cores || $cores == 0 ]] && cores=1
+  printf '%.2f' $(( (l + 0.0) / cores ))
+}
+
+# _fleet_hcol — health-colour ESCAPE for a numeric vital: green healthy / amber watch / red critical.
+#   Tints ONLY the value inside an otherwise-slate pill (the label + caps stay neutral). Empty on
+#   unknown/NO_COLOR so the value just shows in the pill's normal ink. $1 = metric (batt|load|mem) · $2 = value.
+#     batt %  : ≥50 green · ≥20 amber · <20 red        (AC is healthy — caller passes 100)
+#     load ×/c: <0.70 green · ≤1.00 amber · >1.00 red  (queued beyond cores = red)
+#     mem used%: <70 green · ≤85 amber · >85 red
+_fleet_hcol() {
+  [[ -n $NO_COLOR ]] && return
+  local metric=$1 v=$2
+  local g=$'\e[38;2;152;187;108m' a=$'\e[38;2;220;165;97m' r=$'\e[38;2;228;104;118m'
+  case $metric in
+    batt) [[ $v == <-> ]] || return
+          (( v >= 50 )) && print -rn -- $g || { (( v >= 20 )) && print -rn -- $a || print -rn -- $r } ;;
+    load) (( v < 0.70 )) && print -rn -- $g || { (( v <= 1.00 )) && print -rn -- $a || print -rn -- $r } ;;
+    mem)  (( v < 70 ))   && print -rn -- $g || { (( v <= 85 ))   && print -rn -- $a || print -rn -- $r } ;;
+  esac
+}
+
+# _fleet_ago — human "time since" from an epoch: now/3s/45s/6m/2h/8d, or — when unknown. Used for both
+# window idle time (since last output) and self uptime (since boot).
+_fleet_ago() {
+  local e=$1 now=$2 d
+  [[ -z $e || $e == '?' || $e != <-> ]] && { print -rn -- "—"; return }
+  (( d = now - e )); (( d < 0 )) && d=0
+  if   (( d < 5 ));     then print -rn -- "now"
+  elif (( d < 60 ));    then print -rn -- "${d}s"
+  elif (( d < 3600 ));  then print -rn -- "$(( d/60 ))m"
+  elif (( d < 86400 )); then print -rn -- "$(( d/3600 ))h"
+  else                       print -rn -- "$(( d/86400 ))d"; fi
+}
+
+# ── _fleet_pill — one rounded status pill: coloured bg, ink text, powerline caps (U+E0B6 ‹ / U+E0B4 ›),
+#    the SAME dark-ink-on-colour styling the tmux status bar uses, so the fleet tree and the bar speak one
+#    visual language. $1 = bg hex (no #) · $2 = text · $3 = ink hex (default dark Kanagawa #1f1f28). Each
+#    aspect of a machine row is its own pill (identity in the machine hue, vitals in muted slate).
+_fleet_pill() {
+  local hex=$1 text=$2 ink=${3:-1f1f28}
+  [[ -n $NO_COLOR ]] && { print -rn -- " ${text} "; return }
+  local rgb="$(( 16#${hex:0:2} ));$(( 16#${hex:2:2} ));$(( 16#${hex:4:2} ))"
+  local irgb="$(( 16#${ink:0:2} ));$(( 16#${ink:2:2} ));$(( 16#${ink:4:2} ))"
+  local fg=$'\e[38;2;'"${rgb}m" bg=$'\e[48;2;'"${rgb}m" ik=$'\e[38;2;'"${irgb}m" z=$'\e[0m'
+  local lc=$'' rc=$''
+  print -rn -- "${fg}${lc}${bg}${ik} ${text} ${z}${fg}${rc}${z}"
+}
+
+# ── _fleet_tree — render a _fleet_poll stream (on stdin) as fzf rows for the picker: one row per
+#    machine header (vitals inline) and one per window (├─/└─ connectors). Tab-packed so fzf shows
+#    only the tree text while the action fields ride hidden:
+#      <type>⇥<host>⇥<target>⇥<display>
+#      type=m machine header / w window · host=hostname (mosh/ssh/vnc) · target=session:index (windows)
+#      display=the colored tree text — fzf `--with-nth=4 --nth=4` shows + searches ONLY this column.
+#    Machine glyph = its power-tier shape in its badge hue (_fleet_shape/_fleet_hue) — the exact
+#    silhouette + colour the machine wears in the tmux status bar, so tree and status read as one.
+#    $1 = this machine's hostname; the current machine flips Kanagawa gold — the "you are here" glow,
+#    matching the tmux active window. Locals hoisted so zsh never echoes them into the stream.
+_fleet_tree() {
+  local self=${1:l}
+  local aqua=$'\e[38;2;122;168;159m' dim=$'\e[38;2;84;84;109m' R=$'\e[0m'
+  [[ -n "$NO_COLOR" ]] && { aqua= dim= R= }
+
+  # pass 1 — parse the flat stream into per-machine arrays
+  local -a machines
+  local -A m_host m_ac m_pct m_therm m_l1 m_l5 m_l15 m_cores m_mem m_boot m_batt m_asleep m_wins
+  local tag a b c d e f g h i j cur=""
+  while IFS='|' read -r tag a b c d e f g h i j; do
+    case "$tag" in
+      HOST)   cur=$a; machines+=$a; m_host[$a]=$b; m_asleep[$a]=1; m_wins[$a]="" ;;
+      ASLEEP) [[ -n $cur ]] && m_asleep[$cur]=1 ;;
+      PWR)    m_asleep[$cur]=0; m_ac[$cur]=$a; m_pct[$cur]=$b; m_therm[$cur]=$c
+              m_l1[$cur]=$d; m_l5[$cur]=$e; m_l15[$cur]=$f; m_cores[$cur]=$g
+              m_mem[$cur]=$h; m_boot[$cur]=$i; m_batt[$cur]=$j ;;
+      WIN)    m_wins[$cur]+="${a}"$'\x1f'"${b}"$'\x1f'"${c}"$'\x1f'"${d}"$'\x1f'"${e}"$'\x1f'"${f}"$'\n' ;;
+    esac
+  done
+
+  # THIS machine ALWAYS sorts first — it's "you". Pinning it top also means the instant self-only paint
+  # (_fleet_poll_self) and the full-fleet paint agree on position, so peers fill in BELOW instead of
+  # shoving self down the list as they arrive (the "pop-in" reshuffle).
+  local -a ord_self=() ord_rest=()
+  local mm mh
+  for mm in $machines; do
+    mh=${m_host[$mm]%%.*}
+    if [[ ${mh:l} == "$self" ]]; then ord_self+=$mm; else ord_rest+=$mm; fi
+  done
+  machines=($ord_self $ord_rest)
+
+  # pass 2 — emit rows (all scratch decls hoisted; plain-assign inside the loops)
+  local now; now=$(date +%s)
+  local m host hn chip is_self shape hue row
+  local loadx bseg pctstr bhc lhc mhc memused
+  local slate=2a2a37 sink=dcd7ba   # vital-pill fill (Kanagawa sumiInk) + fujiWhite ink, like the tmux window pills
+  local inkesc=$'\e[38;2;220;215;186m' gold=$'\e[38;2;230;195;132m'   # sink-ink escape (return after a tinted number) · self gold
+  [[ -n $NO_COLOR ]] && { inkesc= gold= }
+  local -a wlines swins
+  local wl w idx sess rest wname wcmd ag wc nw wi mark sidx wpanes wflags wact ago state
+  for m in $machines; do
+    host=${m_host[$m]}; hn=${host%%.*}
+    chip=$(_fleet_chip "$host"); chip=${chip#Apple }
+    is_self=0; [[ ${hn:l} == "$self" ]] && is_self=1   # hn is already short — no .local footgun
+    shape=$(_fleet_shape "${m_cores[$m]}" "$m")   # power-tier silhouette — matches this machine's badge
+
+    if (( m_asleep[$m] )); then
+      printf '%s\t%s\t%s\t%s\n' m "$hn" "" "${dim}${shape} ${(r:4:)m}  ${chip}  asleep${R}"
+      continue
+    fi
+
+    # ── vitals as SEPARATE rounded pills (like the status bar's apple/machine/session pills): a hue
+    #    identity pill (self = gold "you are here", peer = its signature hue), then one muted-slate pill per
+    #    vital. battery/power · load ×/core (1-min run-queue per core: 1.00× = fully committed, >1× = queued
+    #    beyond cores). Self, being local, affords more — mem-used% + uptime. ⚠ throttled is its own amber
+    #    pill, shown ONLY when actually throttling.
+    pctstr="${m_pct[$m]}%"; [[ ${m_pct[$m]} == '?' ]] && pctstr='?'
+    # battery: AC is healthy (green %); on battery the % tints by charge (≥50 green / ≥20 amber / <20 red).
+    # Only the NUMBER is tinted — label + caps stay neutral slate ink — so health reads without shouting.
+    if [[ ${m_ac[$m]} == ac ]]; then
+      bhc=$(_fleet_hcol batt 100); bseg="AC ${bhc}${pctstr}${inkesc}"
+    else
+      bhc=$(_fleet_hcol batt "${m_pct[$m]}"); bseg="batt ${bhc}${pctstr}${inkesc} ▼"
+      [[ -n ${m_batt[$m]} && ${m_batt[$m]} != '?' ]] && bseg+=" ${m_batt[$m]}"
+    fi
+    loadx=$(_fleet_loadx "${m_l1[$m]}" "${m_cores[$m]}"); lhc=$(_fleet_hcol load "$loadx")
+
+    # window list first — the ├─/└─ rows below read from it.
+    wlines=("${(@f)m_wins[$m]}"); swins=()
+    for wl in $wlines; do [[ -n $wl ]] && swins+=$wl; done
+
+    (( is_self )) && hue=e6c384 || hue=$(fleet_hex "$m")   # gold self · teal air / amber mini / violet neo
+    row="$(_fleet_pill "$hue" "${shape} ${m} · ${chip}")"
+    (( is_self )) && row+="${gold} ◀ you${R}"             # unmistakable "this machine is mine" marker (gold, first row)
+    row+=" $(_fleet_pill "$slate" "$bseg" "$sink")"
+    row+=" $(_fleet_pill "$slate" "load ${lhc}${loadx}${inkesc}×" "$sink")"
+    if (( is_self )); then
+      if [[ -n ${m_mem[$m]} && ${m_mem[$m]} != '?' ]]; then
+        memused=$(( 100 - m_mem[$m] )); mhc=$(_fleet_hcol mem "$memused")
+        row+=" $(_fleet_pill "$slate" "mem ${mhc}${memused}${inkesc}%" "$sink")"
+      fi
+      row+=" $(_fleet_pill "$slate" "up $(_fleet_ago "${m_boot[$m]}" "$now")" "$sink")"
+    fi
+    [[ ${m_therm[$m]} == hot ]] && row+=" $(_fleet_pill ffa066 '⚠ throttled')"
+    printf '%s\t%s\t%s\t%s\n' m "$hn" "" "$row"
+
+    nw=${#swins} wi=0
+    for w in $swins; do
+      (( wi++ ))
+      wc="├──"; (( wi == nw )) && wc="└──"
+      sidx=${w%%$'\x1f'*}; sess=${sidx%:*}; idx=${sidx##*:}
+      rest=${w#*$'\x1f'};   wname=${rest%%$'\x1f'*}
+      rest=${rest#*$'\x1f'}; wcmd=${rest%%$'\x1f'*}
+      rest=${rest#*$'\x1f'}; wpanes=${rest%%$'\x1f'*}
+      rest=${rest#*$'\x1f'}; wflags=${rest%%$'\x1f'*}
+      wact=${rest##*$'\x1f'}
+      ag=$(_vw_agent "$wname" "$wcmd")
+      ago=$(_fleet_ago "$wact" "$now")   # seconds since this window last had output — the idle clock
+      if [[ -n $ag ]]; then
+        # an agent window: recent output (<15s) means it's actively WORKING; otherwise it's WAITING on you.
+        state=waiting; [[ $wact == <-> ]] && (( now - wact < 15 )) && state=working
+        mark="${aqua}◆ ${ag}${R} ${dim}· ${state} ${ago}${R}"
+      else
+        mark="${dim}·${R} ${wname} ${dim}· ${ago}${R}"
+      fi
+      printf '%s\t%s\t%s\t%s\n' w "$hn" "${sess}:${idx}" "  ${dim}${wc}${R} ${mark}"
+    done
+  done
+}
+
+# ── _fleet_open — the picker's Enter action. Opens the chosen node in a FRESH Ghostty window (the
+#    picker stays alive behind it, so you can open several). Args come straight from the row's hidden
+#    fields: $1 type (m|w) · $2 host · $3 target (session:index). A window row jumps to that exact
+#    window; a machine row attaches the host's session. This box → open the local tmux directly; a
+#    peer → mosh in (ConnectTimeout so a just-slept peer fails fast instead of hanging).
+_fleet_open() {
+  local type=$1 host=$2 target=$3
+  local self=${${HOST%%.*}:l} sess=${3%:*} win=${3##*:} inner
+
+  # MACHINE row → a FRESH session on that box, like vj: enter on a machine name opens a new window into
+  # the machine with a brand-new tmux session (not the specific-window jump a window row does). Self opens
+  # a new local Ghostty+tmux; a peer moshes in and starts one (ConnectTimeout so a slept peer fails fast).
+  if [[ $type == m ]]; then
+    if [[ ${host:l} == "$self" ]]; then
+      open -na /Applications/Ghostty.app --args -e /bin/zsh -lc 'exec tmux new-session'
+    else
+      open -na /Applications/Ghostty.app --args -e /bin/zsh -c \
+        "env -u TMUX -u TMUX_PANE mosh --ssh='ssh -o ConnectTimeout=4' --family=inet ${(q)host} -- /bin/sh -lc 'exec tmux new-session'"
+    fi
+    return
+  fi
+
+  # WINDOW row → jump to that exact window.
+  [[ -z $sess ]] && sess=main
+  if [[ ${host:l} == "$self" ]]; then
+    # LOCAL: attach a GROUPED session (new-session -s <uniq> -t <sess>) — it shares the window list but
+    # keeps its OWN current window, so a jump never drags the terminal vw was launched from onto the
+    # target window (the old plain select-window+attach mutated the shared session — the "something odd,
+    # worked the 2nd time" mirror bug). It MUST attach in one step: a detached (-d) session marked
+    # `destroy-unattached on` is reaped the instant it's created — that was the `can't find session: 11-27`
+    # crash. tmux sessions here are bare integers, so a grouped session auto-names `11-27` (a dash); we
+    # give it our OWN unique name and target the window explicitly. destroy-unattached reaps the view on
+    # close. Falls back to a plain create/attach if the base session is gone.
+    local grp="vw-${sess}-$$"
+    inner="tmux has-session -t ${(q)sess} 2>/dev/null && exec tmux new-session -s ${(q)grp} -t ${(q)sess} \\; set-option -t ${(q)grp} destroy-unattached on \\; select-window -t ${(q)grp}:${(q)win} || exec tmux new-session -A -s ${(q)sess}"
+    open -na /Applications/Ghostty.app --args -e /bin/zsh -lc "$inner"
+  else
+    # PEER window: select that window, then attach, over mosh (no shared-client mirror to worry about).
+    inner="tmux select-window -t ${(q)target} 2>/dev/null; exec tmux attach -t ${(q)sess}"
+    open -na /Applications/Ghostty.app --args -e /bin/zsh -c \
+      "env -u TMUX -u TMUX_PANE mosh --ssh='ssh -o ConnectTimeout=4' --family=inet ${(q)host} -- /bin/sh -lc ${(q)inner}"
+  fi
+}
+
+# ── _fleet_remote — the ⌥⏎ action. On a PEER, VNC in (Screen Sharing, like vr); on THIS box there's no
+#    remote-into-self, so it just opens the node like plain ⏎ (reusing _fleet_open, so grouped-session /
+#    new-session behaviour stays identical). fzf can't bind shift-enter, so ⌥⏎ carries the "remote in".
+_fleet_remote() {
+  local type=$1 host=$2 target=$3 self=${${HOST%%.*}:l}
+  if [[ ${host:l} == "$self" ]]; then
+    _fleet_open "$type" "$host" "$target"
+  else
+    open "vnc://${host}"
+  fi
+}
+
+# ── _fleet_tree_now — poll the fleet once and render it as picker rows. Both the ^r keybind and the
+#    live refresher call this; kept paren-free (no `(...)`) so fzf's execute()/reload() paren-matching
+#    never trips over it.
+_fleet_tree_now() { _fleet_poll | _fleet_tree "${${HOST%%.*}:l}"; }
+
+# ── _fleet_prev_label — the preview border label, retitled to the SELECTED machine on every cursor move
+#    (the focus bind). fzf can't recolour the preview BORDER at runtime (no such action — verified), so
+#    the machine hue is carried by the accent rule at the TOP of the preview content instead; the label
+#    just names which box the capture is from. Plain text (labels don't reliably render ANSI).
+_fleet_prev_label() {
+  local host=${1:l} name
+  [[ -z $host ]] && { print -rn -- ' live '; return; }
+  case $host in *air*) name=air ;; *mini*) name=mini ;; *neo*) name=neo ;; *) name=$host ;; esac
+  print -rn -- " ${name} ▸ live "
+}
+
+# ── _fleet_animate — vw's heartbeat, run as fzf's OWN child (inherits the listen port). Every ~0.3s it
+#    POSTs one braille-spinner frame to the border label (cheap — a label repaint, NOT a poll), and every
+#    10th tick (3s) it re-polls the whole fleet (reload-sync keeps the old rows visible until the new sweep
+#    returns) and flares a ● so the refresh is visible. curl fails the instant the picker closes and its
+#    port dies → the loop ends, so it self-terminates (no daemon, no PID file, no state).
+_fleet_animate() {
+  local port=$1
+  local -a f=(⠋ ⠙ ⠹ ⠸ ⠼ ⠴ ⠦ ⠧ ⠇ ⠏)
+  local i=0 t=0
+  sleep 0.3
+  while :; do
+    if (( t % 10 == 0 )); then
+      curl -s --max-time 1 -XPOST "localhost:$port" -d 'reload-sync(zsh -c "source ~/.fleet 2>/dev/null; _fleet_tree_now")' || break
+      curl -s --max-time 1 -XPOST "localhost:$port" -d 'change-border-label(  vFleet  ● )' || break
+    else
+      curl -s --max-time 1 -XPOST "localhost:$port" -d "change-border-label(  vFleet  ${f[i%10+1]} )" || break
+    fi
+    sleep 0.3; (( i++, t++ ))
+  done
+}
+
+# ── _fleet_pick — vw's live fleet navigator. Renders the whole fleet as a draw-tree (machine vitals
+#    inline, ├─/└─ windows, THIS machine lit gold), then fzf: ↑↓ navigate · a LIVE capture-pane preview
+#    on the right (free — reruns on cursor move, local or over the peer's ssh on the ControlMaster
+#    socket) · ⏎ opens the node in a FRESH Ghostty and the picker STAYS (open several) · ^r re-polls
+#    now. Metrics repaint every 3s via a refresher fzf starts as its OWN child (so it inherits
+#    $FZF_PORT) and that self-terminates the instant the picker closes (`|| exit` when the port dies) —
+#    no daemon, no PID files, no disk state, auto-port so two vw's never collide.
+_fleet_pick() {
+  command -v fzf >/dev/null 2>&1 || { print -u2 "  fzf not found"; return 2; }
+  local self=${${HOST%%.*}:l}; local qself=${(q)self}
+
+  # preview — a machine row (no target) shows a hint; a window row shows a live capture, local or via ssh.
+  # A machine-hued accent rule tops the capture — gold on THIS box, the peer's signature hue otherwise —
+  # so the preview reads as "coloured to the machine" even though fzf can't recolour the preview border
+  # itself at runtime. RGB held in positional params ($1-$3) to avoid literal ; inside the sh string.
+  local prev='T={3}; H={2}; [ -z "$T" ] && { printf "   ↓ pick a window for a live view"; exit 0; }
+case "$H" in *air*) set -- 122 168 159;; *mini*) set -- 224 164 92;; *neo*) set -- 157 124 201;; *) set -- 132 132 132;; esac
+[ "$H" = '$qself' ] && set -- 230 195 132
+printf "\033[1;38;2;%d;%d;%dm╺━ %s ━━━━━━━━━━━━━━━━━━╸\033[0m\n" "$1" "$2" "$3" "$H"
+if [ "$H" = '$qself' ]; then tmux capture-pane -ep -t "$T" 2>/dev/null
+else ssh -o ConnectTimeout=2 -o BatchMode=yes "$H" "tmux capture-pane -ep -t \"$T\"" 2>/dev/null; fi'
+
+  # ⏎ opens the node (picker persists) · ^r re-polls · start: launch the self-terminating live refresher.
+  local open_b='enter:execute-silent(zsh -c "source ~/.fleet 2>/dev/null; _fleet_open {1} {2} {3}")'
+  local reload_b="ctrl-r:reload-sync(zsh -c 'source ~/.fleet 2>/dev/null; _fleet_tree_now')"
+  # ⌥⏎ (fzf can't bind shift-enter — "unsupported key"): on a PEER it VNCs in; on THIS box it just opens
+  # like plain ⏎ (no remote-into-self). See _fleet_remote.
+  local vnc_b='alt-enter:execute-silent(zsh -c "source ~/.fleet 2>/dev/null; _fleet_remote {1} {2} {3}")'
+  # focus (cursor move): retitle the preview label to the selected machine (colour rides the content accent)
+  local label_b='focus:transform-preview-label(zsh -c "source ~/.fleet 2>/dev/null; _fleet_prev_label {2}")'
+  # start: launch the heartbeat as fzf's child — it animates the spinner AND drives the ~4s re-poll,
+  # self-terminating when the picker's port dies. The 0.3s settle inside _fleet_animate lets fzf finish
+  # reading the instant self-paint from stdin before the first reload can replace it.
+  local live_b="start:execute-silent(zsh -c 'source ~/.fleet 2>/dev/null; _fleet_animate ${_fleet_wake_port}' &)"
+
+  # FIRST paint = this box only, rendered locally (no ssh, no 1Password) so the picker is never blank —
+  # the full fleet swaps in via the refresher above once each peer's ssh (and Touch-ID) resolves.
+  _fleet_poll_self | _fleet_tree "$self" | fzf --ansi --delimiter=$'\t' --with-nth=4 --nth=4 \
+    --listen 127.0.0.1:${_fleet_wake_port} --track --layout=reverse --highlight-line --cycle --info=inline-right \
+    --pointer='▶' --marker='●' --prompt='  ' --scrollbar='┃' \
+    --border=rounded --border-label='  vFleet ' --border-label-pos=3 \
+    --header='  ↑↓ nav · ⏎ open · ⌥⏎ vnc peer · ^r refresh · esc quit' --header-border=bottom \
+    --bind "$live_b" --bind "$open_b" --bind "$reload_b" --bind "$label_b" --bind "$vnc_b" \
+    --preview="$prev" --preview-label=' live ' \
+    --preview-window='right,58%,border-rounded,follow' \
+    --color 'bg+:#2d4f67,fg+:#c8c093,hl:#7e9cd8,hl+:#e6c384:bold,marker:#c34043' \
+    --color 'border:#54546d,label:#7aa89f,header:#54546d,prompt:#7aa89f,pointer:#e46876' \
+    --color 'preview-border:#54546d,preview-label:#7aa89f'
+}
+
+# classify a tmux window as an agent by name/cmd; prints the agent label or nothing.
+_vw_agent() {
+  case "${1:l} ${2:l}" in
+    *claude*) print -r -- claude ;;
+    *codex*)  print -r -- codex ;;
+    *aider*)  print -r -- aider ;;
+    *cursor*) print -r -- cursor ;;
+    *)        print -r -- "" ;;
+  esac
+}
+
+vw() {
+  [[ "$OSTYPE" != darwin* ]] && { echo "macOS only"; return 1; }
+  command -v fzf >/dev/null 2>&1 || { print -u2 "  vwake needs fzf — brew install fzf"; return 2; }
+  local force=0; [[ "$1" == -f || "$1" == --force ]] && force=1
+  local floor=${VW_FLOOR:-${COFFEE_FLOOR:-20}} self=${${HOST%%.*}:l}
+
+  # singleton — one vw per machine (the picker binds the fixed loopback port). A second vw TAKES OVER
+  # rather than refusing: kill whatever holds the port (its fzf — that closes the old picker, and the old
+  # vw's EXIT trap releases its keep-awake), wait for the port to free, then start fresh here. Only if it
+  # refuses to let go after 2s do we bail, so we never stack two keep-awakes or crash on a bound port.
+  local held; held=$(lsof -t -nP -iTCP:${_fleet_wake_port} -sTCP:LISTEN 2>/dev/null)
+  if [[ -n "$held" ]]; then
+    kill ${=held} 2>/dev/null
+    local w; for w in {1..20}; do lsof -nP -iTCP:${_fleet_wake_port} -sTCP:LISTEN >/dev/null 2>&1 || break; sleep 0.1; done
+    if lsof -nP -iTCP:${_fleet_wake_port} -sTCP:LISTEN >/dev/null 2>&1; then
+      echo -e "$(get_colored_face) vw's port ${_fleet_wake_port} is stuck held — quit the other picker by hand."
+      return 1
+    fi
+  fi
+
+  # battery-floor pre-flight: don't hold a low battery awake unless it's an emergency (--force).
+  local pf_pct pf_ac
+  pf_pct=$(pmset -g batt | grep -Eo '[0-9]+%' | head -1 | tr -d '%')
+  pmset -g batt | grep -qi 'AC Power' && pf_ac=1 || pf_ac=0
+  if (( ! force && ! pf_ac )) && [[ -n "$pf_pct" ]] && (( pf_pct <= floor )); then
+    echo -e "$(get_colored_face) Battery ${pf_pct}% ≤ ${floor}% floor on battery — plug in, or 'vw --force'."
+    return 1
+  fi
+
+  # keep-awake, scoped to this vw only. On AC (or --force) hold HARD via disablesleep (lid may close,
+  # headless) when the passwordless pmset rule is present — sudo -n never prompts, so absent the rule
+  # OR on battery, fall back to caffeinate, which lets macOS still force-sleep near empty (the battery
+  # never burns down). Released the moment vw quits, so the machine sleeps normally the rest of the time.
+  local didsleep=0 caff=""
+  if (( pf_ac || force )) && sudo -n pmset -a disablesleep 1 2>/dev/null; then
+    didsleep=1
+  else
+    caffeinate -im & caff=$!
+  fi
+
+  # release on ANY exit — normal quit, ^C, terminal close, kill — while sudo creds are still cached.
+  # $_rel holds $caff/$didsleep literally (single-quoted) so they expand when it actually runs, not now.
+  local _rel='(( didsleep )) && sudo -n pmset -a disablesleep 0 2>/dev/null; [[ -n "$caff" ]] && kill "$caff" 2>/dev/null'
+  trap "$_rel; return" INT HUP TERM
+
+  _fleet_pick                                        # the live navigator — blocks until you quit (esc/q)
+
+  trap - INT HUP TERM
+  eval "$_rel"
+  echo -e "$(get_colored_face) ${self} released — back to a normal laptop."
+}
+
+# ── tab-completion — friendly + chip aliases, plus live Tailscale hostnames, for the host-taking
+#    verbs (vj/vr/vd; vw is local-only, no host). Auth-quiet: `tailscale status` reads local tailnet
+#    state, never touches 1Password. No-op if compinit isn't up yet.
+_fleet_complete() {
+  local -a names=(
+    'mini:vMiniM4'   'm4:vMiniM4'
+    'air:vBookAirM3' 'm3:vBookAirM3'
+    'neo:vBookNeoA18' 'a18:vBookNeoA18'
+  )
+  local -a hosts
+  local ts=${commands[tailscale]:-/Applications/Tailscale.app/Contents/MacOS/Tailscale}
+  [[ -x "$ts" ]] && hosts=(${(f)"$("$ts" status 2>/dev/null | awk '$1 ~ /^100\./{print $2}')"})
+  (( ${#hosts} )) || { local f; for f in $_fleet_roster; do hosts+=("$(_fleet_map "$f")"); done; }
+  _describe 'machine' names
+  _describe 'hostname' hosts
+}
+(( $+functions[compdef] )) && compdef _fleet_complete vj vr vd 2>/dev/null
