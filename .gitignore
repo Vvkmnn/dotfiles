@@ -348,6 +348,10 @@ ENV/
 [._]*.sw[a-p]
 [._]s[a-v][a-z]
 [._]sw[a-p]
+# ^ the bare vim-swap pattern accidentally matches `.ssh` (dot+s+s+h) — un-ignore the
+# directory so the tracked .ssh/config can't be SILENTLY clobbered at checkout
+# (ignored-untracked files get overwritten with no abort). Keys stay ignored below.
+!.ssh/
 
 # Session
 Session.vim
