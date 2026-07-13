@@ -23,9 +23,9 @@ SCALE_MODEL=$(sysctl -n hw.model 2>/dev/null || echo unknown)                  #
 SCALE_CHIP=$(sysctl -n machdep.cpu.brand_string 2>/dev/null || echo unknown)   # "Apple M4" …
 SCALE_ARCH=$(uname -m)
 
-# ── capacity tiers (owner-locked 2026-07-13; bucket here, never scatter) ─────
-#   heap ≈ half RAM · scrollback deep where RAM allows (8GB box stays swap-safe —
-#   a past scrollback-related crash informs the conservative small tier)
+# ── capacity tiers (bucket here, never scatter) ──────────────────────────────
+#   heap ≈ half RAM · scrollback deep where RAM allows; the small tier stays
+#   conservative on purpose (swap-safety — persistent buffers are a stealth cost)
 if   [ "$SCALE_MEM_GB" -ge 48 ]; then SCALE_TIER=max;   SCALE_NODE_HEAP_MB=32768; SCALE_TMUX_HISTORY=100000
 elif [ "$SCALE_MEM_GB" -ge 20 ]; then SCALE_TIER=std;   SCALE_NODE_HEAP_MB=12288; SCALE_TMUX_HISTORY=100000
 elif [ "$SCALE_MEM_GB" -ge 12 ]; then SCALE_TIER=mid;   SCALE_NODE_HEAP_MB=8192;  SCALE_TMUX_HISTORY=50000
@@ -34,9 +34,9 @@ fi
 SCALE_JOBS=$SCALE_CPUS
 SCALE_COLIMA_CPU=$(( SCALE_CPUS / 2 )); [ "$SCALE_COLIMA_CPU" -lt 2 ] && SCALE_COLIMA_CPU=2
 SCALE_COLIMA_MEM=$(( SCALE_MEM_GB / 2 )); [ "$SCALE_COLIMA_MEM" -lt 2 ] && SCALE_COLIMA_MEM=2
-# heavy-parallel AI agents: parallelism ∝ RAM, NOT cores (Neo profile 2026-07-13:
-# 8GB box = fleet floor — ~1GB baseline AI resident, ~3-4GB real headroom, swap
-# after that; its core-based cap of 4 overshoots what RAM sustains → 2)
+# heavy-parallel AI agents: parallelism ∝ RAM, NOT cores — on small boxes RAM
+# binds well before any core-based cap. These are FRESH-STATE ceilings: long
+# uptimes erode live headroom (periodic session-preserving restarts keep it honest).
 case "$SCALE_TIER" in
   small) SCALE_AGENTS=2 ;; mid) SCALE_AGENTS=4 ;; std) SCALE_AGENTS=6 ;; *) SCALE_AGENTS=8 ;;
 esac
@@ -62,10 +62,9 @@ SCALE_SSD=$(scale_ssd)
 
 # EXTEND: chip/GPU (machdep.cpu.brand_string → ML threads/gpu layers) — when used
 # EXTEND: display/DPI (system_profiler SPDisplaysDataType → font size, WM gaps) — when it matters
-# EXTEND: per-machine plugin/MCP roster tier (SCALE_TIER-gated enabledPlugins) — Neo
-#   profile 2026-07-13: the 64-plugin/62-MCP fleet default is sized for 16-32GB boxes;
-#   a "small-tier lean roster" is the single biggest headroom lever on 8GB. Machines
-#   customize post-merge with notes; promote to a real SCALE gate when pattern settles.
+# EXTEND: per-machine plugin/MCP roster tier (SCALE_TIER-gated) — a leaner roster is
+#   the single biggest headroom lever on small tiers; machines customize with notes,
+#   promote to a real SCALE gate when the pattern settles.
 
 export SCALE_MEM_GB SCALE_CPUS SCALE_MODEL SCALE_CHIP SCALE_ARCH \
        SCALE_TIER SCALE_NODE_HEAP_MB SCALE_TMUX_HISTORY SCALE_JOBS SCALE_AGENTS \
