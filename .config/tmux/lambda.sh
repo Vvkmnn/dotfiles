@@ -181,11 +181,12 @@ mode_chip() {
 	local -a f
 	# shared palette: the frame swings gold (each save) -> deep rose -> deep royal purple (midpoint),
 	# cosine-eased -- the rose bridge keeps the sweep saturated so it NEVER desaturates to a pale/white mid
-	# (linear gold->purple does). The three inner dials are a MONOCHROME dim-gray -> red ramp (invisible
-	# when safe, red when it matters -- no amber). Gold is DEEPENED from the badge's light #e6c384 to a
-	# muted antique gold so the frame never reads as light/white -- only the red alarm is allowed to be
-	# bright; the calm states all stay medium-dark.
-	local GOLD='#a8863c' BRIDGE='#b3577f' FGRAPE='#5e35b1' GRAY='#54524d' RED='#ff5d62'
+	# Ghostty's `minimum-contrast = 3` force-brightens any fg below ~3:1 contrast vs the dark bar to WHITE,
+	# so EVERY colour here is kept ABOVE that floor (luminance >= ~130) -- nothing can be dim/dark or it
+	# flips white (that was the whole "still white" saga). The frame swings Kanagawa GOLD (each save,
+	# matching the badge's prefix-gold) through sakuraPink to oniViolet (midpoint) -- a sunset that stays
+	# colourful, never muddy; dials are a muted violet-gray -> red ramp (calm when safe, red on trouble).
+	local FGOLD='#e6c384' FBRIDGE='#d27e99' FVIOLET='#957fb8' GRAY='#8a86a0' RED='#ff5d62'
 	line="$(tail -n 5 "$LOG" 2>/dev/null | grep -v '"result":"skip"' | tail -1)"
 	if [ -z "$line" ]; then printf '#[fg=#e82424]\xce\xbb never#[default]'; return; fi
 	read -r -a f <<< "$(printf '%s' "$line" | sed -E 's/.*"epoch":([0-9]+),"interval":([0-9]+),"result":"([a-z]+)".*"risk":(-?[0-9]+),"heavy":([0-9]+).*/\1 \2 \3 \4 \5/')"
@@ -215,10 +216,10 @@ mode_chip() {
 	grad "$ld" 9 "$GRAY" "$RED"; pcolor=$_G
 	pstr="${ld}"$'\xe1\xb4\xb8'   # load digit + superscript L (load)
 
-	# The frame timer: a raised-cosine swing between Kanagawa GOLD at each save and deep PURPLE at the
-	# midpoint (the moment furthest from any save), driven by the real save phase -- so it eases gold ->
-	# purple -> gold with NO snap, once per ~3-min save cycle. No manufactured oscillator: the save clock
-	# IS the rhythm; the cosine is only the easing. Pure integer LUT, fork-free.
+	# The frame timer: a raised-cosine swing from Kanagawa gold (each save) through sakuraPink to oniViolet
+	# (the moment furthest from any save), driven by the real save phase -- so it eases gold -> purple
+	# -> gold with NO snap, once per ~3-min save cycle. No manufactured oscillator: the save clock IS
+	# the rhythm; the cosine is only the easing. Pure integer LUT, fork-free.
 	local LAMBDA=$'\xce\xbb'   # U+03BB -- the save heartbeat; frame colour = the save timer
 	# lcolor = the lambda/frame colour; lead = an optional age+! shown ONLY when a save is late/failed.
 	if   [ "$result" = "fail" ];                       then lcolor="#e82424"; lead="#[fg=#e82424]!$(human_age "$age") #[default]"
@@ -230,7 +231,7 @@ mode_chip() {
 		# (a save is due, so we hold gold rather than false-alarming).
 		local -a COS=(0 17 67 146 250 371 500 629 750 854 933 983 1000 983 933 854 750 629 500 371 250 146 67 17)
 		local ci=$(( age * 24 / interval )); (( ci > 23 )) && ci=23
-		grad "${COS[$ci]}" 1000 "$GOLD" "$BRIDGE" "$FGRAPE"; lcolor=$_G
+		grad "${COS[$ci]}" 1000 "$FGOLD" "$FBRIDGE" "$FVIOLET"; lcolor=$_G
 	elif [ "$age" -lt $(( interval * 2 )) ];           then lcolor="#dca561"; lead="#[fg=#dca561]$(human_age "$age") #[default]"   # a window late -- autumnYellow
 	elif [ "$age" -lt $(( interval * 5 )) ];           then lcolor="#ff9e3b"; lead="#[fg=#ff9e3b]$(human_age "$age") #[default]"   # slipping -- roninYellow
 	else                                                    lcolor="#ff5d62"; lead="#[fg=#ff5d62]$(human_age "$age") #[default]"   # stalled -- peachRed alarm
@@ -239,6 +240,9 @@ mode_chip() {
 	# N (danger), U (uptime), L (load) share ONE monochrome ramp -- dim gray -> red (no amber). N maps
 	# risk 0/1/2 across it; the λ and its parens stay the frame colour, so only the values inside change.
 	grad "$risk" 2 "$GRAY" "$RED"; ncolor=$_G
+	# defensive: an empty colour var would emit "#[fg=]" which tmux renders as default WHITE. If any
+	# grad ever left its var blank, fall back to a valid colour so the chip can NEVER flash white.
+	: "${lcolor:=$FVIOLET}" "${ucolor:=$RED}" "${pcolor:=$RED}" "${ncolor:=$RED}"
 	local nstr="${heavy}"$'\xe1\xb5\x96' up_grp="" p_grp=""   # heavy count + superscript p (processes)
 	[ -n "$ustr" ] && up_grp="#[fg=${lcolor}](#[fg=${ucolor}]${ustr}#[fg=${lcolor}])"
 	p_grp="#[fg=${lcolor}](#[fg=${pcolor}]${pstr}#[fg=${lcolor}])"
