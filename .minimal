@@ -96,3 +96,6 @@ export GPG_TTY=$(tty)
 
 # Signal to other files that we're in sandbox mode
 [ -n "$CODEX_SANDBOX" ] && export AI_SANDBOX_ONLY=1
+
+# scale: per-machine truth (NODE heap etc.) — reaches agents/sandbox via this file
+[ -f "$HOME/.ai/scale" ] && . "$HOME/.ai/scale"

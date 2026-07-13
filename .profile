@@ -37,6 +37,8 @@
 # ┌───────────────────────────────────────────────────────────────── guard ────┐
   [ -n "$__PROFILE_SOURCED" ] && return
   __PROFILE_SOURCED=1
+  # scale: per-machine truth layer (heap, jobs, role…) — the ONLY hw-detection file
+  [ -f "$HOME/.ai/scale" ] && . "$HOME/.ai/scale"
   [ -n "$AI_SANDBOX_ONLY" ] && return
 # └────────────────────────────────────────────────────────────────────────────┘
 
@@ -67,7 +69,7 @@
 # └────────────────────────────────────────────────────────────────────────────┘
 
 # ┌───────────────────────────────────────────────────────────────────── ai ───┐
-  export NODE_OPTIONS="--max-old-space-size=8192"
+  export NODE_OPTIONS="--max-old-space-size=${SCALE_NODE_HEAP_MB:-4096}"  # scaled by ~/.ai/scale (was hardcoded 8192)
   export UTCP_CONFIG_FILE="$HOME/.utcp_config.json"
   path_prepend "/Users/v/.opencode/bin"
 
