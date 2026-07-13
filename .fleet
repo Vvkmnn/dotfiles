@@ -535,10 +535,10 @@ _fleet_tree() {
   # pass 2 — emit rows (all scratch decls hoisted; plain-assign inside the loops)
   local now; now=$(date +%s)
   local m host hn chip is_self shape hue row
-  local loadx bseg pctstr bhc lhc mhc memused
-  local slate=2a2a37 sink=dcd7ba   # vital-pill fill (Kanagawa sumiInk) + fujiWhite ink, like the tmux window pills
-  local inkesc=$'\e[38;2;220;215;186m' gold=$'\e[38;2;230;195;132m'   # sink-ink escape (return after a tinted number) · self gold
-  [[ -n $NO_COLOR ]] && { inkesc= gold= }
+  local loadx pctstr bhc lhc mhc memused vit bpad larr rarr
+  local inkesc=$'\e[38;2;220;215;186m' amber=$'\e[38;2;255;160;102m' gold=$'\e[38;2;230;195;132m'   # value ink · throttle · self gold
+  [[ -n $NO_COLOR ]] && { inkesc= amber= gold= }
+  local sep="${dim} · ${R}"   # dim middot between vitals (borderless — no pill fills over the translucent bg)
   local -a wlines swins
   local wl w idx sess rest wname wcmd ag wc nw wi mark sidx wpanes wflags wact ago state
   for m in $machines; do
@@ -552,39 +552,42 @@ _fleet_tree() {
       continue
     fi
 
-    # ── vitals as SEPARATE rounded pills (like the status bar's apple/machine/session pills): a hue
-    #    identity pill (self = gold "you are here", peer = its signature hue), then one muted-slate pill per
-    #    vital. battery/power · load ×/core (1-min run-queue per core: 1.00× = fully committed, >1× = queued
-    #    beyond cores). Self, being local, affords more — mem-used% + uptime. ⚠ throttled is its own amber
-    #    pill, shown ONLY when actually throttling.
+    # ── ONE filled identity pill (self = gold, peer = its signature hue) carrying the power-shape +
+    #    name + chip, padded to a fixed width so the vitals line up in a column. Everything after is
+    #    BORDERLESS text — dim labels, health-tinted numbers, dim · separators — so nothing opaque
+    #    floats over the translucent terminal bg. Self needs no word-label: gold + first row says it.
+    #    battery/power · load ×/core (1.00× = fully committed, >1× = queued beyond cores); self, being
+    #    local, also shows mem-used% + uptime. ⚠ throttled is amber, shown only when actually throttling.
     pctstr="${m_pct[$m]}%"; [[ ${m_pct[$m]} == '?' ]] && pctstr='?'
-    # battery: AC is healthy (green %); on battery the % tints by charge (≥50 green / ≥20 amber / <20 red).
-    # Only the NUMBER is tinted — label + caps stay neutral slate ink — so health reads without shouting.
     if [[ ${m_ac[$m]} == ac ]]; then
-      bhc=$(_fleet_hcol batt 100); bseg="AC ${bhc}${pctstr}${inkesc}"
+      bhc=$(_fleet_hcol batt 100); vit="${dim}AC ${R}${bhc}${pctstr}${R}"
     else
-      bhc=$(_fleet_hcol batt "${m_pct[$m]}"); bseg="batt ${bhc}${pctstr}${inkesc} ▼"
-      [[ -n ${m_batt[$m]} && ${m_batt[$m]} != '?' ]] && bseg+=" ${m_batt[$m]}"
+      bhc=$(_fleet_hcol batt "${m_pct[$m]}"); vit="${dim}batt ${R}${bhc}${pctstr}${R}"
+      [[ -n ${m_batt[$m]} && ${m_batt[$m]} != '?' ]] && vit+="${dim} ▼ ${m_batt[$m]}${R}"
     fi
     loadx=$(_fleet_loadx "${m_l1[$m]}" "${m_cores[$m]}"); lhc=$(_fleet_hcol load "$loadx")
+    vit+="${sep}${dim}load ${R}${lhc}${loadx}${R}${dim}×${R}"
 
     # window list first — the ├─/└─ rows below read from it.
     wlines=("${(@f)m_wins[$m]}"); swins=()
     for wl in $wlines; do [[ -n $wl ]] && swins+=$wl; done
 
-    (( is_self )) && hue=e6c384 || hue=$(fleet_hex "$m")   # gold self · teal air / amber mini / violet neo
-    row="$(_fleet_pill "$hue" "${shape} ${m} · ${chip}")"
-    (( is_self )) && row+="${gold} ◀ you${R}"             # unmistakable "this machine is mine" marker (gold, first row)
-    row+=" $(_fleet_pill "$slate" "$bseg" "$sink")"
-    row+=" $(_fleet_pill "$slate" "load ${lhc}${loadx}${inkesc}×" "$sink")"
     if (( is_self )); then
       if [[ -n ${m_mem[$m]} && ${m_mem[$m]} != '?' ]]; then
         memused=$(( 100 - m_mem[$m] )); mhc=$(_fleet_hcol mem "$memused")
-        row+=" $(_fleet_pill "$slate" "mem ${mhc}${memused}${inkesc}%" "$sink")"
+        vit+="${sep}${dim}mem ${R}${mhc}${memused}${R}${dim}%${R}"
       fi
-      row+=" $(_fleet_pill "$slate" "up $(_fleet_ago "${m_boot[$m]}" "$now")" "$sink")"
+      vit+="${sep}${dim}up ${R}${inkesc}$(_fleet_ago "${m_boot[$m]}" "$now")${R}"
     fi
-    [[ ${m_therm[$m]} == hot ]] && row+=" $(_fleet_pill ffa066 '⚠ throttled')"
+    [[ ${m_therm[$m]} == hot ]] && vit+="${sep}${amber}⚠ throttled${R}"
+
+    (( is_self )) && hue=e6c384 || hue=$(fleet_hex "$m")   # gold self · teal air / amber mini / violet neo
+    bpad="${shape} ${m} · ${chip}"; bpad=${(r:11:)bpad}   # fixed-width badge → vitals align across rows
+    # self gets gold triangles aimed IN at the badge (▶ … ◀); peers reserve the same 2 slots as blanks
+    # so every vitals column still lines up. "this one is yours" without a word.
+    larr='  '; rarr='  '
+    (( is_self )) && { larr="${gold}▶ ${R}"; rarr="${gold} ◀${R}" }
+    row="${larr}$(_fleet_pill "$hue" "$bpad")${rarr}  ${vit}"
     printf '%s\t%s\t%s\t%s\n' m "$hn" "" "$row"
 
     nw=${#swins} wi=0
