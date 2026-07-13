@@ -84,7 +84,7 @@ When auditing against CHANGELOG, verify these are configured deliberately (not b
 |---------|-------|-------|
 | Background subagents (default) | agent `background:` only forces it | 2.1.198 |
 | Explore inherits main model (capped Opus) | haiku override for cheap scans | 2.1.198 |
-| `effort` frontmatter (agents/skills/commands) | low/medium/high/xhigh/max | 2.1.15x+ |
+| `effort` frontmatter (skills + subagents, NOT commands) | low/medium/high/xhigh | 2.1.15x+ |
 | `/effort` + `CLAUDE_CODE_EFFORT_LEVEL` + `$CLAUDE_EFFORT` in hooks | session/env | 2.1.15x+ |
 | Fable 5 (`fable` alias, 1M default, thinking always-on) | model config | 2.1.170 |
 | `/fast` mode | Opus 4.8 sessions only | 2.1.15x |

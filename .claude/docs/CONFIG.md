@@ -22,8 +22,8 @@ Main = **`opus`** (plain Opus 4.8 end-to-end; on 20x you have the headroom — `
 **Fable-vs-Opus spend rule:** default Opus (high→xhigh); escalate to Fable *only* when Opus-4.8-at-xhigh genuinely couldn't crack it. Fable = credits = "the thing you'd have paid for anyway" — never reflex to it.
 
 **Every knob & where it lives (verified 2026-07-08, both agent errors corrected):**
-- **Effort** — 4 places: session `/effort <low|medium|high|xhigh|max>` · `env.CLAUDE_CODE_EFFORT_LEVEL` in settings.json (persistent default — NOT a top-level `effortLevel` key; that's a phantom Claude Code never writes, statusline reads live `.effort.level` from stdin instead) · agent frontmatter `effort:` (per-subagent) · per-turn keywords. **NOT settable on command/skill frontmatter** — agents only.
-  - **Escalate cheapest-first (keyword/effort before a model bump):** the `ultrathink` prompt keyword boosts reasoning for a single turn (harness-confirmed — the deeper-reasoning reminder fires when it's typed); use it for one hard question instead of flipping the whole session. Then `/effort xhigh` for sustained hard work; `/effort max` is the ceiling (diminishing returns). Only if effort is maxed and Opus still stalls → `/model fable` (credits, ask first). `ultrathink` is a prompt keyword, not a slash command. **UNDOCUMENTED — verify empirically before relying, do NOT encode as fact:** exact `ultrathink`/`ultracode` mechanics (token budgets, whether Opus-only, any Fable interaction).
+- **Effort** — session `/effort <low|medium|high|xhigh|max>` · persisted `effortLevel` settings key (low/medium/high/xhigh only — `max`/`ultracode` are session-only, rejected there) · `env.CLAUDE_CODE_EFFORT_LEVEL` · `effort:` frontmatter on **skills AND subagents** · the `ultrathink` per-turn keyword. Precedence: **env > settings > model default**; frontmatter overrides the session but not env. We prefer per-task `/effort` over persisting `effortLevel` (skipped-settings table below). The statusline shows live effort by reading `.effort.level` from its stdin payload — the live value, which the payload carries under that name (not the settings-level `effortLevel`).
+  - **Escalate cheapest-first (keyword/effort before a model bump):** the `ultrathink` prompt keyword adds an in-context deeper-reasoning instruction for that one turn — the effort level sent to the API is unchanged, and it's model-agnostic (documented, not Opus-only). Use it for one hard question instead of flipping the whole session; it's a keyword, not a slash command. Then `/effort xhigh` for sustained hard work; `/effort max` is the ceiling (diminishing returns). `ultracode` (`/effort ultracode`, requires v2.1.203+) is a session setting — not a model effort level — that sends `xhigh` AND has Claude orchestrate dynamic workflows for substantive tasks; it's session-only, rejected by persisted `effortLevel`/env. Only if effort is maxed and Opus still stalls → `/model fable` (credits, ask first).
 - **Model** — `/model` · CLI `--model` · `ANTHROPIC_MODEL` env · `model` settings key · agent frontmatter `model:` · **command frontmatter `model:`** (a `/plan` can pin opus, a `/commit` sonnet) · per-dispatch `model:` param · `ANTHROPIC_DEFAULT_{OPUS,SONNET,HAIKU}_MODEL` env (map an alias to a specific ID) · `/fast` (Opus-only 2.5×). Skills can't pin a model.
 - **Thinking** — `alwaysThinkingEnabled` setting · prompt keywords ("think"/"think hard") · subagents INHERIT the session's (no per-subagent dial) · **Fable is always-on and CANNOT be disabled** (`MAX_THINKING_TOKENS=0` does not override it).
 
@@ -81,7 +81,7 @@ Subagents run in the **background by default** — keep working; results arrive.
 ### Quota Craft (20x)
 
 - One pool across Code / claude.ai / iOS / Cowork — `/usage` when anything feels throttled
-- **Cache reads don't count against rate limits**, and subscription sessions auto-request a 1-HOUR cache TTL — κ is your cheapest quota multiplier: keep sessions warm (<1h gaps), don't edit early context mid-task, batch related asks into one session
+- **Cache READS don't count against ITPM rate limits** (rate-limits doc, "Cache-aware ITPM" — true for every model we use; only retired Haiku 3.5 counts them), and subscription sessions auto-request a 1-HOUR cache TTL — κ is your cheapest quota multiplier: keep sessions warm (<1h gaps), don't edit early context mid-task, batch related asks into one session. **Caveat: cache WRITES (`cache_creation_input_tokens`) DO count** — so breaking a stable prefix isn't free; that's the real cost of editing early context mid-task
 - Explore subagents pinned to haiku by our override; custom agents route sonnet/opus — the config stretches quota, don't fight it
 - `μ` gray surplus late in the week = leave nothing on the table: queue the big refactor or a worktree fleet
 
@@ -185,7 +185,7 @@ Subagents run in the **background by default** — keep working; results arrive.
 
 | Key | Why |
 |-----|-----|
-| `autoCompactWindow` / PCT override | Would gut 1M-context sessions (CHANGELOG entry) |
+| `autoCompactWindow` / PCT override | Tried 2026-07-09 (280K trigger) → over-corrected, too frequent on 1M → **removed 2026-07-11**. Standing posture: native auto-compaction (fires near ~1M) + `/clear` at task boundaries (see CHANGELOG log) |
 | `effortLevel` (persisted) | Session `/effort` beats a sticky global — effort is per-task |
 | `fastMode` (persisted) | `/fast` per-session; `fastModePerSessionOptIn` if it ever sticks wrongly |
 | `disableClaudeAiConnectors` | Keep Gmail/Calendar/Drive connectors available for cross-surface |

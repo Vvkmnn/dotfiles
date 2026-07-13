@@ -33,6 +33,9 @@ trap 'log_error "Script failed at line $LINENO"' ERR
 # μ: Budget variance = (days_elapsed/7)×100 - weekly%.
 #    Positive = under budget. Negative = over budget. 0 = on track.
 #    Red <-5, Orange -5..0, White 0..5, Gray >5.
+#    Subscript = hours off the on-pace line = |μ|×1.68 (schedule rate is a
+#    constant 100%/168h). Over budget: that many idle hours returns you to 0%.
+#    Under budget: you're that many hours ahead (headroom). Hours-only, rounded.
 #
 # COLOR CODING (warning colors for approaching/critical limits):
 # - Context (ψ): orange 60-80%, red >80%
@@ -154,6 +157,17 @@ to_superscript() {
 	'
 }
 
+# Subscript renderer (μ recovery hint). Digits + 'h' only — Unicode has no
+# subscript 'd', so recovery stays in hours. Values are rounded positive ints.
+to_subscript() {
+	local num="$1"
+	echo "$num" | sed '
+		s/0/₀/g; s/1/₁/g; s/2/₂/g; s/3/₃/g; s/4/₄/g;
+		s/5/₅/g; s/6/₆/g; s/7/₇/g; s/8/₈/g; s/9/₉/g;
+		s/h/ₕ/g
+	'
+}
+
 # ---- Check jq ----
 command -v jq >/dev/null 2>&1 || {
 	echo "ॐ Claude"
@@ -174,7 +188,8 @@ esac
 
 # ---- Effort indicator ----
 # Live from stdin effort.level (reflects /effort mid-session changes).
-# Was: settings.json .effortLevel — a key Claude Code never wrote → always "medium" (fixed 2026-07-06)
+# Was: .effortLevel — but the statusline stdin payload carries live .effort.level, not that
+# settings key (which CC does read) → always "medium". Fixed 2026-07-06.
 # Glyphs (all superscript, consistent with ᵀ thinking marker):
 #   max ᴹ · xhigh ˣ · high ⁺ · medium (none) · low ⁻
 effort_indicator=""
@@ -754,8 +769,13 @@ get_runways
 
 # Get daily budget (7d only - 5h resets too frequently for daily tracking)
 seven_day_budget=""
+mu_recovery_h=""
 if [ -n "$weekly_pct" ] && [ -n "$seven_day_reset" ]; then
 	seven_day_budget=$(get_daily_budget "$weekly_pct" "$seven_day_reset")
+	# Hours off the on-pace line. Schedule rate is constant (100%/168h), so
+	# recovery = |μ| × 1.68. Negative μ: idle hours to reach 0%. Positive μ:
+	# hours you're ahead of schedule (banked headroom). Rounded whole hours.
+	mu_recovery_h=$(awk "BEGIN { b = $seven_day_budget; if (b < 0) b = -b; printf \"%.0f\", b * 1.68 }")
 fi
 
 # ---- Render statusline ----
@@ -819,10 +839,16 @@ if [ -n "$seven_day_budget" ] && { [ -z "${STATUSLINE_MINIMAL:-}" ] || [ "$seven
 		omega_color="$GRAY"     # >5% under budget — surplus
 	fi
 
+	# Subscript recovery hint (hours off the on-pace line). Omitted at 0% (on-pace).
+	mu_sub=""
+	if [ -n "$mu_recovery_h" ] && [ "$mu_recovery_h" -ge 1 ] 2>/dev/null; then
+		mu_sub=$(to_subscript "${mu_recovery_h}h")
+	fi
+
 	if [ -n "$rate_stale" ]; then
-		printf ' %b %b%s%%%b' "$ICON_OMEGA" "$rate_stale" "$seven_day_budget" "$RESET"
+		printf ' %b %b%s%%%s%b' "$ICON_OMEGA" "$rate_stale" "$seven_day_budget" "$mu_sub" "$RESET"
 	else
-		printf ' %b %b%s%%%b' "$ICON_OMEGA" "$omega_color" "$seven_day_budget" "$RESET"
+		printf ' %b %b%s%%%s%b' "$ICON_OMEGA" "$omega_color" "$seven_day_budget" "$mu_sub" "$RESET"
 	fi
 fi
 

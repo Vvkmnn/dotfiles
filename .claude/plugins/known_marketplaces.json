@@ -5,7 +5,7 @@
       "repo": "wshobson/agents"
     },
     "installLocation": "/Users/v/.claude/plugins/marketplaces/claude-code-workflows",
-    "lastUpdated": "2026-07-05T11:10:45.135Z",
+    "lastUpdated": "2026-07-11T05:16:45.177Z",
     "autoUpdate": true
   },
   "superpowers-marketplace": {
@@ -23,7 +23,7 @@
       "repo": "yamadashy/repomix"
     },
     "installLocation": "/Users/v/.claude/plugins/marketplaces/repomix",
-    "lastUpdated": "2026-07-06T14:44:54.579Z",
+    "lastUpdated": "2026-07-13T06:47:32.113Z",
     "autoUpdate": true
   },
   "every-marketplace": {
@@ -41,7 +41,7 @@
       "repo": "anthropics/claude-plugins-official"
     },
     "installLocation": "/Users/v/.claude/plugins/marketplaces/claude-plugins-official",
-    "lastUpdated": "2026-03-23T11:43:33.042Z",
+    "lastUpdated": "2026-07-08T09:35:28.678Z",
     "autoUpdate": true
   },
   "cc-skills": {
@@ -50,7 +50,7 @@
       "repo": "terrylica/cc-skills"
     },
     "installLocation": "/Users/v/.claude/plugins/marketplaces/cc-skills",
-    "lastUpdated": "2026-07-05T17:10:28.396Z",
+    "lastUpdated": "2026-07-11T10:55:20.087Z",
     "autoUpdate": true
   },
   "trailofbits": {
@@ -59,7 +59,7 @@
       "repo": "trailofbits/skills"
     },
     "installLocation": "/Users/v/.claude/plugins/marketplaces/trailofbits",
-    "lastUpdated": "2026-07-06T04:16:46.648Z",
+    "lastUpdated": "2026-07-11T16:29:42.874Z",
     "autoUpdate": true
   },
   "claude-emporium": {
@@ -68,7 +68,7 @@
       "repo": "Vvkmnn/claude-emporium-beta"
     },
     "installLocation": "/Users/v/.claude/plugins/marketplaces/claude-emporium",
-    "lastUpdated": "2026-07-06T04:36:24.021Z",
+    "lastUpdated": "2026-07-08T15:22:57.199Z",
     "autoUpdate": true
   },
   "axiom-marketplace": {
@@ -77,7 +77,7 @@
       "repo": "CharlesWiltgen/Axiom"
     },
     "installLocation": "/Users/v/.claude/plugins/marketplaces/axiom-marketplace",
-    "lastUpdated": "2026-07-05T10:15:39.248Z",
+    "lastUpdated": "2026-07-13T04:23:10.313Z",
     "autoUpdate": true
   },
   "anthropic-agent-skills": {
@@ -86,6 +86,14 @@
       "repo": "anthropics/skills"
     },
     "installLocation": "/Users/v/.claude/plugins/marketplaces/anthropic-agent-skills",
-    "lastUpdated": "2026-07-06T14:44:51.688Z"
+    "lastUpdated": "2026-07-13T06:47:29.002Z"
+  },
+  "openai-codex": {
+    "source": {
+      "source": "github",
+      "repo": "openai/codex-plugin-cc"
+    },
+    "installLocation": "/Users/v/.claude/plugins/marketplaces/openai-codex",
+    "lastUpdated": "2026-07-11T11:39:42.336Z"
   }
 }

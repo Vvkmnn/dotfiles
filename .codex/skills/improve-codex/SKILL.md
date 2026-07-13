@@ -5,8 +5,9 @@ description: Keep this machine's Codex setup best-in-class and current. Use when
 
 # Improve Codex
 
-Maintain Codex without copying Claude's heavier architecture. Prefer one clean
-default, current docs, and measured changes.
+Maintain Codex without copying Claude's heavier architecture. Claude may be the
+owner's primary surface; Codex should stay an independent, current, high-quality
+OpenAI lens. Prefer one clean default, current docs, and measured changes.
 
 ## Workflow
 
@@ -15,6 +16,7 @@ default, current docs, and measured changes.
    - `codex doctor --all`
    - `codex features list`
    - `codex debug models`
+   - `claude plugin list` when the Claude bridge matters
    - `git --git-dir=$HOME/.dotfiles --work-tree=$HOME status --short`
 2. Read shared policy:
    - `~/.ai/README.md`
@@ -26,7 +28,11 @@ default, current docs, and measured changes.
 4. Research real user practice when the user asks for best-in-class standards.
    Separate verified examples from speculation; do not invent public config
    patterns when search evidence is weak.
-5. Recommend the smallest durable change:
+5. Compare against three to seven current references before changing defaults:
+   official OpenAI docs/local Codex catalog plus verified public patterns such as
+   Jess Frazelle's dotfiles, Feiskyer's Codex settings, Trail of Bits skills,
+   gstack, or Superpowers. Borrow principles; do not install frameworks by default.
+6. Recommend the smallest durable change:
    - docs in `~/.ai` for shared policy
    - `~/.ai/codex/config.toml` for safe defaults
    - this skill only for repeated Codex-maintenance workflow
@@ -37,8 +43,23 @@ default, current docs, and measured changes.
 - Codex TUI is the normal Codex surface for repo work.
 - Codex.app and ChatGPT.app provide notifications, mobile control, appshots,
   browser, and Computer Use.
-- Use `gpt-5.5` standard tier with high reasoning by default.
+- Use `gpt-5.6-sol` standard tier with medium reasoning by default.
+- Use high reasoning for plan mode and rare important consultations.
+- Route to `gpt-5.6-terra` for balanced volume work and `gpt-5.6-luna` for quick
+  scans only when cost or latency beats maximum judgment quality.
+- Escalate effort to `xhigh`, `max`, or `ultra` selectively; do not treat maximum
+  effort as the default answer to every task.
 - Avoid persistent Fast mode; use `/fast on` only for short latency-sensitive work.
+- Leave the auto-compaction threshold unset so the active model owns it.
+- Start the TUI composer in Vim normal mode and keep unfocused completion and
+  approval notifications enabled.
+- Prefer `workspace-write` + `on-request` + workspace network locally. Distinguish
+  config intent from an app/managed session's effective sandbox before diagnosing.
+- Use bounded subagents only for independent reads, tests, or reviews; keep one
+  writer per worktree.
+- Prefer OpenAI's `codex@openai-codex` Claude plugin for review lifecycle and
+  handoff. Keep the local Claude `second-opinion` skill as thin policy, never an
+  automatic review gate or duplicate plugin implementation.
 - Do not track Codex auth, SQLite, history, logs, sessions, plugin caches, or app
   runtime state.
 

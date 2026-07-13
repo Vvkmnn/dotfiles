@@ -86,22 +86,24 @@ def check_block(lines: list[str], origin: str) -> list[str]:
                 oi, ocol = open_stack[k]
                 if ocol != col:
                     continue
-                top, bot = lines[oi].rstrip(), lines[i].rstrip()
-                # Only enforce equal-width for a FULL-WIDTH frame: the top row
-                # ends in a top-right corner and the bottom in a bottom-right
-                # corner. Boxes with side annotations (e.g. mind-maps) don't
-                # qualify and are left to the eye.
-                if top and bot and top[-1] in TOP_RIGHT and bot[-1] in BOT_RIGHT:
-                    width = display_width(top)
+                top = lines[oi].rstrip()
+                # A frame only if the top row is a clean box top ending in a
+                # top-right corner. The box's right border must then sit at that
+                # same column R on every row — content *after* R (side
+                # annotations, as in mind-maps/flows) is allowed and ignored.
+                if top and top[-1] in TOP_RIGHT:
+                    R = len(top) - 1  # all grid glyphs are width-1 here
+                    borders = VERTICALS + TOP_RIGHT + BOT_RIGHT
                     for j in range(oi, i + 1):
-                        row = lines[j].lstrip(" ")
-                        if row and row[0] in OPEN_CORNERS + CLOSE_CORNERS + VERTICALS:
-                            w = display_width(lines[j].rstrip())
-                            if w != width:
-                                issues.append(
-                                    f"{origin}:{j + 1}  FRAME width {w} != {width} "
-                                    f"(top border) — right edge is ragged"
-                                )
+                        row = lines[j]
+                        rls = row.lstrip(" ")
+                        if not (rls and rls[0] in OPEN_CORNERS + CLOSE_CORNERS + VERTICALS):
+                            continue
+                        if len(row) <= R or row[R] not in borders:
+                            issues.append(
+                                f"{origin}:{j + 1}  FRAME right border missing at "
+                                f"column {R} — box edge is ragged"
+                            )
                 del open_stack[k]
                 break
     return issues

@@ -1,6 +1,7 @@
 # Codex
 
 This dotfiles repo calls the shared layer **AI**.
+Codex is a peer AI surface, not the only or primary tool.
 
 Read:
 

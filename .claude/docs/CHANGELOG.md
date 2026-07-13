@@ -181,6 +181,37 @@ Only relevant for API usage, not subscription. (The statusline `$` segment cover
 
 ---
 
+## 2026-07-11: Auto-compaction retune — the 07-09 experiment over-corrected
+
+Owner: *"compacting way too often, really annoying."* The 07-09 experiment (below) set `CLAUDE_CODE_AUTO_COMPACT_WINDOW=400000` + `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE=70` in `settings.json` env → compaction at ~70%×400K ≈ **280K = ~28% of the real 1M Opus window**. On heavy `~/.claude` sessions the baseline (system prompt + skills + plan + memory) leaves a tiny runway before 280K → constant compaction.
+
+**The experiment answered its question — and revealed the value was wrong.** It was flagged *"does settings.json `env` get honored despite #63186?"* Answer: **yes, honored** (if ignored, compaction would fire near 1M and there'd be no complaint). But the value **over-corrected** — swung from the old "carry 1M forever" mistake straight to "compact at 28%", the opposite failure. Two facts reframe it: (1) both vars are **UNDOCUMENTED** — verified absent from `code.claude.com/docs/costs` this session; steering compaction with two magic internal numbers is version-fragile. (2) On a flat Max-20x sub, carrying context is **~$0** (cache reads don't count vs rate limits, 1h TTL) — "compact early to save resources" optimizes a cost the owner isn't billed while paying real ones (summary rot + wall-clock + annoyance). The genuine lever was always **`/clear` at task boundaries**, not auto-compaction tuning.
+
+**Decision — REMOVE the hack.** Deleted the `settings.json` env block + the `.profile` commented fallback. Auto-compaction reverts to native (fires only near ~1M); `/clear` + manual `/compact` are the levers. No magic numbers, no undocumented-knob dependency. Verify (owner, fresh session): statusline `ψ`/context% should no longer compact near ~280K — only near ~1M or not at all in a normal session.
+
+## 2026-07-11: Second-opinion audit — fact-corrections to this session's "verified" claims
+
+A full-scope re-verification of the decisions made this session (owner: "more subagent research and second opinions on everything fable did"). The audit engine had to **pivot**: `codex exec` HANGS in this environment — 3 foreground attempts (xhigh, high, a trivial "reply OK" probe) all produced zero output with a wedged process left behind, refuting the second-opinion skill's "foreground is the reliable path" claim; the free OpenRouter `llm` panel was resource-exhausted (429). The engine that worked: **fresh-context Claude subagents + primary-source re-verification**. Four durable "verified" claims were corrected against `platform.claude.com/docs/en/model-config` and `.../api/rate-limits`:
+
+- **`effortLevel` is a real settings key, NOT a phantom.** Doc: *"Settings: set `effortLevel` to low/medium/high/xhigh in your settings file"* (`max`/`ultracode` session-only). This session had marked "effortLevel=phantom" VERIFIED and used it to justify the statusline change. The statusline behavior is still correct (its stdin payload carries live `.effort.level`, not the settings key) — only the *justification* was wrong. Fixed CONFIG.md:25, statusline.sh comment, switch-claude version-note. (Supersedes the "phantom effort key" phrasing in the 2026-07-06 entry below — the bug was real, the diagnosis wasn't.)
+- **effort frontmatter works on skills AND subagents** (doc), not "agents only" — and NOT on commands (that's model frontmatter). Fixed CONFIG.md:25, health-checks.md.
+- **ultrathink / ultracode are documented** (resolves the standing "UNDOCUMENTED — verify first" hedge, audit #6). `ultrathink`: per-turn keyword, adds an in-context instruction, API effort unchanged, model-agnostic. `ultracode`: session-only setting sending `xhigh` + dynamic-workflow orchestration, v2.1.203+. Fixed CONFIG.md:26, orchestrate.md:42.
+- **"Cache reads don't count against rate limits" is TRUE and now SOURCED** — the audit's own subagent flagged it "unsourced/soften," but the rate-limits doc's "Cache-aware ITPM" section confirms it for every model we use (only retired Haiku 3.5 counts them). Added the missing nuance: cache **writes** (`cache_creation_input_tokens`) DO count, so breaking a stable prefix isn't free. Sharpened CONFIG.md:84. *(Lesson: a subagent's "NOT FOUND" is a lead to re-check, not a verdict — verify.md catches false negatives too.)*
+
+**Held up (Fable was right):** subagent-model precedence, autocompact mechanics (the 07-09 fix), Fable $10/$50 + always-on thinking, 1h cache TTL on subs. **Still pending:** the 6-cluster full audit (config/rules/skills/hooks/docs) via subagents; second-opinion skill fix; settings.json `opusplan`/`opus` reconcile.
+
+## 2026-07-09: Proactive auto-compaction — reversing the "protect 1M" mistake
+
+Reverses the 2026-07-06 decision to skip `CLAUDE_CODE_AUTO_COMPACT_WINDOW` / `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE`. That call ("would gut 1M sessions") was the root cause of the ~2-day, no-`/clear`, ~1M-context-every-turn session — it optimized retention over efficiency. Codex/GPT-5.5 second opinion, blunt: *"a 1M window is an emergency reserve, not a cruising altitude."*
+
+**Verified (official env-vars doc + gh #31806/#52390/#63186/#70477):** local Opus 4.8 (1M) auto-compacts ONLY near the ~1M limit by default — there was never a window to protect; proactive compaction had to be turned ON. `PCT_OVERRIDE` alone is a no-op without `WINDOW` also set (#52390); override can only LOWER (#31806); and settings.json `env` may be ignored for these vars — some reports say they must be shell-exported (#63186).
+
+**The fix:** `CLAUDE_CODE_AUTO_COMPACT_WINDOW=400000` + `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE=70` → compaction at ~70% of 400K ≈ **280K instead of ~1M**. Pair with `/clear` discipline.
+
+**ACTIVE EXPERIMENT (owner watching):** set in **settings.json `env` first** to test whether that path is honored despite #63186. `.profile` has a commented fallback: if compaction still only fires near 1M in a fresh session, shell-export the two vars there instead. Test = a NEW session (env loads at launch), then watch statusline `ψ` for compaction near ~28% (280K) rather than ~1M.
+
+> **RESOLVED / SUPERSEDED 2026-07-11:** experiment concluded — settings.json `env` IS honored (#63186 didn't bite), but 280K over-corrected (too frequent on 1M; owner: "compacting way too often"). Both vars REMOVED; reverted to native auto-compaction + `/clear` discipline. See the 2026-07-11 "Auto-compaction retune" entry above.
+
 ## 2026-07-06: Deep Upgrade — catalog restructure, subagent v2, MCP fleet, statusline v2
 
 The largest single-day overhaul (plan: `plans/enchanted-pondering-taco.md`, 27/42 items). Decisions at ADR level:

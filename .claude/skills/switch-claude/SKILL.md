@@ -108,5 +108,5 @@ Set per-session with `/effort`; per-agent/skill via `effort:` frontmatter; hooks
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 2.0.0 | 2026-07-06 | Fable 5 era rewrite (models/pricing/effort tables); absorbed configure-project (project overrides); replaced phantom `effortLevel` settings key with env.CLAUDE_CODE_EFFORT_LEVEL; enabled auto-invocation with confirm-before-write |
+| 2.0.0 | 2026-07-06 | Fable 5 era rewrite (models/pricing/effort tables); absorbed configure-project (project overrides); chose `env.CLAUDE_CODE_EFFORT_LEVEL` over the persisted `effortLevel` key (per-task `/effort` preferred; `effortLevel` is a valid key, just not our default); enabled auto-invocation with confirm-before-write |
 | 1.x | 2026-03 | Opus 4.6-era modes (archived in git history) |

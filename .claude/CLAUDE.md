@@ -90,6 +90,7 @@ If you write a stub to get past a problem, you have hidden the problem.
 - Prefer bullets over tables
 - Use file:line references
 - Concise by default, depth on request
+- When handing me a command to run myself (sudo, an `rm` needing approval, an interactive login), also put it on my clipboard so I can paste it: `printf '%s' 'cmd' | pbcopy` (macOS)
 
 ## About Me
 

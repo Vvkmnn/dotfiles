@@ -6,6 +6,9 @@ description: Operate the owner's personal 3-Mac fleet (vMiniM4 hub + vBookAirM3 
 
 # Fleet Control
 
+Shared cross-AI policy lives in `~/.ai/fleet.md`; this skill is Claude's thin
+operational adapter.
+
 Drive the owner's 3-Mac fleet from whichever machine you're on. **Identical dotfiles everywhere** (parity via a bare git repo), a **Tailscale** mesh, and **1Password shared-key** auth — so the same commands and the same tmux/nvim behave identically on every box, and **only the owner's own devices can reach anything** (Tailscale is the gate; nothing is exposed publicly).
 
 ## Topology — roles matter for routing
@@ -14,7 +17,7 @@ Drive the owner's 3-Mac fleet from whichever machine you're on. **Identical dotf
 |-----------------|---------------|---------|------|
 | `vminim4`       | Mac mini      | M4      | always-on **HUB** · heaviest · plugged in → send heavy/long/parallel work HERE |
 | `vbookairm3`    | MacBook Air   | M3      | fanless laptop · sometimes-on |
-| `vbookneo`      | MacBook (Neo) | A18 Pro | lightest laptop · sometimes-on |
+| `vbookneoa18`   | MacBook (Neo) | A18 Pro | lightest laptop · sometimes-on |
 
 A machine only answers **while awake**. Laptops sleep on lid-close/battery — a mosh session freezes and **resumes on wake** (tmux persists server-side, nothing lost). To keep one reliably reachable, the owner runs `vwatch` on it.
 
@@ -43,7 +46,9 @@ ssh <host> 'tmux list-windows -a -F "#{session_name}:#{window_index} #{window_na
 ssh <host> 'tmux capture-pane -p -t <session>:<window>'            # current screen
 ssh <host> 'tmux capture-pane -p -S -200 -t <session>:<window>'    # last 200 lines of scrollback
 ```
-`@agent_status` is set by Claude/Codex hooks (busy | waiting | done) — that's how you see what agents are doing across the fleet.
+`@agent_status` is reserved but is not currently wired by a shared hook. Treat
+`pane_current_command` plus `capture-pane` output as truth; an empty status does
+not mean the AI is idle.
 
 ## Write to / run on a remote machine's tmux
 
@@ -54,7 +59,7 @@ ssh <host> 'tmux send-keys -t <session>:<window> "the command here" Enter'
 ssh vminim4 'tmux new-window -n build -c ~/proj "make -j"'
 ```
 
-## Claude → Claude (hand a task to another machine's Claude)
+## AI → AI (hand a task to another machine)
 
 Every machine runs Claude with `remoteControlAtStartup: true`. To delegate to the mini's Claude FROM another machine, send-keys into its Claude window:
 ```bash
@@ -65,7 +70,9 @@ ssh vminim4 'tmux send-keys -t <claude-window> "Please run the heavy build and s
 # 3. read its reply later
 ssh vminim4 'tmux capture-pane -p -S -100 -t <claude-window>'
 ```
-This is how "tell the mini's Claude to do X from Neo" works — you're not exposing anything new, just driving its tmux over the same authed link.
+The same pattern works for a Codex TUI window. This is how "tell the mini's AI to
+do X from Neo" works—nothing new is exposed; tmux is driven over the same
+authenticated link.
 
 ## Route work by machine weight
 

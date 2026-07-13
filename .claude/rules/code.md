@@ -102,7 +102,7 @@ Converged practice across frontier coding tools (Cursor/Devin/Windsurf system pr
 ### Completion Discipline
 
 - Code isn't done until verified with a fresh run (full protocol: `verify.md`)
-- **Never modify a test to make it pass** — fix the code; if the test itself is wrong, say so explicitly and get agreement (`test.md`)
+- **Never silence a signal to pass — fix what emitted it.** Muting the report (deleting/weakening a test, `# noqa`, `2>/dev/null`, `|| true`, `--no-verify`, `INSTANT_PROMPT=verbose→quiet`) is a false pass, not a fix. If the signal is genuinely wrong, get agreement before changing it — never silently.
 
 ### Anti-Patterns
 

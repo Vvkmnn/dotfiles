@@ -532,7 +532,6 @@
         ]
       }
     ],
-    "Stop": [],
     "Notification": [
       {
         "matcher": "*",
@@ -592,13 +591,20 @@
     "claude-oracle@claude-emporium": false,
     "claude-vigil@claude-emporium": false,
     "claude-augur@claude-emporium": false,
-    "example-skills@anthropic-agent-skills": true
+    "example-skills@anthropic-agent-skills": true,
+    "codex@openai-codex": true
   },
   "extraKnownMarketplaces": {
     "anthropic-agent-skills": {
       "source": {
         "source": "github",
         "repo": "anthropics/skills"
+      }
+    },
+    "openai-codex": {
+      "source": {
+        "source": "github",
+        "repo": "openai/codex-plugin-cc"
       }
     }
   },
@@ -659,6 +665,7 @@
     "enabled": true,
     "mode": "hold"
   },
+  "theme": "custom:kanagawa",
   "editorMode": "vim",
   "showTurnDuration": true,
   "terminalProgressBarEnabled": true,
