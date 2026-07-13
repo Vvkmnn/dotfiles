@@ -1,0 +1,81 @@
+#!/bin/sh
+# scale — THE canonical per-machine tuning layer. 100% parity everywhere else:
+# same bytes on every Mac; only the values computed HERE differ. Detect once,
+# consume everywhere. This is the ONLY file allowed to read machine facts
+# (sysctl / $USER / WindowServer / pmset) — everything else reads SCALE_*.
+#
+#   . ~/.ai/scale          # sourced by .minimal (agents/sandbox) + .profile (login)
+#   ~/.ai/scale doctor     # print the detected table (parity oracle; used by setup doctor)
+#
+# Extension points are marked EXTEND — add new dimensions here, never scatter
+# detection into other files. POSIX sh (the .minimal chain is sh, not bash/zsh).
+# 2026-07-13 — created during the v-macos unification (owner-locked tiers).
+
+# detect-once guard (house style — safe to re-source; new login shells re-detect)
+[ -n "${__SCALE_SOURCED:-}" ] && [ "${1:-}" != doctor ] && return 0 2>/dev/null
+__SCALE_SOURCED=1
+
+# ── raw facts (read once) ────────────────────────────────────────────────────
+_mem_b=$(sysctl -n hw.memsize 2>/dev/null || echo 0)
+SCALE_MEM_GB=$(( _mem_b / 1073741824 ))
+SCALE_CPUS=$(sysctl -n hw.logicalcpu 2>/dev/null || echo 1)
+SCALE_MODEL=$(sysctl -n hw.model 2>/dev/null || echo unknown)                  # Mac16,10 / Mac17,5 …
+SCALE_CHIP=$(sysctl -n machdep.cpu.brand_string 2>/dev/null || echo unknown)   # "Apple M4" …
+SCALE_ARCH=$(uname -m)
+
+# ── capacity tiers (owner-locked 2026-07-13; bucket here, never scatter) ─────
+#   heap ≈ half RAM · scrollback deep where RAM allows (8GB box stays swap-safe —
+#   a past scrollback-related crash informs the conservative small tier)
+if   [ "$SCALE_MEM_GB" -ge 48 ]; then SCALE_TIER=max;   SCALE_NODE_HEAP_MB=32768; SCALE_TMUX_HISTORY=100000
+elif [ "$SCALE_MEM_GB" -ge 20 ]; then SCALE_TIER=std;   SCALE_NODE_HEAP_MB=12288; SCALE_TMUX_HISTORY=100000
+elif [ "$SCALE_MEM_GB" -ge 12 ]; then SCALE_TIER=mid;   SCALE_NODE_HEAP_MB=8192;  SCALE_TMUX_HISTORY=50000
+else                                  SCALE_TIER=small; SCALE_NODE_HEAP_MB=4096;  SCALE_TMUX_HISTORY=20000
+fi
+SCALE_JOBS=$SCALE_CPUS
+SCALE_COLIMA_CPU=$(( SCALE_CPUS / 2 )); [ "$SCALE_COLIMA_CPU" -lt 2 ] && SCALE_COLIMA_CPU=2
+SCALE_COLIMA_MEM=$(( SCALE_MEM_GB / 2 )); [ "$SCALE_COLIMA_MEM" -lt 2 ] && SCALE_COLIMA_MEM=2
+# heavy-parallel AI agents: parallelism ∝ RAM, NOT cores (Neo profile 2026-07-13:
+# 8GB box = fleet floor — ~1GB baseline AI resident, ~3-4GB real headroom, swap
+# after that; its core-based cap of 4 overshoots what RAM sustains → 2)
+case "$SCALE_TIER" in
+  small) SCALE_AGENTS=2 ;; mid) SCALE_AGENTS=4 ;; std) SCALE_AGENTS=6 ;; *) SCALE_AGENTS=8 ;;
+esac
+
+# ── role: $USER is the stable signal (survives hostname/DHCP churn) ──────────
+case "$USER" in
+  eve) SCALE_ROLE=server ;;
+  *)   SCALE_ROLE=workstation ;;
+esac
+
+# ── form factor / GUI (laptop vs headless desktop) ───────────────────────────
+case "$SCALE_MODEL" in *Book*) SCALE_BATTERY=1 ;; *) SCALE_BATTERY=0 ;; esac
+if [ "$(launchctl managername 2>/dev/null)" = "Aqua" ] || pgrep -qx WindowServer 2>/dev/null; then
+  SCALE_GUI=1
+else
+  SCALE_GUI=0
+fi
+[ "$SCALE_ROLE" = server ] && SCALE_GUI=0   # server role never drives a WM
+
+# ── mutable facts: cheap re-runnable helpers, NOT frozen exports ─────────────
+scale_ssd() { [ -d /Volumes/vSSD ] && echo 1 || echo 0; }
+SCALE_SSD=$(scale_ssd)
+
+# EXTEND: chip/GPU (machdep.cpu.brand_string → ML threads/gpu layers) — when used
+# EXTEND: display/DPI (system_profiler SPDisplaysDataType → font size, WM gaps) — when it matters
+# EXTEND: per-machine plugin/MCP roster tier (SCALE_TIER-gated enabledPlugins) — Neo
+#   profile 2026-07-13: the 64-plugin/62-MCP fleet default is sized for 16-32GB boxes;
+#   a "small-tier lean roster" is the single biggest headroom lever on 8GB. Machines
+#   customize post-merge with notes; promote to a real SCALE gate when pattern settles.
+
+export SCALE_MEM_GB SCALE_CPUS SCALE_MODEL SCALE_CHIP SCALE_ARCH \
+       SCALE_TIER SCALE_NODE_HEAP_MB SCALE_TMUX_HISTORY SCALE_JOBS SCALE_AGENTS \
+       SCALE_COLIMA_CPU SCALE_COLIMA_MEM SCALE_ROLE SCALE_BATTERY SCALE_GUI SCALE_SSD
+
+# ── doctor: the parity oracle (`~/.ai/scale doctor`) ─────────────────────────
+if [ "${1:-}" = doctor ]; then
+  printf 'TIER=%s MEM=%sGB CPUS=%s ROLE=%s GUI=%s BATTERY=%s SSD=%s\n' \
+    "$SCALE_TIER" "$SCALE_MEM_GB" "$SCALE_CPUS" "$SCALE_ROLE" "$SCALE_GUI" "$SCALE_BATTERY" "$SCALE_SSD"
+  printf 'HEAP=%sMB TMUX_HISTORY=%s JOBS=%s AGENTS=%s COLIMA=%scpu/%sGB\n' \
+    "$SCALE_NODE_HEAP_MB" "$SCALE_TMUX_HISTORY" "$SCALE_JOBS" "$SCALE_AGENTS" "$SCALE_COLIMA_CPU" "$SCALE_COLIMA_MEM"
+  printf 'MODEL=%s CHIP=%s ARCH=%s\n' "$SCALE_MODEL" "$SCALE_CHIP" "$SCALE_ARCH"
+fi
