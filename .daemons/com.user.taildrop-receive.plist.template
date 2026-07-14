@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- Fleet Taildrop auto-receiver. Blocks in `tailscale file get --loop`, dropping every
+     inbound Taildrop file into ~/Downloads as it arrives — so `vsend <file> <host>` just
+     appears, no manual `tailscale file get`. Works headless (no GUI clipboard needed),
+     which is why the mini receives via this, not pbcopy. KeepAlive restarts it if tailscaled
+     bounces; --conflict=rename never clobbers or drops. Rendered by ~/.ai/setup (s_services):
+     __HOME__ → $HOME. ~/Library/LaunchAgents is the install target (never tracked). -->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.user.taildrop-receive</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/usr/local/bin/tailscale</string>
+    <string>file</string>
+    <string>get</string>
+    <string>--loop</string>
+    <string>--conflict=rename</string>
+    <string>__HOME__/Downloads</string>
+  </array>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+  <key>ThrottleInterval</key>
+  <integer>10</integer>
+  <key>ProcessType</key>
+  <string>Background</string>
+  <key>StandardErrorPath</key>
+  <string>/tmp/taildrop-receive.err</string>
+</dict>
+</plist>
