@@ -362,7 +362,7 @@ _refresh_rate_limit() {
 	# 1-token Haiku call reads utilization from response headers.
 	# Zero utilization impact on Max plan (verified: consecutive probes identical %).
 	# Works even when /api/oauth/usage is 429'd (separate rate limit domain).
-	local headers h5_util h5_reset h7_util h7_reset
+	local headers h5_util h5_reset h7_util h7_reset h5_status h7_status h_claim
 	headers=$(curl -sD- --max-time 8 -o /dev/null \
 		-H "Authorization: Bearer $token" \
 		-H "Content-Type: application/json" \
@@ -376,6 +376,11 @@ _refresh_rate_limit() {
 		h7_util=$(echo "$headers" | grep -i 'anthropic-ratelimit-unified-7d-utilization' | tr -d '\r' | awk '{print $2}')
 		h5_reset=$(echo "$headers" | grep -i 'anthropic-ratelimit-unified-5h-reset' | tr -d '\r' | awk '{print $2}')
 		h7_reset=$(echo "$headers" | grep -i 'anthropic-ratelimit-unified-7d-reset' | tr -d '\r' | awk '{print $2}')
+		# Status (allowed→allowed_warning→rejected) + which window binds (representative-claim):
+		# free extra signal from the same response, harvested for the telemetry ledger.
+		h5_status=$(echo "$headers" | grep -i 'anthropic-ratelimit-unified-5h-status' | tr -d '\r' | awk '{print $2}')
+		h7_status=$(echo "$headers" | grep -i 'anthropic-ratelimit-unified-7d-status' | tr -d '\r' | awk '{print $2}')
+		h_claim=$(echo "$headers" | grep -i 'anthropic-ratelimit-unified-representative-claim' | tr -d '\r' | awk '{print $2}')
 
 		if [ -n "$h5_util" ] || [ -n "$h7_util" ]; then
 			local pct5 pct7 iso5 iso7
@@ -397,10 +402,14 @@ _refresh_rate_limit() {
 				--arg r5 "${iso5:-}" \
 				--argjson h7 "${pct7:-null}" \
 				--arg r7 "${iso7:-}" \
+				--arg s5 "${h5_status:-}" \
+				--arg s7 "${h7_status:-}" \
+				--arg claim "${h_claim:-}" \
 				--argjson extra "$prev_extra" \
 				'{
-					five_hour: {utilization: $h5, resets_at: (if $r5 == "" then null else $r5 end)},
-					seven_day: {utilization: $h7, resets_at: (if $r7 == "" then null else $r7 end)},
+					five_hour: {utilization: $h5, resets_at: (if $r5 == "" then null else $r5 end), status: (if $s5 == "" then null else $s5 end)},
+					seven_day: {utilization: $h7, resets_at: (if $r7 == "" then null else $r7 end), status: (if $s7 == "" then null else $s7 end)},
+					representative_claim: (if $claim == "" then null else $claim end),
 					extra_usage: $extra,
 					_fetched_at: $t,
 					_source: "haiku_probe"
@@ -479,6 +488,49 @@ get_rate_limit() {
 		touch "$cache_file" 2>/dev/null
 		(_refresh_rate_limit &) 2>/dev/null
 	fi
+}
+
+# ---- Telemetry ledger (append-only usage history) ----
+# Recycles the haiku probe + this render's stdin — ZERO extra API calls — into a
+# flat, one-object-per-line JSONL history for later analysis (heatmaps, burn rate,
+# limit-drift detection). Rate-limit utilization/reset/status is ephemeral and NOT
+# in transcripts, so it can only be captured live; cost/context/lines come straight
+# from Claude Code's stdin as Anthropic's own numbers (no ccusage estimate needed).
+# One flat row per fresh probe (deduped by _fetched_at); idle renders add nothing.
+# Runs in the main path (needs $input); append is tail-1 + jq + >> — never blocks.
+_append_telemetry() {
+	# Zero-cost gate: only act when the rate sample is fresh (a probe just landed → one
+	# new row due). ~80% of renders bail here on a single integer test — no subprocess,
+	# no latency. The <40s window aligns with the gold τ; ts-dedup below stops repeats.
+	[ "${rate_content_age:-999}" -lt 40 ] || return
+
+	# Per-host file (telemetry-<host>.jsonl) — each fleet machine owns its own, so the
+	# git-crypt-committed ledgers sync without merge conflicts; analysis globs them all.
+	local host; host=$(hostname -s 2>/dev/null || echo unknown)
+	local ledger="$HOME/.claude/status/telemetry-${host}.jsonl"
+	local cache_file="$HOME/.claude/status/rate_limit.json"
+	[ -f "$cache_file" ] || return
+
+	local fetched last_ts in_json row
+	fetched=$(jq -r '._fetched_at // empty' "$cache_file" 2>/dev/null)
+	[ -z "$fetched" ] && return                       # no valid probe data yet
+
+	# Dedup: one row per unique probe. Skip if the last row already logged this fetch.
+	last_ts=$(tail -1 "$ledger" 2>/dev/null | jq -r '.ts // empty' 2>/dev/null)
+	[ "$last_ts" = "$fetched" ] && return
+
+	# Whole stdin, compacted; null if it isn't valid JSON (stdin fields fall to null).
+	in_json=$(echo "$input" | jq -c . 2>/dev/null) || in_json=null
+	[ -z "$in_json" ] && in_json=null
+
+	# Raw + unbiased: store the whole rate-limit object and the whole stdin payload
+	# exactly as Claude Code gives them — no field-dropping, no flattening, no renaming.
+	# Envelope only: v (schema), ts (dedup+sort key), host (cross-fleet key). Perfect
+	# future analytics flattens at read time; you can't recover a field biased away here.
+	row=$(jq -cn --slurpfile rl "$cache_file" --argjson in "$in_json" --arg host "$host" '
+		{v: 1, ts: ($rl[0]._fetched_at), host: $host, rl: $rl[0], in: $in}' 2>/dev/null) || return
+
+	[ -n "$row" ] && printf '%s\n' "$row" >> "$ledger" 2>/dev/null
 }
 
 # ---- Session tracking (Δ elapsed) ----
@@ -763,6 +815,7 @@ get_daily_budget() {
 # ---- Fetch all data ----
 get_context
 get_rate_limit
+_append_telemetry   # recycle probe + stdin into telemetry.jsonl (no extra API calls)
 get_session_elapsed
 get_weekly_active
 get_runways
@@ -996,6 +1049,18 @@ if [ -n "$cost_usd" ] && awk "BEGIN {exit !($cost_usd >= 0.01)}" 2>/dev/null; th
 fi
 if [ -n "$extra_usd" ] && awk "BEGIN {exit !($extra_usd > 0)}" 2>/dev/null; then
 	printf ' %b¢%.2f%b' "$ORANGE" "$extra_usd" "$RESET"
+fi
+
+# ---- τ telemetry heartbeat ----
+# tau = telemetry. Gold = the rate-limit sample is fresh (a probe captured within
+# ~one refresh interval → a row just landed this cycle); dim = between captures.
+# Keyed to sample freshness (rate_content_age), NOT "did THIS render append": the
+# ledger is shared across sessions, so an append-based flag would only ever fire in
+# whichever session won the race. Freshness is true in EVERY session at once.
+if [ -n "$rate_content_age" ] && [ "$rate_content_age" -lt 40 ]; then
+	printf ' %bτ%b' "$B" "$RESET"
+else
+	printf ' %bτ%b' "$DIM" "$RESET"
 fi
 
 printf '\n'

@@ -35,7 +35,7 @@ Main = **`opus`** (plain Opus 4.8 end-to-end; on 20x you have the headroom — `
 
 ### Statusline Legend (your scoreboard)
 
-`ॐ Fᵀˣ ψ 36%¹ᴹ κ 94% μ 52% λ 38% 28% σ 2.2h 5.7h θ 4.2h¹·³ 1.4d π main +45 $ 484`
+`ॐ Fᵀˣ ψ 36%¹ᴹ κ 94% μ 52% λ 38% 28% σ 2.2h 5.7h θ 4.2h¹·³ 1.4d π main +45 $ 484 τ`
 
 | Glyph | Reads as | Act when |
 |-------|----------|----------|
@@ -48,8 +48,27 @@ Main = **`opus`** (plain Opus 4.8 end-to-end; on 20x you have the headroom — `
 | `θ h/d` + superscript | runway + pace ratio | red superscript >1.2: current pace exhausts quota before reset |
 | `$` | API-equivalent value extracted (dim) | higher = more out of the flat rate. It's a score, not a bill |
 | `¢` (orange, appears only when >0) | REAL usage-credit spend | post-2026-07-08 Fable sessions burn credits — this is actual money; refreshed by the usage-API fallback, carried forward between refreshes |
+| `τ` (tau) | telemetry heartbeat: dim = armed · gold = rate sample is fresh, a row just landed in `telemetry-<host>.jsonl` (~every 2min, every session at once) | never — cosmetic; absence means the ledger broke |
 
 `STATUSLINE_MINIMAL=1` flips to early-warning display (segments appear only when actionable).
+
+### Telemetry ledger (`~/.claude/status/telemetry-<host>.jsonl`)
+
+Private, append-only usage history — one raw JSON row per fresh haiku probe (~every 2–3 min). **Zero latency:** `_append_telemetry` bails on a single integer test (`rate_content_age < 40`) on ~80% of renders — no subprocess unless a probe just landed; then ts-dedup stops repeats. **Recycles the probe + this render's stdin — zero extra API calls.** **Self-contained:** carries Anthropic's own cost/usage numbers straight from stdin — no `ccusage`, no transcript re-parse. **Cross-fleet:** one file per machine (`telemetry-<host>.jsonl`, `host` in every row) so the ledgers sync via the dotfiles repo without merge conflicts — aggregate by globbing `telemetry-*.jsonl` across vBook/vNeo/mini. **Encrypted at rest** with git-crypt (`.gitattributes`: `.claude/status/telemetry-*.jsonl`) — usage patterns + project paths are personal; runtime caches (`rate_limit.json`, `weekly_activity.json`) stay gitignored. The `τ` glyph blinks gold on each write. Answers "true usage — how/when/where/what-model" and — via `u5`/`u7` ÷ `cost` — whether Anthropic's *limits* shift (there is **no absolute-limit header**; the ceiling can only be inferred). The "what/why" (topic per session) is derived on demand from transcripts joined by `sid` — no live capture, zero runtime cost.
+
+Row = a thin envelope around the two channels stored **exactly as received** — nothing dropped, flattened, or renamed (flatten at read time for analysis; you can't recover a field biased away at capture):
+
+| Key | Is |
+|-----|-----|
+| `v` | schema version (`1`) |
+| `ts` | probe fetch epoch — dedup + sort key (mirrors `rl._fetched_at`) |
+| `host` | machine short-hostname — cross-fleet join key |
+| `rl` | the **whole** `rate_limit.json`: `five_hour`/`seven_day` `{utilization, resets_at, status}` · `representative_claim` · `extra_usage` · `_fetched_at` · `_source` |
+| `in` | the **whole** statusline stdin payload verbatim: `session_id`, `cwd`, `model{}`, `workspace{}`, `version`, `output_style{}`, `cost{total_cost_usd, total_lines_added/removed, total_*_duration_ms}`, `context_window{used_percentage, context_window_size, current_usage{cache/input tokens}}`, `effort{}`, `thinking{}`, `vim{}`, `transcript_path`, `exceeds_200k_tokens`, + anything Claude Code adds later |
+
+Only `v`/`ts`/`host` are added; nothing received is dropped or renamed → **zero capture-time bias** (raw true data for perfect future analytics). The "what/why" (topic per session) joins from transcripts via `.in.session_id`.
+
+Status values: `allowed → allowed_warning → rejected`. Analysis (7×24 heatmap, per-project/model leaderboard, burn-rate, limit-drift detector) + a report skill are **deferred** — see plan `plans/the-stautsline-seems-like-starry-karp.md`; monthly rotation+gzip when the file grows (~30–50 MB/yr).
 
 ### Skills — reach-for map (19 owner skills)
 

@@ -11,8 +11,10 @@ file-history/
 plans/
 debug/
 
-# Status cache
-status/
+# Status cache — ignore runtime caches, but VERSION the per-host telemetry
+# ledgers (git-crypt-encrypted via .gitattributes) for a private, cross-fleet history.
+status/*
+!status/telemetry-*.jsonl
 
 # Misc
 *.backup

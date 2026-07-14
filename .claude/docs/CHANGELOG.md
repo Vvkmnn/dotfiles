@@ -181,6 +181,19 @@ Only relevant for API usage, not subscription. (The statusline `$` segment cover
 
 ---
 
+## 2026-07-14: Local telemetry ledger — recycle the probe, save 110%
+
+**Built.** `~/.claude/status/telemetry.jsonl` — append-only JSONL usage history, one flat row per fresh haiku probe (~2–3 min; idle adds nothing, deduped by `_fetched_at`). **Zero extra API calls:** recycles the probe's rate-limit headers + this render's stdin, both of which were being discarded. **Self-contained** — carries Anthropic's own `total_cost_usd`/token/line numbers straight from stdin, so **no ccusage dependency, no transcript re-parse** (learned from ccusage's transcript approach, deliberately didn't adopt it — self-containment + Anthropic's own numbers beat a LiteLLM estimate). Gitignored (`status/`), secret-free.
+
+- **New headers harvested** (same ping, `statusline.sh` `_refresh_rate_limit`): `unified-5h/7d-status` + `-representative-claim`, written into `rate_limit.json` and each ledger row. Verified via a raw OAuth header capture (CodexBar #1894): the `unified` family exposes **no absolute limit/remaining header** — allowance changes can only be *inferred* from `utilization ÷ cost`, which is the whole reason to log utilization live.
+- **Schema** (`v:1`, RAW/unbiased — owner: "no bias, raw true data for perfect future analytics"): thin envelope `{v, ts, host}` + `rl` (the whole `rate_limit.json`) + `in` (the whole statusline stdin payload verbatim — vim, transcript_path, cost, context_window, everything). Nothing dropped/flattened/renamed at capture; flatten at read time. Reverted an earlier curated-flat-scalar shape (that curation was itself bias). Full detail in CONFIG.md → Telemetry ledger.
+- **τ heartbeat** — dim = armed, gold when the rate sample is fresh (~every 2min). Keyed to freshness (`rate_content_age < 40`), NOT to "this render appended" — the ledger is shared across sessions, so an append-flag would only ever fire in whichever session won the race; freshness is true in every session at once.
+- **Cross-fleet + encrypted (same day, pm):** per-host files `telemetry-<host>.jsonl` + a `host` field in every row → the ledgers sync via the dotfiles repo with **no merge conflicts** (each machine owns its file); aggregate the fleet by globbing `telemetry-*.jsonl`. **git-crypt-encrypted at rest** (`.gitattributes: .claude/status/telemetry-*.jsonl`), un-ignored from `status/*`; runtime caches (`rate_limit.json`/`weekly_activity.json`) stay gitignored. Owner wanted a private, real, cross-everything history.
+- **Zero-latency gate:** `_append_telemetry` bails on `rate_content_age < 40` — ~80% of renders are one integer test, no subprocess (owner constraint: no impact on perf/cost/latency).
+- **What/why** (topic per session) = derived on demand from transcripts joined by `sid` — no live capture, zero runtime cost. A report/skill that surfaces it is the deferred pass.
+- **Deferred** (plan `plans/the-stautsline-seems-like-starry-karp.md`): analysis/report (7×24 hour×day heatmap, per-project/model leaderboard, burn-rate + reset ETA, cache-hit trend, limit-drift detector, what/why topics) + a report skill wired into improve-claude/switch-claude; monthly rotation+gzip when the files grow (~30–50 MB/yr each).
+- Partially closes the **OTel "blind spot"** Upcoming item for the local/solo case — OTel's collector+Prometheus+Grafana stack is overkill; this is the lean local answer. OTel stays parked for fleet aggregation.
+
 ## 2026-07-11: Auto-compaction retune — the 07-09 experiment over-corrected
 
 Owner: *"compacting way too often, really annoying."* The 07-09 experiment (below) set `CLAUDE_CODE_AUTO_COMPACT_WINDOW=400000` + `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE=70` in `settings.json` env → compaction at ~70%×400K ≈ **280K = ~28% of the real 1M Opus window**. On heavy `~/.claude` sessions the baseline (system prompt + skills + plan + memory) leaves a tiny runway before 280K → constant compaction.
