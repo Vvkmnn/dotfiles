@@ -309,16 +309,15 @@ s_services() {
     fi
   fi
 
-  # Hand-authored launch agents — OUR load-bearing daemons, NOT brew-managed like yabai/skhd/
-  # sketchybar above. Their definitions are tracked in the config domain as *.plist.template
-  # (the __HOME__ token → $HOME at install); ~/Library/LaunchAgents is an install target, never
-  # tracked. Render each into place + (re)bootstrap. Idempotent.
-  #   com.user.tmux-save   — the λ save-loop (lambda.sh loop, every SAVE_INTERVAL s)
-  #   com.user.tmux        — resident tmux server (tmux-server.sh)
-  #   com.claude.mcp-proxy — MCP proxy (start-proxy.sh)
+  # Hand-authored launch agents — OUR load-bearing daemons (NOT brew-managed like yabai/skhd/
+  # sketchybar). Definitions live centrally in ~/.daemons/ (first-class, like ~/.assets); the map +
+  # conventions are ~/.daemons/README.md. Each *.plist.template is rendered (__HOME__ → $HOME) and
+  # COPIED into ~/Library/LaunchAgents (never symlinked — Sonoma 14+ launchd ignores symlinked plists
+  # at login), then (re)bootstrapped. ~/Library/LaunchAgents is an install target, never tracked. Idempotent.
+  #   com.user.tmux · com.user.tmux-save · com.claude.mcp-proxy · com.user.taildrop-receive
   local la="$HOME/Library/LaunchAgents" gui="gui/$(id -u)" tmpl label plist
   mkdir -p "$la"
-  for tmpl in "$HOME"/.config/tmux/com.*.plist.template "$HOME"/.claude/mcp/com.*.plist.template; do
+  for tmpl in "$HOME"/.daemons/com.*.plist.template; do
     [ -f "$tmpl" ] || continue                             # unmatched glob → skip
     label=$(basename "$tmpl" .plist.template)
     plist="$la/$label.plist"

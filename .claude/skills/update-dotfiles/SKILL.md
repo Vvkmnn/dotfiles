@@ -31,7 +31,7 @@ Always commit to the current branch. Never switch branches without asking.
 | Category | Scope | Key Files |
 |----------|-------|-----------|
 | Shell | `shell` | `.alias`, `.functions`, `.minimal`, `.profile`, `.rc`, `.shell`, `.bashrc`, `.zshrc`, `.zshenv`, `.zimrc`, `.p10k.zsh`, `.fishrc`, `.hushlogin` |
-| Claude Code | `claude` | `.claude/CLAUDE.md`, `README.md`, `docs/*` (CHANGELOG, CONFIG), `settings.json`, `keybindings.json`, `statusline.sh`, `rules/*`, `hooks/*`, `skills/*`, `agents/*`, `workflows/*`, `mcp/config.json` (encrypted), `mcp/bin/start-proxy.sh`, `mcp/com.claude.mcp-proxy.plist.template`, `.claudeignore`, `.gitignore` |
+| Claude Code | `claude` | `.claude/CLAUDE.md`, `README.md`, `docs/*` (CHANGELOG, CONFIG), `settings.json`, `keybindings.json`, `statusline.sh`, `rules/*`, `hooks/*`, `skills/*`, `agents/*`, `workflows/*`, `mcp/config.json` (encrypted), `mcp/bin/start-proxy.sh`, `.claudeignore`, `.gitignore` |
 | Karabiner | `karabiner` | `.config/karabiner/karabiner.json`, `KARABINER.md`, `scripts/*`, `assets/complex_modifications/*`, `automatic_backups/*` |
 | Sketchybar | `sketchybar` | `.config/sketchybar/sketchybarrc`, `plugins/*`, `helpers/*.swift` |
 | WM | `wm` | `.skhdrc`, `.yabairc`, `.config/yabai/*` |
@@ -185,7 +185,7 @@ done
 - New apps in `~/.config/` not yet tracked
 - Changes to `~/Library/Application Support/` (VS Code, Cursor)
 - New shell dotfiles (`.tool-versions`, `.mise.toml`, etc.)
-- `~/Library/LaunchAgents/` — do NOT track auto-generated or third-party plists (Google/Alfred/brew/CleanMyMac/Steam) or a live hand-authored plist verbatim (its absolute `/Users/<you>/…` paths break a fresh install). DO capture each hand-authored **load-bearing** daemon (`com.user.*`, `com.claude.*` — e.g. the tmux `lambda.sh` save-loop) as a machine-agnostic **`.plist.template`** (paths → `$HOME`). See Phase 5c for the sweep that catches these.
+- `~/Library/LaunchAgents/` — do NOT track auto-generated or third-party plists (Google/Alfred/brew/CleanMyMac/Steam) or a live hand-authored plist verbatim (its absolute `/Users/<you>/…` paths break a fresh install). DO capture each hand-authored **load-bearing** daemon (`com.user.*`, `com.claude.*` — e.g. the tmux `lambda.sh` save-loop) as a machine-agnostic **`.plist.template`** (paths → `$HOME`) **in the central `~/.daemons/` registry** (see `~/.daemons/README.md`; `~/.ai/setup`'s `s_services` globs that one folder + adds a row to its map). See Phase 5c for the sweep that catches these.
 - Sketchybar `helpers/*.swift` sources (track source, not compiled binaries)
 
 **Ask:** "Found N untracked config files in [dirs]. Want to review them for tracking?"
@@ -253,8 +253,9 @@ plain `diff` surfaces — launchd daemons in `~/Library/LaunchAgents/`, standalo
      track the **script** + a machine-agnostic **`.plist.template`** (paths → `$HOME`), AND
      record the install step in `~/.ai/setup` so `setup-dotfiles` loads it on a new machine:
      ```bash
-     # repo renders the __HOME__ token at install time (see mcp/*.plist.template)
-     sed 's#__HOME__#'"$HOME"'#g' ~/.config/tmux/com.user.tmux-save.plist.template \
+     # daemon templates live centrally in ~/.daemons/ (see ~/.daemons/README.md); setup
+     # (s_services) globs that folder and renders the __HOME__ token at install time
+     sed 's#__HOME__#'"$HOME"'#g' ~/.daemons/com.user.tmux-save.plist.template \
        > ~/Library/LaunchAgents/com.user.tmux-save.plist
      launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.user.tmux-save.plist
      ```

@@ -230,7 +230,7 @@ All servers run through `mcp-proxy` gateway on `localhost:9090`. Each server is 
 **Machine-2 bootstrap (runtime trio):** the proxy needs three pieces beyond the git-crypt'd config:
 1. Binary: `~/.claude/mcp/bin/mcp-proxy` (7.4MB arm64, not tracked) — get via `go install github.com/TBXark/mcp-proxy@latest` then copy from `$GOPATH/bin`, or download the release binary from github.com/TBXark/mcp-proxy
 2. Wrapper: `mcp/bin/start-proxy.sh` ($HOME-relative since 2026-07-06 — port-cleanup + exec)
-3. LaunchAgent: install from the tracked template — `sed "s|__HOME__|$HOME|g" ~/.claude/mcp/com.claude.mcp-proxy.plist.template > ~/Library/LaunchAgents/com.claude.mcp-proxy.plist && launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.claude.mcp-proxy.plist`
+3. LaunchAgent: install from the tracked template (now in the central `~/.daemons/` registry) — `sed "s|__HOME__|$HOME|g" ~/.daemons/com.claude.mcp-proxy.plist.template > ~/Library/LaunchAgents/com.claude.mcp-proxy.plist && launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.claude.mcp-proxy.plist` — or just run `~/.ai/setup` (`s_services` installs every `~/.daemons/*.plist.template`)
 Then: git-crypt unlock (config.json), `claude /login`, re-add the 14 Claude-side entries with the Bearer header (see Auth above).
 
 ### Fleet Decision (2026-07-06, CLI-first)
