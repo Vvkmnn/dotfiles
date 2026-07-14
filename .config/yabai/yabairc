@@ -97,13 +97,15 @@
 # Window placement and appearance
 /opt/homebrew/bin/yabai -m config window_origin_display default # Place new windows on the current display
 /opt/homebrew/bin/yabai -m config window_placement second_child # Place new windows as the second child in BSP
-/opt/homebrew/bin/yabai -m config window_topmost off            # Windows won't stay on top by default
+# window_topmost — REMOVED in yabai v6 (errors 'unknown command'); kept commented for reference
+# /opt/homebrew/bin/yabai -m config window_topmost off            # Windows won't stay on top by default
 /opt/homebrew/bin/yabai -m config window_shadow float           # Shadows only on floating windows (visual distinction)
 
 # Window animations
 /opt/homebrew/bin/yabai -m config window_animation_duration 0.0         # Duration of window animations (0.0 = instant)
 /opt/homebrew/bin/yabai -m config window_animation_easing ease_out_circ # Animation easing type
-/opt/homebrew/bin/yabai -m config window_animation_frame_rate 120       # Animation frame rate
+# window_animation_frame_rate — REMOVED in yabai v6 (errors 'unknown command'); kept commented for reference
+# /opt/homebrew/bin/yabai -m config window_animation_frame_rate 120       # Animation frame rate
 
 # Window opacity settings
 /opt/homebrew/bin/yabai -m config window_opacity off          # Disable window opacity
@@ -114,14 +116,16 @@
 # Visual feedback settings
 /opt/homebrew/bin/yabai -m config insert_feedback_color 0xffd75f5f # Color shown when a window insertion point is displayed
 
-# Window border settings (currently disabled)
-/opt/homebrew/bin/yabai -m config window_border off                     # Window borders are disabled
-/opt/homebrew/bin/yabai -m config window_border_width 4                 # Border width if enabled
-/opt/homebrew/bin/yabai -m config window_border_radius 12               # Border radius for rounded corners
-/opt/homebrew/bin/yabai -m config window_border_blur off                # No blur effect on borders
-/opt/homebrew/bin/yabai -m config window_border_hidpi on                # Enable HiDPI support for borders
-/opt/homebrew/bin/yabai -m config active_window_border_color 0xff775759 # Color for active window border
-/opt/homebrew/bin/yabai -m config normal_window_border_color 0xff555555 # Color for inactive window borders
+# Window border settings — REMOVED in yabai v6 (built-in borders → JankyBorders). Each of
+# these errors `unknown command '<key>' for domain 'config'` at load. Commented (not deleted)
+# for reference; actual borders come from ~/.config/borders/bordersrc, launched at the bottom.
+# /opt/homebrew/bin/yabai -m config window_border off                     # Window borders are disabled
+# /opt/homebrew/bin/yabai -m config window_border_width 4                 # Border width if enabled
+# /opt/homebrew/bin/yabai -m config window_border_radius 12               # Border radius for rounded corners
+# /opt/homebrew/bin/yabai -m config window_border_blur off                # No blur effect on borders
+# /opt/homebrew/bin/yabai -m config window_border_hidpi on                # Enable HiDPI support for borders
+# /opt/homebrew/bin/yabai -m config active_window_border_color 0xff775759 # Color for active window border
+# /opt/homebrew/bin/yabai -m config normal_window_border_color 0xff555555 # Color for inactive window borders
 
 # Layout and spacing settings
 /opt/homebrew/bin/yabai -m config layout bsp          # Binary Space Partitioning layout
@@ -154,11 +158,23 @@
 # NOTE: We do NOT set --layer above because it causes child dialogs
 # to appear behind the parent window
 # See: https://github.com/koekeishiya/yabai/issues/987
+# ACTIVE: explicit `if` — float ONLY windows that can't resize AND aren't already floating,
+# at their natural macOS position (NO --grid). Fixes the precedence bug in the commented
+# original below: `A || B && C` binds as `(A||B) && C`, so --grid ran on managed windows too
+# ("cannot apply grid layout to a managed window" spam) and yanked floated dialogs off-screen.
 /opt/homebrew/bin/yabai -m signal --add event=window_created action='
-  /opt/homebrew/bin/yabai -m query --windows --window $YABAI_WINDOW_ID | jq -er ".\"can-resize\" or .\"is-floating\"" || \
-  /opt/homebrew/bin/yabai -m window $YABAI_WINDOW_ID --toggle float && \
-  /opt/homebrew/bin/yabai -m window $YABAI_WINDOW_ID --grid 4:4:1:1:2:2
+  info=$(/opt/homebrew/bin/yabai -m query --windows --window "$YABAI_WINDOW_ID")
+  [ "$(echo "$info" | jq -r ".\"can-resize\"")" = "false" ] &&
+  [ "$(echo "$info" | jq -r ".\"is-floating\"")" = "false" ] &&
+    /opt/homebrew/bin/yabai -m window "$YABAI_WINDOW_ID" --toggle float
 '
+
+# DISABLED (buggy original — kept for reference, do NOT re-enable; see precedence note above):
+# /opt/homebrew/bin/yabai -m signal --add event=window_created action='
+#   /opt/homebrew/bin/yabai -m query --windows --window $YABAI_WINDOW_ID | jq -er ".\"can-resize\" or .\"is-floating\"" || \
+#   /opt/homebrew/bin/yabai -m window $YABAI_WINDOW_ID --toggle float && \
+#   /opt/homebrew/bin/yabai -m window $YABAI_WINDOW_ID --grid 4:4:1:1:2:2
+# '
 
 # DISABLED: Alternative floating window handling (no grid positioning)
 # This signal is disabled because:
@@ -301,6 +317,14 @@ echo "yabai configuration loaded.."
 # 	inactive_color=0xff414550
 # )
 # borders "${options[@]}"
+
+# ACTIVE launch — borders is started here by yabai (rides yabai's own LaunchAgent; NO brew service,
+# NO orphan plist). Theme + width live in ~/.config/borders/bordersrc — one tracked source, fleet-consistent.
+# Dedupe guard: every `yabai --restart-service` re-runs this file; JankyBorders does NOT self-dedupe, so
+# without this you accumulate one borders process per restart. (Preferred over `brew services restart
+# borders`, which has a Tahoe ghost/duplicate-border bug.)
+{ pgrep -x borders >/dev/null || "$HOME/.config/borders/bordersrc"; } &
+
 /opt/homebrew/bin/yabai -m config debug_output on
 /opt/homebrew/bin/yabai -m config external_bar all:24:0
 
