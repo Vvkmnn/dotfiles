@@ -4,6 +4,7 @@
 
 ## Upcoming
 
+- **Telemetry check-in (~2026-08-14, ~1mo)** — verify `telemetry-*.jsonl` is still growing on every fleet host, run the `analyze-usage` skill on a real month of data (does per-session cost + `session_name`/`why` read well?), and add monthly gzip rotation if any host's ledger > ~20 MB. Also confirm the τ heartbeat still blinks. The weekly `improve-claude` cloud routine reviews this Upcoming list, so it surfaces on its own — no separate cron. Built 2026-07-14 (see entry below).
 - **Statusline next iteration** (from Reddit research 2026-07-06): block/weekly reset countdown clocks, tokens-until-autocompact, cacheTimer (5-min prompt-cache TTL warning) — real gaps, deferred from v2 to keep the line calm
 - **Playwright CLI** (`@playwright/cli`) — named fallback if a task defeats agent-browser (cross-browser, video, tracing); install the day it's needed, not before
 - **OTel telemetry** (`CLAUDE_CODE_ENABLE_TELEMETRY=1`) — blind spot for fleet/overnight runs; ColeMurray/claude-code-otel dashboard optional

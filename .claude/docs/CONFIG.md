@@ -70,13 +70,14 @@ Only `v`/`ts`/`host` are added; nothing received is dropped or renamed → **zer
 
 Status values: `allowed → allowed_warning → rejected`. Analysis (7×24 heatmap, per-project/model leaderboard, burn-rate, limit-drift detector) + a report skill are **deferred** — see plan `plans/the-stautsline-seems-like-starry-karp.md`; monthly rotation+gzip when the file grows (~30–50 MB/yr).
 
-### Skills — reach-for map (19 owner skills)
+### Skills — reach-for map (20 owner skills)
 
 | Situation | Say / use |
 |-----------|-----------|
 | Weekly maintenance, drift check, "Claude feels off" | `improve-claude` (phases: health/audit/analyze/refresh/cleanup/evolve/parity/cloud) |
 | Switch pricing mode or project model | `switch-claude` |
 | Research anything (tech or academic) | `research-topics` — routes to parallel agents or paper databases |
+| What did I spend tokens on / usage over time / cost per project·model·session | `analyze-usage` — jq recipes over the telemetry ledger |
 | Commit time | `craft-commit` (owns commits) → `draft-github` (PRs) |
 | Pre-commit verification | `verify-work` |
 | Fork/branch this conversation | `branch-claude` |
