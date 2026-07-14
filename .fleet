@@ -84,7 +84,7 @@ _fleet_reach() {
 # ── braille spinner over a background probe (zero added latency — spins only while it runs) ───────
 _fleet_spin() {
   local f=(⠋ ⠙ ⠹ ⠸ ⠼ ⠴ ⠦ ⠧ ⠇ ⠏) i=0
-  local aqua=$'\e[38;2;122;168;159m' dim=$'\e[38;2;114;116;124m' R=$'\e[0m'
+  local aqua="$KANAGAWA_AQUA_SGR" dim="$CUSTOM_DIM_SGR" R=$'\e[0m'
   tput civis 2>/dev/null
   while kill -0 "$1" 2>/dev/null; do
     printf "\r  ${aqua}%s${R}  ${dim}%s${R}" "${f[i++%10+1]}" "$2"; sleep 0.06
@@ -97,7 +97,7 @@ _fleet_spin() {
 #    Shared by the no-arg forms of vj / vr / vd — one place to keep the look and the roster.
 _fleet_menu() {
   command -v fzf >/dev/null 2>&1 || { print -u2 "  fzf not found"; return 2; }
-  local g=$'\e[38;2;122;168;159m' dim=$'\e[38;2;114;116;124m' R=$'\e[0m'
+  local g="$KANAGAWA_AQUA_SGR" dim="$CUSTOM_DIM_SGR" R=$'\e[0m'
   local dir; dir=$(mktemp -d) || return 1
   {
     local f
@@ -204,7 +204,7 @@ vj() {
   fi
   local name="$1"
   local host; host=$(_fleet_map "$name")
-  local blu=$'\e[38;2;126;156;216m' dim=$'\e[38;2;114;116;124m' bold=$'\e[1m' R=$'\e[0m'
+  local blu="$KANAGAWA_BLUE_SGR" dim="$CUSTOM_DIM_SGR" bold=$'\e[1m' R=$'\e[0m'
 
   setopt local_options no_monitor no_notify
   local tmp; tmp=$(mktemp)
@@ -244,7 +244,7 @@ vj() {
   open -na /Applications/Ghostty.app --args -e /bin/zsh -c \
     "env -u TMUX -u TMUX_PANE mosh --ssh='ssh -o ConnectTimeout=4' --family=inet ${(q)host}"
 
-  local aqua=$'\e[38;2;122;168;159m' fr=(⠋ ⠙ ⠹ ⠸ ⠼ ⠴ ⠦ ⠧ ⠇ ⠏)
+  local aqua="$KANAGAWA_AQUA_SGR" fr=(⠋ ⠙ ⠹ ⠸ ⠼ ⠴ ⠦ ⠧ ⠇ ⠏)
   tput civis 2>/dev/null
   for i in {1..12}; do
     printf "\r  ${aqua}%s${R}  ${dim}reaching %s…${R}" "${fr[i%10+1]}" "$name"; sleep 0.04
@@ -272,6 +272,24 @@ vr() {
     return 1
   fi
   open "vnc://${host}"
+}
+
+# ── vsend — hand a FILE to a fleet machine's ~/Downloads over Taildrop (P2P-encrypted, no size cap,
+#    works even to the headless mini). `vsend <file> [host]` — no host → picker. The point: images/logs
+#    can't cross a text terminal, but files can — get local context onto another box so ITS Claude reads it.
+vsend() {
+  local file="${1:?usage: vsend <file> [host]   (e.g. vsend ~/Desktop/shot.png mini)}"
+  [[ -f "$file" ]] || { printf "  ${KANAGAWA_RED_SGR}✗${KANAGAWA_RESET} no such file: %s\n" "$file"; return 1; }
+  local name="${2:-}"
+  if [[ -z "$name" ]]; then local pick; pick=$(_fleet_menu) || return; [[ -n "$pick" ]] || return; name="$pick"; fi
+  local host base; host=$(_fleet_map "$name"); base=${file##*/}
+  printf "  ${CUSTOM_DIM_SGR}taildrop %s → %s…${KANAGAWA_RESET}" "$base" "$name"
+  if tailscale file cp "$file" "${host}:" 2>/dev/null; then
+    printf "\r  ${KANAGAWA_GREEN_SGR}●${KANAGAWA_RESET} sent %s ${CUSTOM_DIM_SGR}→ %s${KANAGAWA_RESET}  ${CUSTOM_DIM_SGR}(there: it auto-lands in ~/Downloads, or \`tailscale file get ~/Downloads\`)${KANAGAWA_RESET}\n" "$base" "$name"
+  else
+    printf "\r  ${KANAGAWA_YELLOW_SGR}○${KANAGAWA_RESET} %s ${CUSTOM_DIM_SGR}— taildrop failed (peer offline / not on the tailnet?)${KANAGAWA_RESET}\n" "$name"
+    return 1
+  fi
 }
 
 # ── vd — debug. No arg → picker. <host> [--logs] → ONE read-only ssh round-trip: load, top CPU,
@@ -503,7 +521,7 @@ _fleet_pill() {
 #    matching the tmux active window. Locals hoisted so zsh never echoes them into the stream.
 _fleet_tree() {
   local self=${1:l}
-  local aqua=$'\e[38;2;122;168;159m' dim=$'\e[38;2;84;84;109m' R=$'\e[0m'
+  local aqua="$KANAGAWA_AQUA_SGR" dim="$KANAGAWA_BORDER_SGR" R=$'\e[0m'
   [[ -n "$NO_COLOR" ]] && { aqua= dim= R= }
 
   # pass 1 — parse the flat stream into per-machine arrays
