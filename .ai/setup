@@ -72,22 +72,17 @@ command -v brew >/dev/null 2>&1 || eval "$(/opt/homebrew/bin/brew shellenv 2>/de
 _sudo_started=
 need_sudo() {
   [ -n "$_sudo_started" ] && return 0
+  _reason="${1:-continue setup}"
   say "sudo — one prompt, kept alive for the whole run"
   if [ -t 0 ]; then
     sudo -v || die "sudo is required here"
   else
-    # No controlling terminal (e.g. Claude Code's Bash tool) — this machine's
-    # sudo needs an askpass helper explicitly (-A; no silent no-tty fallback).
-    # Pop a native GUI password prompt instead of failing outright.
-    _askpass="$(mktemp)"
-    cat > "$_askpass" <<'EOF'
-#!/bin/bash
-osascript -e 'display dialog "sudo needs you - authenticate to continue" default answer "" with hidden answer with icon caution' -e 'text returned of result' 2>/dev/null
-EOF
-    chmod +x "$_askpass"
-    SUDO_ASKPASS="$_askpass" sudo -A -v; rc=$?
-    rm -f "$_askpass"
-    [ "$rc" -eq 0 ] || die "sudo is required here"
+    # No controlling terminal (e.g. Claude Code's Bash tool) — sudo needs an askpass helper (-A).
+    # Use the CANONICAL ~/.ai/ask-sudo — the ONE helper the pre-tool-use hook trusts (an arbitrary
+    # askpass could echo a hardcoded password and bypass the human gate; only this vetted GUI prompt
+    # is allowed). It names the reason in the dialog. See the `ask-sudo` skill.
+    ASKPASS_MSG="$(scutil --get ComputerName 2>/dev/null || echo Mac): sudo needed to ${_reason}. Authenticate to continue." \
+      SUDO_ASKPASS="$HOME/.ai/ask-sudo" sudo -A -v || die "sudo is required here"
   fi
   ( while true; do sudo -n true; sleep 60; kill -0 "$$" 2>/dev/null || exit; done ) &
   trap 'kill %1 2>/dev/null' EXIT
@@ -155,7 +150,7 @@ brew "supabase/tap/supabase"
 brew "koekeishiya/formulae/yabai"
 brew "koekeishiya/formulae/skhd"
 brew "felixkratz/formulae/sketchybar"
-# brew "felixkratz/formulae/borders"   # off fleet-wide 2026-07-11 — sketchybar signals focus; borders were noise
+brew "felixkratz/formulae/borders"   # window borders — LAUNCHED by ~/.config/yabai/yabairc (rides yabai's LaunchAgent, NOT a brew service = no orphan plist)
 brew "crissnb/dynamicisland/dynamicislandsketchybar"
 brew "acsandmann/tap/menuanywhere"
 brew "macmon"                                    # Apple Silicon power/temp/cpu/gpu telemetry — sketchybar bar-daemon pipes it (helpers/bar-daemon.swift:917)
@@ -166,6 +161,7 @@ cask "claude"
 cask "chatgpt"
 cask "codex"
 cask "visual-studio-code"
+cask "google-chrome"            # main browser — 1Password logins, claude-in-chrome
 cask "raycast"
 cask "1password"
 cask "1password-cli"            # op — secrets manifest depends on it (was a brew formula elsewhere)
@@ -173,6 +169,7 @@ cask "karabiner-elements"
 cask "contexts"
 cask "tailscale-app"           # renamed from deprecated cask "tailscale" (ships the CLI too)
 cask "mullvad-vpn"
+cask "mullvad-browser"          # Firefox-based, clears on close (0 history) + 1Password — pairs with mullvad-vpn
 cask "ngrok"
 cask "obsidian"
 cask "discord"
@@ -194,6 +191,14 @@ cask "font-symbols-only-nerd-font"   # Symbols Nerd Font Mono — the glyph-fall
 # clock_analog) were switched to SFMono Nerd Font, so SF Pro is no longer referenced.
 # NOTE: a fresh font install needs a re-login (restart) for CoreText to rebuild its
 # fallback cache — otherwise some glyphs render as `?` until reboot.
+# Mac App Store (mas) — the two Safari extensions Homebrew casks CAN'T provide (App-Store-only).
+# `brew bundle install` installs/UPGRADES them; `brew bundle check` flags an out-of-date one as
+# unsatisfied — that's how the 1P-Safari-ext version skew (the ext lagging the direct-download main
+# app → breakage) is caught, not just presence. Fresh machine needs the App Store signed in (GUI
+# gate); a `mas upgrade` calls sudo internally (see the `ask-sudo` skill), so it lands in setup's
+# sudo phase / a real terminal, never fully headless.
+mas "1Password for Safari", id: 1569813296   # 1P8 main app is a direct-download cask, NOT on the App Store
+mas "AdGuard Mini", id: 1440147259           # Safari content-blocker; the `adguard` cask is the full app, not this
 BREW
 }
 
@@ -229,6 +234,14 @@ s_packages() {
   # Mop-up pass: re-run bundle once to catch transient parallel-lock failures
   # (e.g. fd/lf losing a race for cmake/go's Cellar lock). Idempotent — skips installed.
   brew bundle install --file=<(_brewfile) >/dev/null 2>&1 && ok "mop-up pass clean" || true
+  # mas (App Store) apps: brew bundle installs any MISSING, but doesn't reliably UPGRADE
+  # already-installed ones, and App Store auto-update is lazy (the 1P Safari ext lagged 8.12.21
+  # vs 8.12.26 → breakage). So upgrade explicitly here — deterministic, "like brew". `mas upgrade`
+  # calls sudo internally, so it rides need_sudo's fresh credential window; a no-TTY run can't
+  # satisfy mas's sudo → skipped, and the skew is still surfaced by `brew bundle check` in doctor.
+  if command -v mas >/dev/null 2>&1; then
+    mas upgrade >/dev/null 2>&1 && ok "mas apps current" || warn "mas upgrade skipped (needs TTY sudo) — run 'mas upgrade' in a terminal"
+  fi
   # Materialize mise-managed runtimes (python · node · cmake · rust) from the tracked
   # ~/.config/mise/config.toml. brew installs `mise` but never populates it — without
   # this, python3 is missing → the shell warns every init and p10k instant prompt breaks.
@@ -292,7 +305,7 @@ s_services() {
     fi
   fi
   local svc
-  for svc in sketchybar menuanywhere; do   # borders off (see _brewfile)
+  for svc in sketchybar menuanywhere; do   # borders NOT here — yabairc launches it (no LaunchAgent)
     command -v "$svc" >/dev/null 2>&1 && { brew services start "$svc" >/dev/null 2>&1; ok "$svc"; }
   done
   if [ -x "$HOME/.config/tmux/plugins/tpm/bin/install_plugins" ]; then
@@ -727,6 +740,7 @@ s_gate() {
   warn "Reduce Transparency: Accessibility ▸ Display — ON (solid/filled menu bar; TCC-blocks scripting)"
   warn "vProfile:            install ~/.ai/vProfile.mobileconfig (notification sound OFF, visual only)"
   warn "Codex/ChatGPT:       Notifications ON; Screen Recording/Appshots and Accessibility/Computer Use only when used"
+  warn "1Password:           Developer ▸ 'Use the SSH agent' + 'Integrate with CLI'; browser 'Unlock using 1Password'; enable Safari + Chrome extensions (see: one-password skill)"
   warn "Show previews:       Notifications ▸ Show previews → Never (hide content; not profile-able on macOS)"
   warn "Wallpaper:           set Aerial \"Shuffle Earth\" manually"
   open 'x-apple.systempreferences:com.apple.settings.PrivacySecurity?Privacy_Accessibility' 2>/dev/null
@@ -758,6 +772,13 @@ s_doctor() {
   # tailnet is exactly what broke jumps after the last restart, so surface it loudly here.
   local ts; ts=$(command -v tailscale 2>/dev/null || echo /Applications/Tailscale.app/Contents/MacOS/Tailscale)
   if [ -x "$ts" ] && "$ts" status >/dev/null 2>&1; then ok "tailscale up (fleet mesh reachable)"; else warn "tailscale DOWN — vj/vr/vd can't reach peers; open Tailscale.app (now a login item)"; fi
+  # 1Password — the fleet's key store (SSH agent · git-crypt · Apple ID). Non-intrusive: querying the
+  # agent (ssh-add) pops a Touch-ID prompt, so we check presence not contents. The mas Safari-ext
+  # skew is already caught above by `brew bundle check`. Deep diagnosis + recovery: `one-password` skill.
+  local opsock="$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+  if [ -S "$opsock" ] && pgrep -x "1Password" >/dev/null 2>&1; then ok "1Password agent socket + app live"; else warn "1Password agent unavailable — launch the app + Developer ▸ 'Use the SSH agent' (see: one-password skill)"; fi
+  case "${SSH_AUTH_SOCK:-}" in *1password*) ok "SSH_AUTH_SOCK → 1Password socket";; *) warn "SSH_AUTH_SOCK not the 1P socket (${SSH_AUTH_SOCK:-unset}) — the .zshenv:92 guard; local git signing falls back to gh-HTTPS";; esac
+  command -v op >/dev/null 2>&1 && { op account list >/dev/null 2>&1 && ok "op CLI configured" || warn "op CLI not signed in — run 'op signin'"; }
 }
 
 s_gitauth() {
