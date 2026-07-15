@@ -120,6 +120,60 @@ Subagents run in the **background by default** — keep working; results arrive.
 4. `/effort` deliberately — don't stack max on tasks high handles
 5. Keep prompts 200K-sized unless the task truly needs the 1M window
 
+### Fable session hygiene + the two-file config model (2026-07-14)
+
+**Model default policy (2026-07-14): no `model` pin — take Anthropic's current default.**
+On Max **20x** the platform default is the right daily driver, so settings.json carries
+**no `model` key**. `opusplan` is only for a **cheaper plan** (Opus-plan + Sonnet-exec
+cost-saving) — not needed on 20x. **Per-project model** = set `model` in that project's
+`.claude/settings.json` (overrides global — how eve-temp gets Fable; pin opus/sonnet
+elsewhere as wanted). **`switchModelsOnFlag: false` is the standing "never switch me
+without asking" guarantee** — every flag becomes a pause you can fix ("edit + retry" /
+"send to Opus"), never a silent swap. (settings.json is strict JSON — no inline comments;
+**this note is the comment.**)
+
+**Staying on Fable.** Fable runs safety classifiers on *every request over all loaded
+context*; a hit routes to Opus and sticks (recover with `/model fable`, per-request).
+Documented trigger categories: offensive-cyber · bio/chem · reasoning-extraction ·
+frontier-ML (support article 15363606). False-positives on DevOps + a heavy loaded
+surface — the global offensive-security skills (semgrep/yara/fuzzing/threat-modeling/…)
+can trip it in *any* folder. **No setting pins Fable.** Three real levers:
+- `switchModelsOnFlag: false` (settings.json → synced) = **pause-and-ask** instead of
+  silent fallback ("edit + retry on Fable" / "send to Opus"). Set via `/config → MODEL &
+  OUTPUT`. Already on — THE anti-silent-kick fix.
+- Clean the surface: `--safe-mode` (all customizations off; also the diagnostic — if
+  Fable holds in safe-mode but not normally, the global skill surface is the culprit) ·
+  `--strict-mcp-config --mcp-config <f>` (only named MCPs) · a small no-imports folder.
+- `/model fable` to recover after any trip.
+
+**The two-file model (what syncs across the fleet):**
+| File | Holds | Syncs? |
+|------|-------|--------|
+| `~/.claude/settings.json` | documented keys (`model`, `editorMode`, `permissions`, `hooks`, `switchModelsOnFlag`, `askUserQuestionTimeout`, …) | **YES** — dotfiles-tracked; commit → push → `dotfiles pull` |
+| `~/.claude.json` | volatile local state (projects, auth, history) + some UI toggles (`externalEditorContext`, copy-on-select) | **NO** — gitignored, per-machine |
+
+`/config` writes documented settings to `settings.json` (sync) but UI/behavior toggles to
+`.claude.json` (local). Test which: toggle → `dotfiles status`; `settings.json` changed →
+syncs, else local-only. **Graceful `.claude.json` fleet-sync (deferred to the fleet-parity
+pass):** never copy the whole file (clobbers local state) — an idempotent `jq` script
+(dotfiles-tracked) that SETS only chosen pref keys per machine, safe to re-run.
+Enforce-keys, not file-copy.
+
+**External editor (nvim).** `Ctrl+G` (or readline `Ctrl+X Ctrl+E`) opens `$EDITOR` to
+compose; `externalEditorContext: true` (`.claude.json`, local, **read-once → restart the
+session to activate**) prepends the last reply as `#` comments, stripped on `:wq`. Needs
+`$EDITOR` in the *launch* env — put `export EDITOR=nvim` in `~/.zshenv`, not just `.zshrc`.
+
+**OPEN — the fleet copy problem.** Over mosh into the mini, clipboard actions (`/copy`,
+copy-on-select, `Ctrl+Shift+C`) land on the *mini*, not the local device — needs **OSC 52**
+passthrough (Ghostty writes it; tmux `set-clipboard on` + `allow-passthrough on`; mosh is
+the historical weak link). Own investigation, deferred to the fleet-parity pass.
+
+Commands worth knowing: `/copy [n]` (copy my reply; `w` = write to file) · `/btw`
+(side-question, no context pollution) · `/context` (usage grid) · `/rewind` / `Esc Esc`
+(roll back code + convo) · transcript `v` (open convo in nvim), `[` (dump to tmux
+scrollback for copy-mode search).
+
 ### Weekly Rhythm
 
 1. **Sunday 3am** (once you run `/schedule` → "Run the improve-claude skill, cloud phase"): audit runs on Anthropic infra → mechanical fixes arrive as a PR (`claude/weekly-audit-*`), judgment calls as an issue, push notification links you to a conversable session

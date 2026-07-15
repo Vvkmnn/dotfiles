@@ -464,7 +464,6 @@
     ],
     "defaultMode": "plan"
   },
-  "model": "opusplan",
   "hooks": {
     "UserPromptSubmit": [
       {
@@ -697,19 +696,21 @@
     "mode": "auto-allow"
   },
   "alwaysThinkingEnabled": true,
+  "askUserQuestionTimeout": "5m",
   "tui": "fullscreen",
   "voice": {
     "enabled": true,
     "mode": "hold"
   },
+  "skipWorkflowUsageWarning": true,
   "theme": "custom:kanagawa",
   "editorMode": "vim",
+  "switchModelsOnFlag": false,
   "showTurnDuration": true,
   "terminalProgressBarEnabled": true,
   "remoteControlAtStartup": true,
   "inputNeededNotifEnabled": true,
   "agentPushNotifEnabled": true,
   "skipAutoPermissionPrompt": true,
-  "voiceEnabled": true,
-  "skipWorkflowUsageWarning": true
+  "voiceEnabled": true
 }
