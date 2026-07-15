@@ -15,6 +15,11 @@
 [ -n "${__SCALE_SOURCED:-}" ] && [ "${1:-}" != doctor ] && return 0 2>/dev/null
 __SCALE_SOURCED=1
 
+# System tools (sysctl/uname) live in /usr/sbin + /sbin. Prepend them so they resolve even when scale
+# is sourced BEFORE PATH is set (.minimal / agents / sandbox) — otherwise bare `sysctl` fails, memsize
+# falls to 0, and the machine mis-buckets to the small tier (wrong HEAP/scrollback).
+PATH="/usr/sbin:/sbin:/usr/bin:/bin:${PATH:-}"
+
 # ── raw facts (read once) ────────────────────────────────────────────────────
 _mem_b=$(sysctl -n hw.memsize 2>/dev/null || echo 0)
 SCALE_MEM_GB=$(( _mem_b / 1073741824 ))
