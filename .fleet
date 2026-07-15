@@ -139,7 +139,10 @@ _fleet_probe='
   nc=$(sysctl -n hw.ncpu 2>/dev/null)
   mfree=$(memory_pressure 2>/dev/null | grep -i "free percentage" | grep -oE "[0-9]+" | head -1)
   boot=$(sysctl -n kern.boottime 2>/dev/null | grep -oE "sec = [0-9]+" | head -1 | grep -oE "[0-9]+")
-  printf "PWR|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s\n" "$ac" "${pct:-?}" "$therm" "${l1:-?}" "${l5:-?}" "${l15:-?}" "${nc:-?}" "${mfree:-?}" "${boot:-?}" "${rem:-}"
+  wmup=0; for wd in yabai skhd sketchybar borders; do pgrep -x "$wd" >/dev/null 2>&1 && wmup=$((wmup+1)); done
+  wm=off; [ "$wmup" -gt 0 ] && [ "$wmup" -lt 4 ] && wm=bad; [ "$wmup" -eq 4 ] && wm=ok
+  [ "$wm" = ok ] && [ -f /tmp/yabai_v.err.log ] && grep -qE "cannot apply grid|unknown command" /tmp/yabai_v.err.log && wm=bad
+  printf "PWR|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s\n" "$ac" "${pct:-?}" "$therm" "${l1:-?}" "${l5:-?}" "${l15:-?}" "${nc:-?}" "${mfree:-?}" "${boot:-?}" "${rem:-}" "$wm"
   tmux list-windows -a -F "WIN|#{session_name}:#{window_index}|#{window_name}|#{pane_current_command}|#{window_panes}|#{window_flags}|#{window_activity}" 2>/dev/null
 '
 
@@ -254,24 +257,57 @@ vj() {
     "$(get_colored_face)" "$host" "$chip" "$badge" "$pathw" "${rtt:-?}"
 }
 
-# ── vr — remote. No arg → picker. <host> → first-party Screen Sharing (full GUI). VNC has its own
-#    auth (Apple Screen Sharing), so this never touches 1Password.
-vr() {
-  # No arg → VNC into THIS machine: the box the shell runs on, or — inside an ssh session — the host
-  # you're sshed INTO ($HOST is the remote name there). `vr <host>` targets any peer. Screen Sharing
-  # opens where the shell runs, so a no-arg `vr` from within an ssh session is loopback on that host;
-  # run it from a LOCAL shell to bring up the target's screen on your display.
-  local name="${1:-${${HOST%%.*}:l}}"
+# ── vr — remote. Screen Sharing (VNC), drawn on the machine you're physically AT. No arg: local →
+#    picker · remote → this box's screen on your display. <host> targets any peer. VNC has its own
+#    auth (Apple Screen Sharing), so this never touches 1Password. Where-it-draws lives in _fleet_vnc.
+#
+# ── _fleet_vnc — open Screen Sharing to <target> ON THE MACHINE YOU'RE PHYSICALLY AT, not where the
+#    shell runs. `open vnc://` opens where its shell runs — so from a LOCAL shell it draws here (this
+#    box has the active GUI login), but from a REMOTE shell it would draw on that unwatched box. So:
+#    local → open here; remote → reverse-open on the ssh origin so the window lands on your display,
+#    and ALWAYS stage the manual `vr <target>` on the clipboard — open-over-ssh needs the origin to
+#    have a GUI login and a clean exit doesn't prove a window actually drew, so the fallback is there.
+_fleet_vnc() {
+  local target="$1" self=${${HOST%%.*}:l}
   local G=$'\e[38;5;114m' Y=$'\e[38;5;179m' D=$'\e[2m' R=$'\e[0m'
-  printf "  ${D}reaching %s…${R}" "$name"
+  printf "  ${D}reaching %s…${R}" "$target"
   local host
-  if host=$(_fleet_reach "$name"); then
-    printf "\r  ${G}●${R} %s ${D}up — opening screen${R}              \n" "$name"
-  else
-    printf "\r  ${Y}○${R} %s ${D}offline — asleep or off (\`vw\` on it, or wake it)${R}\n" "$name"
+  if ! host=$(_fleet_reach "$target"); then
+    printf "\r\e[K  ${Y}○${R} %s ${D}offline — asleep or off (\`vw\` on it, or wake it)${R}\n" "$target"
     return 1
   fi
-  open "vnc://${host}"
+  printf "\r\e[K"
+
+  # remote? SSH_TTY survives even under mosh; SSH_CONNECTION is set under plain ssh. origin = the
+  # client IP of that inbound hop (may be empty under mosh → no auto-target, guide-only fallback).
+  if [[ -z $SSH_TTY && -z $SSH_CONNECTION ]]; then
+    # LOCAL: the screen draws here. VNC-into-your-own-screen is pointless, so refuse a self-target.
+    if [[ ${${host%%.*}:l} == $self ]]; then
+      printf "  ${Y}○${R} %s ${D}is this machine — pick a peer${R}\n" "$target"; return 1
+    fi
+    printf "  ${G}●${R} %s ${D}— opening screen${R}\n" "$target"
+    open "vnc://${host}"
+    return
+  fi
+
+  # REMOTE: draw on the origin (your physical machine). Stage the fallback first, then try.
+  local origin=${SSH_CLIENT%% *}; [[ -z $origin ]] && origin=${SSH_CONNECTION%% *}
+  local fb="vr ${target}"
+  print -rn -- "$fb" | pbcopy 2>/dev/null
+  if [[ -n $origin ]] && ssh -o ConnectTimeout=4 -o BatchMode=yes "$origin" "open vnc://${host}" 2>/dev/null; then
+    printf "  ${G}●${R} opening %s on your machine ${D}— if nothing shows, run: %s (copied)${R}\n" "$target" "$fb"
+  else
+    printf "  ${Y}○${R} run this on your machine to see %s: ${D}%s${R} ${D}(copied)${R}\n" "$target" "$fb"
+  fi
+}
+
+vr() {
+  if (( $# == 0 )) && [[ -z $SSH_TTY && -z $SSH_CONNECTION ]]; then   # local + no arg → picker
+    local pick; pick=$(_fleet_menu) || return
+    [[ -n $pick ]] && vr "$pick"
+    return
+  fi
+  _fleet_vnc "${1:-${${HOST%%.*}:l}}"
 }
 
 # ── vsend — hand a FILE to a fleet machine's ~/Downloads over Taildrop (P2P-encrypted, no size cap,
@@ -526,15 +562,15 @@ _fleet_tree() {
 
   # pass 1 — parse the flat stream into per-machine arrays
   local -a machines
-  local -A m_host m_ac m_pct m_therm m_l1 m_l5 m_l15 m_cores m_mem m_boot m_batt m_asleep m_wins
-  local tag a b c d e f g h i j cur=""
-  while IFS='|' read -r tag a b c d e f g h i j; do
+  local -A m_host m_ac m_pct m_therm m_l1 m_l5 m_l15 m_cores m_mem m_boot m_batt m_asleep m_wins m_wm
+  local tag a b c d e f g h i j k cur=""
+  while IFS='|' read -r tag a b c d e f g h i j k; do
     case "$tag" in
       HOST)   cur=$a; machines+=$a; m_host[$a]=$b; m_asleep[$a]=1; m_wins[$a]="" ;;
       ASLEEP) [[ -n $cur ]] && m_asleep[$cur]=1 ;;
       PWR)    m_asleep[$cur]=0; m_ac[$cur]=$a; m_pct[$cur]=$b; m_therm[$cur]=$c
               m_l1[$cur]=$d; m_l5[$cur]=$e; m_l15[$cur]=$f; m_cores[$cur]=$g
-              m_mem[$cur]=$h; m_boot[$cur]=$i; m_batt[$cur]=$j ;;
+              m_mem[$cur]=$h; m_boot[$cur]=$i; m_batt[$cur]=$j; m_wm[$cur]=$k ;;
       WIN)    m_wins[$cur]+="${a}"$'\x1f'"${b}"$'\x1f'"${c}"$'\x1f'"${d}"$'\x1f'"${e}"$'\x1f'"${f}"$'\n' ;;
     esac
   done
@@ -598,6 +634,7 @@ _fleet_tree() {
       vit+="${sep}${dim}up ${R}${inkesc}$(_fleet_ago "${m_boot[$m]}" "$now")${R}"
     fi
     [[ ${m_therm[$m]} == hot ]] && vit+="${sep}${amber}⚠ throttled${R}"
+    [[ ${m_wm[$m]} == bad ]] && vit+="${sep}${amber}⚠ wm${R}"   # a WM daemon crashed or its log has errors (alert-only)
 
     (( is_self )) && hue=e6c384 || hue=$(fleet_hex "$m")   # gold self · teal air / amber mini / violet neo
     bpad="${shape} ${m} · ${chip}"; bpad=${(r:11:)bpad}   # fixed-width badge → vitals align across rows

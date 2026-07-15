@@ -5,3 +5,5 @@
 # .claude/mcp/mcp.json.bak retired 2026-07-06 (deleted; UTCP-era backup, in git history)
 .claude/mcp/config.json filter=git-crypt diff=git-crypt
 .assets/fonts/** filter=git-crypt diff=git-crypt
+# Per-host usage telemetry ledgers — private, cross-fleet history (encrypted at rest)
+.claude/status/telemetry-*.jsonl filter=git-crypt diff=git-crypt

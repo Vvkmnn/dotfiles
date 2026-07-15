@@ -1,0 +1,21 @@
+#!/bin/bash
+# Canonical ask-sudo GUI askpass helper — the ONE sudo path Claude is allowed to use.
+#
+# The pre-tool-use.js hook allows `sudo -A` ONLY when SUDO_ASKPASS points at THIS file
+# (~/.ai/ask-sudo). Any other askpass helper is denied — an arbitrary script could echo a
+# hardcoded password and bypass the human gate, so only this vetted GUI prompt is trusted.
+#
+# It pops a native macOS password/Touch-ID dialog, so a human authenticates every sudo. The
+# calling command sets ASKPASS_MSG to name the reason; quotes are stripped so a reason string
+# can't break out of the AppleScript literal. Used by need_sudo() in ~/.ai/setup and documented
+# in the `ask-sudo` skill.
+# Fleet robot face in the title — same set as get_colored_face() (.functions:20), plain text (a GUI
+# dialog renders no ANSI colour). Inlined on purpose: this security helper stays self-contained and
+# must not source the shell rc.
+faces=('[¬_¬]' '[^_^]' '[-_-]' '[o_o]' '[>_<]' '[T_T]' '[u_u]' '[n_n]' '[x_x]' '[~_~]' '[$_$]' '[+_+]' '[v_v]')
+face="${faces[$((RANDOM % ${#faces[@]}))]}"
+msg="${ASKPASS_MSG:-Authenticate to continue (dotfiles setup)}"
+msg="${msg//\"/}"
+osascript \
+  -e "display dialog \"$msg\" default answer \"\" with hidden answer with icon caution with title \"ask-sudo  $face\"" \
+  -e 'text returned of result' 2>/dev/null
