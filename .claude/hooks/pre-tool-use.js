@@ -175,8 +175,26 @@ function processToolRequest(data) {
     if (/\bdd\b/.test(cmd) && (/if=\/dev\//.test(cmd) || /of=\/dev\//.test(cmd))) {
       return deny('dd targeting device files. Run manually if intended.');
     }
-    if (/(?:^|[;&|]\s*|&&\s*|\|\|\s*|\$\()sudo\s/.test(cmd)) {
-      return deny('sudo commands require manual execution.');
+    // EXCEPTION (dotfiles setup): the ONE approved sudo path — `sudo -A` with SUDO_ASKPASS pointing
+    // at the CANONICAL helper ~/.ai/ask-sudo (the vetted osascript Touch-ID/password dialog). It
+    // CANNOT run unattended (a human authenticates the GUI prompt every time). ANY OTHER askpass is
+    // DENIED — an arbitrary helper could echo a hardcoded password and bypass the human gate. Used by
+    // need_sudo() in ~/.ai/setup (casks · mas · xcode-select) + the `ask-sudo` skill.
+    //   · match sudo ONLY at a command position (same prefix as the deny), never a substring — a
+    //     plain \b matched "sudo" inside the word "ask-sudo".
+    //   · third clause: every sudo in the command must be `-A` (no silent sudo sneaked alongside).
+    const askSudoHelper = /SUDO_ASKPASS=(["']?)(?:~|\$HOME|\/Users\/[^\/\s"']+)\/\.ai\/ask-sudo\b/.test(cmd);
+    // (a) ANY real `sudo -A` must use the canonical helper — catches an arbitrary askpass (which could
+    //     echo a hardcoded password, bypassing the human gate) even in the `ENV=val sudo` form that the
+    //     command-position deny (b) below misses. `(?:^|\s)sudo` won't match the word "ask-sudo" (hyphen).
+    if (/(?:^|\s)sudo\s+-A\b/.test(cmd) && !askSudoHelper) {
+      return deny('sudo -A requires SUDO_ASKPASS=~/.ai/ask-sudo (the ask-sudo GUI prompt). See the ask-sudo skill.');
+    }
+    const guiAskSudo = askSudoHelper
+      && /(?:^|[;&|]\s*|&&\s*|\|\|\s*|\$\()sudo\s+-A\b/.test(cmd)
+      && !/(?:^|[;&|]\s*|&&\s*|\|\|\s*|\$\()sudo\s+(?!-A\b)/.test(cmd);
+    if (/(?:^|[;&|]\s*|&&\s*|\|\|\s*|\$\()sudo\s/.test(cmd) && !guiAskSudo) {
+      return deny('silent/untrusted sudo blocked. The only allowed sudo is `sudo -A` with SUDO_ASKPASS=~/.ai/ask-sudo (the ask-sudo GUI prompt). See the ask-sudo skill.');
     }
     if (/\bchmod\s+777\b/.test(n)) {
       return deny('chmod 777 is insecure. Use more restrictive permissions.');
