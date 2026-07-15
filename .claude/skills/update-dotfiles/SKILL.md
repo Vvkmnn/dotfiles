@@ -1,8 +1,8 @@
 ---
 name: update-dotfiles
 author: Vvkmnn
-description: Use when user says "update dotfiles", "commit dotfiles", "sync dotfiles", "push dotfiles", "update docs and dotfiles", "add to docs and dotfiles", "docs and dotfiles", or asks to save/backup their config — and whenever Claude itself proposes updating dotfiles OR docs. Runs a DOCS-FIRST pass (accurate function docstrings/comments in the code you just changed, then relevant project docs — README/CHANGELOG/memory), THEN the dotfiles commit. Manages the bare git repo at ~/.dotfiles with logical commits, security checks, config discovery, and a plan-artifact/launch-daemon capture pass so recent machine-config work is reproducible on fresh machines.
-version: 0.5.0
+description: Use when user says "update dotfiles", "commit dotfiles", "sync dotfiles", "push dotfiles", "update docs and dotfiles", "add to docs and dotfiles", "docs and dotfiles", "converge the fleet", or asks to save/backup their config or reconcile machines that DRIFTED apart — and whenever Claude itself proposes updating dotfiles OR docs. Runs a DOCS-FIRST pass (accurate function docstrings/comments in the code you just changed, then relevant project docs — README/CHANGELOG/memory), THEN the dotfiles commit. Manages the bare git repo at ~/.dotfiles with logical commits, security checks, config discovery, a plan-artifact/launch-daemon capture pass, and FLEET CONVERGENCE (reconcile drift across machines back into the ONE shared v-macos set, best-of-both — same experience everywhere) so config is reproducible + consistent fleet-wide.
+version: 0.6.0
 ---
 
 # Dotfiles Update
@@ -13,18 +13,19 @@ version: 0.5.0
 **Remote:** `git@github.com:Vvkmnn/dotfiles.git`
 **Command:** `dotfiles` alias or `/usr/bin/git --git-dir=/Users/v/.dotfiles/ --work-tree=/Users/v`
 
-### Branches (one per machine)
+### Branch — ONE shared branch (converged 2026-07)
 
-| Branch | Machine | Notes |
-|--------|---------|-------|
-| `master` | — | Default/base, shared README |
-| `v-macos-macbook` | MacBook | **Current machine** |
-| `v-macos-studio` | Mac Studio | |
-| `v-macos` | Generic macOS | |
-| `v-debian` | Debian | |
-| `v-debian-wsl` | WSL | |
+The fleet runs a **single shared branch: `v-macos`** — same dotfiles, same experience on every Mac
+(neo · air · mini). The old per-machine branches (`v-macos-macbook`, `v-macos-studio`, `v-mac`,
+`v-macos-neo`) are **DEAD** — superseded, archive/delete candidates (owner approves each deletion).
+`master` = old default/base (separate call); `v-debian*` = other platform, kept.
 
-Always commit to the current branch. Never switch branches without asking.
+**Machine differences are NOT branches and NOT overrides — the default is one unified set.** Where a
+Mac genuinely *must* differ (headless mini has no 1P GUI; 8GB vs 24GB RAM; AU vs CA region), it's a
+**minimal in-config adjustment kept as small as possible** (`~/.ai/scale` for RAM/heap,
+`$SSH_CONNECTION`-gating for local-vs-forwarded agent, `machine_badge` for identity) — the reluctant
+exception, only when necessary. Everything else is identical everywhere. Commit to `v-macos`; set
+`push.default=simple`. See **Fleet Convergence** below for pulling drift back into the one set.
 
 ### What's Tracked (~1136 files)
 
@@ -279,6 +280,24 @@ dotfiles status
 **README staleness check:** If commits touched `.claude/` (rules, skills, hooks, mcp) or category structure changed, verify `~/.github/README.md` tree counts still match reality (10 rules, 29 skills, 6 hooks, 36 servers, ~1136 files). Suggest update if stale.
 
 Report: "Committed as [hashes]. Push with `dotfiles push`"
+
+## Fleet Convergence — pull drift back into the ONE shared set
+
+`v-macos` drifts because you work on different things on different machines. Converging is part of
+updating dotfiles: **always merge both machines' intent into one value — same experience everywhere;**
+machine-tune only when a real constraint forces it (never a fork). The loop:
+
+1. **Audit** every machine's git state (ahead/behind · dirty · active plans) — measure, don't ask.
+2. **Detect** true conflicts — `comm` the drifted files ∩ the incoming diff.
+3. **Merge into one** — understand WHY each side diverged (favor recent, learn from the old), synthesize
+   best-of-both, verify both intents survived the auto-merge. A genuine per-host need → a minimal
+   in-config adjustment (`~/.ai/scale`, `$SSH_CONNECTION`-gate), never a fork.
+4. **Push + sync** — explicit `push origin v-macos`; `ssh -A` to sign pushes for headless boxes.
+5. **Don't clobber a live session** — flag another worker's WIP, never fold it silently.
+
+**Three traps that WILL bite:** the bare-repo `cwd=git-dir` trap (always `git -C "$HOME"`), `git status
+-uall` (scans TCC home → hangs), `push.default=matching` (shoves dead branches). **Audit one-liner +
+all mechanics → `references/convergence.md`.**
 
 ## Commit Message Style
 
