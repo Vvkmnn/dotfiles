@@ -179,7 +179,7 @@
 
 export PATH="/usr/bin:/opt/homebrew/bin:$PATH"
 
-MAX_DIM=700
+MAX_DIM=1568   # legible: keeps dense text readable AND under Claude's downscale (1568 / 2576px on Opus 4.8); 700 was too small.
 TMP_FILE="/tmp/screenshot-$$.png"
 RESIZED_FILE="${TMP_FILE%.png}-resized.png"
 IMPBCOPY="$HOME/.config/karabiner/scripts/impbcopy"
@@ -209,11 +209,11 @@ if [ -f "$TMP_FILE" ]; then
         fi
         if [ "$1" = "-i" ]; then MODE="Area"; else MODE="Fullscreen"; fi
         "$IMPBCOPY" "$RESIZED_FILE"
-        terminal-notifier \
-            -title "Copied to clipboard" \
-            -message "$MODE ${OW}×${OH} → ${W}×${H} ($SIZE_FMT)" \
-            -sender "$SENDER" \
-            -timeout 3 &
+        # native notification, BACKGROUNDED (&) so it never delays the paste — drops the
+        # terminal-notifier dependency. (Cross-context vj/vr routing lands later, the fast way:
+        # the vj wrapper sets a Karabiner var → a fleet-gated rule passes the target as an arg,
+        # so no per-screenshot osascript title-read is ever in the hot path.)
+        osascript -e "display notification \"$MODE → clipboard (⌃V into Claude) · ${W}×${H}\" with title \"Screenshot\" sound name \"Tink\"" >/dev/null 2>&1 &
     else
         terminal-notifier \
             -title "Screenshot failed" \
