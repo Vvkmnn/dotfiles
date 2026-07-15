@@ -71,13 +71,25 @@ _fleet_chip() {
 
 # ── reachability (AUTH-FREE) ─────────────────────────────────────────────────────
 # Resolve <name> to a reachable form and signal up/down by exit code, WITHOUT ssh. Bare MagicDNS
-# name first (Tailscale, works on any network), then <name>.local (Bonjour, LAN). ping -c1 -t1 is a
-# 1s-timeout single packet — no 1Password, no hang. Prints the name even when unreachable (asleep/off
-# still get a label); the exit code carries up/down.
-_fleet_reach() {
-  local h; h=$(_fleet_map "$1")
-  if ping -c1 -t1 "$h" >/dev/null 2>&1;        then print -r -- "$h";        return 0; fi
-  if ping -c1 -t1 "$h.local" >/dev/null 2>&1;  then print -r -- "$h.local";  return 0; fi
+# name first (Tailscale, works on any network), then <name>.local (Bonjour, LAN). Prints the name
+# even when unreachable (asleep/off still get a label); the exit code carries up/down.
+#
+# Probes TCP 22, NOT ping. A sleeping Mac still answers ICMP — something else replies for it (Wi-Fi
+# firmware offload, or the Bonjour sleep proxy holding its address), so ping reports "up" for a box
+# that cannot accept an ssh, and vj jumps into a sleeper and dies in mosh. Only a completed TCP
+# connect proves sshd is really listening. It doubles as the wake trigger: that SYN is what makes a
+# sleep proxy emit the magic packet. Still auth-free — the connect finishes in the kernel, so no
+# ssh, no 1Password, no Touch ID.
+#
+# Slow path caveat: a DOWN peer costs ~6s, and it's mDNS, not the connect. -G bounds each connect
+# (measured: -G1→1.0s, -G3→3.0s), but the .local line pays the mdns resolver's own 5s timeout
+# (`scutil --dns`) whenever the cache is cold — resolving a bogus .local name takes 5s+ vs 0.07s for
+# a bogus tailnet name. Up peers are unaffected (~10ms). Fixing that means not asking mDNS at all,
+# which only became thinkable now that MagicDNS actually resolves.
+_fleet_reach() {                 # <name> [timeout_s] — 1s default keeps the pickers instant
+  local h; h=$(_fleet_map "$1") t=${2:-1}
+  if nc -z -G "$t" "$h" 22 >/dev/null 2>&1;        then print -r -- "$h";       return 0; fi
+  if nc -z -G "$t" "$h.local" 22 >/dev/null 2>&1;  then print -r -- "$h.local"; return 0; fi
   print -r -- "$h"; return 1
 }
 
