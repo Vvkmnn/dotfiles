@@ -63,11 +63,20 @@ sweep docs before the commit — the commit should capture accurate docs, not st
 2. **Project docs** — update whatever the change makes stale: a module README, `~/.claude/docs/CHANGELOG.md`,
    the project's memory (`~/.claude/projects/<slug>/memory/` + `MEMORY.md` index) for non-obvious learnings
    or hard-won gotchas, and `~/.github/README.md` tree counts if `.claude/` structure changed (see Phase 6).
-3. **Repo changelog** — add a terse entry to `~/.github/LOG.md` (the repo-wide dotfiles changelog, peer to
+3. **Repo changelog** — add an entry to `~/.github/LOG.md` (the repo-wide dotfiles changelog, peer to
    the Claude-config `.claude/docs/CHANGELOG.md`). Newest first, under a `## YYYY-MM-DD` heading (reuse
-   today's if it exists). One bullet per user-visible change across ANY scope — shell, terminal, wm, setup —
-   not just fleet; hard-won gotchas go in a `### notes` sub-list. Match its lowercase README tone. This entry
-   rides in the same commit as the change it documents (or the standalone `DOCS(dotfiles):` commit).
+   today's if it exists). Follow the format in its header: **bold-grouped bullets that carry the *why*
+   (the reasoning + roads-not-taken), not just the *what*** — the why is the expensive part to rediscover;
+   an optional `### why / decisions` block for the bigger calls; hard-won gotchas in a `### notes` sub-list.
+   One bullet per user-visible change across ANY scope — shell·terminal·wm·setup·fleet. Match its lowercase
+   README tone. **Name machines by chip + OS** (`m4` / `m3` / `a18`, macOS), never device nicknames or
+   hostnames (`vMiniM4` / `Neo` / `Air`) — this repo is public; only functional maps (`.fleet` / ssh `Host`)
+   and the owner's personal aliases keep real names. **REQUIRED: end every entry with a `**commits:**` line linking its SHAs**
+   (`github.com/Vvkmnn/dotfiles/commit/<sha>`, short-sha display) so the log is always one hop from the diff —
+   draw the SHAs from `dotfiles log`, and for multi-session machine-config work reconstruct the arc + SHAs
+   from the plan files (see Phase 5c). The entry rides in the same commit as the change it documents (or a
+   standalone `DOCS(dotfiles):` commit; add the `**commits:**` line in a tiny follow-up if the SHAs weren't
+   known at write time).
 4. **Then** proceed to the dotfiles commit below — the doc edits ride in the same logical commit(s) as the
    code they document (same scope), or their own `DOCS(scope):`/`CHORE(scope):` commit if standalone.
 
