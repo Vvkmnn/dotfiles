@@ -50,6 +50,12 @@ export LANG=${LANG:-en_US.UTF-8}
 export LC_ALL=${LC_ALL:-en_US.UTF-8}
 export PATH="$HOME/.local/share/mise/shims:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/local/sbin:$HOME/.local/bin:$PATH"
 
+# bash's analogue to how zsh always sources .zshenv: bash sources $BASH_ENV for NON-interactive
+# shells (`bash -c "…"`). Point it at ~/.bashenv (a symlink to THIS file), so a bash jump gets the
+# same PATH/SSH_AUTH_SOCK/TERM as zsh — one env file, both shells. Interactive bash already reaches
+# this via .bashrc→.rc→.minimal; this covers the non-interactive case that had no shared env.
+export BASH_ENV="$HOME/.bashenv"
+
 # Essentials for AI tools
 export EDITOR=${EDITOR:-nvim}
 export VISUAL=${VISUAL:-$EDITOR}
@@ -79,20 +85,27 @@ export MOSH_PREDICTION_OVERWRITE=${MOSH_PREDICTION_OVERWRITE:-yes}
 # SSH agent → 1Password (your real key store). The old gpg-agent SSH socket (formerly exported
 # in .profile/.shell/.zprofile) was DEAD — a socket that doesn't exist + no enable-ssh-support —
 # which is why et/git fell back to a password. Set 1P here in .zshenv so EVERY shell reaches it,
-# including vj's non-login `zsh -c` et window (only .zshenv is sourced there). GUARD `-S`: never
-# clobber a LIVE forwarded agent inside `ssh -A` — that's how git on a remote box uses YOUR
-# laptop's key so Touch-ID pops where you are (no screen-sharing). Path = 1Password's universal
-# id (no secret). Single source of truth: the .profile/.shell/.zprofile copies were removed.
+# including vj's non-login `zsh -c` et window (only .zshenv is sourced there). Path = 1Password's
+# universal id (no secret). Single source of truth: the .profile/.shell/.zprofile copies were removed.
 #
-# GOTCHA: this socket is served by the 1Password DESKTOP APP. If the app isn't running, the socket
-# FILE still lingers — so the `-S` guard below PASSES — yet nothing answers it, and every ssh/mosh/et
-# falls back to a PASSWORD with no Touch-ID. Keep the app alive: 1Password ▸ Settings ▸ General ▸
-# "Keep 1Password in the menu bar" + "Start at login" both ON. Diagnose: `ssh-add -l` on this socket
-# → key list = agent alive; "Connection refused" = app not running.
-[[ -S "$SSH_AUTH_SOCK" ]] || export SSH_AUTH_SOCK="$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+# GUARD `-n $SSH_CONNECTION`, NOT `-S $SSH_AUTH_SOCK`: macOS pre-sets SSH_AUTH_SOCK to its own
+# launchd agent — a socket that is VALID (`-S` true) but EMPTY (`ssh-add -l` = no identities). So an
+# `-S` guard ALWAYS passed, the 1P export never ran, and github SSH signed against the empty agent →
+# every push failed. Gate on the SESSION instead: a LOCAL shell has no $SSH_CONNECTION → force the 1P
+# socket; an INBOUND `ssh -A` session has it SET → keep the forwarded agent, so a headless box signs
+# with YOUR laptop's 1P and Touch-ID pops where you are. ($SSH_CONNECTION beats $SSH_TTY — it's set
+# even for a non-interactive `ssh -A host 'git push'`, which has no pty.)
+#
+# GOTCHA: the 1P socket is served by the 1Password DESKTOP APP. If the app isn't running the socket
+# FILE lingers but nothing answers → ssh/git fall back to a PASSWORD with no Touch-ID. Keep the app
+# alive: 1Password ▸ Settings ▸ General ▸ "Keep 1Password in the menu bar" + "Start at login" ON.
+# Diagnose: `SSH_AUTH_SOCK=<1p sock> ssh-add -l` → key list = agent alive; "refused" = app not running.
+[[ -n "$SSH_CONNECTION" ]] || export SSH_AUTH_SOCK="$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
 
-# GPG for git commits in AI tools
-export GPG_TTY=$(tty)
+# GPG for git commits in AI tools. Guard on a real terminal: a non-interactive shell (`bash -c`,
+# now that it sources this via BASH_ENV) has no tty, and a bare `$(tty)` would set the literal
+# string "not a tty". gpg only needs GPG_TTY when it can actually prompt — i.e. when there's a tty.
+tty -s && export GPG_TTY=$(tty)
 
 # Signal to other files that we're in sandbox mode
 [ -n "$CODEX_SANDBOX" ] && export AI_SANDBOX_ONLY=1
