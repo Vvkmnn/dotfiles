@@ -21,7 +21,7 @@ several pieces are Keychain-protected GUI toggles macOS won't let a script enfor
 > docs — all cover **secrets only** (`op read`/`op run`/`op inject`, `.env.tpl`, MCP injection) and
 > deliberately skip SSH keys, git signing, and browser-extension management. This skill adopts their
 > progressive-disclosure structure and **fills that gap** for this fleet. Their material lives in
-> `op-commands.md`; the fleet-specific wiring + recovery is the new part.
+> `references/op-commands.md`; the fleet-specific wiring + recovery is the new part.
 
 ## What 1Password holds here (the manifest)
 
@@ -69,7 +69,7 @@ SSH_AUTH_SOCK="$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.s
 Signed-in check: `op whoami`. On this fleet `op` is used as **auth transport**, not vault scripting:
 `op run -- xcodes …` (Apple ID) and `op document get Dotfiles` (git-crypt key). For the secret-
 reference patterns (`op read op://…`, `op run --env-file`, `op inject`, `.env.tpl`) see
-**`op-commands.md`** — those are the community-skill patterns, useful if/when MCP tokens move to
+**`references/op-commands.md`** — those are the community-skill patterns, useful if/when MCP tokens move to
 runtime injection instead of git-crypt.
 
 ## Browsers — honest about what's automatable
@@ -102,4 +102,4 @@ works · 1P app running · extension present per browser · main-app vs Safari-e
 
 ## Recovery
 
-Broken agent, git-crypt won't unlock, missing extension, fresh machine → **`recovery.md`**.
+Broken agent, git-crypt won't unlock, missing extension, fresh machine → **`references/recovery.md`**.
