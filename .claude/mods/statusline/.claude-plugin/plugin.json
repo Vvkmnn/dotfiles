@@ -1,0 +1,8 @@
+{
+  "name": "statusline",
+  "version": "0.1.0",
+  "description": "One row: draws ~/.claude/statusline.sh into Claude Code's own prompt footer, after the mode words, so the status line and the footer are the same row.",
+  "author": { "name": "Vivek Menon", "url": "https://github.com/Vvkmnn" },
+  "license": "MIT",
+  "keywords": ["statusline", "footer", "usage", "mod"]
+}

@@ -1,1001 +1,489 @@
 #!/bin/bash
-# High-performance Claude Code statusline
-# Output: ॐ ✻ Fᵀˣ ψ 51%¹ᴹ 94% μ 5% λ 40% 30% σ 2h 8.5h θ 0.8h¹·⁵ 6.5d π branch +45 -12 $ 12.34
+# statusline.sh v4 (2026-11-03) — one row, every value from the stdin JSON Claude Code sends; render_v4 at
+# the end is the live renderer, the v3 superscript line documented here stays behind CLAUDE_STATUSLINE_STYLE=v3.
 #
-# Error handling: Log errors but always show something (even if incomplete)
+# ॐ Fᵀˣ ψ 51¹ᴹ·94 λ 40⁰·⁸ʰ 30⁻³ʰ σ 2h⁴⁰ π main⁺⁴⁵⁻¹² #1234 $12.3
+# │ │   │          │                │      │               │     └ $ session API-equivalent (dim)
+# │ │   │          │                │      │               └ #PR, colored by review state
+# │ │   │          │                │      │                 (blue approved · orange pending · red changes · gray draft)
+# │ │   │          │                │      └ π branch or worktree name · ⁺inserted ⁻deleted lines (repos only)
+# │ │   │          │                └ σ session elapsed · superscript = % of it spent waiting on the API
+# │ │   │          └ λ 5h used% ⁰·⁸ʰ time to reset · 7d used% ⁻²ᵈ runs out 2 days BEFORE the reset at the current burn
+# │ │   │            (⁺ = slack past the reset; hours ahead/behind the on-pace line until 15 min of samples exist)
+# │ │   └ ψ context % (¹ᴹ = 1M window) · ·94 = cache hit % dim (· warm, ○ cold)
+# │ └ model letter F/O/S/H · ᵀ thinking · effort ᴹ max ˣ xhigh ⁺ high ⁻ low · ᶠ fast mode · @name as an agent
+# └ ॐ anchor: RED = this pane is waiting on you (tmux pane option @claude_waiting, set by
+#   hooks/notification.js, cleared by hooks/user-prompt-submit.js); otherwise vim state:
+#   orange INSERT (typing = resting default), blue NORMAL / vim off, gold VISUAL.
+#
+# Colors (Kanagawa Wave): ψ orange 60–80, red >80 · 5h orange 70–90, red >90 · 7d orange 50–75, red >75 ·
+# λ severity = worst of: threshold, pace (5h only: used share ÷ elapsed share, >1.0 orange, >1.5 red),
+# and burn rate (slope of the last 6 h of samples: red if 100 % lands before the reset, orange if
+# within ORANGE_MARGIN of it; the 7d window uses threshold + burn only). The whole λ group takes that color; red adds a trailing "!". Owner 2026-10-15:
+# a single orange number was invisible, and cumulative pace hid a burst after quiet days.
+#
+# Sources: stdin only (rate_limits, prompt_cache, cost, context_window, worktree, pr, effort, thinking,
+# vim, fast_mode, agent) + git for π + one tmux option for the waiting flag. No network, no cache
+# files, no state on disk. The v2 script (curl to /api/oauth/usage, TTL caches, strikethrough) is
+# backups/statusline.sh.20261013.bak; its reason ended when Claude Code started sending rate_limits
+# on stdin (feature request #19385). Budget: < 100 ms; one jq pass, one git call.
 set -o pipefail
-trap 'log_error "Script failed at line $LINENO"' ERR
-#
-# ============================================================================
-# FORMAT BREAKDOWN (v2, 2026-07-06)
-# ============================================================================
-# ॐ Fᵀˣ ψ 51%¹ᴹ 94% μ 5% λ 40% 30% σ 2h 8.5h θ 0.8h¹·⁵ 6.5d π branch +45 -12 $ 12.34
-# │ │││ │       │     │    │         │         │              │             │
-# │ │││ │       │     │    │         │         │              │             └── $ session value (API-equiv, dim) + ¢ REAL
-# │ │││ │       │     │    │         │         │              │                 usage-credit spend (orange, only when >0)
-# │ │││ │       │     │    │         │         │              └── π git branch +ins -del (hidden outside repos)
-# │ │││ │       │     │    │         │         └── θ time-to-reset 5h·7d (superscript = runway; color = pace)
-# │ │││ │       │     │    │         └── σ session elapsed + weekly active
-# │ │││ │       │     │    └── λ 5h% 7d% quota used (clamped ≤100)
-# │ │││ │       │     └── μ daily budget variance
-# │ │││ │       └── cache-hit % — 2nd % in the ψ section, κ glyph dropped (blue ≥80, orange <50, red <40)
-# │ │││ └── ψ context % (¹ᴹ superscript = 1M-window session)
-# │ ││└── effort from stdin (ᴹ max, ˣ xhigh, ⁺ high, ⁻ low, omit medium)
-# │ │└── thinking ᵀ (stdin, settings fallback)
-# │ └── Model letter (F/O/S/H)
-# └── ॐ anchor: model icon + vim state by color — ORANGE insert (typing = resting
-#     default), BLUE normal/escaped, gold visual (pairs with hideVimModeIndicator)
-#
-# DISPLAY MODES: default shows EVERYTHING. STATUSLINE_MINIMAL=1 opts into early-warning
-# hiding: κ hides while ≥70, μ hides while on-pace (0..+5), θ hides while pace <0.8×
-# sustainable. Nothing is ever deleted — only display-gated.
-#
-# μ: Budget variance = (days_elapsed/7)×100 - weekly%.
-#    Positive = under budget. Negative = over budget. 0 = on track.
-#    Red <-5, Orange -5..0, White 0..5, Gray >5.
-#    Subscript = hours off the on-pace line = |μ|×1.68 (schedule rate is a
-#    constant 100%/168h). Over budget: that many idle hours returns you to 0%.
-#    Under budget: you're that many hours ahead (headroom). Hours-only, rounded.
-#
-# COLOR CODING (warning colors for approaching/critical limits):
-# - Context (ψ): orange 60-80%, red >80%
-# - 5h used (λ): orange 70-90%, red >90%
-# - 7d used (λ): orange 50-75%, red >75%
-# - Runway (θ): PACE-BASED coloring (early warning system)
-#   * white: pace ≤ sustainable (on track to make it to reset)
-#   * orange: pace >1.0× sustainable (need to slow down)
-#   * red: pace >1.5× sustainable (way too fast, adjust now)
-#
-# DATA SOURCES:
-# - Model: stdin JSON
-# - Context %: native context_window.used_percentage (fallback: transcript)
-# - Rate limits: Anthropic API (/api/oauth/usage)
-# - Δ session: /tmp/claude_last_activity.cache + session_start.cache
-# - Σ weekly: ~/.claude/projects/*/*.jsonl (cached 5 min)
-# - Θ runway: calculated from API data
-#
-# PERFORMANCE:
-# - < 100ms typical (cached path, always taken — never blocks on network)
-# - Background refresh: curl runs in detached subshell, writes cache when done
-# - Next statusline render picks up fresh data from cache
-#
-# API RATE LIMITING (evolution of fixes, 2026-03):
-# Problem: Original code called /api/oauth/usage on EVERY statusline invocation.
-# With Claude Code calling statusline after each assistant turn + tmux refresh,
-# this produced 100+ calls/hour → 429 rate limit → 1000+ errors → stale data.
-#
-# Fix 1 — Touch-before-call (prevents concurrent + provides backoff):
-#   touch "$cache_file" BEFORE curl. Second invocation sees fresh mtime → skips.
-#   On failure, mtime is still fresh → no retry for TTL period. No lockfiles needed.
-#
-# Fix 2 — Dual age tracking (mtime for TTL, _fetched_at for staleness):
-#   mtime controls WHEN to retry (touch refreshes it). _fetched_at embedded in JSON
-#   controls WHEN to show stale indicators (only successful fetch updates it).
-#   These MUST be separate: touch refreshes mtime without updating content.
-#
-# Fix 3 — Background refresh (prevents silent crash):
-#   Claude Code / tmux may kill the statusline process if it takes too long.
-#   Curl blocks for up to 5s → process killed mid-curl → touch happened but no
-#   result written → no error log → silent failure. Fix: main process ALWAYS reads
-#   cache and returns immediately. Spawns (_refresh_rate_limit &) in background.
-#   Background subshell survives parent exit, completes curl, writes cache.
-#
-# Fix 4 — Threshold separation (TTL=900s, strikethrough=7200s):
-#   When TTL = strikethrough threshold, race at boundary: touch updates mtime,
-#   concurrent render reads stale content → strikethrough flickers every TTL cycle.
-#   Fix: strikethrough threshold (7200s) >> TTL (900s). Content age at refresh
-#   boundary (~900s) is well under 7200s → zero flicker. Strikethrough only after
-#   2 HOURS of consecutive failures (8 missed refresh cycles) — genuinely broken.
-#   TTL history: 30s→120s→300s→900s. /api/oauth/usage rate-limits at ~10/hour.
-#   900s = 4 calls/hour, safely under the limit. Rate data changes over hours anyway.
-#   Community tool claudeline uses 10-min TTL — our 15-min is more conservative.
-#
-# KNOWN ISSUES (2026-03):
-# - /api/oauth/usage returns persistent 429 for some users (GitHub #30930, OPEN)
-#   Even 30s/60s/120s intervals fail. retry-after: 0 is misleading. Intermittent.
-# - Claude Code parses anthropic-ratelimit-unified-* headers internally on every
-#   API call but does NOT expose them to statusline scripts via stdin JSON.
-#   Feature request #19385 (OPEN) tracks adding this. When implemented, the
-#   separate /api/oauth/usage call becomes unnecessary — piggybacking on every
-#   Claude message would give real-time data with zero extra API calls.
-#
-# STRIKETHROUGH RULES:
-# Applied ONLY to utilization values that change with every API call:
-#   λ 5h%, 7d%, Ω% — these are stale undercounts when data is old
-# NOT applied to (even when API data is old):
-#   Reset timestamps (Θ) — fixed future dates, remain valid
-#   Ψ context, Δ elapsed, Σ weekly — local data, always fresh
-# Threshold: 7200s (2h). Stale data is still directionally correct — better to
-# show slightly outdated values than to strikethrough and make them unreadable.
-#
-# Result: 4 calls/hour max, zero concurrent, automatic backoff, non-blocking,
-# stale data dimmed not hidden. /api/oauth/usage is the ONLY source for Max plan
-# utilization % until Claude Code exposes headers (feature request #19385).
-# ============================================================================
+shopt -s extglob   # render_v4 strips colour codes with an extglob pattern; it must be on before the parse
+case "${LC_ALL:-${LC_CTYPE:-${LANG:-}}}" in *UTF-8*|*utf8*) ;; *) export LC_CTYPE=en_US.UTF-8 ;; esac   # cell counting of glyphs
+command -v jq >/dev/null 2>&1 || { printf 'ॐ Claude\n'; exit 0; }
+
+# `statusline.sh demo [columns]`: every state of the live line, in this terminal, before you trust it.
+# Synthetic payloads go through the real renderer; the waiting count is pinned ("0:" = none) so the live
+# tmux flags can never leak into a demo. Runs before stdin is read, so it never blocks.
+if [ "${1:-}" = demo ]; then
+	self="$(cd "$(dirname "$0")" && pwd)/$(basename "$0")"; t=$(date +%s); want="${2:-}"
+	ring_burst="${TMPDIR:-/tmp}/statusline-demo-ring.tsv"
+	printf '%s\t\t20\n%s\t\t28\n' "$((t - 2400))" "$((t - 600))" > "$ring_burst"
+	payload() { # d7 d7reset ctx warm expires recache [h5 h5reset]
+		printf '{"model":{"id":"claude-fable-5-1"},"effort":{"level":"high"},"thinking":{"enabled":true},"cwd":"%s","workspace":{"current_dir":"%s"},"cost":{"total_cost_usd":273.8,"total_duration_ms":29520000,"total_lines_added":120,"total_lines_removed":34},"context_window":{"used_percentage":%s,"context_window_size":1000000},"prompt_cache":{"warm":%s,"hit_ratio":0.98,"expires_at":%s,"recache_tokens_if_cold":%s},"rate_limits":{"five_hour":{"used_percentage":%s,"resets_at":%s},"seven_day":{"used_percentage":%s,"resets_at":%s}},"vim":{"mode":"NORMAL"},"pr":{"number":1234,"review_state":"pending"}}' \
+			"$HOME" "$HOME" "$3" "$4" "${5:-null}" "$6" "${7:-null}" "${8:-null}" "$1" "$2"
+	}
+	show() { # label columns waiting ring payload
+		[ -n "$want" ] && [ "$want" != "$2" ] && return 0
+		printf '\e[2m%-13s %3s\e[0m  ' "$1" "$2"
+		printf '%s' "$5" | COLUMNS="$2" CLAUDE_STATUSLINE_WAITING="$3" CLAUDE_STATUSLINE_MODE="${demo_mode:-default}" CLAUDE_STATUSLINE_AGENTS="${demo_agents:-0}" CLAUDE_USAGE_RING="$4" "$self"
+	}
+	show quiet        140 "0:"  /dev/null     "$(payload 45 $((t + 345600)) 49 true $((t + 2280)) 45000)"
+	demo_agents=3
+	show waiting      140 "10:" /dev/null     "$(payload 45 $((t + 345600)) 49 true $((t + 2280)) 45000)"
+	demo_agents=0
+	show high         140 "0:"  /dev/null     "$(payload 85 $((t + 345600)) 49 true $((t + 2280)) 45000)"
+	show running-dry  140 "0:"  "$ring_burst" "$(payload 81 $((t + 300000)) 62 true $((t + 2280)) 45000)"
+	show cold-cache   140 "0:"  /dev/null     "$(payload 45 $((t + 345600)) 49 false "" 45000)"
+	show compact-zone 140 "0:"  /dev/null     "$(payload 45 $((t + 345600)) 88 true $((t + 2280)) 45000)"
+	show with-5h      140 "0:"  /dev/null     "$(payload 45 $((t + 345600)) 49 true $((t + 2280)) 45000 31 $((t + 2880)))"
+	show half-screen   95 "10:" "$ring_burst" "$(payload 81 $((t + 300000)) 62 true $((t + 2280)) 45000)"
+	show tall-window   70 "10:" "$ring_burst" "$(payload 81 $((t + 300000)) 62 true $((t + 2280)) 45000)"
+	show small-pane    50 "10:" "$ring_burst" "$(payload 81 $((t + 300000)) 62 true $((t + 2280)) 45000)"
+	show odd-width     63 "10:" /dev/null     "$(payload 45 $((t + 345600)) 49 true $((t + 2280)) 45000)"
+	rm -f "$ring_burst"
+	exit 0
+fi
+
+# `statusline.sh poll`: refresh the plan-usage cache from Anthropic's usage endpoint, the one `/usage` and
+# ccstatusline read (undocumented). It carries what the stdin payload lacks: the Fable week and the
+# credits. Runs detached from a render when the cache is older than POLL_S; one GET with Claude Code's
+# own keychain token, 5 s timeout, never on the render path. Cache: regenerable state, never required.
+USAGE_CACHE="$HOME/.local/state/claude/usage-api.json"; POLL_S=600
+if [ "${1:-}" = poll ]; then
+	tok=$(security find-generic-password -s "Claude Code-credentials" -w 2>/dev/null | jq -r '.claudeAiOauth.accessToken // empty')
+	[ -n "$tok" ] || exit 0
+	tmp="${USAGE_CACHE}.$$"
+	code=$(curl -sS -m 5 -o "$tmp" -w '%{http_code}' -H "Authorization: Bearer $tok" -H 'anthropic-beta: oauth-2025-04-20' https://api.anthropic.com/api/oauth/usage 2>/dev/null)
+	if [ "$code" = 200 ] && jq -e . "$tmp" >/dev/null 2>&1; then
+		jq -c --arg t "$(date +%s)" '. + {fetched_at: ($t | tonumber)}' "$tmp" > "$tmp.2" && mv "$tmp.2" "$USAGE_CACHE"
+	fi
+	rm -f "$tmp" "$tmp.2"; exit 0
+fi
 
 input=$(cat)
 
-# DEBUG: Dump JSON input to discover transcript_path location (remove after investigation)
-# echo "$input" > /tmp/statusline_debug.json
+GOLD=$'\e[38;2;230;195;132m'; BLUE=$'\e[38;2;126;156;216m'; ORANGE=$'\e[38;2;255;160;102m'
+RED=$'\e[38;2;232;36;36m'; GRAY=$'\e[38;2;114;113;105m'; DIM=$'\e[2m'; R=$'\e[0m'
 
-# ---- Colors (Kanagawa Wave — old ANSI values in comments for revert) ----
-GRAY='\033[38;2;114;113;105m'    # kanagawa fujiGray #727169 (was \033[33m)
-ORANGE='\033[38;2;255;160;102m'  # kanagawa surimiOrange #ffa066 (was \033[33m)
-RED='\033[38;2;232;36;36m'       # kanagawa samuraiRed #e82424 (was \033[31m)
-DIM='\033[2m'
-STRIKE='\033[9m'
-RESET='\033[0m'
-B='\033[38;2;230;195;132m' # kanagawa gold (#e6c384) for icons
-ICON_MODEL="${B}✻${RESET}"   # Claude spark — model section (ॐ is the vim-state anchor)
-ICON_RATE="${B}λ${RESET}"
-ICON_ELAPSED="${B}δ${RESET}"
-ICON_WEEKLY="${B}σ${RESET}"
-ICON_RUNWAY="${B}θ${RESET}"
-ICON_CTX="${B}ψ${RESET}"
-ICON_OMEGA="${B}μ${RESET}"
-ICON_GIT="${B}π${RESET}"
-ICON_CACHE="${B}κ${RESET}"
-ICON_COST="${B}\$${RESET}"
-BLUE='\033[38;2;126;156;216m'   # kanagawa crystalBlue #7e9cd8 — the 'healthy' accent (user pref 2026-07-07, was autumnGreen)
+# Fields are joined with \x1f (unit separator), not tabs: bash `read` collapses runs of
+# whitespace IFS, so an empty field (e.g. no agent name) would shift every later value.
+IFS=$'\x1f' read -r model effort thinking fast agent ctx_pct ctx_size cache_hit cache_warm \
+	h5_pct h5_reset d7_pct d7_reset dur_ms api_ms cost wt pr_num pr_state vim cwd <<<"$(jq -r '[
+	(.model | if type == "object" then (.id // .display_name // "") else (. // "") end),
+	(.effort.level // ""), (.thinking.enabled // false), (.fast_mode // false), (.agent.name // ""),
+	(.context_window.used_percentage // ""), (.context_window.context_window_size // 0),
+	(.prompt_cache.hit_ratio // ""), (.prompt_cache.warm | if . == null then "" else . end),
+	(.rate_limits.five_hour.used_percentage // ""), (.rate_limits.five_hour.resets_at // ""),
+	(.rate_limits.seven_day.used_percentage // ""), (.rate_limits.seven_day.resets_at // ""),
+	(.cost.total_duration_ms // 0), (.cost.total_api_duration_ms // 0), (.cost.total_cost_usd // 0),
+	(.worktree.name // .workspace.git_worktree // ""), (.pr.number // ""), (.pr.review_state // ""),
+	(.vim.mode // ""), (.workspace.current_dir // .cwd // "")
+] | map(tostring) | join("\u001f")' <<<"$input" 2>/dev/null)"
 
-# ---- Cache paths ----
-DAILY_BUDGET_CACHE="$HOME/.claude/status/daily_budget.json"
-ERROR_LOG="/tmp/statusline_error.log"
+now=$(date +%s)
 
-# ---- Error logging ----
-log_error() {
-	echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*" >> "$ERROR_LOG" 2>/dev/null
+# One-shot raw capture for accuracy checks: `touch ~/.local/state/claude/dump-statusline-once`, and the
+# next render writes its exact stdin to statusline-last.json and removes the trigger. No steady-state writes.
+if [ -e "$HOME/.local/state/claude/dump-statusline-once" ]; then
+	printf '%s\n' "$input" > "$HOME/.local/state/claude/statusline-last.json" 2>/dev/null && rm -f "$HOME/.local/state/claude/dump-statusline-once"
+fi
+
+# Superscript renderer: digits, sign, decimal point and the unit letters h/d/m.
+sup() {
+	printf '%s' "$1" | sed 's/0/⁰/g; s/1/¹/g; s/2/²/g; s/3/³/g; s/4/⁴/g; s/5/⁵/g; s/6/⁶/g; s/7/⁷/g; s/8/⁸/g; s/9/⁹/g; s/\./·/g; s/-/⁻/g; s/+/⁺/g; s/h/ʰ/g; s/d/ᵈ/g; s/m/ᵐ/g'
 }
-
-# ---- Superscript conversion ----
-to_superscript() {
-	local num="$1"
-	echo "$num" | sed '
-		s/0/⁰/g; s/1/¹/g; s/2/²/g; s/3/³/g; s/4/⁴/g;
-		s/5/⁵/g; s/6/⁶/g; s/7/⁷/g; s/8/⁸/g; s/9/⁹/g;
-		s/\./·/g; s/-/⁻/g
-	'
+# Seconds → short duration: 42m / 0.8h / 6.5d
+dur() {
+	awk -v s="$1" 'BEGIN { if (s < 0) s = 0; if (s < 3600) printf "%dm", s / 60; else if (s < 86400) printf "%.1fh", s / 3600; else printf "%.1fd", s / 86400 }'
 }
-
-# Subscript renderer (μ recovery hint). Digits + 'h' only — Unicode has no
-# subscript 'd', so recovery stays in hours. Values are rounded positive ints.
-to_subscript() {
-	local num="$1"
-	echo "$num" | sed '
-		s/0/₀/g; s/1/₁/g; s/2/₂/g; s/3/₃/g; s/4/₄/g;
-		s/5/₅/g; s/6/₆/g; s/7/₇/g; s/8/₈/g; s/9/₉/g;
-		s/h/ₕ/g
-	'
+# Severity 0/1/2 → color (none / orange / red).
+sev_color() { case "$1" in 2) printf '%s' "$RED" ;; 1) printf '%s' "$ORANGE" ;; *) printf '' ;; esac; }
+# Threshold severity: value, orange-from, red-from
+thr() { awk -v v="$1" -v o="$2" -v r="$3" 'BEGIN { print (v > r) ? 2 : (v > o) ? 1 : 0 }'; }
+# Pace severity: used% vs elapsed share of a window `len` seconds long that resets at `reset`.
+pace() {
+	awk -v used="$1" -v reset="$2" -v now="$now" -v len="$3" 'BEGIN {
+		left = reset - now; if (left < 0) left = 0; if (left > len) left = len
+		el = (len - left) / len; if (el < 0.05) el = 0.05
+		p = (used / 100) / el; print (p > 1.5) ? 2 : (p > 1.0) ? 1 : 0 }'
 }
+max() { if [ "$1" -ge "$2" ]; then printf '%s' "$1"; else printf '%s' "$2"; fi; }
 
-# ---- Check jq ----
-command -v jq >/dev/null 2>&1 || {
-	echo "ॐ Claude"
-	exit 0
-}
-
-# ---- Extract model name ----
-# model can be a string ("claude-fable-5[1m]") or object ({display_name: "..."})
-display_name=$(echo "$input" | jq -r 'if (.model | type) == "object" then .model.display_name else .model end // "Claude"' 2>/dev/null)
-full_model=$(echo "$display_name" | grep -oiE "(fable|opus|sonnet|haiku)" | head -1)
-case "$(echo "$full_model" | tr '[:upper:]' '[:lower:]')" in
-	fable) model_name="F" ;;
-	opus) model_name="O" ;;
-	sonnet) model_name="S" ;;
-	haiku) model_name="H" ;;
-	*) model_name="${display_name:-Claude}" ;;
-esac
-
-# ---- Effort indicator ----
-# Live from stdin effort.level (reflects /effort mid-session changes).
-# Was: .effortLevel — but the statusline stdin payload carries live .effort.level, not that
-# settings key (which CC does read) → always "medium". Fixed 2026-07-06.
-# Glyphs (all superscript, consistent with ᵀ thinking marker):
-#   max ᴹ · xhigh ˣ · high ⁺ · medium (none) · low ⁻
-effort_indicator=""
-effort_level=$(echo "$input" | jq -r '.effort.level // empty' 2>/dev/null)
-case "$effort_level" in
-	max)    effort_indicator="ᴹ" ;;
-	xhigh)  effort_indicator="ˣ" ;;
-	high)   effort_indicator="⁺" ;;
-	low)    effort_indicator="⁻" ;;
-esac
-
-# ---- Thinking mode (ᵀ) ----
-# Live from stdin thinking.enabled; falls back to settings for older CC versions
-thinking_indicator=""
-thinking=$(echo "$input" | jq -r '.thinking.enabled // empty' 2>/dev/null)
-[ -z "$thinking" ] && thinking=$(jq -r '.alwaysThinkingEnabled // false' "$HOME/.claude/settings.json" 2>/dev/null)
-[ "$thinking" = "true" ] && thinking_indicator="ᵀ"
-
-# ---- Vim mode via ॐ color (compact replacement for the -- INSERT -- banner) ----
-# Pairs with statusLine "hideVimModeIndicator": true (issue #16788, ours).
-# The leading ॐ IS the vim indicator: gold = NORMAL/vim off (calm), green = INSERT,
-# orange = VISUAL. No extra glyph, no shifting layout.
-vim_mode=$(echo "$input" | jq -r '.vim.mode // empty' 2>/dev/null)
-case "$vim_mode" in
-	INSERT)                     vim_color="$ORANGE" ;; # typing at the prompt = resting state (user default)
-	VISUAL|"VISUAL LINE")       vim_color="$B" ;;      # gold — selection
-	*)                          vim_color="$BLUE" ;;  # NORMAL (escaped) / vim off — the departure signal
-esac
-
-# ---- Get context % (native first, transcript fallback) ----
-context_pct=""
-get_context() {
-	# Try native field first (v2.1.x+)
-	local native_pct
-	native_pct=$(echo "$input" | jq -r '.context_window.used_percentage // empty' 2>/dev/null)
-	if [ -n "$native_pct" ]; then
-		context_pct=$(printf '%.0f' "$native_pct")
-		return
-	fi
-
-	# Fallback: transcript parsing
-	local transcript_path latest_tokens
-	local MAX_CONTEXT=200000
-	transcript_path=$(echo "$input" | jq -r '.transcript_path // empty' 2>/dev/null)
-	[ -z "$transcript_path" ] || [ ! -f "$transcript_path" ] && return
-	latest_tokens=$(tail -20 "$transcript_path" 2>/dev/null | jq -r 'select(.message.usage) | .message.usage | ((.input_tokens // 0) + (.cache_read_input_tokens // 0) + (.cache_creation_input_tokens // 0))' 2>/dev/null | tail -1)
-	if [ -n "$latest_tokens" ] && [ "$latest_tokens" -gt 0 ]; then
-		context_pct=$((latest_tokens * 100 / MAX_CONTEXT))
-	else
-		context_pct=0
+# ---- λ burn-rate ring: (ts, used5h, used7d), one row a minute at most, pruned in place past RING_HOURS ----
+# Data ledger under ~/.local/state/claude (regenerable; owner-approved exception to the no-state-files
+# rule, 2026-10-15). Shared by every session's statusline: the values are account-wide, so any writer
+# is as good as another. CLAUDE_USAGE_RING overrides the path (selftest keeps sample renders out of it).
+RING="${CLAUDE_USAGE_RING:-$HOME/.local/state/claude/usage.tsv}"
+RING_HOURS=12        # how much history to keep
+SLOPE_WINDOW=7200    # seconds of history the burn rate is computed over (2 h: fast enough to follow a change of pace, long enough to smooth one turn; owner 2026-11-03)
+MIN_SPAN=1800        # no projection until the samples span at least this (30 min: a shorter burst stretched over a week lied)
+ORANGE_MARGIN=0.2    # orange when 100 % lands after the reset but within 20 % of the time left
+ring_update() {
+	[ -n "$h5_pct$d7_pct" ] || return 0
+	mkdir -p "${RING%/*}" 2>/dev/null || return 0
+	local last_ts last_d7 last_reset first_ts
+	# awk, not `read` with IFS=tab: tab is whitespace to bash, so an empty 5 h column (Ultra has none)
+	# collapses and the reset lands in the d7 slot; that froze the ring at the week's rollover (2026-11-04).
+	IFS='|' read -r last_ts last_d7 last_reset <<<"$(tail -1 "$RING" 2>/dev/null | awk -F'\t' '{ print $1 "|" $3 "|" $4 }')"
+	[ $(( now - ${last_ts:-0} )) -ge 60 ] || return 0
+	# Every session on this Mac writes the ring, and an idle session keeps reporting the value frozen at
+	# its last API response. Usage never falls inside one window, so a lower weekly value for the same
+	# reset is that stale echo (39 % beside a live 48 % painted λ red on 2026-11-03) and is not written.
+	if [ -n "$d7_pct" ] && [ -n "$last_d7" ] && [ "${last_reset:-$d7_reset}" = "$d7_reset" ] \
+		&& awk -F'\t' -v n="$d7_pct" -v r="$d7_reset" '$4 == r && $3 != "" && $3 + 0 > m { m = $3 + 0 } END { exit !(n < m) }' "$RING"; then return 0; fi   # rows without a reset (pre-11-03) never vote
+	printf '%s\t%s\t%s\t%s\n' "$now" "${h5_pct}" "${d7_pct}" "${d7_reset}" >> "$RING" 2>/dev/null || return 0
+	first_ts=$(head -1 "$RING" | cut -f1)
+	if [ $(( now - ${first_ts:-$now} )) -gt $(( RING_HOURS * 3600 + 3600 )) ]; then
+		awk -F'\t' -v cut=$(( now - RING_HOURS * 3600 )) '$1 >= cut' "$RING" > "$RING.tmp" 2>/dev/null && mv "$RING.tmp" "$RING"
 	fi
 }
-
-# ---- Color a value based on 5-level thresholds ----
-# Usage: color_value <value> <pct> <dim_threshold> <gray_threshold> <orange_threshold> <red_threshold>
-# Levels: dim(GRAY) ≤dim | gray(GRAY) ≤gray | white(default) ≤orange | ORANGE ≤red | RED
-color_value() {
-	local value="$1" pct="$2" dim="$3" gray="$4" orange="$5" red="$6"
-	if [ "$pct" -gt "$red" ] 2>/dev/null; then
-		echo -e "${RED}${value}${RESET}"
-	elif [ "$pct" -gt "$orange" ] 2>/dev/null; then
-		echo -e "${ORANGE}${value}${RESET}"
-	elif [ "$pct" -gt "$gray" ] 2>/dev/null; then
-		echo "$value"  # white (default fg)
-	else
-		echo -e "${GRAY}${value}${RESET}"
-	fi
-}
-
-# ---- Get rate limits from API with caching ----
-# Architecture: non-blocking read from cache + async background refresh.
-# Main process (get_rate_limit): reads cache, returns instantly, spawns background if stale.
-# Background (_refresh_rate_limit): touch → credentials → curl → validate → write cache.
-#
-# Key invariants:
-# - Main process NEVER blocks on network (caller may kill slow statuslines)
-# - Touch before spawn prevents concurrent refreshes (mtime = "don't retry until TTL")
-# - _fetched_at in JSON = content freshness (only success writes it)
-# - Strikethrough threshold (7200s) >> TTL (900s) — only when genuinely broken (2h)
-# - Null utilization in response = rate-limited garbage → don't overwrite good stale data
-# - Token expiration pre-check avoids wasted curl on expired OAuth tokens
-rate_pct="" weekly_pct=""
-five_hour_reset_sec="" seven_day_reset_sec=""
-extra_usd=""  # usage-credit spend (real money) — from /api/oauth/usage extra_usage
-rate_content_age=0  # content freshness for stale indicators (separate from mtime TTL)
-
-# Helper: extract all fields from JSON in a single jq call (5→1 jq invocations)
-_parse_rate_json() {
-	local json="$1"
-	local parsed
-	# Sentinel "~" prevents bash read from collapsing consecutive empty tab fields.
-	# With "" (empty), read treats "\t\t" as one delimiter → fields shift left.
-	parsed=$(echo "$json" | jq -r '[
-		(.five_hour.utilization // "~"),
-		(.seven_day.utilization // "~"),
-		(.five_hour.resets_at // "~"),
-		(.seven_day.resets_at // "~"),
-		(._fetched_at // "~"),
-		(.extra_usage.used_usd // .extra_usage.used_credits // .extra_usage.used
-		 // .extra_usage.amount_spent_usd // .extra_usage.spent // "~")
-	] | join("\t")' 2>/dev/null) || return
-
-	IFS=$'\t' read -r rate_pct weekly_pct five_hour_reset_sec seven_day_reset_sec _fetched_at extra_usd <<< "$parsed"
-	[ "$extra_usd" = "~" ] && extra_usd=""
-	[ "$rate_pct" = "~" ] && rate_pct=""
-	[ "$weekly_pct" = "~" ] && weekly_pct=""
-	[ "$five_hour_reset_sec" = "~" ] && five_hour_reset_sec=""
-	[ "$seven_day_reset_sec" = "~" ] && seven_day_reset_sec=""
-	[ "$_fetched_at" = "~" ] && _fetched_at=""
-
-	# Clamp utilization at 100: API can report >100 (observed λ 103% 2026-07-06),
-	# which also drove runway (100-pct)/burn negative → the ⁻⁰·¹ superscript bug.
-	# Clamping here fixes display AND downstream runway/pace math in one place.
-	if [ -n "$rate_pct" ] && awk "BEGIN {exit !($rate_pct > 100)}"; then rate_pct="100"; fi
-	if [ -n "$weekly_pct" ] && awk "BEGIN {exit !($weekly_pct > 100)}"; then weekly_pct="100"; fi
-
-	# Content age: how old is the data itself (not the file mtime)
-	# Missing _fetched_at = old cache format = age unknown = assume stale
-	if [ -n "$_fetched_at" ]; then
-		rate_content_age=$(( $(date +%s) - _fetched_at ))
-	else
-		rate_content_age=999
-	fi
-}
-
-# Background API refresh (runs detached, never blocks statusline)
-# ── Previous approach (usage API primary, haiku probe fallback) ──
-# Commented out for safe revert. Was: /api/oauth/usage at 900s TTL,
-# haiku probe only on 429. Failed during heavy use: 15min staleness
-# caused 84% shown when actual was 99%.
-# _refresh_rate_limit_v1() {
-#	... (see git history for full implementation)
-# }
-
-# Called as: (_refresh_rate_limit &) 2>/dev/null — subshell survives parent exit.
-# On success: writes cache with _fetched_at, clears error log.
-#
-# Data sources (in priority order):
-# 1. Haiku probe (primary) — 1-token Haiku call, reads utilization from response
-#    headers. Zero utilization impact on Max plan (verified). Can't be rate-limited
-#    by usage API (it's a model call). 300s TTL = 12/hr.
-# 2. /api/oauth/usage (fallback) — full JSON with extra fields. Used when haiku
-#    probe fails (network, token issues). Rate-limited at ~10/hr.
-_refresh_rate_limit() {
-	local cache_file="$HOME/.claude/status/rate_limit.json"
-	local now creds token_json token expires_at usage
-
-	now=$(date +%s)
-
-	# Get credentials (macOS keychain)
-	creds=$(security find-generic-password -s "Claude Code-credentials" -w 2>/dev/null) || return
-
-	# Extract token + check expiration
-	token_json=$(echo "$creds" | jq -r '.claudeAiOauth // empty' 2>/dev/null)
-	[ -z "$token_json" ] && return
-	token=$(echo "$token_json" | jq -r '.accessToken // empty' 2>/dev/null)
-	[ -z "$token" ] && return
-	expires_at=$(echo "$token_json" | jq -r '.expiresAt // empty' 2>/dev/null)
-	if [ -n "$expires_at" ]; then
-		local expires_sec=$((expires_at / 1000))
-		if [ "$now" -gt "$expires_sec" ]; then
-			log_error "OAuth token expired ($(( (now - expires_sec) / 60 ))min ago), skipping API call"
-			# Retry in 60s not 300s. Re-checks keychain for refreshed token.
-			touch -t "$(date -j -f %s $((now - 240)) +%Y%m%d%H%M.%S)" "$cache_file" 2>/dev/null
-			return
-		fi
-	fi
-
-	# ── Source 1: Haiku probe (primary) ──
-	# 1-token Haiku call reads utilization from response headers.
-	# Zero utilization impact on Max plan (verified: consecutive probes identical %).
-	# Works even when /api/oauth/usage is 429'd (separate rate limit domain).
-	local headers h5_util h5_reset h7_util h7_reset
-	headers=$(curl -sD- --max-time 8 -o /dev/null \
-		-H "Authorization: Bearer $token" \
-		-H "Content-Type: application/json" \
-		-H "anthropic-beta: oauth-2025-04-20" \
-		-H "anthropic-version: 2023-06-01" \
-		-d '{"model":"claude-haiku-4-5-20251001","max_tokens":1,"messages":[{"role":"user","content":"h"}]}' \
-		"https://api.anthropic.com/v1/messages" 2>/dev/null)
-
-	if [ -n "$headers" ]; then
-		h5_util=$(echo "$headers" | grep -i 'anthropic-ratelimit-unified-5h-utilization' | tr -d '\r' | awk '{print $2}')
-		h7_util=$(echo "$headers" | grep -i 'anthropic-ratelimit-unified-7d-utilization' | tr -d '\r' | awk '{print $2}')
-		h5_reset=$(echo "$headers" | grep -i 'anthropic-ratelimit-unified-5h-reset' | tr -d '\r' | awk '{print $2}')
-		h7_reset=$(echo "$headers" | grep -i 'anthropic-ratelimit-unified-7d-reset' | tr -d '\r' | awk '{print $2}')
-
-		if [ -n "$h5_util" ] || [ -n "$h7_util" ]; then
-			local pct5 pct7 iso5 iso7
-			[ -n "$h5_util" ] && pct5=$(awk "BEGIN{printf \"%.1f\", $h5_util * 100}")
-			[ -n "$h7_util" ] && pct7=$(awk "BEGIN{printf \"%.1f\", $h7_util * 100}")
-			[ -n "$h5_reset" ] && iso5=$(date -u -r "$h5_reset" "+%Y-%m-%dT%H:%M:%S+00:00" 2>/dev/null)
-			[ -n "$h7_reset" ] && iso7=$(date -u -r "$h7_reset" "+%Y-%m-%dT%H:%M:%S+00:00" 2>/dev/null)
-
-			# Carry forward extra_usage (usage credits) from the previous cache — probe
-			# headers don't expose it; only the /api/oauth/usage fallback refreshes it.
-			local prev_extra
-			prev_extra=$(jq -c '.extra_usage // null' "$cache_file" 2>/dev/null) || prev_extra=null
-			[ -z "$prev_extra" ] && prev_extra=null
-
-			local json
-			json=$(jq -n \
-				--argjson t "$now" \
-				--argjson h5 "${pct5:-null}" \
-				--arg r5 "${iso5:-}" \
-				--argjson h7 "${pct7:-null}" \
-				--arg r7 "${iso7:-}" \
-				--argjson extra "$prev_extra" \
-				'{
-					five_hour: {utilization: $h5, resets_at: (if $r5 == "" then null else $r5 end)},
-					seven_day: {utilization: $h7, resets_at: (if $r7 == "" then null else $r7 end)},
-					extra_usage: $extra,
-					_fetched_at: $t,
-					_source: "haiku_probe"
-				}' 2>/dev/null)
-
-			if [ -n "$json" ]; then
-				echo "$json" > "$cache_file" 2>/dev/null || log_error "Failed to write cache"
-				: > "$ERROR_LOG" 2>/dev/null
-				return
-			fi
-		fi
-		log_error "Haiku probe: no utilization headers"
-	else
-		log_error "Haiku probe: no response"
-	fi
-
-	# ── Source 2: /api/oauth/usage (fallback) ──
-	# Full JSON with extra fields (sonnet breakdown, extra_usage).
-	# Rate-limited at ~10/hr — only used when haiku probe fails.
-	local usage
-	usage=$(curl -s --max-time 5 "https://api.anthropic.com/api/oauth/usage" \
-		-H "Authorization: Bearer $token" \
-		-H "anthropic-beta: oauth-2025-04-20" 2>/dev/null)
-
-	if [ -n "$usage" ] && \
-	   ! echo "$usage" | jq -e '.error' >/dev/null 2>&1 && \
-	   [ "$(echo "$usage" | jq -r '.seven_day.utilization // "null"')" != "null" ]; then
-		usage=$(echo "$usage" | jq --argjson t "$now" '. + {_fetched_at: $t}')
-		echo "$usage" > "$cache_file" 2>/dev/null || log_error "Failed to write cache"
-		: > "$ERROR_LOG" 2>/dev/null
-		return
-	fi
-
-	if [ -z "$usage" ]; then
-		log_error "Usage API: timeout or connection failed"
-	else
-		log_error "Usage API: $(echo "$usage" | jq -r '.error.message // "null response"' 2>/dev/null)"
-	fi
-}
-
-get_rate_limit() {
-	local cache_file="$HOME/.claude/status/rate_limit.json"
-	local now usage
-
-	mkdir -p "$HOME/.claude/status" 2>/dev/null
-	now=$(date +%s)
-
-	# ── Always read from cache first (never block on network) ──
-	# After cold boot: cache is hours old → first render shows stale + strikethrough.
-	# Background refresh completes in ~1-5s → next render picks up fresh data.
-	# This is the correct tradeoff: fast render > blocking on network.
-	if [ -f "$cache_file" ]; then
-		local cache_time mtime_age
-		cache_time=$(stat -f %m "$cache_file" 2>/dev/null || echo 0)
-		mtime_age=$((now - cache_time))
-
-		usage=$(cat "$cache_file" 2>/dev/null)
-		[ -n "$usage" ] && _parse_rate_json "$usage"
-
-		# Spawn background refresh if TTL expired
-		# Touch BEFORE spawn — concurrent invocations see fresh mtime → skip
-		# 120s (2min) TTL — haiku probe has zero utilization impact on Max plan.
-		# Previous: 900s with usage API caused 84% shown at 99%. Then 300s still missed 10% jump.
-		if [ "$mtime_age" -ge 120 ]; then
-			touch "$cache_file" 2>/dev/null
-			(_refresh_rate_limit &) 2>/dev/null
-
-			# Sleep/wake: roll back mtime so next render retries in 60s not 300s.
-			# First render shows stale data; background refresh lands in 1-5s.
-			if [ "$mtime_age" -ge 3600 ]; then
-				touch -t "$(date -j -f %s $((now - 240)) +%Y%m%d%H%M.%S)" "$cache_file" 2>/dev/null
-			fi
-		fi
-	else
-		# No cache at all (first run or deleted) — spawn refresh
-		touch "$cache_file" 2>/dev/null
-		(_refresh_rate_limit &) 2>/dev/null
-	fi
-}
-
-# ---- Session tracking (Δ elapsed) ----
-elapsed_str=""
-get_session_elapsed() {
-	local now last_activity session_start elapsed_min
-	local activity_cache="/tmp/claude_last_activity.cache"
-	local session_cache="/tmp/claude_session_start.cache"
-
-	now=$(date +%s)
-
-	# Check last activity
-	if [ -f "$activity_cache" ]; then
-		last_activity=$(cat "$activity_cache" 2>/dev/null)
-		if [ -n "$last_activity" ] && [ $((now - last_activity)) -gt 1800 ]; then
-			# > 30 min idle - new session
-			echo "$now" > "$session_cache"
-		fi
-	else
-		# First run - new session
-		echo "$now" > "$session_cache"
-	fi
-
-	# Update last activity
-	echo "$now" > "$activity_cache"
-
-	# Get session start
-	if [ -f "$session_cache" ]; then
-		session_start=$(cat "$session_cache" 2>/dev/null)
-		if [ -n "$session_start" ]; then
-			elapsed_min=$(((now - session_start) / 60))
-
-			# Format: single value — 45m, 1.1h, 1.2d
-			if [ "$elapsed_min" -lt 60 ]; then
-				elapsed_str="${elapsed_min}m"
-			elif [ "$elapsed_min" -lt 1440 ]; then
-				elapsed_str=$(awk "BEGIN { printf \"%.1fh\", $elapsed_min / 60 }")
-			else
-				elapsed_str=$(awk "BEGIN { printf \"%.1fd\", $elapsed_min / 1440 }")
-			fi
-		fi
-	fi
-}
-
-# ---- Weekly active total (Σ) - Non-blocking incremental ----
-# NEVER blocks statusline. Always returns immediately.
-# Background job handles expensive scanning incrementally.
-
-# Background refresh function (runs detached, never blocks statusline)
-# MUST be defined before get_weekly_active since it's called from there
-# Calculates wall clock session time by detecting 30-min gaps in timestamps
-refresh_weekly_activity() {
-	local state_file="$HOME/.claude/status/weekly_activity.json"
-	local lockfile="$HOME/.claude/status/weekly_activity.lock"
-
-	# Prevent concurrent updates (with stale lock detection)
-	if [ -f "$lockfile" ]; then
-		local lock_age=$(($(date +%s) - $(stat -f %m "$lockfile" 2>/dev/null || echo 0)))
-		if [ "$lock_age" -gt 600 ]; then
-			rm -f "$lockfile"  # Stale lock from crashed process (>10 min old)
-		else
-			return 0  # Recent lock, another process is running
-		fi
-	fi
-	touch "$lockfile" 2>/dev/null || return 0
-	trap 'rm -f "$lockfile" 2>/dev/null' EXIT
-
-	# Get billing window
-	local window_end
-	window_end=$(jq -r '.seven_day.resets_at // empty' "$HOME/.claude/status/rate_limit.json" 2>/dev/null)
-	[ -z "$window_end" ] && { rm -f "$lockfile"; return 0; }
-
-	local reset_epoch window_start_epoch window_start
-	reset_epoch=$(date -j -u -f "%Y-%m-%dT%H:%M:%S" "${window_end%%.*}" "+%s" 2>/dev/null)
-	window_start_epoch=$((reset_epoch - 7*24*60*60))
-	window_start=$(date -u -r $window_start_epoch +%Y-%m-%dT%H:%M:%S 2>/dev/null)
-
-	# Wall clock session time: extract timestamps → epoch via jq → detect 30-min gaps
-	# jq converts ISO to epoch (macOS awk lacks mktime), sort -n, awk sums sessions
-	touch -t "$(date -r "$window_start_epoch" '+%Y%m%d%H%M.%S')" \
-		"$HOME/.claude/status/.window_marker" 2>/dev/null
-	local total_min
-	total_min=$(/usr/bin/find "$HOME/.claude/projects" -maxdepth 2 -name "*.jsonl" -type f \
-		-newer "$HOME/.claude/status/.window_marker" -exec cat {} + 2>/dev/null | \
-		jq -r --arg start "$window_start" \
-			'select(.timestamp != null and .timestamp >= $start) |
-			 .timestamp | sub("\\.[0-9]+Z$"; "") | strptime("%Y-%m-%dT%H:%M:%S") | mktime' 2>/dev/null | \
-		sort -n | awk '
-		{
-			if (NR == 1) { session_start = $1; prev = $1; next }
-			if ($1 - prev > 1800) {
-				total += prev - session_start
-				session_start = $1
-			}
-			prev = $1
-		}
+# burn <col> <used> <reset>: prints "<sev> <signed seconds>" where the seconds are (time until 100 %)
+# minus (time until reset): negative = runs out before the reset. col 2 = 5h, col 3 = 7d. Only
+# samples after the last reset count (walks back while usage is non-increasing backwards). Prints
+# "0 +" when usage is flat or falling, nothing when fewer than MIN_SPAN seconds of samples exist.
+burn() {
+	[ -s "$RING" ] || return 0
+	awk -F'\t' -v col="$1" -v used="$2" -v reset="$3" -v now="$now" -v win="$SLOPE_WINDOW" -v minspan="$MIN_SPAN" -v margin="$ORANGE_MARGIN" '
+		$1 >= now - win && $col != "" { n++; t[n] = $1; u[n] = $col }
 		END {
-			total += prev - session_start
-			printf "%d", total / 60
-		}')
-
-	# Save state
-	local now_epoch
-	now_epoch=$(date +%s)
-	jq -n --arg ws "$window_start" --argjson t "${total_min:-0}" --argjson e "$now_epoch" \
-		'{window_start: $ws, total_activity_min: $t, last_update_epoch: $e}' \
-		> "${state_file}.tmp" && mv "${state_file}.tmp" "$state_file"
-
-	rm -f "$lockfile"
+			if (n < 2) exit
+			i = n; while (i > 1 && u[i-1] <= u[i]) i--
+			span = t[n] - t[i]; if (span < minspan) exit
+			slope = (u[n] - u[i]) / span
+			if (slope <= 0) { print "0 +"; exit }
+			left = reset - now; if (left < 0) left = 0
+			tto = (100 - used) / slope
+			sev = (tto < left) ? 2 : (tto < left * (1 + margin)) ? 1 : 0
+			printf "%d %+d\n", sev, tto - left
+		}' "$RING" 2>/dev/null
 }
+signed_dur() { local s="$1" sign="+"; case "$s" in -*) sign="-"; s="${s#-}" ;; +*) s="${s#+}" ;; esac; printf '%s%s' "$sign" "$(dur "$s")"; }
 
-weekly_str=""
-weekly_dim=""
-get_weekly_active() {
-	local state_file="$HOME/.claude/status/weekly_activity.json"
-	local lockfile="$HOME/.claude/status/weekly_activity.lock"
-	local now total_min last_update update_age
+# ---- ॐ anchor: waiting flag beats vim state ----
+waiting=""
+TMUX_BIN="${CLAUDE_TMUX_BIN:-$(command -v /opt/homebrew/bin/tmux || command -v tmux)}"   # override = selftest stub
+# No $TMUX guard: the footer mod's child may lack the variable while the server is there; a missing
+# server fails fast and quietly. TMUX_PANE still names this pane for -p.
+[ -n "$TMUX_BIN" ] && waiting=$("$TMUX_BIN" show-options -pqv @claude_waiting 2>/dev/null)
+anchor="ॐ"   # always ॐ: a `?` here collided with the `? N waiting` section (owner saw two)
+# The footer mod passes draft/working: the pane flag lies while you type or Claude runs, so red only when idle.
+if [ "$waiting" = "1" ] && [ "${CLAUDE_STATUSLINE_STATE:-idle}" = "idle" ]; then anchor_color="$RED"
+else
+	case "$vim" in   # owner default = Kanagawa gold; orange while typing; blue only in VISUAL
+		INSERT) anchor_color="$ORANGE" ;;
+		VISUAL*) anchor_color="$BLUE" ;;
+		*) anchor_color="$GOLD" ;;
+	esac
+fi
 
-	# Ensure status directory exists
-	mkdir -p "$HOME/.claude/status" 2>/dev/null
+# ---- model · thinking · effort · fast · agent ----
+case "$(printf '%s' "$model" | tr '[:upper:]' '[:lower:]')" in
+	*fable*) letter="F" ;; *opus*) letter="O" ;; *sonnet*) letter="S" ;; *haiku*) letter="H" ;;
+	*) letter="${model:-Claude}" ;;
+esac
+letter_plain="$letter"   # the bare letter, for the model word in render_v4
+[ "$thinking" = "true" ] && letter="${letter}ᵀ"
+case "$effort" in max) letter="${letter}ᴹ" ;; xhigh) letter="${letter}ˣ" ;; high) letter="${letter}⁺" ;; low) letter="${letter}⁻" ;; esac
+[ "$fast" = "true" ] && letter="${letter}ᶠ"
+[ -n "$agent" ] && letter="${letter}${DIM}@${agent}${R}"
 
-	now=$(date +%s)
+# ---- ψ context + cache ----
+psi=""
+if [ -n "$ctx_pct" ]; then
+	ctx_int=$(awk -v v="$ctx_pct" 'BEGIN { printf "%d", v + 0.5 }')
+	ctx_color=$(sev_color "$(thr "$ctx_int" 60 80)")
+	psi="${GOLD}ψ${R} ${ctx_color}${ctx_int}${R}"
+	[ "${ctx_size:-0}" -ge 1000000 ] 2>/dev/null && psi="${psi}¹ᴹ"
+	if [ -n "$cache_hit" ]; then
+		hit=$(awk -v h="$cache_hit" 'BEGIN { printf "%d", h * 100 + 0.5 }')
+		sep="·"; [ "$cache_warm" = "false" ] && sep="○"
+		psi="${psi}${DIM}${sep}${hit}${R}"
+	fi
+fi
 
-	# ALWAYS return immediately with cached value
-	if [ -f "$state_file" ]; then
-		total_min=$(jq -r '.total_activity_min // 0' "$state_file" 2>/dev/null || echo 0)
-		last_update=$(jq -r '.last_update_epoch // 0' "$state_file" 2>/dev/null || echo 0)
-		update_age=$((now - last_update))
+# ---- λ rate limits: 5h with time-to-reset, 7d with the burn-rate projection; one color for the group ----
+lambda=""; l_sev=0
+ring_update
+if [ -n "$h5_pct" ]; then
+	h5=$(awk -v v="$h5_pct" 'BEGIN { printf "%d", v + 0.5 }')
+	read -r b5_sev _ <<<"$(burn 2 "$h5" "${h5_reset:-0}")"
+	h5_sev=$(max "$(max "$(thr "$h5" 70 90)" "$(pace "$h5" "${h5_reset:-0}" 18000)")" "${b5_sev:-0}")
+	l_sev=$(max "$l_sev" "$h5_sev")
+	lambda="${h5}$(sup "$(dur $(( ${h5_reset:-0} - now )))")"
+fi
+if [ -n "$d7_pct" ]; then
+	d7=$(awk -v v="$d7_pct" 'BEGIN { printf "%d", v + 0.5 }')
+	read -r b7_sev b7_delta <<<"$(burn 3 "$d7" "${d7_reset:-0}")"
+	# 7d: threshold + burn rate only. Cumulative pace is wrong at both ends of a week-long window
+	# (explodes in the first day, hides a burst after quiet days); the trailing slope is the signal.
+	d7_sev=$(max "$(thr "$d7" 50 75)" "${b7_sev:-0}")
+	l_sev=$(max "$l_sev" "$d7_sev")
+	if [ -n "${b7_delta:-}" ] && [ "$b7_delta" != "+" ]; then
+		d7_sup=$(sup "$(signed_dur "$b7_delta")")     # ⁻²ᵈ = runs out 2 days before the reset at this burn
+	else
+		# No usable slope yet: hours ahead (+) or behind (−) the line from 0 % at window start to 100 % at reset.
+		ahead=$(awk -v used="$d7" -v reset="${d7_reset:-0}" -v now="$now" 'BEGIN {
+			left = reset - now; if (left < 0) left = 0; if (left > 604800) left = 604800
+			expected = (604800 - left) / 604800 * 100
+			h = (expected - used) / 100 * 168; printf "%+d", (h < 0) ? h - 0.5 : h + 0.5 }')
+		d7_sup=$(sup "${ahead}h")
+	fi
+	lambda="${lambda:+$lambda }${d7}${d7_sup}"
+fi
+if [ -n "$lambda" ]; then
+	l_color=$(sev_color "$l_sev")
+	if [ -n "$l_color" ]; then
+		bang=""; [ "$l_sev" -eq 2 ] && bang="!"
+		lambda="${l_color}λ ${lambda}${bang}${R}"   # whole group in the warning color; red shouts
+	else
+		lambda="${GOLD}λ${R} ${lambda}"
+	fi
+fi
+# ---- ?N: how many Claude panes on this tmux server are waiting on you (owner 2026-10-15: "λ should
+# tell me how many Claudes need me"). Counts the @claude_waiting flag the hooks maintain, one tmux
+# call, no claude process spawned (that poll would blow the 150 ms render budget). Fleet-wide in S3.
+if [ -n "$TMUX_BIN" ]; then
+	nwait=$("$TMUX_BIN" list-panes -a -F '#{@claude_waiting}' 2>/dev/null | grep -c '^1$')
+	[ "${nwait:-0}" -gt 0 ] && lambda="${lambda:+$lambda }${RED}?${nwait}${R}"
+fi
 
-		# Dim when data source is stale (>10min without update)
-		if [ "$update_age" -gt 600 ]; then
-			weekly_dim="$STRIKE"
+# ---- σ session elapsed + API share ----
+sigma=""
+if [ "${dur_ms:-0}" -gt 0 ] 2>/dev/null; then
+	# API share of wall time. After a resume Claude Code can report api_ms > dur_ms (the durations come
+	# from different clocks), so the value is clamped: a share over 100 % is a wrong number, not a signal.
+	share=$(awk -v a="$api_ms" -v d="$dur_ms" 'BEGIN { s = a * 100 / d + 0.5; if (s > 100) s = 100; printf "%d", s }')
+	sigma="${GOLD}σ${R} $(dur $(( dur_ms / 1000 )))$(sup "$share")"
+fi
+
+# ---- π git (falls back to the bare dotfiles repo anywhere under $HOME) ----
+pi=""
+g=(git -C "$cwd" --no-optional-locks)
+if [ -n "$cwd" ] && ! "${g[@]}" rev-parse --is-inside-work-tree >/dev/null 2>&1 \
+	&& [ -d "$HOME/.dotfiles" ] && case "$cwd" in "$HOME"*) true ;; *) false ;; esac; then
+	g=(git --git-dir="$HOME/.dotfiles" --work-tree="$HOME" --no-optional-locks)
+fi
+if [ -n "$cwd" ] && branch=$("${g[@]}" rev-parse --abbrev-ref HEAD 2>/dev/null); then
+	name="${wt:-$branch}"
+	# Net lines changed (insertions − deletions) as one signed superscript; nothing when zero. v3 only:
+	# v4 shows the payload's Δ instead, so the diff is not paid for on the live path.
+	net=""; [ "${CLAUDE_STATUSLINE_STYLE:-}" = v3 ] && net=$("${g[@]}" diff --shortstat -- "$cwd" 2>/dev/null | awk '{ i = 0; d = 0; for (k = 1; k <= NF; k++) { if ($(k+1) ~ /^insertion/) i = $k; if ($(k+1) ~ /^deletion/) d = $k } ; n = i - d; if (n != 0) printf "%+d", n }')
+	pi="${GOLD}π${R} ${name}$(sup "$net")"
+fi
+if [ -n "$pr_num" ]; then
+	case "$pr_state" in approved) pc="$BLUE" ;; pending) pc="$ORANGE" ;; changes_requested) pc="$RED" ;; draft) pc="$GRAY" ;; *) pc="" ;; esac
+	pi="${pi:+$pi }${pc}#${pr_num}${R}"
+fi
+
+# ---- $ cost ----
+dollar="${GOLD}\$${R} ${DIM}$(awk -v c="$cost" 'BEGIN { printf "%.1f", c }')${R}"
+
+
+# ============================================================================================
+# v4 (2026-11-03): one row in the grammar of Claude's own footer (glyph, number, words, a dot between groups and a gap within them,
+# sections), seven sections that never change order, the most actionable first:
+#   ॐ Fᵀ⁺ high + thinking  ? 5 waiting · ψ 61% context  λ 48% (41% fable) → 71% projected  τ 4d 10h to reset  δ +2d 3h surplus · π +702 lines across 27 files uncommitted on v-macos PR #1234  $ 283 estimated
+# λ's arrow is where the week lands at the reset on the last two hours' pace (200%+ past double);
+# δ is the signed margin at that pace: +surplus or -deficit against the reset, red on a deficit. No commas anywhere.
+# Rules (owner, 2026-11-03): every glyph always drawn, Kanagawa gold, one space, then its number; words
+# come after the number and shrink away first; a superscript is a unit on a number, never alone; no
+# decimals, no `!`; red only on ॐ (this pane waits), the ? count, and λ/τ when the pace runs the week dry.
+# Fit: each section has a long, short and minimal form; the row is measured in cells against COLUMNS
+# (Claude sets it to the pane) and sections shrink from the right, then $, π and τ drop; a hard cut
+# guards the rest. ॐ ? ψ λ are the floor. Ultra has no five-hour window (Boris Cherny, X, 2026-10-30),
+# so λ is the week; a 5 h window shows in brackets when the payload carries one. The estimate is the
+# ring's burn slope carried to the reset. Mode and agent counts wait for the tmux station.
+# CLAUDE_STATUSLINE_STYLE=v3 renders the previous line. Earlier drafts: backups/statusline.sh.20261103.removed-blocks.bak.
+# ============================================================================================
+# Time left in words, two units at most: "4d 10h", "10h 5m", "42m".
+# Numbers stay short: whole units, two digits where the unit allows, thousands as "k" (owner 2026-11-03).
+short_n() { awk -v n="$1" 'BEGIN { s = (n < 0) ? "-" : ""; a = (n < 0) ? -n : n; if (a >= 1000) printf "%s%dk", s, (a + 500) / 1000; else printf "%s%d", s, a }'; }
+left_words() { awk -v s="$1" 'BEGIN { if (s < 0) s = 0; d = int(s / 86400); h = int((s % 86400) / 3600); m = int((s % 3600) / 60)
+	if (d > 0) printf "%dd%s", d, (h > 0 ? " " h "h" : ""); else if (h > 0) printf "%dh%s", h, (m > 0 ? " " m "m" : ""); else printf "%dm", m }'; }
+# Burn slope in % per second over the last SLOPE_WINDOW of ring samples since the last reset; nothing
+# with fewer than MIN_SPAN seconds of data, so the estimate is absent rather than guessed.
+slope() {
+	[ -s "$RING" ] || return 0
+	awk -F'\t' -v col="$1" -v now="$now" -v win="$SLOPE_WINDOW" -v minspan="$MIN_SPAN" '
+		$1 >= now - win && $col != "" && $col + 0 >= hi { hi = $col + 0; n++; t[n] = $1; u[n] = hi }
+		END { if (n < 2) exit; i = n; while (i > 1 && u[i-1] <= u[i]) i--; span = t[n] - t[i]; if (span < minspan) exit
+			s = (u[n] - u[i]) / span; printf "%.9f", (s < 0 ? 0 : s) }' "$RING" 2>/dev/null
+}
+render_v4() {
+	local cols="${COLUMNS:-120}" SEP="  "   # the gold glyph opens every section, so the gap is the separator (owner 2026-11-04)
+	# --- ? N: Claude panes waiting elsewhere. tmux names the native binary by its version ("2.1.316").
+	# The count only (owner 2026-11-04: names and addresses were unreadable; the tmux pills say which).
+	local nw=0 who=""
+	if [ -n "${CLAUDE_STATUSLINE_WAITING:-}" ]; then nw="${CLAUDE_STATUSLINE_WAITING%%:*}"
+	elif [ -n "$TMUX_BIN" ]; then
+		nw=$("$TMUX_BIN" list-panes -a -F '#{@claude_waiting}	#{pane_current_command}' 2>/dev/null | awk -F'\t' '$1 == "1" && $2 ~ /^(claude|node|[0-9]+\.[0-9]+\.[0-9]+)$/ { n++ } END { print n + 0 }')
+	fi
+	local nwc="$DIM"; [ "${nw:-0}" -gt 0 ] 2>/dev/null && nwc="$RED"
+	# --- λ and τ: the primary window (the week; the 5 h only when that is all there is), its estimate at
+	# the reset from the burn slope, and the time to the reset. Red when the slope reaches 100 % first.
+	local used="" reset="" len="" col="" other="" est="" tto=-1 lsev=0 sl="" left=0 el=0
+	if [ -n "${d7:-}" ]; then used="$d7"; reset="${d7_reset:-0}"; len=604800; col=3; [ -n "${h5:-}" ] && other="${h5}"
+	elif [ -n "${h5:-}" ]; then used="$h5"; reset="${h5_reset:-0}"; len=18000; col=2; fi
+	if [ -n "$used" ]; then
+		left=$(( reset - now )); [ "$left" -lt 0 ] && left=0; [ "$left" -gt "$len" ] && left="$len"
+		el=$(( (len - left) * 100 / len ))
+		sl=$(slope "$col")
+		if [ -n "$sl" ]; then
+			# the projection is not clipped at 100: how far past the wall the pace points is the information;
+			# past 200 it says nothing the break does not, so it reads 200%+
+			read -r est tto <<<"$(awk -v u="$used" -v s="$sl" -v l="$left" 'BEGIN { e = u + s * l; t = (s > 0) ? (100 - u) / s : -1; printf "%d %d", e + 0.5, t }')"
+			[ "$est" -gt 200 ] && est="200%+" || est="${est}%"
+			if [ "$tto" -ge 0 ] && [ "$tto" -lt "$left" ]; then lsev=2; elif [ "${est%\%*}" -ge 90 ] 2>/dev/null; then lsev=1; fi
 		fi
-
-		# Format with appropriate unit: minutes, hours, or days
-		if [ "$total_min" -lt 60 ]; then
-			weekly_str="${total_min}m"
-		elif [ "$total_min" -lt 1440 ]; then
-			local val=$(awk "BEGIN {printf \"%.1f\", $total_min / 60}")
-			val=${val%.0}
-			weekly_str="${val}h"
+		[ "$lsev" -lt 1 ] && [ "$used" -gt $(( el + 10 )) ] && lsev=1
+	fi
+	local lc; lc=$(sev_color "$lsev")
+	# --- fable's own week, from the poll's cache (absent in demos and tests, which pin the ? count)
+	local fab="" brk_l="" brk_s=""
+	if [ -z "${CLAUDE_STATUSLINE_WAITING:-}" ]; then
+		local age=$(( now - $(stat -f %m "$USAGE_CACHE" 2>/dev/null || echo 0) ))
+		if [ "$age" -gt "$POLL_S" ]; then touch "$USAGE_CACHE" 2>/dev/null; (nohup "$0" poll >/dev/null 2>&1 &); fi
+		# Verified 2026-11-03 against a live response: limits[] entries carry `kind`, `percent`, `resets_at`, `scope.model.display_name`.
+		[ -s "$USAGE_CACHE" ] && fab=$(jq -r '[.limits[]? | select(.kind == "weekly_scoped" and ((.scope.model.display_name // "") | ascii_downcase) == "fable") | .percent][0] // empty' "$USAGE_CACHE" 2>/dev/null)
+	fi
+	local fabi="" fc=""
+	if [ -n "$fab" ]; then fabi=$(awk -v v="$fab" 'BEGIN { printf "%d", v + 0.5 }'); fc=$(sev_color "$(thr "$fabi" 80 90)"); fi
+	# --- π: uncommitted work, the branch, the PR badge in its review colour. Inside a project repo one
+	# diff against HEAD gives lines and files; on the dotfiles fallback (work tree = $HOME) that diff
+	# costs two seconds, so there only the files count is read, from a 30 ms status.
+	local files=0 net="" pr=""
+	if [ -n "${name:-}" ]; then
+		if [ "${g[1]}" = "--git-dir=$HOME/.dotfiles" ]; then
+			files=$("${g[@]}" status --porcelain --untracked-files=no 2>/dev/null | grep -c .)
 		else
-			local val=$(awk "BEGIN {printf \"%.1f\", $total_min / 1440}")
-			val=${val%.0}
-			weekly_str="${val}d"
+			read -r files net <<<"$("${g[@]}" diff --shortstat HEAD 2>/dev/null | awk '{ f = 0; i = 0; d = 0; for (k = 1; k <= NF; k++) { if ($(k+1) ~ /^files?/) f = $k; if ($(k+1) ~ /^insertion/) i = $k; if ($(k+1) ~ /^deletion/) d = $k } print f + 0, i - d }')"
 		fi
-
-		# Check for stale lock (>10 min old = crashed process) - always clean up
-		if [ -f "$lockfile" ]; then
-			local lock_age=$((now - $(stat -f %m "$lockfile" 2>/dev/null || echo 0)))
-			if [ "$lock_age" -gt 600 ]; then
-				rm -f "$lockfile"
+	fi
+	local netw=""; [ -n "$net" ] && { netw=$(short_n "$net"); [ "$net" -gt 0 ] && netw="+$netw"; }
+	# --- sections: long · short · minimal forms, built twice, coloured and plain, so the fit can measure
+	# cells with ${#} instead of stripping escapes (a pattern substitution costs ~50 ms a pass in bash 3.2).
+	# G marks a section that opens a group (who · budgets · where): a dim dot precedes it, a gap the rest.
+	local -a L=() S=() M=() D=() G=() PL=() PS=() PM=()
+	local mode=c
+	sec() {
+		if [ "$mode" = c ]; then L+=("$1"); S+=("${2:-$1}"); M+=("${3:-${2:-$1}}"); D+=("${4:-0}"); G+=("${5:-0}")
+		else PL+=("$1"); PS+=("${2:-$1}"); PM+=("${3:-${2:-$1}}"); fi
+	}
+	build() { # colour vars come in as arguments, empty on the plain pass
+		local GOLD="$1" RED="$2" DIM="$3" R="$4" ac="$5" cc="$6" lc="$7" nwc="$8" pcol="$9" badge="${10}" fcol="${11}"
+		local pr=""; [ -n "$pr_num" ] && pr="${pcol}#${pr_num}${R}"
+		sec "${ac}${anchor}${R} ${badge} ${DIM}${model_word}${R}" "${ac}${anchor}${R} ${badge}"
+		sec "${GOLD}?${R} ${nwc}${nw}${R} ${DIM}waiting${who:+  $who}${R}" "${GOLD}?${R} ${nwc}${nw}${R} ${DIM}waiting${R}" "${GOLD}?${R} ${nwc}${nw}${R}"
+		[ -n "${ctx_int:-}" ] && sec "${GOLD}ψ${R} ${cc}${ctx_int}%${R} ${DIM}context${R}" "${GOLD}ψ${R} ${cc}${ctx_int}%${R}" "" 0 1
+		if [ -n "$used" ]; then
+			# the bracket: numbers in their own colour, only the words dim
+			local lp="${lc}${used}%${R}" ol="" os="" bl="" bs=""
+			[ -n "$other" ] && { bl="${other}%${DIM} 5h${R}"; bs="${other}%"; }
+			[ -n "$fabi" ] && { bl="${bl:+$bl ${DIM}and${R} }${fcol}${fabi}%${R}${DIM} fable${R}"; bs="${bs:+$bs }${fcol}${fabi}%${R}ᶠ"; }
+			[ -n "$bl" ] && ol=" ${DIM}(${R}${bl}${DIM})${R}" && os=" ${DIM}(${R}${bs}${DIM})${R}"
+			if [ -n "$est" ]; then
+				sec "${GOLD}λ${R} ${lp}${ol} ${DIM}→${R} ${lc}${est}${R} ${DIM}projected${R}" "${GOLD}λ${R} ${lp}${os} ${DIM}→${R} ${lc}${est}${R}" "${GOLD}λ${R} ${lp} ${DIM}→${R} ${lc}${est}${R}"
+			else
+				sec "${GOLD}λ${R} ${lp}${ol} ${DIM}used${R}" "${GOLD}λ${R} ${lp}${os}" "${GOLD}λ${R} ${lp}"
+			fi
+			sec "${GOLD}τ${R} ${lw} ${DIM}to reset${R}" "${GOLD}τ${R} ${lw}" "${GOLD}τ${R} ${lw%% *}" 1
+			# δ: the signed margin at this pace: +surplus = the week outlasts the reset by that much, -deficit =
+			# it runs out that long before the reset (the break required). Red on a deficit; absent without a slope.
+			if [ -n "$bw" ]; then
+				# the word is the meaning here, so every form keeps it: "0m" alone would say nothing
+				sec "${GOLD}δ${R} ${bc}${bw}${R} ${DIM}${bword}${R}" "" "" 1
 			fi
 		fi
-
-		# Trigger background refresh if stale (>5min) and not already running
-		if [ "$update_age" -gt 300 ] && [ ! -f "$lockfile" ]; then
-			(refresh_weekly_activity &) 2>/dev/null
+		if [ -n "${name:-}" ]; then
+			local nm="${name:0:14}"
+			if [ "${files:-0}" -gt 0 ] && [ -n "$netw" ]; then
+				sec "${GOLD}π${R} ${netw} ${DIM}lines across${R} ${files} ${DIM}files uncommitted on${R} ${nm}${pr:+ ${DIM}PR${R} $pr}" "${GOLD}π${R} ${netw}ˡ ${files}ᶠ ${nm}${pr:+ $pr}" "${GOLD}π${R} ${nm}" 1 1
+			elif [ "${files:-0}" -gt 0 ]; then
+				sec "${GOLD}π${R} ${files} ${DIM}files uncommitted on${R} ${nm}${pr:+ ${DIM}PR${R} $pr}" "${GOLD}π${R} ${files}ᶠ ${nm}${pr:+ $pr}" "${GOLD}π${R} ${nm}" 1 1
+			else
+				sec "${GOLD}π${R} 0 ${DIM}uncommitted on${R} ${nm}${pr:+ ${DIM}PR${R} $pr}" "${GOLD}π${R} ${nm}${pr:+ $pr}" "${GOLD}π${R} ${nm}" 1 1
+			fi
+			sec "${GOLD}\$${R} ${costi} ${DIM}estimated${R}" "${GOLD}\$${R} ${costi}" "" 1
+		else
+			sec "${GOLD}\$${R} ${costi} ${DIM}estimated${R}" "${GOLD}\$${R} ${costi}" "" 1 1
 		fi
-	else
-		# No state file - return 0, trigger initial build
-		weekly_str="0m"
-		[ ! -f "$lockfile" ] && (refresh_weekly_activity &) 2>/dev/null
+	}
+	local lw="" bw="" bc="" bword="" costi model_word; costi=$(short_n "$(awk -v c="$cost" 'BEGIN { printf "%d", c + 0.5 }')")
+	# δ: time to run out minus time to reset at this pace, signed. Claude reports whole percents, so a
+	# ten-point rise over the window carries ±1 point: ±10 % on the slope, ±5 points on the landing. Within
+	# that noise the sign means nothing, so a margin under 5 % of the window reads "even" instead.
+	if [ -n "$sl" ] && [ "${tto:--1}" -ge 0 ]; then
+		local dsec=$(( tto - left )) band=$(( len / 20 ))
+		if [ "${dsec#-}" -lt "$band" ]; then bw="0m"; bc="$DIM"; bword="even"
+		elif [ "$dsec" -lt 0 ]; then bw="-$(left_words $(( -dsec )))"; bc="$RED"; bword="deficit"
+		else bw="+$(left_words "$dsec")"; bc=""; bword="surplus"; fi
 	fi
+	# Beside the badge at full width: the one parameter you turn (effort), plus fast and the agent when
+	# they apply. The model letter and the thinking mark already say the rest. The badge alone when narrow.
+	model_word="$effort"
+	[ "$thinking" = "true" ] && model_word="${model_word:+$model_word }+ thinking"
+	[ "$fast" = "true" ] && model_word="${model_word:+$model_word }+ fast"
+	[ -n "$agent" ] && model_word="${model_word:+$model_word }@${agent}"
+	[ -n "$used" ] && lw=$(left_words "$left")
+	local badge_plain="${letter//$'\e'\[*([0-9;])m/}"   # one short strip: the agent suffix carries DIM
+	build "$GOLD" "$RED" "$DIM" "$R" "$anchor_color" "$ctx_color" "$lc" "$nwc" "${pc:-}" "$letter" "$fc"
+	mode=p; build "" "" "" "" "" "" "" "" "" "$badge_plain" ""
+	# --- fit: measure in cells, shrink from the right, then drop, then cut
+	local n=${#L[@]} i out="" pout="" w=0 limit=$(( cols - 2 ))
+	local -a lv=() on=(); for ((i = 0; i < n; i++)); do lv+=(0); on+=(1); done
+	compose() {
+		local c p first=1; out=""; pout=""; w=0
+		for ((i = 0; i < n; i++)); do
+			[ "${on[$i]}" -eq 1 ] || continue
+			case "${lv[$i]}" in 0) c="${L[$i]}"; p="${PL[$i]}" ;; 1) c="${S[$i]}"; p="${PS[$i]}" ;; *) c="${M[$i]}"; p="${PM[$i]}" ;; esac
+			if [ "$first" -eq 1 ]; then out="$c"; pout="$p"; first=0
+			elif [ "${G[$i]}" -eq 1 ]; then out="$out ${DIM}·${R} $c"; pout="$pout · $p"
+			else out="$out$SEP$c"; pout="$pout$SEP$p"; fi
+		done
+		w=${#pout}
+	}
+	compose
+	while [ "$w" -gt "$limit" ]; do
+		local moved=0
+		# the badge's words are the first to go (the least actionable words on the row), then from the right
+		if [ "${lv[0]}" -lt 1 ]; then lv[0]=1; compose; continue; fi
+		for ((i = n - 1; i >= 0; i--)); do
+			if [ "${on[$i]}" -eq 1 ] && [ "${lv[$i]}" -lt 2 ]; then lv[$i]=$(( lv[$i] + 1 )); moved=1; break; fi
+		done
+		if [ "$moved" -eq 0 ]; then
+			for ((i = n - 1; i >= 0; i--)); do
+				if [ "${on[$i]}" -eq 1 ] && [ "${D[$i]}" -eq 1 ]; then on[$i]=0; moved=1; break; fi
+			done
+		fi
+		[ "$moved" -eq 0 ] && break
+		compose
+	done
+	[ "$w" -gt "$limit" ] && out="${pout:0:$limit}"
+	printf '%s\n' "$out"
 }
+case "${CLAUDE_STATUSLINE_STYLE:-}" in v3) ;; *) render_v4; exit 0 ;; esac
 
-# ---- Runway calculation (Θ) ----
-# Bug fix (2026-03): Θ icon was inside 5h printf block. When 5h resets_at was
-# in the past (stale cache), entire 5h block skipped → icon disappeared.
-# Fix: runway_icon_printed flag — Θ prints before whichever block renders first.
-# Also: fallback when 5h reset is past but utilization exists (window just reset).
-five_hour_runway="" five_hour_reset="" five_hour_reset_stale=""
-seven_day_runway="" seven_day_reset=""
-five_hour_pace_ratio="" seven_day_pace_ratio=""
-
-get_runways() {
-	local now reset_epoch seconds_until
-	now=$(date +%s)
-
-	# 5h reset time (decimal hours)
-	if [ -n "$five_hour_reset_sec" ]; then
-		reset_epoch=$(date -j -u -f "%Y-%m-%dT%H:%M:%S" "${five_hour_reset_sec%%.*}" "+%s" 2>/dev/null)
-		if [ -n "$reset_epoch" ]; then
-			if [ "$reset_epoch" -gt "$now" ]; then
-				seconds_until=$((reset_epoch - now))
-				five_hour_reset=$(awk "BEGIN {printf \"%.1f\", $seconds_until / 3600}")
-				five_hour_reset=${five_hour_reset%.0}
-			elif [ -n "$_fetched_at" ] && [ "$reset_epoch" -gt "$_fetched_at" ]; then
-				# Stale: reset was future when fetched, now past (e.g., >5h sleep)
-				# Show what value was at fetch time — real API data, strikethrough
-				seconds_until=$((reset_epoch - _fetched_at))
-				five_hour_reset=$(awk "BEGIN {printf \"%.1f\", $seconds_until / 3600}")
-				five_hour_reset=${five_hour_reset%.0}
-				five_hour_reset_stale=1
-			fi
-		fi
-	fi
-
-	# 7d reset time (decimal days)
-	if [ -n "$seven_day_reset_sec" ]; then
-		reset_epoch=$(date -j -u -f "%Y-%m-%dT%H:%M:%S" "${seven_day_reset_sec%%.*}" "+%s" 2>/dev/null)
-		if [ -n "$reset_epoch" ] && [ "$reset_epoch" -gt "$now" ]; then
-			seconds_until=$((reset_epoch - now))
-			# Always show 1 decimal for granularity (e.g., 6.9d not 7d)
-			seven_day_reset=$(awk "BEGIN { printf \"%.1f\", $seconds_until / 86400 }")
-		fi
-	fi
-
-	# 5h runway and pace (decimal hours)
-	if [ -n "$rate_pct" ] && [ -n "$five_hour_reset" ] && [ -z "$five_hour_reset_stale" ]; then
-		local hours_into_5h=$(awk "BEGIN {printf \"%.2f\", 5 - $five_hour_reset}")
-		if [ "$(echo "$hours_into_5h > 0" | bc -l)" -eq 1 ]; then
-			# Current burn rate (%/h). Floor elapsed at 0.5h (~10% of the window):
-			# right after a reset the denominator is tiny, so a little usage extrapolates
-			# to a wildly inflated rate/runway — assume ≥0.5h of context, don't extrapolate
-			# from noise. A genuine emergency (huge % in minutes) still clears the floor:
-			# even a 100%/h burn accumulates enough % to go red within ~12 min regardless.
-			local elapsed_5h=$(awk "BEGIN {h=$hours_into_5h; printf \"%.2f\", (h < 0.5 ? 0.5 : h)}")
-			local burn_rate=$(awk "BEGIN {printf \"%.2f\", $rate_pct / $elapsed_5h}")
-			if [ "$(echo "$burn_rate > 0" | bc -l)" -eq 1 ]; then
-				five_hour_runway=$(awk "BEGIN {printf \"%.1f\", (100 - $rate_pct) / $burn_rate}")
-				five_hour_runway=${five_hour_runway%.0}
-
-				# Sustainable pace (%/h). At exactly 100% used, sustainable=0 →
-				# division blows up; runway is 0h, pace pegged at max-red (2026-07-06)
-				local sustainable_pace=$(awk "BEGIN {printf \"%.2f\", (100 - $rate_pct) / $five_hour_reset}")
-				if [ "$(echo "$sustainable_pace > 0" | bc -l)" -eq 1 ]; then
-					five_hour_pace_ratio=$(awk "BEGIN {printf \"%.2f\", $burn_rate / $sustainable_pace}")
-				else
-					five_hour_runway="0"
-					five_hour_pace_ratio="9.99"
-				fi
-			fi
-			# else: 0% utilization — no burn rate, runway/pace stay empty (reset time still shows)
-		fi
-		# else: just reset (hours_into_5h ≤ 0) — no burn rate yet, reset time still shows
-	fi
-
-	# 7d runway and pace (decimal days)
-	if [ -n "$weekly_pct" ] && [ -n "$seven_day_reset" ]; then
-		local days_into_week=$(awk "BEGIN {printf \"%.2f\", 7 - $seven_day_reset}")
-		if [ "$(echo "$days_into_week > 0" | bc -l)" -eq 1 ]; then
-			# Current burn rate (%/d). Floor elapsed at 0.5d (~7% of the window) — same
-			# early-window noise guard as the 5h path (see above).
-			local elapsed_week=$(awk "BEGIN {d=$days_into_week; printf \"%.2f\", (d < 0.5 ? 0.5 : d)}")
-			local burn_rate=$(awk "BEGIN {printf \"%.2f\", $weekly_pct / $elapsed_week}")
-			if [ "$(echo "$burn_rate > 0" | bc -l)" -eq 1 ]; then
-				seven_day_runway=$(awk "BEGIN {printf \"%.1f\", (100 - $weekly_pct) / $burn_rate}")
-				seven_day_runway=${seven_day_runway%.0}
-
-				# Guard division when reset imminent OR quota fully used (2026-07-06)
-				if [ "$(echo "$seven_day_reset > 0" | bc -l)" -eq 1 ]; then
-					local sustainable_pace=$(awk "BEGIN {printf \"%.2f\", (100 - $weekly_pct) / $seven_day_reset}")
-					if [ "$(echo "$sustainable_pace > 0" | bc -l)" -eq 1 ]; then
-						seven_day_pace_ratio=$(awk "BEGIN {printf \"%.2f\", $burn_rate / $sustainable_pace}")
-					else
-						seven_day_runway="0"
-						seven_day_pace_ratio="9.99"
-					fi
-				else
-					seven_day_pace_ratio="0.5"
-				fi
-			fi
-			# else: 0% utilization — no burn rate, runway/pace stay empty (reset time still shows)
-		fi
-		# else: just reset (days_into_week ≤ 0) — no burn rate yet, reset time still shows
-	fi
-}
-
-get_daily_budget() {
-	local current_7d="$1"
-	local days_until_reset="$2"
-
-	# Budget variance: expected usage at this point minus actual usage.
-	# expected = (days_elapsed / 7) × 100. Positive = under budget, negative = over.
-	# 0% at reset is correct: nothing spent, nothing owed.
-	local days_elapsed
-	days_elapsed=$(awk "BEGIN { de = 7.0 - $days_until_reset; if (de > 7) de = 7; printf \"%.4f\", de }")
-	awk "BEGIN { printf \"%d\", sprintf(\"%.0f\", ($days_elapsed / 7.0) * 100.0 - $current_7d) }"
-}
-
-# ---- Fetch all data ----
-get_context
-get_rate_limit
-get_session_elapsed
-get_weekly_active
-get_runways
-
-# Get daily budget (7d only - 5h resets too frequently for daily tracking)
-seven_day_budget=""
-mu_recovery_h=""
-if [ -n "$weekly_pct" ] && [ -n "$seven_day_reset" ]; then
-	seven_day_budget=$(get_daily_budget "$weekly_pct" "$seven_day_reset")
-	# Hours off the on-pace line. Schedule rate is constant (100%/168h), so
-	# recovery = |μ| × 1.68. Negative μ: idle hours to reach 0%. Positive μ:
-	# hours you're ahead of schedule (banked headroom). Rounded whole hours.
-	mu_recovery_h=$(awk "BEGIN { b = $seven_day_budget; if (b < 0) b = -b; printf \"%.0f\", b * 1.68 }")
-fi
-
-# ---- Render statusline ----
-# ॐ = single anchor: model section icon AND vim state via color
-# (orange normal/off, green insert, gold visual)
-printf '%b %s%s%s' "${vim_color}ॐ${RESET}" "$model_name" "$thinking_indicator" "$effort_indicator"
-
-# ψ Context (superscript ¹ᴹ marks a 1M-context session — % means 5× more there)
-if [ -n "$context_pct" ]; then
-	ctx_colored=$(color_value "${context_pct}%" "$context_pct" 20 40 65 80)
-	window_size=$(echo "$input" | jq -r '.context_window.context_window_size // empty' 2>/dev/null)
-	window_mark=""
-	[ "$window_size" = "1000000" ] && window_mark="¹ᴹ"
-	printf ' %b %s%s' "$ICON_CTX" "$ctx_colored" "$window_mark"
-fi
-
-# κ Cache-hit % (token-efficiency dial: cache reads / all input-side tokens this turn)
-# ≥80 green (healthy prefix reuse) · 50-79 plain · <50 orange (cache being invalidated)
-cache_pct=$(echo "$input" | jq -r '
-	(.context_window.current_usage // {}) as $u |
-	(($u.cache_read_input_tokens // 0) + ($u.cache_creation_input_tokens // 0) + ($u.input_tokens // 0)) as $total |
-	if $total > 1000 then (($u.cache_read_input_tokens // 0) * 100 / $total | floor) else empty end' 2>/dev/null)
-# Early-warning gate: κ hidden while healthy (≥70 — safely ignorable). Appearing =
-# cache efficiency degrading with time to fix (don't edit early context, keep turns
-# <5min apart). STATUSLINE_VERBOSE=1 shows it always (green when healthy).
-# Default: always shown ("show everything, optimize later"). STATUSLINE_MINIMAL=1
-# enables the early-warning gate (hide while ≥70 = safely ignorable).
-if [ -n "$cache_pct" ] && { [ -z "${STATUSLINE_MINIMAL:-}" ] || [ "$cache_pct" -lt 70 ]; }; then
-	if [ "$cache_pct" -ge 80 ]; then cache_col="$BLUE"
-	elif [ "$cache_pct" -ge 70 ]; then cache_col=""
-	elif [ "$cache_pct" -ge 40 ]; then cache_col="$ORANGE"
-	else cache_col="$RED"; fi
-	printf ' %b%s%%%b' "$cache_col" "$cache_pct" "$RESET"   # merged into ψ: κ glyph dropped, cache = 2nd % after context (color-coded)
-fi
-
-# μ Budget variance (expected - actual at this point in the week)
-# Positive = under budget. Negative = overspent. 0 = exactly on pace.
-# Strikethrough stale utilization values (>2h = genuinely broken)
-# 7200s = 8 missed refresh cycles at 900s TTL. Known issue:
-# /api/oauth/usage returns intermittent 429s (GitHub #30930).
-rate_stale=""
-if [ "$rate_content_age" -gt 7200 ]; then
-	# Suppress strikethrough if staleness is caused by expired token.
-	# Token expiry is benign (computer sleep) — 60s retry picks it up fast.
-	# Strikethrough only for genuine API failures (429s, network errors).
-	if ! grep -q "token expired" "$ERROR_LOG" 2>/dev/null; then
-		rate_stale="$STRIKE"
-	fi
-fi
-
-# Early-warning gate: μ hidden while on-pace (0..+5 — safely ignorable). Appearing =
-# drifting off budget with week left to correct. Orange slightly over, red >5 over,
-# gray >5 under (surplus — spend more, you paid for it). VERBOSE shows always.
-if [ -n "$seven_day_budget" ] && { [ -z "${STATUSLINE_MINIMAL:-}" ] || [ "$seven_day_budget" -lt 0 ] 2>/dev/null || [ "$seven_day_budget" -gt 5 ] 2>/dev/null || [ -n "$rate_stale" ]; }; then
-	omega_color=""
-	if [ "$seven_day_budget" -lt -5 ] 2>/dev/null; then
-		omega_color="$RED"      # >5% over budget
-	elif [ "$seven_day_budget" -lt 0 ] 2>/dev/null; then
-		omega_color="$ORANGE"   # slightly over budget — earliest signal
-	elif [ "$seven_day_budget" -gt 5 ] 2>/dev/null; then
-		omega_color="$GRAY"     # >5% under budget — surplus
-	fi
-
-	# Subscript recovery hint (hours off the on-pace line). Omitted at 0% (on-pace).
-	mu_sub=""
-	if [ -n "$mu_recovery_h" ] && [ "$mu_recovery_h" -ge 1 ] 2>/dev/null; then
-		mu_sub=$(to_subscript "${mu_recovery_h}h")
-	fi
-
-	if [ -n "$rate_stale" ]; then
-		printf ' %b %b%s%%%s%b' "$ICON_OMEGA" "$rate_stale" "$seven_day_budget" "$mu_sub" "$RESET"
-	else
-		printf ' %b %b%s%%%s%b' "$ICON_OMEGA" "$omega_color" "$seven_day_budget" "$mu_sub" "$RESET"
-	fi
-fi
-
-# λ Rate limits (5h%, 7d%) — values clamped ≤100 at parse (over-quota shows red 100%)
-if [ -n "$rate_pct" ]; then
-	rate_colored=$(color_value "$(printf '%.0f' "$rate_pct")%" "${rate_pct%.*}" 10 40 70 90)
-	printf ' %b %b%s%b' "$ICON_RATE" "$rate_stale" "$rate_colored" "$RESET"
-
-	if [ -n "$weekly_pct" ]; then
-		weekly_colored=$(color_value "$(printf '%.0f' "$weekly_pct")%" "${weekly_pct%.*}" 15 40 65 80)
-		printf ' %b%s%b' "$rate_stale" "$weekly_colored" "$RESET"
-	fi
-fi
-
-# σ Time (session / weekly active) — always shown; time context is never noise
-if [ -n "$elapsed_str" ]; then
-	if [ -n "$weekly_str" ]; then
-		printf ' %b%b %s %s%b' "$weekly_dim" "$ICON_WEEKLY" "$elapsed_str" "$weekly_str" "$RESET"
-	else
-		printf ' %b %s' "$ICON_WEEKLY" "$elapsed_str"
-	fi
-elif [ -n "$weekly_str" ]; then
-	printf ' %b%b %s%b' "$weekly_dim" "$ICON_WEEKLY" "$weekly_str" "$RESET"
-fi
-
-# Runways and resets (color-coded, decimal precision)
-# Replaced symbol-based display with color-only for cleaner look and smooth transitions.
-# Old symbol logic (≪ < > ≫) commented out below for reference.
-# Θ icon is printed once before whichever runway renders first (decoupled from 5h block).
-
-runway_icon_printed=""
-
-# EARLY-WARNING GATE (2026-07-06, user design): θ hides only when SAFELY ignorable
-# (pace <0.8× sustainable = on track to make the reset). Appears the moment pace
-# reaches 0.8 — early enough to adjust. Orange 0.8-1.2, red >1.2.
-# NOTHING deleted: STATUSLINE_VERBOSE=1 restores always-on θ with healthy display.
-
-# Default: θ always shown when data exists ("show everything, optimize later").
-# STATUSLINE_MINIMAL=1 hides θ while pace <0.8× sustainable (safely ignorable).
-show_5h="" show_7d=""
-[ -n "$five_hour_reset" ] && show_5h=1
-[ -n "$seven_day_reset" ] && show_7d=1
-if [ -n "${STATUSLINE_MINIMAL:-}" ]; then
-	show_5h="" show_7d=""
-	if [ -n "$five_hour_reset" ] && [ -n "$five_hour_runway" ] && [ -n "$five_hour_pace_ratio" ] \
-		&& [ "$(echo "$five_hour_pace_ratio >= 0.8" | bc -l)" -eq 1 ]; then show_5h=1; fi
-	if [ -n "$seven_day_reset" ] && [ -n "$seven_day_runway" ] && [ -n "$seven_day_pace_ratio" ] \
-		&& [ "$(echo "$seven_day_pace_ratio >= 0.8" | bc -l)" -eq 1 ]; then show_7d=1; fi
-fi
-
-if [ -n "$show_5h" ]; then
-	runway_icon_printed=1
-	if [ "$(echo "${five_hour_pace_ratio:-0} > 1.0" | bc -l)" -eq 1 ]; then
-		five_hour_color="$ORANGE"
-		[ "$(echo "$five_hour_pace_ratio > 1.25" | bc -l)" -eq 1 ] && five_hour_color="$RED"
-		runway_super=$(to_superscript "$five_hour_runway")
-		printf ' %b %b%sh%s%b' "$ICON_RUNWAY" "$five_hour_color" "$five_hour_reset" "$runway_super" "$RESET"
-	elif [ -n "$five_hour_reset_stale" ]; then
-		printf ' %b %b%sh%b' "$ICON_RUNWAY" "$STRIKE" "$five_hour_reset" "$RESET"
-	else
-		printf ' %b %sh' "$ICON_RUNWAY" "$five_hour_reset"   # verbose healthy path
-	fi
-fi
-
-if [ -n "$show_7d" ]; then
-	[ -z "$runway_icon_printed" ] && printf ' %b' "$ICON_RUNWAY"
-	if [ "$(echo "${seven_day_pace_ratio:-0} > 1.0" | bc -l)" -eq 1 ]; then
-		seven_day_color="$ORANGE"
-		[ "$(echo "$seven_day_pace_ratio > 1.25" | bc -l)" -eq 1 ] && seven_day_color="$RED"
-		runway_super=$(to_superscript "$seven_day_runway")
-		printf ' %b%sd%s%b' "$seven_day_color" "$seven_day_reset" "$runway_super" "$RESET"
-	else
-		printf ' %sd' "$seven_day_reset"   # verbose healthy path
-	fi
-fi
-
-# OLD SYMBOL-BASED LOGIC (commented out 2026-01-09):
-# Integer rounding caused discontinuous jumps (0.7h→1h→0h) and confusing visual feedback.
-# Symbols were redundant when color already conveys health status.
-#
-# if [ -n "$five_hour_runway" ] && [ -n "$five_hour_reset" ]; then
-# 	runway_5h_display=$five_hour_runway
-# 	[ "$runway_5h_display" -gt 9 ] && runway_5h_display=9
-# 	symbol_5h=""
-# 	if [ "$five_hour_runway" -ge "$((five_hour_reset * 2))" ]; then
-# 		symbol_5h="≫"
-# 	elif [ "$five_hour_runway" -ge "$five_hour_reset" ]; then
-# 		symbol_5h=">"
-# 	elif [ "$((five_hour_runway * 2))" -ge "$five_hour_reset" ]; then
-# 		symbol_5h="${ORANGE}<${RESET}"
-# 	else
-# 		symbol_5h="${RED}≪${RESET}"
-# 	fi
-# 	printf ' %b %b%sh' "$ICON_RUNWAY" "$symbol_5h" "$five_hour_reset"
-# fi
-#
-# if [ -n "$seven_day_runway" ] && [ -n "$seven_day_reset" ]; then
-# 	runway_7d_display=$seven_day_runway
-# 	[ "$runway_7d_display" -gt 9 ] && runway_7d_display=9
-# 	symbol_7d=""
-# 	if [ "$seven_day_runway" -ge "$((seven_day_reset * 2))" ]; then
-# 		symbol_7d="≫"
-# 	elif [ "$seven_day_runway" -ge "$seven_day_reset" ]; then
-# 		symbol_7d=">"
-# 	elif [ "$((seven_day_runway * 2))" -ge "$seven_day_reset" ]; then
-# 		symbol_7d="${ORANGE}<${RESET}"
-# 	else
-# 		symbol_7d="${RED}≪${RESET}"
-# 	fi
-# 	printf ' %b%sd' "$symbol_7d" "$seven_day_reset"
-# fi
-
-# Π Git: branch +lines -lines (hidden when not in a git repo)
-# Disable ERR trap for this section — grep returns 1 on no-match which is normal
-cwd=$(echo "$input" | jq -r '.cwd // empty' 2>/dev/null)
-if [ -n "$cwd" ]; then
-	branch=$(git -C "$cwd" branch --show-current 2>/dev/null | cut -c1-16) || true
-	if [ -n "$branch" ]; then
-		printf ' %b %s' "$ICON_GIT" "$branch"
-		# Diff stats: tracked changes + untracked file count
-		diffstat=$(git -C "$cwd" diff --shortstat HEAD 2>/dev/null) || true
-		untracked=$(git -C "$cwd" ls-files --others --exclude-standard 2>/dev/null | wc -l | tr -d ' ') || true
-		if [ -n "$diffstat" ] || [ "${untracked:-0}" -gt 0 ]; then
-			ins=$(echo "$diffstat" | grep -oE '[0-9]+ insertion' | grep -oE '[0-9]+') || true
-			del=$(echo "$diffstat" | grep -oE '[0-9]+ deletion' | grep -oE '[0-9]+') || true
-			# Add untracked files to insertion count (new content)
-			if [ "${untracked:-0}" -gt 0 ] && [ -n "$ins" ]; then
-				ins=$((ins + untracked))
-			elif [ "${untracked:-0}" -gt 0 ]; then
-				ins=$untracked
-			fi
-			[ -n "$ins" ] && printf ' %b+%s%b' "$BLUE" "$ins" "$RESET"
-			[ -n "$del" ] && printf ' %b-%s%b' "$RED" "$del" "$RESET"
-		fi
-	fi
-fi
-
-# $ Session value — far right, past pacing. Dim number = API-equivalent ESTIMATE
-# (subscription scoreboard: higher = better). Orange ¢ number = REAL usage-credit
-# spend (post 2026-07-08 Fable draws credits) — only renders when credits burned.
-# Field names defensive (shape unverified until first real credit spend).
-cost_usd=$(echo "$input" | jq -r '.cost.total_cost_usd // empty' 2>/dev/null)
-if [ -n "$cost_usd" ] && awk "BEGIN {exit !($cost_usd >= 0.01)}" 2>/dev/null; then
-	printf ' %b %b%.2f%b' "$ICON_COST" "$DIM" "$cost_usd" "$RESET"
-fi
-if [ -n "$extra_usd" ] && awk "BEGIN {exit !($extra_usd > 0)}" 2>/dev/null; then
-	printf ' %b¢%.2f%b' "$ORANGE" "$extra_usd" "$RESET"
-fi
-
+printf '%s' "${anchor_color}${anchor}${R} ${letter}"
+for seg in "$psi" "$lambda" "$sigma" "$pi" "$dollar"; do [ -n "$seg" ] && printf ' %s' "$seg"; done
 printf '\n'
