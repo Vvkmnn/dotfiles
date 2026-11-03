@@ -20,6 +20,10 @@
  *   Add a pattern to the "Hard deny" section in processToolRequest().
  *   Message format: '[What is blocked]. Run manually if intended.'
  *
+ * To auto-approve a read-only MCP tool ("allow"):
+ *   Add it to READ_ONLY_RESEARCH_MCP. Never add tools that write, post,
+ *   delete, or spend credits in bulk (crawl/agent/monitor).
+ *
  * Discuss with user before adding or removing entries.
  * ─────────────────────────────────────────────────────────────
  *
@@ -68,6 +72,35 @@ process.stdin.on('end', () => {
     process.exit(0);
   }
 });
+
+// Read-only research MCP tools, auto-approved by the hook itself.
+// settings.json already allows these, yet subagents (seen under a plan-mode
+// parent in ~/Dev/eve) still prompted — a hook decision applies in every
+// context, so research fan-outs stop stalling on approvals. Whole-server
+// wildcards only for servers with no write tools; write tools
+// (reddit create/edit/delete, firecrawl crawl/agent/monitor_*) keep prompting.
+const READ_ONLY_RESEARCH_MCP = new RegExp('^mcp__(?:' + [
+  'youtube__\\w+',
+  'fred__\\w+',
+  'reddit__(?:get_\\w+|search_reddit|browse_subreddit)',
+  'firecrawl__firecrawl_(?:search|scrape|map|developer_search|research_\\w+)',
+].join('|') + ')$');
+
+// The two research CLIs (station 9, 2026-11-04): a plain read command, optionally piped into a text
+// filter, runs without a prompt; anything that logs in, changes the install, or carries a write verb
+// asks. Shell operators other than that one pipe fall through to the ordinary Bash rules below.
+const RESEARCH_CLI = /^(?:agent-reach|opencli)\s[^;&|<>`$]*(?:\|\s*(?:jq|head|tail|grep|sed -n|awk|cut|sort|uniq|wc)\b[^;&|<>`$]*)*$/;
+const RESEARCH_CLI_WRITE = /^(?:agent-reach\s+(?:login|logout|configure|setup|add|remove|update|uninstall|browser)\b|opencli\s+(?:\S+\s+)?(?:login|logout|post|reply|comment|like|unlike|follow|unfollow|delete|remove|create|update|upload|send|publish|buy|order|pay|set|add|import|switch|download)\b)/;
+
+function allow(reason) {
+  return {
+    hookSpecificOutput: {
+      hookEventName: 'PreToolUse',
+      permissionDecision: 'allow',
+      permissionDecisionReason: reason
+    }
+  };
+}
 
 function ask(reason) {
   return {
@@ -164,9 +197,32 @@ function normalizeCmd(cmd) {
 function processToolRequest(data) {
   const { tool_name, tool_input } = data;
 
+  if (READ_ONLY_RESEARCH_MCP.test(tool_name)) {
+    return allow('Read-only research MCP tool.');
+  }
+
   if (tool_name === 'Bash') {
     const cmd = tool_input?.command || '';
     const n = normalizeCmd(cmd);
+
+    if (RESEARCH_CLI.test(cmd.trim())) {
+      return RESEARCH_CLI_WRITE.test(cmd.trim())
+        ? ask('Research CLI write or login. Confirm before approving.')
+        : allow('Read-only research CLI (agent-reach / opencli).');
+    }
+
+    // External writes ask in every mode (station 5): the allow list carries `gh api *` and `curl *`
+    // for reads, and a method flag turns either into a write. Three PRs were closed through this
+    // hole in auto mode on 2026-11-02.
+    if (/\bgh\s+api\b/.test(n) && /\s(?:-X|--method|-f|-F|--field|--raw-field|--input)\b/.test(n)) {
+      return ask('gh api with a method or body: an external write. Confirm before approving.');
+    }
+    if (/\bgh\s+(?:pr\s+(?:close|merge|comment|edit|review|ready|reopen|create)|issue\s+(?:create|close|comment|edit|delete|reopen)|release\s+(?:create|delete|edit|upload)|repo\s+(?:create|delete|edit|archive|fork|sync))\b/.test(n)) {
+      return ask('gh write: this changes something on GitHub. Confirm before approving.');
+    }
+    if (/\bcurl\b/.test(n) && /\s(?:-X|--request|-d|--data(?:-\w+)?|-F|--form|-T|--upload-file)\b/.test(n)) {
+      return ask('curl with a method or body: an external write. Confirm before approving.');
+    }
 
     // ── Hard deny (run these yourself) ──────────────────────────
     if (/\bmkfs\b/.test(cmd)) {

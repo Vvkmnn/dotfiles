@@ -8,15 +8,16 @@ Before writing plans OR modifying code, explore and investigate first.
 
 ### Exploration Phase (Before Planning)
 
-**Use Your Tools:**
-- **mcp-proxy MCPs** - Check available integrations FIRST (Notion, GitHub, Google Drive, Reddit, StackOverflow, HackerNews; see `~/.claude/mcp/config.json`)
-- **claude-historian** - Past sessions and decisions on similar problems
-- **Explore agent** (`Task` with `subagent_type=Explore`) - Open-ended codebase questions
-- **Glob/Grep** - File pattern and content search
-- **ast-grep** (`sg --lang <l> -p 'pattern($ARG)'`) - Syntax-aware search when text-grep false-positives hurt (refactor sweeps, call-site audits); add `-r <replacement>` for structural rewrites
-- **agent-browser** - Headless browser from Bash: `agent-browser open <url>` → `agent-browser snapshot` (compact @ref list) → `click @e1` / `fill @e2 "text"` → `close`. Interactive/authenticated browsing → claude-in-chrome instead
-- **dora** - If `.dora/` exists: `dora symbol`, `dora refs`, `dora deps` for fast code navigation. If not and exploring extensively, suggest `dora init && dora index`
-- **skills.sh** - Browse [skills.sh](https://skills.sh) periodically for useful community skills (install: `npx skills add <repo> --skill <name> --global --agent claude-code`)
+**Golden paths (one route per need; a failed route is a stop that names the fix, never a detour):**
+| Need | Route |
+|------|-------|
+| This codebase | Glob/Grep/Read; `sg --lang <l> -p 'pattern($ARG)'` when text-grep false-positives hurt; `dora symbol/refs/deps` if `.dora/` exists; Explore agent for open-ended questions |
+| Past sessions and decisions | claude-historian |
+| A fact, a page, docs | native WebSearch (standard; extended for niche or fresh) and WebFetch; Context7 for library docs; Firecrawl only for pages that defeat WebFetch or for bulk extraction (credits) |
+| X, Reddit, YouTube, Bilibili, V2EX, GitHub | `agent-reach <channel> <action>` (read-only, Eve's logins, 2 calls per platform and 4 total per 10 s); Reddit *search* via the reddit MCP until upstream clears its 403; YouTube *comments* via the youtube MCP |
+| Hacker News, Stack Overflow, Zhihu, Linux.do, LinkedIn jobs, arXiv, PubMed, Semantic Scholar, OpenAlex, 1,280 more | `opencli <site> <command>` (read verbs run without a prompt; write verbs ask) |
+| Economic series | fred MCP |
+| A site that needs clicking or a login | Claude in Chrome in the `Claude` profile; `agent-browser` headless from Bash as the fallback |
 
 **Symptom → Skill Lookup (invoke BEFORE investigating):**
 | Symptom | Invoke First |
@@ -101,12 +102,10 @@ See `orchestrate.md` for when to recommend, model selection, and prompting guide
 - Proposing new files without checking if similar ones exist
 
 **Data Retrieval:**
-- WebSearch for info available in MCP servers (Notion, GitHub, etc.)
-- WebFetch when structured API access exists (check mcp-proxy servers first)
-- WebFetch for Reddit (blocked) - use `mcp__reddit__get_reddit_post` or `mcp__reddit__browse_subreddit` instead
+- A browser or WebFetch for a site Agent-Reach or OpenCLI already reads (Reddit blocks WebFetch; `agent-reach reddit read <url>`)
+- A new MCP for a site OpenCLI has an adapter for
 - Re-reading files when claude-historian already has the answer
-- Manual extraction when MCP provides structured access
-- Searching for MCP config in `~/.claude.json` - check `mcpServers` section in project or global `.claude.json`
+- MCP config lives in `~/.claude/mcp/config.json` (proxy) and `~/.claude.json` `mcpServers`; see docs/CONFIG.md
 
 ## Complements
 - `superpowers:brainstorming` skill - Use AFTER exploration to refine ideas

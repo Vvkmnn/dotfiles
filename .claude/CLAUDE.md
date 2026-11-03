@@ -22,7 +22,7 @@ Direct feedback. Push back on flawed logic. No validation theater.
 - **Write tests** - Happy path + edge cases for new features
 - **Run tests** - Before claiming completion
 - **Provide verification** - Give success criteria: tests, expected output, screenshots. Claude performs dramatically better when it can verify its own work
-- **Use tools** - CLIs first (`gh`, `ast-grep`/`sg` syntax-aware code search, `agent-browser` headless web, `yt-dlp`, `osascript`), then MCPs that earned their slot (notion, reddit, paper_search — see docs/CONFIG.md), claude-historian for past sessions. Code navigation: `dora` if `.dora/` exists (suggest `dora init` if not and exploring extensively)
+- **Use tools** - CLIs first (`gh`, `ast-grep`/`sg` syntax-aware code search, `agent-reach <channel> <action>` for X, Reddit, YouTube, Bilibili, GitHub, V2EX reads through Eve's logins, `opencli <site> <cmd>` for any of its 1,289 site commands through the Browser Bridge, `agent-browser` headless web, `yt-dlp`, `osascript`), then the MCPs that earned their slot (firecrawl, reddit search, youtube comments, fred; notion and anki per project — see docs/CONFIG.md), claude-historian for past sessions. A failed route is a stop that names the fix, never a detour through another browser or tool. Code navigation: `dora` if `.dora/` exists (suggest `dora init` if not and exploring extensively)
 - **Incremental changes** - One edit at a time, visible in the main session. Never batch edits or hide them in parallel subagents. Explain each step, confirm before proceeding. Exception: well-scoped editing agents (linter, formatter, reviewer) with clear justification
 - **Update Tasks** - After completing each plan item, call TaskUpdate -> completed (see plan.md)
 - **Recommend subagents** - When parallelism or fresh context would help, suggest it
@@ -75,6 +75,8 @@ If you write a stub to get past a problem, you have hidden the problem.
 - Fabricate when hitting knowledge limits
 - Run any `rm` command without explicit per-command approval — always confirm exact path first, each command individually, no blanket approvals; prefer `rm -r` over `rm -rf`
 - Create tmpfiles, lockfiles, PID files, or cooldown files for state — keep state in code/variables/env
+- Use Claude Code's background sessions: no `--bg`, `/bg`, agent view or parking unless I ask by name (`disableAgentView` is on in settings); never start, exit or kill a Claude session or a tmux window/pane yourself, not even a probe — tmux is my session layer
+- Call `SendFeedback` — I do not want feedback drafts queued or the footer pill
 
 ## When Uncertain
 
@@ -145,7 +147,7 @@ The **`~/.ai/`** folder is the entry. Read `~/.ai/README.md` (mission + 1Passwor
 
 ## Agents
 
-Custom agents in `~/.claude/agents/`: `code-reviewer` (sonnet, post-change review), `security-reviewer` (sonnet, OWASP scanning), `architect` (opus, design review), `paper-researcher` (academic literature review). Use `/review` and `/security` commands as shortcuts.
+Custom agents in `~/.claude/agents/`: `code-reviewer` (sonnet, post-change review), `security-reviewer` (sonnet, OWASP scanning), `architect` (opus, design review), `researcher` (read-only web + academic research, no prompts in plan mode). Use `/review` and `/security` commands as shortcuts.
 
 ## Key Files
 

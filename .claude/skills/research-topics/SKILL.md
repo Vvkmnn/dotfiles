@@ -3,11 +3,11 @@ name: research-topics
 description: >
   Use for any research task — "research X", "find best practices", "literature review on",
   "find papers on", "verify citations", "what's the best way to implement", "what does the
-  research say about". Two modes, auto-routed: TECHNICAL (libraries, tools, implementation —
-  parallel specialized agents) and ACADEMIC (papers, citations, gaps — paper_search + FRED MCPs,
-  paper-researcher agent). Say which mode you chose when the signal is ambiguous. For a formal
-  multi-source cited research REPORT deliverable, use the bundled deep-research skill instead.
-version: 2.0.0
+  research say about". Two modes, auto-routed: TECHNICAL (libraries, tools, implementation,
+  community experience) and ACADEMIC (papers, citations, gaps). Both fan out to the read-only
+  `researcher` agent. For a formal multi-source cited REPORT deliverable, use the bundled
+  deep-research skill instead.
+version: 3.0.0
 ---
 
 # Research
@@ -20,74 +20,25 @@ One entry point for research. Route by signal, announce the mode, then follow th
 | papers, literature, citations, journals, research gaps, related work, academic, "what does the research say" | **Academic** |
 | Ambiguous ("research X") | Pick by topic domain; state the choice in one line |
 
-Skip research entirely when: pattern already in codebase (Grep/Read directly), user says "just do it", already researched this session (check historian first), or a simple syntax/API question (Context7 directly).
+Skip research entirely when: pattern already in codebase (Grep/Read directly), user says "just do it", already researched this session, or a simple syntax/API question (Context7 directly).
+
+**Dispatch:** one `researcher` agent per independent question, all in one message (they run in parallel, read-only, without prompts even in plan mode). One agent for a narrow question; 3–5 for architecture-level or hard-to-reverse decisions. If you ARE the researcher agent, do the research yourself — don't dispatch.
+
+**Prompt each agent with:** the question, what's already known, scope, what to skip, and the return contract (findings + source per claim + confidence + gaps, no pasted pages).
 
 ---
 
 ## Mode A: Technical
 
-Parallel research using specialized plugin agents instead of generic Explore. Each has built-in methodology (deprecation checking, version-pinned docs, ast-grep, git archaeology).
+Cover the angles that apply: official docs/changelogs (Context7 for library docs), real implementations (GitHub via firecrawl `research_search_github` or `gh` in the main session), community experience (reddit, hackernews, stackoverflow, X, YouTube transcripts), and our own codebase (main session: Grep/Read).
 
-### The Five Concerns → Agents
-
-| Concern | Agent |
-|---------|-------|
-| Best-in-class online | `compound-engineering:research:best-practices-researcher` |
-| Latest docs/research | `compound-engineering:research:framework-docs-researcher` |
-| Our local codebase | `compound-engineering:research:repo-research-analyst` |
-| Optimizations | `compound-engineering:review:performance-oracle` |
-| Common pitfalls | `debugging-toolkit:debugger` |
-
-Extras: `git-history-analyzer` (why code exists), `pattern-recognition-specialist` (consistency), `code-simplicity-reviewer` (over-engineering check).
-
-### Dispatch Modes
-
-| Mode | When | Agents |
-|------|------|--------|
-| **Quick** | Narrow question, one source | 1 (best-practices-researcher) |
-| **Focused** (default) | "research X" | 3: best-in-class + docs + codebase |
-| **Deep** | Architecture decisions, "thorough", hard-to-reverse | All 5 concerns |
-
-All agents dispatched in ONE message (true parallelism), model `sonnet` — never haiku for research (capability cliff on synthesis); opus for architecture-stakes decisions.
-
-### Prompt Template
-
-```
-Research [topic] for [context].
-Specific questions: 1. [...] 2. [...]
-Already known: [what we know, what's been tried]
-Scope: [directories, languages, frameworks]
-Do NOT: [tests, mocks, deprecated code, ...]
-Return: findings with sources (file:line or URL), confidence per finding, gaps.
-```
-
-### MCP Source Guide
-
-| Need | MCP / Tool |
-|------|-----------|
-| Library docs | Context7 `resolve-library-id` → `query-docs` |
-| Community solutions | stackoverflow, hackernews, reddit search tools |
-| GitHub examples | github `search_code`, `search_repositories` |
-| Video content | youtube/yt_dlp transcripts |
-| General web | brave_search |
-| Past decisions | claude-historian `search_conversations`, `search_plans` |
-
-### Synthesis (never dump raw results)
-
-1. **Cross-reference** — finding from 2+ agents = high confidence
-2. **Flag conflicts** — agents disagree = present both sides with sources
-3. **Surface gaps** — nobody could answer = genuine unknown
-4. **Recommend** — best approach, confidence level, sources
-
-Output: `## Key Findings (consensus)` / `## Insights (single-source)` / `## Conflicts` / `## Recommended Approach`.
-
-High-stakes decisions (architecture, security, breaking changes): dispatch one fresh Explore agent to verify the synthesized conclusions independently — verified/unverified/contradicted per claim.
+**Synthesis — never dump raw results:** consensus (2+ independent sources) vs single-source insights, conflicts with both sides sourced, genuine unknowns, then a recommendation with confidence. For high-stakes decisions, verify the synthesis with one fresh-context agent (verified / unverified / contradicted per claim).
 
 ---
 
 ## Mode B: Academic
 
-Full research lifecycle via paper_search MCP (22+ academic sources) and FRED MCP (economic data). For autonomous multi-source runs, dispatch the `paper-researcher` agent (background-capable).
+Full research lifecycle via OpenCLI's academic adapters (`opencli arxiv|pubmed|semanticscholar|openalex|dblp|google-scholar`), Firecrawl `research_*` when credits exist, and the FRED MCP for economic data, run by `researcher` agents. The paper_search MCP is gone (dead endpoint since 2026-07).
 
 ### Phase 1: Ideation
 
@@ -98,11 +49,11 @@ Full research lifecycle via paper_search MCP (22+ academic sources) and FRED MCP
 ### Phase 2: Literature Review
 
 Search strategy:
-1. **Broad** — `search_papers` (cross-source, deduplicating)
-2. **Source-specific** — `search_arxiv`, `search_pubmed`, `search_google_scholar`, `search_semantic`
-3. **Metadata** — `search_crossref`, `search_openalex` for DOI/citation data
+1. **Broad** — `opencli semanticscholar search`, `opencli google-scholar search`
+2. **Source-specific** — `opencli arxiv search`, `opencli pubmed search`
+3. **Metadata** — `opencli openalex`, `opencli dblp` for DOI and citation data
 4. **Economics** — FRED tools for time series
-5. **Full text** — `download_arxiv` + `read_arxiv_paper`
+5. **Full text** — `opencli arxiv read <id>`; WebFetch the PDF
 
 Workflow: define scope → build queries → multi-source search → deduplicate → screen by abstract → download key papers → read → extract themes → identify gaps → synthesize.
 
@@ -114,10 +65,10 @@ Output structure: **Themes** / **Timeline** / **Key contributors** / **Methodolo
 
 | Check | Tool |
 |-------|------|
-| Paper exists | `search_google_scholar`, `search_semantic` |
-| DOI/metadata | `search_crossref` |
-| Claim appears in paper | `download_arxiv` + `read_arxiv_paper` |
-| Citation count | `search_semantic` |
+| Paper exists | `opencli google-scholar search`, `opencli semanticscholar search` |
+| DOI/metadata | `opencli openalex`, `opencli dblp` |
+| Claim appears in paper | `opencli arxiv read`, WebFetch the PDF |
+| Citation count | `opencli semanticscholar search` |
 
 Confirm: paper exists, title matches, first author correct, year ±1 (preprints), venue matches, claim accurate. Unverifiable → mark `[VERIFY: author2024_title]`, never generate BibTeX from memory, tell the user the count of unverified citations.
 
@@ -130,7 +81,7 @@ Confirm: paper exists, title matches, first author correct, year ±1 (preprints)
 
 ### Anti-Patterns
 
-- Web search when paper_search exists — MCP first
+- Web search for a paper OpenCLI's academic adapters index — CLI first
 - Citations from memory — always verify
 - Unverified claims as facts — anchor to papers
 - Broad unfocused queries — start specific
@@ -142,4 +93,5 @@ Confirm: paper exists, title matches, first author correct, year ±1 (preprints)
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 3.0.0 | 2026-09-26 | Both modes dispatch the merged read-only `researcher` agent (replaces paper-researcher + dead compound-engineering research agents); dropped historian and GitHub-MCP refs |
 | 2.0.0 | 2026-07-06 | Merged research-agents (1.0.0) + study-claude (0.1.0) into two-mode skill; fixed stale tool names (search_semantic, search_europepmc) |

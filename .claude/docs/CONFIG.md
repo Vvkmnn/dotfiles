@@ -128,9 +128,11 @@ Subagents run in the **background by default** — keep working; results arrive.
 |-----|-------|-----|
 | `permissions` | tiered allow/ask/deny | Oversight backbone |
 | `hooks` | 9 events | session-start, prompt-submit, tool guards, telemetry, pre-compact, notification |
-| `statusLine` | script + `refreshInterval: 30` + `hideVimModeIndicator` | v2 line; live clocks; ॐ replaces INSERT banner |
+| `statusLine` | **removed** (11-04) | The line is drawn by the one-row mod `~/.claude/mods/statusline`, loaded via `env.CLAUDE_CODE_PLUGIN_DIRS`; a `statusLine` key would draw a second row above it |
+| `env.CLAUDE_CODE_PLUGIN_DIRS` | `/Users/v/.claude/mods/statusline` | Loads the footer mod; tracked, carries over with the repo |
+| `disableAgentView` | true | No background sessions or agent view: double Ctrl+C and a closed window end nothing in the background; tmux is the session layer (owner 11-04) |
 | `enabledPlugins` | 27 | Plugins section below |
-| `sandbox` | enabled | Command isolation |
+| `sandbox` | enabled | Command isolation. The footer mod's child runs inside it, so two entries are load-bearing: `network.allowUnixSockets` = the tmux socket `/private/tmp/tmux-<uid>/default` (`? N waiting` and the ॐ flag read it; **uid 501 is baked in, check `id -u` on a new Mac**) and `filesystem.allowWrite` includes `~/.local/state/claude` (the usage ring and the fable poll cache; without it the row loses projection, δ and the pace colour, found 11-04) |
 | `attribution` | empty commit/pr | No attribution noise |
 | `alwaysThinkingEnabled` | true | Thinking on (Fable: always-on regardless) |
 | `editorMode` | vim | With ॐ statusline indicator |
@@ -254,7 +256,7 @@ Then: git-crypt unlock (config.json), `claude /login`, re-add the 14 Claude-side
 
 All MCP servers were proxied through code-mode UTCP (`@utcp/code-mode-mcp`). Config lived in `~/.utcp_config.json` (git-crypt encrypted). Backup of that era: `~/.claude/mcp/mcp.json.bak` (git-crypt encrypted, 36 servers). Native MCP with mcp-proxy replaced UTCP for better performance (+8.6% accuracy, 85% token reduction via lazy loading). Lost features: `call_tool_chain`, `register_manual`, `search_tools`. `~/.utcp_config.json` kept as reference. See the Historical Appendix below for the code-mode rationale and the native-MCP bug analysis that justified that era.
 
-### Active Servers (14: anki, apify, brave_search, firecrawl, fred, hackernews, magic_ui, notion, paper_search, reddit, rss, stackoverflow, twitter, youtube — tables below predate the 2026-07-06 park and include parked servers)
+### Active Servers (6 since 2026-11-04: firecrawl, reddit (search only), youtube (comments), fred, notion and anki (project scope) — the rest retired to Agent-Reach, OpenCLI and native WebSearch/WebFetch; tables below predate that cut and include retired servers)
 
 #### Search & Social
 | Server | Package | Auth | Notes |
@@ -322,6 +324,9 @@ All MCP servers were proxied through code-mode UTCP (`@utcp/code-mode-mcp`). Con
 | arxiv | `arxiv-mcp-server` (uvx) | Replaced by paper_search which includes arXiv + 20 more sources. Re-add with: `"arxiv": {"command": "uvx", "args": ["arxiv-mcp-server", "--storage-path", "/Users/v/.arxiv-papers"]}` |
 
 ### Changes Log
+
+#### 2026-11-04
+- Research routes from first principles (station 9): native WebSearch/WebFetch first, `agent-reach` for X/Reddit/YouTube/Bilibili/V2EX/GitHub through Eve's logins, `opencli` for Hacker News, Stack Overflow, Zhihu, Linux.do, LinkedIn jobs and the academic sites, Claude in Chrome for anything needing a click. Retired: hackernews, stackoverflow, brave_search, twitter (crashed on a missing `proxy-agent`), apify, rss, magic_ui, paper_search (dead endpoint). Kept: firecrawl (bulk and JS pages; credits were at 0 on 11-04), reddit for search until Agent-Reach's 403 clears, youtube for comments, fred. Hook allows read verbs of both CLIs and asks on logins and writes; the researcher agent runs them through Bash.
 
 #### 2026-06-28
 - Consolidated top-level `~/.claude/MCP.md` (code-mode era doc) into this file as Historical Appendix
