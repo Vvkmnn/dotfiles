@@ -62,8 +62,8 @@ export function runsOf(ansi) {
 
 /** The stdin payload the script reads, from what the mods API knows. */
 export async function payloadOf($) {
-  const [usage, model, cwd, settings] = await Promise.all([
-    $.session.usage(), $.session.model(), $.session.cwd(), $.settings.read().catch(() => ({})),
+  const [usage, model, cwd, settings, now] = await Promise.all([
+    $.session.usage(), $.session.model(), $.session.cwd(), $.settings.read().catch(() => ({})), $.clock.now(),
   ])
   const perModel = settings && settings.modelSettings && settings.modelSettings[model]
   const effort = (perModel && (perModel.effort || perModel.effortLevel)) || (settings && settings.effortLevel) || ''
@@ -77,7 +77,8 @@ export async function payloadOf($) {
     effort: { level: effort },
     thinking: { enabled: ALWAYS_THINKING.test(model) },
     cwd, workspace: { current_dir: cwd },
-    cost: { total_cost_usd: (usage.cost && usage.cost.usd) || 0 },
+    // startedAt is the session's first launch (a resume keeps it, /clear restarts it): the clock beside $ on the row
+    cost: { total_cost_usd: (usage.cost && usage.cost.usd) || 0, total_duration_ms: usage.startedAt ? Math.max(0, now - usage.startedAt) : 0 },
     context_window: { used_percentage: usage.context && usage.context.percent != null ? usage.context.percent : null, context_window_size: usage.context && usage.context.window },
     rate_limits: limits,
   }

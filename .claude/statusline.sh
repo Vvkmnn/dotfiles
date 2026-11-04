@@ -37,8 +37,6 @@ command -v jq >/dev/null 2>&1 || { printf 'ॐ Claude\n'; exit 0; }
 # tmux flags can never leak into a demo. Runs before stdin is read, so it never blocks.
 if [ "${1:-}" = demo ]; then
 	self="$(cd "$(dirname "$0")" && pwd)/$(basename "$0")"; t=$(date +%s); want="${2:-}"
-	ring_burst="${TMPDIR:-/tmp}/statusline-demo-ring.tsv"
-	printf '%s\t\t20\n%s\t\t28\n' "$((t - 2400))" "$((t - 600))" > "$ring_burst"
 	payload() { # d7 d7reset ctx warm expires recache [h5 h5reset]
 		printf '{"model":{"id":"claude-fable-5-1"},"effort":{"level":"high"},"thinking":{"enabled":true},"cwd":"%s","workspace":{"current_dir":"%s"},"cost":{"total_cost_usd":273.8,"total_duration_ms":29520000,"total_lines_added":120,"total_lines_removed":34},"context_window":{"used_percentage":%s,"context_window_size":1000000},"prompt_cache":{"warm":%s,"hit_ratio":0.98,"expires_at":%s,"recache_tokens_if_cold":%s},"rate_limits":{"five_hour":{"used_percentage":%s,"resets_at":%s},"seven_day":{"used_percentage":%s,"resets_at":%s}},"vim":{"mode":"NORMAL"},"pr":{"number":1234,"review_state":"pending"}}' \
 			"$HOME" "$HOME" "$3" "$4" "${5:-null}" "$6" "${7:-null}" "${8:-null}" "$1" "$2"
@@ -48,20 +46,19 @@ if [ "${1:-}" = demo ]; then
 		printf '\e[2m%-13s %3s\e[0m  ' "$1" "$2"
 		printf '%s' "$5" | COLUMNS="$2" CLAUDE_STATUSLINE_WAITING="$3" CLAUDE_STATUSLINE_MODE="${demo_mode:-default}" CLAUDE_STATUSLINE_AGENTS="${demo_agents:-0}" CLAUDE_USAGE_RING="$4" "$self"
 	}
-	show quiet        140 "0:"  /dev/null     "$(payload 45 $((t + 345600)) 49 true $((t + 2280)) 45000)"
+	show quiet        140 "0:"  /dev/null     "$(payload 30 $((t + 345600)) 49 true $((t + 2280)) 45000)"
 	demo_agents=3
-	show waiting      140 "10:" /dev/null     "$(payload 45 $((t + 345600)) 49 true $((t + 2280)) 45000)"
+	show waiting      140 "10:" /dev/null     "$(payload 30 $((t + 345600)) 49 true $((t + 2280)) 45000)"
 	demo_agents=0
 	show high         140 "0:"  /dev/null     "$(payload 85 $((t + 345600)) 49 true $((t + 2280)) 45000)"
-	show running-dry  140 "0:"  "$ring_burst" "$(payload 81 $((t + 300000)) 62 true $((t + 2280)) 45000)"
-	show cold-cache   140 "0:"  /dev/null     "$(payload 45 $((t + 345600)) 49 false "" 45000)"
-	show compact-zone 140 "0:"  /dev/null     "$(payload 45 $((t + 345600)) 88 true $((t + 2280)) 45000)"
-	show with-5h      140 "0:"  /dev/null     "$(payload 45 $((t + 345600)) 49 true $((t + 2280)) 45000 31 $((t + 2880)))"
-	show half-screen   95 "10:" "$ring_burst" "$(payload 81 $((t + 300000)) 62 true $((t + 2280)) 45000)"
-	show tall-window   70 "10:" "$ring_burst" "$(payload 81 $((t + 300000)) 62 true $((t + 2280)) 45000)"
-	show small-pane    50 "10:" "$ring_burst" "$(payload 81 $((t + 300000)) 62 true $((t + 2280)) 45000)"
-	show odd-width     63 "10:" /dev/null     "$(payload 45 $((t + 345600)) 49 true $((t + 2280)) 45000)"
-	rm -f "$ring_burst"
+	show running-dry  140 "0:"  /dev/null     "$(payload 81 $((t + 300000)) 62 true $((t + 2280)) 45000)"
+	show cold-cache   140 "0:"  /dev/null     "$(payload 30 $((t + 345600)) 49 false "" 45000)"
+	show compact-zone 140 "0:"  /dev/null     "$(payload 30 $((t + 345600)) 88 true $((t + 2280)) 45000)"
+	show with-5h      140 "0:"  /dev/null     "$(payload 30 $((t + 345600)) 49 true $((t + 2280)) 45000 31 $((t + 2880)))"
+	show half-screen   95 "10:" /dev/null     "$(payload 81 $((t + 300000)) 62 true $((t + 2280)) 45000)"
+	show tall-window   70 "10:" /dev/null     "$(payload 81 $((t + 300000)) 62 true $((t + 2280)) 45000)"
+	show small-pane    50 "10:" /dev/null     "$(payload 81 $((t + 300000)) 62 true $((t + 2280)) 45000)"
+	show odd-width     63 "10:" /dev/null     "$(payload 30 $((t + 345600)) 49 true $((t + 2280)) 45000)"
 	exit 0
 fi
 
@@ -69,7 +66,7 @@ fi
 # ccstatusline read (undocumented). It carries what the stdin payload lacks: the Fable week and the
 # credits. Runs detached from a render when the cache is older than POLL_S; one GET with Claude Code's
 # own keychain token, 5 s timeout, never on the render path. Cache: regenerable state, never required.
-USAGE_CACHE="$HOME/.local/state/claude/usage-api.json"; POLL_S=600
+USAGE_CACHE="${CLAUDE_USAGE_CACHE:-$HOME/.local/state/claude/usage-api.json}"; POLL_S=600   # override = selftest fixture
 if [ "${1:-}" = poll ]; then
 	tok=$(security find-generic-password -s "Claude Code-credentials" -w 2>/dev/null | jq -r '.claudeAiOauth.accessToken // empty')
 	[ -n "$tok" ] || exit 0
@@ -202,7 +199,6 @@ case "$(printf '%s' "$model" | tr '[:upper:]' '[:lower:]')" in
 	*fable*) letter="F" ;; *opus*) letter="O" ;; *sonnet*) letter="S" ;; *haiku*) letter="H" ;;
 	*) letter="${model:-Claude}" ;;
 esac
-letter_plain="$letter"   # the bare letter, for the model word in render_v4
 [ "$thinking" = "true" ] && letter="${letter}ᵀ"
 case "$effort" in max) letter="${letter}ᴹ" ;; xhigh) letter="${letter}ˣ" ;; high) letter="${letter}⁺" ;; low) letter="${letter}⁻" ;; esac
 [ "$fast" = "true" ] && letter="${letter}ᶠ"
@@ -224,7 +220,7 @@ fi
 
 # ---- λ rate limits: 5h with time-to-reset, 7d with the burn-rate projection; one color for the group ----
 lambda=""; l_sev=0
-ring_update
+[ "${CLAUDE_STATUSLINE_STYLE:-}" = v3 ] && ring_update   # only v3 reads the ring (its burn slope); v4 writes no state
 if [ -n "$h5_pct" ]; then
 	h5=$(awk -v v="$h5_pct" 'BEGIN { printf "%d", v + 0.5 }')
 	read -r b5_sev _ <<<"$(burn 2 "$h5" "${h5_reset:-0}")"
@@ -303,9 +299,12 @@ dollar="${GOLD}\$${R} ${DIM}$(awk -v c="$cost" 'BEGIN { printf "%.1f", c }')${R}
 # ============================================================================================
 # v4 (2026-11-03): one row in the grammar of Claude's own footer (glyph, number, words, a dot between groups and a gap within them,
 # sections), seven sections that never change order, the most actionable first:
-#   ॐ Fᵀ⁺ high + thinking  ? 5 waiting · ψ 61% context  λ 48% (41% fable) → 71% projected  τ 4d 10h to reset  δ +2d 3h surplus · π +702 lines across 27 files uncommitted on v-macos PR #1234  $ 283 estimated
-# λ's arrow is where the week lands at the reset on the last two hours' pace (200%+ past double);
-# δ is the signed margin at that pace: +surplus or -deficit against the reset, red on a deficit. No commas anywhere.
+#   ॐ Fᵀ⁺ high + thinking  ? 5 waiting · ψ 61% context  λ 48% (41%ᶠ)  τ 4d 10h reset  δ 71% 2d 3h to spare · π +702 lines across 27 files uncommitted on v-macos PR #1234  $ 283 over 2h 40m
+# δ is the pacing tile (owner 2026-11-04): where the week lands at its average pace (unclipped), then the
+# margin against the reset as the action: "stop for 5d 3h" (red), "1d 8h to spare", "on pace". The pace is
+# used % over the time since the window opened (the endpoint's window_started_at), the 2026-11-02 method:
+# two exact inputs, never a slope over whole-percent samples. $ carries the session's clock ("over 2h 40m").
+# No commas anywhere, no words a glyph already says.
 # Rules (owner, 2026-11-03): every glyph always drawn, Kanagawa gold, one space, then its number; words
 # come after the number and shrink away first; a superscript is a unit on a number, never alone; no
 # decimals, no `!`; red only on ॐ (this pane waits), the ? count, and λ/τ when the pace runs the week dry.
@@ -321,15 +320,6 @@ dollar="${GOLD}\$${R} ${DIM}$(awk -v c="$cost" 'BEGIN { printf "%.1f", c }')${R}
 short_n() { awk -v n="$1" 'BEGIN { s = (n < 0) ? "-" : ""; a = (n < 0) ? -n : n; if (a >= 1000) printf "%s%dk", s, (a + 500) / 1000; else printf "%s%d", s, a }'; }
 left_words() { awk -v s="$1" 'BEGIN { if (s < 0) s = 0; d = int(s / 86400); h = int((s % 86400) / 3600); m = int((s % 3600) / 60)
 	if (d > 0) printf "%dd%s", d, (h > 0 ? " " h "h" : ""); else if (h > 0) printf "%dh%s", h, (m > 0 ? " " m "m" : ""); else printf "%dm", m }'; }
-# Burn slope in % per second over the last SLOPE_WINDOW of ring samples since the last reset; nothing
-# with fewer than MIN_SPAN seconds of data, so the estimate is absent rather than guessed.
-slope() {
-	[ -s "$RING" ] || return 0
-	awk -F'\t' -v col="$1" -v now="$now" -v win="$SLOPE_WINDOW" -v minspan="$MIN_SPAN" '
-		$1 >= now - win && $col != "" && $col + 0 >= hi { hi = $col + 0; n++; t[n] = $1; u[n] = hi }
-		END { if (n < 2) exit; i = n; while (i > 1 && u[i-1] <= u[i]) i--; span = t[n] - t[i]; if (span < minspan) exit
-			s = (u[n] - u[i]) / span; printf "%.9f", (s < 0 ? 0 : s) }' "$RING" 2>/dev/null
-}
 render_v4() {
 	local cols="${COLUMNS:-120}" SEP="  "   # the gold glyph opens every section, so the gap is the separator (owner 2026-11-04)
 	# --- ? N: Claude panes waiting elsewhere. tmux names the native binary by its version ("2.1.316").
@@ -340,35 +330,57 @@ render_v4() {
 		nw=$("$TMUX_BIN" list-panes -a -F '#{@claude_waiting}	#{pane_current_command}' 2>/dev/null | awk -F'\t' '$1 == "1" && $2 ~ /^(claude|node|[0-9]+\.[0-9]+\.[0-9]+)$/ { n++ } END { print n + 0 }')
 	fi
 	local nwc="$DIM"; [ "${nw:-0}" -gt 0 ] 2>/dev/null && nwc="$RED"
-	# --- λ and τ: the primary window (the week; the 5 h only when that is all there is), its estimate at
-	# the reset from the burn slope, and the time to the reset. Red when the slope reaches 100 % first.
-	local used="" reset="" len="" col="" other="" est="" tto=-1 lsev=0 sl="" left=0 el=0
-	if [ -n "${d7:-}" ]; then used="$d7"; reset="${d7_reset:-0}"; len=604800; col=3; [ -n "${h5:-}" ] && other="${h5}"
-	elif [ -n "${h5:-}" ]; then used="$h5"; reset="${h5_reset:-0}"; len=18000; col=2; fi
-	if [ -n "$used" ]; then
-		left=$(( reset - now )); [ "$left" -lt 0 ] && left=0; [ "$left" -gt "$len" ] && left="$len"
-		el=$(( (len - left) * 100 / len ))
-		sl=$(slope "$col")
-		if [ -n "$sl" ]; then
-			# the projection is not clipped at 100: how far past the wall the pace points is the information;
-			# past 200 it says nothing the break does not, so it reads 200%+
-			read -r est tto <<<"$(awk -v u="$used" -v s="$sl" -v l="$left" 'BEGIN { e = u + s * l; t = (s > 0) ? (100 - u) / s : -1; printf "%d %d", e + 0.5, t }')"
-			[ "$est" -gt 200 ] && est="200%+" || est="${est}%"
-			if [ "$tto" -ge 0 ] && [ "$tto" -lt "$left" ]; then lsev=2; elif [ "${est%\%*}" -ge 90 ] 2>/dev/null; then lsev=1; fi
-		fi
-		[ "$lsev" -lt 1 ] && [ "$used" -gt $(( el + 10 )) ] && lsev=1
-	fi
-	local lc; lc=$(sev_color "$lsev")
-	# --- fable's own week, from the poll's cache (absent in demos and tests, which pin the ? count)
-	local fab="" brk_l="" brk_s=""
-	if [ -z "${CLAUDE_STATUSLINE_WAITING:-}" ]; then
+	# --- the usage cache first: the poll's endpoint carries what the payload lacks: the Fable week, the
+	# window's exact start, a fresher weekly figure. Absent in demos and tests, which pin the ? count.
+	local fab="" wstart="" cused="" creset=""
+	if [ -z "${CLAUDE_STATUSLINE_WAITING:-}" ] || [ -n "${CLAUDE_USAGE_CACHE:-}" ]; then
 		local age=$(( now - $(stat -f %m "$USAGE_CACHE" 2>/dev/null || echo 0) ))
 		if [ "$age" -gt "$POLL_S" ]; then touch "$USAGE_CACHE" 2>/dev/null; (nohup "$0" poll >/dev/null 2>&1 &); fi
-		# Verified 2026-11-03 against a live response: limits[] entries carry `kind`, `percent`, `resets_at`, `scope.model.display_name`.
-		[ -s "$USAGE_CACHE" ] && fab=$(jq -r '[.limits[]? | select(.kind == "weekly_scoped" and ((.scope.model.display_name // "") | ascii_downcase) == "fable") | .percent][0] // empty' "$USAGE_CACHE" 2>/dev/null)
+		# Verified 2026-11-03/04 against live responses: limits[] carry kind, percent, resets_at and
+		# scope.model.display_name; seven_day_breakdown.window_started_at is the week's start (ISO, UTC).
+		if [ -s "$USAGE_CACHE" ]; then
+			IFS='|' read -r fab cused creset wstart <<<"$(jq -r '[
+				([.limits[]? | select(.kind == "weekly_scoped" and ((.scope.model.display_name // "") | ascii_downcase) == "fable") | .percent][0] // ""),
+				([.limits[]? | select(.kind == "weekly_all") | .percent][0] // .seven_day.utilization // ""),
+				([.limits[]? | select(.kind == "weekly_all") | .resets_at][0] // .seven_day.resets_at // ""),
+				(.seven_day_breakdown.window_started_at // "")
+			] | map(tostring) | join("|")' "$USAGE_CACHE" 2>/dev/null)"
+			# ISO to epoch once, here: the window's start and its reset (BSD date, ~2 ms each)
+			local iso; for iso in wstart creset; do [ -n "${!iso}" ] && printf -v "$iso" '%s' "$(date -ju -f '%Y-%m-%dT%H:%M:%S' "${!iso%%.*}" +%s 2>/dev/null)"; done
+		fi
 	fi
 	local fabi="" fc=""
 	if [ -n "$fab" ]; then fabi=$(awk -v v="$fab" 'BEGIN { printf "%d", v + 0.5 }'); fc=$(sev_color "$(thr "$fabi" 80 90)"); fi
+	# --- λ, τ, δ: the primary window (the week; the 5 h only when that is all there is). The method of
+	# 2026-11-02 (plan, station 6): the pace is the window's average, used % over the time since it opened,
+	# two exact inputs, so the landing and the margin move with every render and never jump (a two-hour
+	# slope over whole-percent samples swung the landing by hundreds of points, 2026-11-04); the projection
+	# shows from 10 % used; amber at 80 % used or a landing of 90 %+, red at 90 % used or running out before
+	# the reset (claude-hud and Owloops thresholds). Used % is the larger of the payload (frozen at this
+	# session's last response) and the endpoint (10-min poll): usage never falls inside a window.
+	local used="" reset="" len="" other="" est="" tto=-1 lsev=0 left=0 elapsed=0
+	if [ -n "${d7:-}" ]; then used="$d7"; reset="${d7_reset:-0}"; len=604800; [ -n "${h5:-}" ] && other="${h5}"
+	elif [ -n "${h5:-}" ]; then used="$h5"; reset="${h5_reset:-0}"; len=18000; fi
+	# the endpoint's week, when it is there, and it is a different week from the payload's: a session that
+	# outlives a reset keeps reporting last week's figure (95 % beside a true 3 %), so the fresher source wins
+	# outright; inside one week the larger of the two is the truer, since usage never falls within a window
+	if [ -n "$cused" ] && [ "${creset:-0}" -gt 0 ]; then
+		if [ -z "$used" ] || [ "$len" -ne 604800 ] || [ $(( reset > creset ? reset - creset : creset - reset )) -gt 3600 ]; then
+			used=$(awk -v v="$cused" 'BEGIN { printf "%d", v + 0.5 }'); reset="$creset"; len=604800; other=""
+		else used=$(awk -v a="$used" -v b="$cused" 'BEGIN { printf "%d", (b > a ? b : a) + 0.5 }'); fi
+	fi
+	if [ -n "$used" ]; then
+		left=$(( reset - now )); [ "$left" -lt 0 ] && left=0; [ "$left" -gt "$len" ] && left="$len"
+		elapsed=$(( len - left ))
+		[ "${wstart:-0}" -gt 0 ] 2>/dev/null && [ "$wstart" -lt "$now" ] && [ "$len" -eq 604800 ] && elapsed=$(( now - wstart ))
+		if [ "$used" -ge 10 ] && [ "$elapsed" -gt 0 ]; then
+			read -r est tto <<<"$(awk -v u="$used" -v e="$elapsed" -v l="$left" 'BEGIN { r = u / e; printf "%d %d", u + r * l + 0.5, (100 - u) / r }')"
+		fi
+		if [ "$used" -ge 90 ] || { [ "$tto" -ge 0 ] && [ "$tto" -lt "$left" ]; }; then lsev=2
+		elif [ "$used" -ge 80 ] || [ "${est:-0}" -ge 90 ]; then lsev=1; fi
+		[ -n "$est" ] && est="${est}%"
+	fi
+	local lc; lc=$(sev_color "$lsev")
 	# --- π: uncommitted work, the branch, the PR badge in its review colour. Inside a project repo one
 	# diff against HEAD gives lines and files; on the dotfiles fallback (work tree = $HOME) that diff
 	# costs two seconds, so there only the files count is read, from a 30 ms status.
@@ -391,7 +403,7 @@ render_v4() {
 		else PL+=("$1"); PS+=("${2:-$1}"); PM+=("${3:-${2:-$1}}"); fi
 	}
 	build() { # colour vars come in as arguments, empty on the plain pass
-		local GOLD="$1" RED="$2" DIM="$3" R="$4" ac="$5" cc="$6" lc="$7" nwc="$8" pcol="$9" badge="${10}" fcol="${11}"
+		local GOLD="$1" RED="$2" DIM="$3" R="$4" ac="$5" cc="$6" lc="$7" nwc="$8" pcol="$9" badge="${10}" fcol="${11}" bc="${12}"
 		local pr=""; [ -n "$pr_num" ] && pr="${pcol}#${pr_num}${R}"
 		sec "${ac}${anchor}${R} ${badge} ${DIM}${model_word}${R}" "${ac}${anchor}${R} ${badge}"
 		sec "${GOLD}?${R} ${nwc}${nw}${R} ${DIM}waiting${who:+  $who}${R}" "${GOLD}?${R} ${nwc}${nw}${R} ${DIM}waiting${R}" "${GOLD}?${R} ${nwc}${nw}${R}"
@@ -400,44 +412,47 @@ render_v4() {
 			# the bracket: numbers in their own colour, only the words dim
 			local lp="${lc}${used}%${R}" ol="" os="" bl="" bs=""
 			[ -n "$other" ] && { bl="${other}%${DIM} 5h${R}"; bs="${other}%"; }
-			[ -n "$fabi" ] && { bl="${bl:+$bl ${DIM}and${R} }${fcol}${fabi}%${R}${DIM} fable${R}"; bs="${bs:+$bs }${fcol}${fabi}%${R}ᶠ"; }
+			[ -n "$fabi" ] && { bl="${bl:+$bl }${fcol}${fabi}%${R}ᶠ"; bs="${bs:+$bs }${fcol}${fabi}%${R}ᶠ"; }
 			[ -n "$bl" ] && ol=" ${DIM}(${R}${bl}${DIM})${R}" && os=" ${DIM}(${R}${bs}${DIM})${R}"
+			sec "${GOLD}λ${R} ${lp}${ol}" "${GOLD}λ${R} ${lp}${os}" "${GOLD}λ${R} ${lp}"
+			sec "${GOLD}τ${R} ${lw} ${DIM}reset${R}" "${GOLD}τ${R} ${lw}" "${GOLD}τ${R} ${lw%% *}" 3
+			# δ: the pacing tile (owner 2026-11-04): where the window lands at the average pace, then the margin
+			# against the reset: "stop for 5d 3h" is the pause that lands it at 100 % (red), "1d 8h to spare" the
+			# room left, "on pace" within rounding. From 10 % used. Outlives τ when the row shrinks.
 			if [ -n "$est" ]; then
-				sec "${GOLD}λ${R} ${lp}${ol} ${DIM}→${R} ${lc}${est}${R} ${DIM}projected${R}" "${GOLD}λ${R} ${lp}${os} ${DIM}→${R} ${lc}${est}${R}" "${GOLD}λ${R} ${lp} ${DIM}→${R} ${lc}${est}${R}"
-			else
-				sec "${GOLD}λ${R} ${lp}${ol} ${DIM}used${R}" "${GOLD}λ${R} ${lp}${os}" "${GOLD}λ${R} ${lp}"
-			fi
-			sec "${GOLD}τ${R} ${lw} ${DIM}to reset${R}" "${GOLD}τ${R} ${lw}" "${GOLD}τ${R} ${lw%% *}" 1
-			# δ: the signed margin at this pace: +surplus = the week outlasts the reset by that much, -deficit =
-			# it runs out that long before the reset (the break required). Red on a deficit; absent without a slope.
-			if [ -n "$bw" ]; then
-				# the word is the meaning here, so every form keeps it: "0m" alone would say nothing
-				sec "${GOLD}δ${R} ${bc}${bw}${R} ${DIM}${bword}${R}" "" "" 1
+				local dl="" ds=""
+				case "$bword" in
+					"on pace") dl=" ${DIM}on pace${R}" ;;
+					"stop for") dl=" ${DIM}stop for${R} ${bc}${bw}${R}"; ds=" ${bc}-${bw}${R}" ;;
+					"to spare") dl=" ${bc}${bw}${R} ${DIM}to spare${R}"; ds=" ${bc}+${bw}${R}" ;;
+				esac
+				sec "${GOLD}δ${R} ${bc}${est}${R}${dl}" "${GOLD}δ${R} ${bc}${est}${R}${ds}" "${GOLD}δ${R} ${bc}${est}${R}" 4
 			fi
 		fi
 		if [ -n "${name:-}" ]; then
 			local nm="${name:0:14}"
 			if [ "${files:-0}" -gt 0 ] && [ -n "$netw" ]; then
-				sec "${GOLD}π${R} ${netw} ${DIM}lines across${R} ${files} ${DIM}files uncommitted on${R} ${nm}${pr:+ ${DIM}PR${R} $pr}" "${GOLD}π${R} ${netw}ˡ ${files}ᶠ ${nm}${pr:+ $pr}" "${GOLD}π${R} ${nm}" 1 1
+				sec "${GOLD}π${R} ${netw} ${DIM}lines across${R} ${files} ${DIM}files uncommitted on${R} ${nm}${pr:+ ${DIM}PR${R} $pr}" "${GOLD}π${R} ${netw}ˡ ${files}ᶠ ${nm}${pr:+ $pr}" "${GOLD}π${R} ${nm}" 2 1
 			elif [ "${files:-0}" -gt 0 ]; then
-				sec "${GOLD}π${R} ${files} ${DIM}files uncommitted on${R} ${nm}${pr:+ ${DIM}PR${R} $pr}" "${GOLD}π${R} ${files}ᶠ ${nm}${pr:+ $pr}" "${GOLD}π${R} ${nm}" 1 1
+				sec "${GOLD}π${R} ${files} ${DIM}files uncommitted on${R} ${nm}${pr:+ ${DIM}PR${R} $pr}" "${GOLD}π${R} ${files}ᶠ ${nm}${pr:+ $pr}" "${GOLD}π${R} ${nm}" 2 1
 			else
-				sec "${GOLD}π${R} 0 ${DIM}uncommitted on${R} ${nm}${pr:+ ${DIM}PR${R} $pr}" "${GOLD}π${R} ${nm}${pr:+ $pr}" "${GOLD}π${R} ${nm}" 1 1
+				sec "${GOLD}π${R} 0 ${DIM}uncommitted on${R} ${nm}${pr:+ ${DIM}PR${R} $pr}" "${GOLD}π${R} ${nm}${pr:+ $pr}" "${GOLD}π${R} ${nm}" 2 1
 			fi
-			sec "${GOLD}\$${R} ${costi} ${DIM}estimated${R}" "${GOLD}\$${R} ${costi}" "" 1
+			sec "${GOLD}\$${R} ${costi}${ew:+ ${DIM}over${R} $ew}" "${GOLD}\$${R} ${costi}${ew:+ ${DIM}over${R} $ew}" "${GOLD}\$${R} ${costi}" 1
 		else
-			sec "${GOLD}\$${R} ${costi} ${DIM}estimated${R}" "${GOLD}\$${R} ${costi}" "" 1 1
+			sec "${GOLD}\$${R} ${costi}${ew:+ ${DIM}over${R} $ew}" "${GOLD}\$${R} ${costi}${ew:+ ${DIM}over${R} $ew}" "${GOLD}\$${R} ${costi}" 1 1
 		fi
 	}
-	local lw="" bw="" bc="" bword="" costi model_word; costi=$(short_n "$(awk -v c="$cost" 'BEGIN { printf "%d", c + 0.5 }')")
-	# δ: time to run out minus time to reset at this pace, signed. Claude reports whole percents, so a
-	# ten-point rise over the window carries ±1 point: ±10 % on the slope, ±5 points on the landing. Within
-	# that noise the sign means nothing, so a margin under 5 % of the window reads "even" instead.
-	if [ -n "$sl" ] && [ "${tto:--1}" -ge 0 ]; then
+	local lw="" bw="" bc="" bword="" costi model_word ew=""; costi=$(short_n "$(awk -v c="$cost" 'BEGIN { printf "%d", c + 0.5 }')")
+	# the session's clock rides on $: what it cost over how long (owner 2026-11-04); absent before the first minute
+	[ "${dur_ms:-0}" -ge 60000 ] 2>/dev/null && ew=$(left_words $(( dur_ms / 1000 )))
+	# δ's margin: time to run out minus time to reset at the average pace. Claude reports whole percents,
+	# so a margin under 5 % of the window is inside the rounding and reads "on pace" instead of a sign.
+	if [ -n "$est" ] && [ "${tto:--1}" -ge 0 ]; then
 		local dsec=$(( tto - left )) band=$(( len / 20 ))
-		if [ "${dsec#-}" -lt "$band" ]; then bw="0m"; bc="$DIM"; bword="even"
-		elif [ "$dsec" -lt 0 ]; then bw="-$(left_words $(( -dsec )))"; bc="$RED"; bword="deficit"
-		else bw="+$(left_words "$dsec")"; bc=""; bword="surplus"; fi
+		if [ "${dsec#-}" -lt "$band" ]; then bw=""; bc="$DIM"; bword="on pace"
+		elif [ "$dsec" -lt 0 ]; then bw="$(left_words $(( -dsec )))"; bc="$RED"; bword="stop for"
+		else bw="$(left_words "$dsec")"; bc=""; bword="to spare"; fi
 	fi
 	# Beside the badge at full width: the one parameter you turn (effort), plus fast and the agent when
 	# they apply. The model letter and the thinking mark already say the rest. The badge alone when narrow.
@@ -447,8 +462,8 @@ render_v4() {
 	[ -n "$agent" ] && model_word="${model_word:+$model_word }@${agent}"
 	[ -n "$used" ] && lw=$(left_words "$left")
 	local badge_plain="${letter//$'\e'\[*([0-9;])m/}"   # one short strip: the agent suffix carries DIM
-	build "$GOLD" "$RED" "$DIM" "$R" "$anchor_color" "$ctx_color" "$lc" "$nwc" "${pc:-}" "$letter" "$fc"
-	mode=p; build "" "" "" "" "" "" "" "" "" "$badge_plain" ""
+	build "$GOLD" "$RED" "$DIM" "$R" "$anchor_color" "$ctx_color" "$lc" "$nwc" "${pc:-}" "$letter" "$fc" "$bc"
+	mode=p; build "" "" "" "" "" "" "" "" "" "$badge_plain" "" ""
 	# --- fit: measure in cells, shrink from the right, then drop, then cut
 	local n=${#L[@]} i out="" pout="" w=0 limit=$(( cols - 2 ))
 	local -a lv=() on=(); for ((i = 0; i < n; i++)); do lv+=(0); on+=(1); done
@@ -472,9 +487,12 @@ render_v4() {
 			if [ "${on[$i]}" -eq 1 ] && [ "${lv[$i]}" -lt 2 ]; then lv[$i]=$(( lv[$i] + 1 )); moved=1; break; fi
 		done
 		if [ "$moved" -eq 0 ]; then
+			# D is the drop order (1 goes first); ties go to the rightmost. $ 1 · π 2 · τ 3 · δ 4.
+			local best=-1 bestd=99
 			for ((i = n - 1; i >= 0; i--)); do
-				if [ "${on[$i]}" -eq 1 ] && [ "${D[$i]}" -eq 1 ]; then on[$i]=0; moved=1; break; fi
+				if [ "${on[$i]}" -eq 1 ] && [ "${D[$i]}" -gt 0 ] && [ "${D[$i]}" -lt "$bestd" ]; then best=$i; bestd=${D[$i]}; fi
 			done
+			[ "$best" -ge 0 ] && { on[$best]=0; moved=1; }
 		fi
 		[ "$moved" -eq 0 ] && break
 		compose

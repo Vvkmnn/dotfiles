@@ -35,21 +35,23 @@ Main = **`opus`** (plain Opus 4.8 end-to-end; on 20x you have the headroom — `
 
 ### Statusline Legend (your scoreboard)
 
-`ॐ Fᵀˣ ψ 36%¹ᴹ κ 94% μ 52% λ 38% 28% σ 2.2h 5.7h θ 4.2h¹·³ 1.4d π main +45 $ 484`
+One row in Claude's own footer, drawn by `~/.claude/mods/statusline` from `statusline.sh` (v4, 2026-11-04):
 
-| Glyph | Reads as | Act when |
-|-------|----------|----------|
-| `ॐ` color | vim state: orange insert (typing = resting) · blue normal/escaped · gold visual | (replaces -- INSERT --) |
-| `F/O/S/H` + `ᵀ ᴹ ˣ ⁺ ⁻` | model, thinking, effort | wrong model for the task? `/model` |
-| `ψ %` (`¹ᴹ` = 1M session) | context used | >60% orange: wrap up or `/compact Focus on X` |
-| `κ %` | cache-hit efficiency | orange <70: cache breaking — early-context edits or >1h gaps. Cache reads DON'T count against rate limits (subscription sessions get 1-hour TTL) — κ is a quota multiplier |
-| `μ %` | weekly budget variance | red negative: overspent pace · gray >5: surplus, spend more |
-| `λ % %` | 5h / 7d quota used | red = near cap; Default will soften to Sonnet |
-| `θ h/d` + superscript | runway + pace ratio | red superscript >1.2: current pace exhausts quota before reset |
-| `$` | API-equivalent value extracted (dim) | higher = more out of the flat rate. It's a score, not a bill |
-| `¢` (orange, appears only when >0) | REAL usage-credit spend | post-2026-07-08 Fable sessions burn credits — this is actual money; refreshed by the usage-API fallback, carried forward between refreshes |
+`ॐ Fᵀ⁺ high + thinking  ? 6 waiting · ψ 37% context  λ 33% (36%ᶠ)  τ 6d 9h reset  δ 375% stop for 5d 3h · π 26 files uncommitted on v-macos  $ 381 over 2h 40m`
 
-`STATUSLINE_MINIMAL=1` flips to early-warning display (segments appear only when actionable).
+| Glyph | Reads as | Source, freshness | Act when |
+|-------|----------|-------------------|----------|
+| `ॐ` | red = this pane waits on you and is idle; else vim colour (gold, orange insert, blue visual) | tmux pane flag from the hooks; footer's draft/working state | red: answer it |
+| `Fᵀ⁺ high + thinking` | model letter, thinking, effort (words shrink first) | settings; a session-only `/effort` is not visible | wrong model for the task: `/model` |
+| `? N waiting` | panes running Claude that wait on you | tmux flags, every render | N > 0: `M-n` to jump |
+| `ψ %` | context used | engine, every render | > 60 %: wrap up or `/compact` |
+| `λ % (%ᶠ)` | the week used, Fable's week in the bracket | engine (every response) and the usage endpoint (10-min poll), the fresher; endpoint alone when the weeks differ | amber 80 %, red 90 % |
+| `τ` | time to the weekly reset | reset timestamp, exact | |
+| `δ % …` | where the week lands at its average pace since the window opened, then the action: `stop for 5d 3h` (red: the pause that lands it at 100 %) · `1d 7h to spare` · `on pace` | used % over the endpoint's `window_started_at`; from 10 % used; cannot jump | red: the next session is a cost decision, see memory `spend-the-week-on-purpose` |
+| `π` | uncommitted files, branch, PR badge in its review colour | git, every render | |
+| `$ … over …` | Claude's list-price estimate (a score on Ultra, never a bill) over the session's elapsed time | engine; `startedAt` from the mods API | |
+
+Sections shrink from the right (long · short · minimal), then drop `$`, π, τ, δ in that order; ॐ ? ψ λ are the floor. `statusline.sh demo` renders every state; the selftest asserts the tokens, the fit at seven widths, the running-dry colours, the endpoint fixture and the stale-week guard. Nothing is written to disk on the live path (`CLAUDE_STATUSLINE_STYLE=v3` keeps the old line and its ring).
 
 ### Skills — reach-for map (19 owner skills)
 

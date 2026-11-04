@@ -29,6 +29,29 @@ check settings-json-valid jq empty "$C/settings.json"
 for h in "$C"/hooks/*.js "$C"/hooks/lib/*.js; do check "hook-syntax:$(basename "$h")" node --check "$h"; done
 check hook-tests node "$C/hooks/pre-tool-use.test.js"
 check waiting-flag-tests node "$C/hooks/waiting-flag.test.js"
+check pane-session-tests node "$C/hooks/pane-session.test.js"
+# --- launcher: `c` resumes this pane's own session (the pane option, with its transcript under this cwd)
+# and names a parked background job for this cwd instead of looping. The two zsh functions are lifted
+# out of ~/.functions and run against a stub tmux and a scratch HOME. ---
+lt="${TMPDIR:-/tmp}/selftest-launcher"; rm -rf "$lt"; mkdir -p "$lt/home/.claude/projects/-Users-v--claude" "$lt/home/.claude/sessions"
+printf '#!/bin/sh\ncase "$1" in show-options) printf "aaaaaaaa-1111-2222-3333-444444444444\\n";; esac\n' > "$lt/tmux"; chmod +x "$lt/tmux"
+echo '{}' > "$lt/home/.claude/projects/-Users-v--claude/aaaaaaaa-1111-2222-3333-444444444444.jsonl"
+printf '{"pid":1,"sessionId":"bbbbbbbb-1111-2222-3333-444444444444","cwd":"/Users/v/.claude","kind":"bg"}' > "$lt/home/.claude/sessions/1.json"
+printf '{"pid":2,"sessionId":"cccccccc-1111-2222-3333-444444444444","cwd":"/Users/v/.claude","kind":"interactive"}' > "$lt/home/.claude/sessions/2.json"
+awk '/^  __claude_pane_session\(\) \{/,/^  \}/; /^  __claude_parked\(\) \{/,/^  \}/' "$HOME/.functions" > "$lt/fns.zsh"
+lout=$(cd "$C" && HOME="$lt/home" TMUX=stub TMUX_PANE='%1' CLAUDE_TMUX_BIN="$lt/tmux" zsh -c "source '$lt/fns.zsh' && __claude_pane_session && echo && __claude_parked" 2>&1)
+[ "$(printf '%s' "$lout" | sed -n 1p)" = "aaaaaaaa-1111-2222-3333-444444444444" ] && ok "launcher: pane session resolved" || fail "launcher: pane session (got: $lout)"
+[ "$(printf '%s' "$lout" | sed -n 2p)" = "bbbbbbbb-1111-2222-3333-444444444444" ] && ok "launcher: parked job named, interactive one not" || fail "launcher: parked (got: $lout)"
+lout2=$(cd "$C" && HOME="$lt/home" TMUX=stub TMUX_PANE='%1' CLAUDE_TMUX_BIN="$lt/tmux" zsh -c "source '$lt/fns.zsh'; rm '$lt/home/.claude/projects/-Users-v--claude/aaaaaaaa-1111-2222-3333-444444444444.jsonl'; __claude_pane_session || echo none" 2>&1)
+[ "$lout2" = "none" ] && ok "launcher: no transcript under this cwd, no resume" || fail "launcher: stale pane option leaked (got: $lout2)"
+rm -rf "$lt"
+# --- the reaper stays dead (it killed seven sessions on 2026-11-02): no live line in the launcher or the
+# restore script names claude-idle-checker, and the script itself is not executable ---
+for f in "$HOME/.functions" "$HOME/.config/tmux/claude-session-restore.sh"; do
+	n=$(grep -v -E '^\s*#' "$f" 2>/dev/null | grep -c 'claude-idle-checker')
+	[ "$n" -eq 0 ] && ok "reaper: not armed by ${f##*/}" || fail "reaper: ${f##*/} still names claude-idle-checker ($n lines)"
+done
+[ ! -x "$HOME/.config/tmux/claude-idle-checker.sh" ] && ok "reaper: script not executable" || fail "reaper: claude-idle-checker.sh is executable"
 # tmux best-of-day keeper (lambda.sh keep_daily): today's copy must exist once a save has run today.
 check tmux-daily-keep test -s "$HOME/.local/share/tmux/resurrect/pinned/daily/tmux_resurrect_$(date +%Y%m%d).txt"
 
@@ -37,12 +60,12 @@ now=$(date +%s)
 # Sample renders must never feed the real usage ring: point it at a scratch file for this run.
 ring="${TMPDIR:-/tmp}/selftest-usage-ring.tsv"; export CLAUDE_USAGE_RING="$ring"; rm -f "$ring"
 export CLAUDE_STATUSLINE_WAITING="0:"   # pin the ? count: the live tmux flags must not reach a sample render
-sample=$(printf '{"cwd":"%s","model":{"id":"claude-opus-5-5"},"workspace":{"current_dir":"%s"},"cost":{"total_cost_usd":12.34,"total_duration_ms":7200000,"total_api_duration_ms":2880000},"context_window":{"context_window_size":1000000,"used_percentage":51.4},"prompt_cache":{"warm":true,"hit_ratio":0.94},"effort":{"level":"high"},"thinking":{"enabled":true},"rate_limits":{"five_hour":{"used_percentage":40,"resets_at":%d},"seven_day":{"used_percentage":30,"resets_at":%d}},"vim":{"mode":"NORMAL"},"pr":{"number":1234,"review_state":"pending"}}' "$HOME" "$HOME" $((now + 2880)) $((now + 561600)))
+sample=$(printf '{"cwd":"%s","model":{"id":"claude-opus-5-5"},"workspace":{"current_dir":"%s"},"cost":{"total_cost_usd":12.34,"total_duration_ms":7200000,"total_api_duration_ms":2880000},"context_window":{"context_window_size":1000000,"used_percentage":51.4},"prompt_cache":{"warm":true,"hit_ratio":0.94},"effort":{"level":"high"},"thinking":{"enabled":true},"rate_limits":{"five_hour":{"used_percentage":40,"resets_at":%d},"seven_day":{"used_percentage":30,"resets_at":%d}},"vim":{"mode":"NORMAL"},"pr":{"number":1234,"review_state":"pending"}}' "$HOME" "$HOME" $((now + 2880)) $((now + 388900)))   # 30 % with 4.5 of 7 days left: on pace, lands 84 %
 start=$(date +%s%N 2>/dev/null || python3 -c 'import time;print(int(time.time()*1e9))')
-line=$(printf '%s' "$sample" | COLUMNS=140 "$C/statusline.sh" | sed $'s/\e\\[[0-9;]*m//g')
+line=$(printf '%s' "$sample" | COLUMNS=160 "$C/statusline.sh" | sed $'s/\e\\[[0-9;]*m//g')   # 160: the long forms fit (the full row is 163 cells; at 140 the fit shrinks them, asserted below)
 end=$(date +%s%N 2>/dev/null || python3 -c 'import time;print(int(time.time()*1e9))')
 ms=$(( (end - start) / 1000000 ))
-for tok in 'Oᵀ⁺' '? 0' 'ψ 51%' 'λ 30%' '(40% 5h)' 'τ 6d' '#1234' '$ 12'; do
+for tok in 'Oᵀ⁺' '? 0' 'ψ 51%' 'λ 30%' '(40% 5h)' 'τ 4d 12h reset' 'δ 84% 1d 7h to spare' '#1234' '$ 12 over 2h'; do   # δ from the window's average pace, $ with the session clock
 	if printf '%s' "$line" | grep -qF -- "$tok"; then ok "statusline:$tok"; else fail "statusline:$tok  (line: $line)"; fi
 done
 row statusline render_ms "$ms"
@@ -53,9 +76,23 @@ row statusline render_ms "$ms"
 red=$'\e[38;2;232;36;36m'
 raw=$(printf '%s' "$sample" | "$C/statusline.sh")
 case "$raw" in *"λ"*"${red}30%"*) fail "statusline:baseline must not be red (line: $line)" ;; *) ok "statusline:baseline not red" ;; esac
-printf '%s\t5\t20\n%s\t20\t25\n' "$((now - 2400))" "$((now - 600))" > "$ring"   # 30 min of samples: the projection's minimum
-burst=$(printf '%s' "$sample" | "$C/statusline.sh")
-case "$burst" in *"${red}30%"*) ok "statusline:burst renders λ red" ;; *) fail "statusline:burst not red (line: $(printf '%s' "$burst" | sed $'s/\e\\[[0-9;]*m//g'))" ;; esac
+# the same session a day into a week that is 60 % spent: the average pace runs dry long before the reset
+dry="${sample/\"used_percentage\":30,\"resets_at\":$((now + 388900))/\"used_percentage\":60,\"resets_at\":$((now + 518400))}"
+burst=$(printf '%s' "$dry" | "$C/statusline.sh")
+case "$burst" in *"${red}60%"*"stop for"*) ok "statusline:running dry renders λ red and δ stop for" ;; *) fail "statusline:running dry not red (line: $(printf '%s' "$burst" | sed $'s/\e\\[[0-9;]*m//g'))" ;; esac
+# --- the usage endpoint's cache: a session that outlived a reset reports last week's 95 %; the endpoint says 20 %
+# of a week that opened three days ago with four left, Fable at 35 %: the row shows 20 %, (35%ᶠ), and a δ from
+# the endpoint's window (20 % over 3 d lands at 47 %), never the stale 95 % ---
+fixture="${TMPDIR:-/tmp}/selftest-usage-api.json"
+iso() { date -u -r "$1" +%Y-%m-%dT%H:%M:%S.000000+00:00; }
+printf '{"limits":[{"kind":"weekly_all","percent":20,"resets_at":"%s"},{"kind":"weekly_scoped","percent":35,"resets_at":"%s","scope":{"model":{"display_name":"Fable"}}}],"seven_day_breakdown":{"window_started_at":"%s"}}' "$(iso $((now + 345600)))" "$(iso $((now + 345600)))" "$(iso $((now - 259200)))" > "$fixture"
+stale="${sample/\"used_percentage\":30,\"resets_at\":$((now + 388900))/\"used_percentage\":95,\"resets_at\":$((now - 259200))}"
+sline=$(printf '%s' "$stale" | COLUMNS=160 CLAUDE_USAGE_CACHE="$fixture" "$C/statusline.sh" | sed $'s/\e\\[[0-9;]*m//g')
+for tok in 'λ 20% (35%ᶠ)' 'τ 4d reset' 'δ 47%' 'to spare'; do
+	if printf '%s' "$sline" | grep -qF -- "$tok"; then ok "statusline:endpoint:$tok"; else fail "statusline:endpoint:$tok  (line: $sline)"; fi
+done
+case "$sline" in *95%*) fail "statusline:endpoint: stale 95% leaked (line: $sline)" ;; *) ok "statusline:endpoint: stale week dropped" ;; esac
+rm -f "$fixture"
 # --- fit: at every width the row is never wider than the pane (cells, colour codes stripped) ---
 for cols in 160 140 95 70 63 50 36; do
 	wline=$(printf '%s' "$sample" | COLUMNS="$cols" "$C/statusline.sh" | sed $'s/\e\\[[0-9;]*m//g')

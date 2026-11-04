@@ -18,8 +18,10 @@ function world (on: On, stdout: string = LINE) {
   on('settings.read', () => ({ value: { effortLevel: 'high' } }))
   on('env.get', ($, e) => ({ value: e.name === 'HOME' ? '/Users/v' : undefined }))
   const states: string[] = []   // CLAUDE_STATUSLINE_STATE of every script run, in order
+  const payloads: string[] = [] // the stdin JSON of every script run, in order
   on('process.run', ($, e) => {
     states.push((e.init && e.init.env && e.init.env.CLAUDE_STATUSLINE_STATE) || '')
+    payloads.push(String((e.init && e.init.stdin) || ''))
     return { value: { exitCode: 0, stdout, stderr: '' } }
   })
   on('session.measure', ($, e) => ({ changed: e.changed }))
@@ -27,7 +29,7 @@ function world (on: On, stdout: string = LINE) {
     const { Text } = $.ui.resolve(e)
     return Text({ children: ['hint' in e.props ? e.props.hint : ''] })
   })
-  return { clock, states }
+  return { clock, states, payloads }
 }
 
 const startSession = ($: Engine) => $.session.start({ cwd: '/project', surface: 'terminal', isInteractive: true })
@@ -59,6 +61,15 @@ test('draws nothing of its own when Claude has nothing to say but the dropped pa
   const ui = await hint($)   // hint is only the vim word and the shortcuts reminder
   expect(await ui.find({ type: 'Text', text: ' · ' })).toBeUndefined()
   expect(await ui.find({ type: 'Text', text: 'ॐ' })).toBeDefined()
+})
+
+test("passes the session's elapsed time from startedAt, so the row's $ carries its clock", async ($, on) => {
+  const { payloads } = world(on)
+  await startSession($)
+  await hint($)
+  const last = JSON.parse(payloads[payloads.length - 1])
+  expect(last.cost.total_duration_ms).toBe(0)   // the mocked clock stands at startedAt
+  expect(last.cost.total_cost_usd).toBe(283)
 })
 
 test('tells the script when you are typing or Claude is working, so ॐ is red only when idle', async ($, on) => {

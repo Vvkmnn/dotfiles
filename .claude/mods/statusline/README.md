@@ -7,8 +7,13 @@ after the mode words and after Claude's own hint. The script stays the single so
 colours into Text elements.
 
 ```
-⏸ manual mode on · -- INSERT -- (shift+tab to cycle) · 1 feedback draft · ॐ Fᵀ⁺ high + thinking  ? 6 waiting · ψ 89% context  λ 21% (15% fable) used  τ 6d 11h to reset · π 31 files uncommitted on v-macos  $ 355 estimated
+⏸ manual mode on · 1 feedback draft · ॐ Fᵀ⁺ high + thinking  ? 6 waiting · ψ 37% context  λ 33% (36%ᶠ)  τ 6d 9h reset  δ 375% stop for 5d 3h · π 26 files uncommitted on v-macos  $ 381 over 2h 40m
 ```
+
+The payload the mod builds carries what the script reads: model, effort and thinking from settings,
+context and the rate-limit windows from `$.session.usage()`, the cost, and the session's elapsed
+time from `usage.startedAt` (the `$ … over 2h 40m` clock; a resume keeps it, `/clear` restarts it).
+The legend is in `docs/CONFIG.md` (Statusline Legend).
 
 Claude's words are never dropped: the engine hands the hint site a `hint` string that reads the
 whole drawn line (`-- INSERT --`, the shortcuts hint, `esc to interrupt`, its pills), and the mod
