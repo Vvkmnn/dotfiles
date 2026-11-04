@@ -4,14 +4,30 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-MAPFILE="$HOME/.config/tmux/claude_sessions"
+REGISTRY="${CLAUDE_SESSIONS_DIR:-$HOME/.claude/sessions}"   # override = selftest fixture
+
+# Live Claudes from Claude's own registry (one JSON per running process; the entry lingers after a crash,
+# so a dead pid counts as nothing). Prints: uuid, mark, pane  —  ● busy · ◐ waiting · ○ idle or shell.
+# Replaced the ~/.config/tmux/claude_sessions map on 2026-11-04 (retired with the resurrect hooks).
+registry_marks() {
+  local f sid pid status pane mark
+  for f in "$REGISTRY"/*.json; do
+    [ -f "$f" ] || continue
+    IFS=$'\t' read -r sid pid status pane < <(jq -r '[.sessionId, (.pid|tostring), (.status // ""), (.tmux // "")] | @tsv' "$f" 2>/dev/null) || continue
+    [ -n "$sid" ] && [ -n "$pid" ] && kill -0 "$pid" 2>/dev/null || continue
+    case "$status" in busy) mark='●' ;; waiting) mark='◐' ;; *) mark='○' ;; esac
+    printf 'MARK\t%s\t%s\t%s\n' "$sid" "$mark" "${pane##*.}"   # tagged: awk tells these rows apart however many there are
+  done
+}
 
 # Format index TSV into display columns (awk is ~50x faster than bash loop for 500+ lines)
 format_lines() {
   awk -F'\t' -v now="$(date +%s)" -v home="$HOME" '
+  $1 == "MARK" { mark[$2] = $3; next }   # the live marks from the registry (NR==FNR fails when there are none)
   {
     uuid=$1; mtime=$2; cwd=$3; slug=$4; branch=$5; prompt=$6
     if (uuid == "") next
+    live = (uuid in mark) ? mark[uuid] : " "
     age = now - mtime
     if      (age < 60)     rel = "now"
     else if (age < 3600)   rel = int(age/60) "m"
@@ -38,8 +54,8 @@ format_lines() {
     # Truncate prompt so total visible line fits without hscroll
     if (length(prompt) > 50) prompt = substr(prompt, 1, 47) "..."
     # Tab-separate UUID from visible content so fzf --with-nth hides UUID cleanly
-    printf "%s\t%4s  %-22s  %-20s%-7s  %s\n", uuid, rel, cwd, slug, branch, prompt
-  }'
+    printf "%s\t%s %4s  %-22s  %-20s%-7s  %s\n", uuid, live, rel, cwd, slug, branch, prompt
+  }' <(registry_marks) -
 }
 
 # List-only mode for fzf reload
@@ -99,20 +115,14 @@ if [[ "$uuid" == fork:* ]]; then
   exit 0
 fi
 
-# Check if session is active in a tmux window via claude_sessions mapping
-if [ -n "${TMUX:-}" ] && [ -f "$MAPFILE" ]; then
-  while IFS= read -r match; do
-    [ -z "$match" ] && continue
-    target="${match%% *}"
-    tmux_session="${target%%:*}"
-    tmux_window=$(echo "$target" | cut -d: -f2)
-    tmux_target="${tmux_session}:${tmux_window}"
-    if /opt/homebrew/bin/tmux list-windows -t "$tmux_session" -F '#{session_name}:#{window_index}' 2>/dev/null | grep -qF "$tmux_target"; then
-      /opt/homebrew/bin/tmux select-window -t "$tmux_target" 2>/dev/null \
-        && /opt/homebrew/bin/tmux switch-client -t "$tmux_session" 2>/dev/null
-      exit 0
-    fi
-  done < <(grep " ${uuid}$" "$MAPFILE" 2>/dev/null || true)
+# Live in a pane (registry, pid alive): jump there. Never resume it here: two processes on one
+# transcript interleave their messages (docs, sessions.md).
+pane=$(registry_marks | awk -F'\t' -v u="$uuid" '$2 == u { print $4; exit }')
+if [ -n "$pane" ] && [ -n "${TMUX:-}" ]; then
+  /opt/homebrew/bin/tmux switch-client -t "$pane" 2>/dev/null
+  /opt/homebrew/bin/tmux select-window -t "$pane" 2>/dev/null
+  /opt/homebrew/bin/tmux select-pane -t "$pane" 2>/dev/null
+  exit 0
 fi
 
 # Not active — cd to project dir and resume in current terminal

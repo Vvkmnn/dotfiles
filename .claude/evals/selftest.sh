@@ -89,6 +89,16 @@ cw=$(printf '%s\n' "$cbox" | grep -v '└──' | python3 -I -c 'import sys; pr
 [ "$cw" -le 60 ] && ok "crab: box fits 60 cells ($cw); the fix line is never cut" || fail "crab: box is $cw cells wide"
 case "$cbox" in *'(\/) (~,,~) (\/)'*'❯ four'*'claude stop 99ed114c'*) ok "crab: claws, face, prompts and the fix line" ;; *) fail "crab: box content (got: $(printf '%s' "$cbox" | tr '\n' '|'))" ;; esac
 rm -rf "$cb"
+# --- the prefix+g picker (clh.sh) marks live sessions from Claude's registry and jumps to their pane; a dead
+# pid is unmarked and resumes as before ---
+pk="${TMPDIR:-/tmp}/selftest-picker"; rm -rf "$pk"; mkdir -p "$pk"
+printf '{"pid":%s,"sessionId":"ffffffff-1111-2222-3333-444444444444","status":"waiting","tmux":"2:@1.%%9"}' "$$" > "$pk/a.json"
+printf '{"pid":999999,"sessionId":"99999999-1111-2222-3333-444444444444","status":"busy","tmux":"2:@1.%%3"}' > "$pk/b.json"
+pmarks=$(/opt/homebrew/bin/bash -c "source <(sed -n '/^registry_marks()/,/^}/p' \"$HOME/.config/fzf/clh.sh\"); REGISTRY=\"$pk\"; registry_marks")
+[ "$pmarks" = "$(printf 'MARK\tffffffff-1111-2222-3333-444444444444\t◐\t%%9')" ] && ok "picker: live session marked waiting with its pane, dead pid dropped" || fail "picker: marks (got: $(printf '%s' "$pmarks" | tr '\t' '|'))"
+plist=$(printf 'ffffffff-1111-2222-3333-444444444444\t%s\t/Users/v/.claude\tslug\tmain\thello\n11111111-1111-2222-3333-444444444444\t%s\t/Users/v/Dev\tslug2\tmain\tbye\n' "$(date +%s)" "$(date +%s)" | /opt/homebrew/bin/bash -c "source <(sed -n '/^registry_marks()/,/^}/p; /^format_lines()/,/^}/p' \"$HOME/.config/fzf/clh.sh\"); REGISTRY=\"$pk\"; format_lines" 2>&1)
+case "$plist" in *$'\t◐  now'*$'\t   now'*) ok "picker: rows carry the mark, unmarked rows still list" ;; *) fail "picker: list marks (got: $(printf '%s' "$plist" | tr '\t\n' '|/'))" ;; esac
+rm -rf "$pk"
 # tmux best-of-day keeper (lambda.sh keep_daily): today's copy must exist once a save has run today.
 check tmux-daily-keep test -s "$HOME/.local/share/tmux/resurrect/pinned/daily/tmux_resurrect_$(date +%Y%m%d).txt"
 
