@@ -34,16 +34,26 @@ check pane-session-tests node "$C/hooks/pane-session.test.js"
 # and names a parked background job for this cwd instead of looping. The two zsh functions are lifted
 # out of ~/.functions and run against a stub tmux and a scratch HOME. ---
 lt="${TMPDIR:-/tmp}/selftest-launcher"; rm -rf "$lt"; mkdir -p "$lt/home/.claude/projects/-Users-v--claude" "$lt/home/.claude/sessions"
-printf '#!/bin/sh\ncase "$1" in show-options) printf "aaaaaaaa-1111-2222-3333-444444444444\\n";; esac\n' > "$lt/tmux"; chmod +x "$lt/tmux"
+printf '#!/bin/sh\ncase "$*" in *@claude_session) printf "aaaaaaaa-1111-2222-3333-444444444444\\n";; *@claude_args) printf -- "--plugin-dir /x\\\\ y\\n";; set-option*) printf "%%s\\n" "$*" >> "%s";; esac\n' "$lt/calls" > "$lt/tmux"; chmod +x "$lt/tmux"
 echo '{}' > "$lt/home/.claude/projects/-Users-v--claude/aaaaaaaa-1111-2222-3333-444444444444.jsonl"
 printf '{"pid":1,"sessionId":"bbbbbbbb-1111-2222-3333-444444444444","cwd":"/Users/v/.claude","kind":"bg"}' > "$lt/home/.claude/sessions/1.json"
 printf '{"pid":2,"sessionId":"cccccccc-1111-2222-3333-444444444444","cwd":"/Users/v/.claude","kind":"interactive"}' > "$lt/home/.claude/sessions/2.json"
-awk '/^  __claude_pane_session\(\) \{/,/^  \}/; /^  __claude_parked\(\) \{/,/^  \}/' "$HOME/.functions" > "$lt/fns.zsh"
+awk '/^  __claude_pane_session\(\) \{/,/^  \}/; /^  __claude_parked\(\) \{/,/^  \}/; /^  __claude_pane_args\(\) \{/,/^  \}/; /^  __claude_save_args\(\) \{/,/^  \}/; /^  __claude_live_elsewhere\(\) \{/,/^  \}/' "$HOME/.functions" > "$lt/fns.zsh"
 lout=$(cd "$C" && HOME="$lt/home" TMUX=stub TMUX_PANE='%1' CLAUDE_TMUX_BIN="$lt/tmux" zsh -c "source '$lt/fns.zsh' && __claude_pane_session && echo && __claude_parked" 2>&1)
 [ "$(printf '%s' "$lout" | sed -n 1p)" = "aaaaaaaa-1111-2222-3333-444444444444" ] && ok "launcher: pane session resolved" || fail "launcher: pane session (got: $lout)"
 [ "$(printf '%s' "$lout" | sed -n 2p)" = "bbbbbbbb-1111-2222-3333-444444444444" ] && ok "launcher: parked job named, interactive one not" || fail "launcher: parked (got: $lout)"
 lout2=$(cd "$C" && HOME="$lt/home" TMUX=stub TMUX_PANE='%1' CLAUDE_TMUX_BIN="$lt/tmux" zsh -c "source '$lt/fns.zsh'; rm '$lt/home/.claude/projects/-Users-v--claude/aaaaaaaa-1111-2222-3333-444444444444.jsonl'; __claude_pane_session || echo none" 2>&1)
 [ "$lout2" = "none" ] && ok "launcher: no transcript under this cwd, no resume" || fail "launcher: stale pane option leaked (got: $lout2)"
+# W1: the pane's launch flags come back as separate words, spaces intact; saving quotes them the same way
+lout3=$(cd "$C" && HOME="$lt/home" TMUX=stub TMUX_PANE='%1' CLAUDE_TMUX_BIN="$lt/tmux" zsh -c "source '$lt/fns.zsh'; s=\$(__claude_pane_args); a=(\"\${(@Q)\${(z)s}}\"); print -r -- \${#a} \"\${a[2]}\"; __claude_save_args --add-dir '/a b' --model opus; cat '$lt/calls'" 2>&1)
+[ "$(printf '%s' "$lout3" | sed -n 1p)" = "2 /x y" ] && ok "launcher: saved flags read back as words" || fail "launcher: flags (got: $lout3)"
+case "$lout3" in *"set-option -p -t %1 @claude_args --add-dir '/a b' --model opus"*) ok "launcher: flags saved quoted on the pane" ;; *) fail "launcher: save (got: $lout3)" ;; esac
+# W2: a session whose registry entry has a live pid and a pane is "open elsewhere"; a dead pid is not
+printf '{"pid":%s,"sessionId":"dddddddd-1111-2222-3333-444444444444","cwd":"/Users/v/.claude","kind":"interactive","tmux":"2:@1.%%7"}' "$$" > "$lt/home/.claude/sessions/3.json"
+printf '{"pid":999999,"sessionId":"eeeeeeee-1111-2222-3333-444444444444","cwd":"/Users/v/.claude","kind":"interactive","tmux":"2:@1.%%8"}' > "$lt/home/.claude/sessions/4.json"
+lout4=$(cd "$C" && HOME="$lt/home" zsh -c "source '$lt/fns.zsh'; __claude_live_elsewhere dddddddd-1111-2222-3333-444444444444; echo; __claude_live_elsewhere eeeeeeee-1111-2222-3333-444444444444 || echo free" 2>&1)
+[ "$(printf '%s' "$lout4" | sed -n 1p)" = "2:@1.%7" ] && ok "launcher: live session elsewhere named by pane" || fail "launcher: live elsewhere (got: $lout4)"
+[ "$(printf '%s' "$lout4" | sed -n 2p)" = "free" ] && ok "launcher: dead pid never blocks a resume" || fail "launcher: dead pid (got: $lout4)"
 rm -rf "$lt"
 # --- the reaper stays dead (it killed seven sessions on 2026-11-02): no live line in the launcher or the
 # restore script names claude-idle-checker, and the script itself is not executable ---
@@ -52,6 +62,33 @@ for f in "$HOME/.functions" "$HOME/.config/tmux/claude-session-restore.sh"; do
 	[ "$n" -eq 0 ] && ok "reaper: not armed by ${f##*/}" || fail "reaper: ${f##*/} still names claude-idle-checker ($n lines)"
 done
 [ ! -x "$HOME/.config/tmux/claude-idle-checker.sh" ] && ok "reaper: script not executable" || fail "reaper: claude-idle-checker.sh is executable"
+# --- the pane's session across a reboot: resurrect's hooks snapshot @claude_session and @claude_args per pane
+# and put them back on panes whose position and cwd still match; an empty save writes nothing ---
+pt="${TMPDIR:-/tmp}/selftest-panes"; rm -rf "$pt"; mkdir -p "$pt/snap"
+printf '#!/bin/sh\ncase "$1" in\n list-panes) [ -n "${PANES_EMPTY:-}" ] || printf "main:1.0\\t/Users/v/.claude\\taaaaaaaa-1111-2222-3333-444444444444\\t--plugin-dir /x\\nmain:2.0\\t/Users/v/Dev/eve\\t\\t\\nmain:3.1\\t/tmp/moved\\tbbbbbbbb-1111-2222-3333-444444444444\\t\\n";;\n display-message) case "$*" in *main:1.0*) printf "/Users/v/.claude\\n";; *main:3.1*) printf "/Users/v/elsewhere\\n";; esac;;\n set-option) printf "%%s\\n" "$*" >> "%s";;\nesac\n' "$pt/calls" > "$pt/tmux"; chmod +x "$pt/tmux"
+CLAUDE_TMUX_BIN="$pt/tmux" CLAUDE_PANES_DIR="$pt/snap" bash "$HOME/.config/tmux/claude-panes-save.sh"
+snap=$(ls "$pt/snap"/*.tsv 2>/dev/null | head -1)
+[ -n "$snap" ] && [ "$(wc -l < "$snap" | tr -d ' ')" = "2" ] && ok "panes: save keeps the two Claude panes, not the shell" || fail "panes: save (snap: ${snap:-none})"
+PANES_EMPTY=1 CLAUDE_TMUX_BIN="$pt/tmux" CLAUDE_PANES_DIR="$pt/snap" bash "$HOME/.config/tmux/claude-panes-save.sh"
+[ "$(ls "$pt/snap"/*.tsv | wc -l | tr -d ' ')" = "1" ] && ok "panes: an empty save writes no snapshot" || fail "panes: empty save wrote a file"
+CLAUDE_TMUX_BIN="$pt/tmux" CLAUDE_PANES_DIR="$pt/snap" bash "$HOME/.config/tmux/claude-panes-restore.sh"
+grep -q 'set-option -p -t main:1.0 @claude_session aaaaaaaa-1111-2222-3333-444444444444' "$pt/calls" && grep -q 'set-option -p -t main:1.0 @claude_args --plugin-dir /x' "$pt/calls" && ok "panes: restore puts session and flags back on the matching pane" || fail "panes: restore (calls: $(cat "$pt/calls" 2>/dev/null))"
+grep -q 'main:3.1' "$pt/calls" 2>/dev/null && fail "panes: restore tagged a pane whose cwd moved" || ok "panes: a pane in another folder is never tagged"
+rm -rf "$pt"
+# --- the crab box (claude-crab.sh): title, idle and the last three prompts from a transcript (tool results
+# skipped), the name for the pane title, and a box never wider than 60 cells even with a long command ---
+cb="${TMPDIR:-/tmp}/selftest-crab"; rm -rf "$cb"; mkdir -p "$cb/projects/-Users-v--claude"
+cj="$cb/projects/-Users-v--claude/aaaaaaaa-1111-2222-3333-444444444444.jsonl"
+printf '{"type":"custom-title","customTitle":"walkthrough-recovery"}\n{"type":"user","timestamp":"2026-11-04T01:00:00.000Z","message":{"role":"user","content":"one"}}\n{"type":"user","timestamp":"2026-11-04T01:01:00.000Z","message":{"role":"user","content":[{"type":"tool_result","content":"x"}]}}\n{"type":"user","timestamp":"2026-11-04T01:02:00.000Z","message":{"role":"user","content":[{"type":"text","text":"two"}]}}\n{"type":"user","timestamp":"2026-11-04T01:03:00.000Z","message":{"role":"user","content":"three"}}\n{"type":"user","timestamp":"%s","message":{"role":"user","content":"four"}}\n' "$(date -u +%Y-%m-%dT%H:%M:%S.000Z)" > "$cj"
+cinfo=$(CLAUDE_PROJECTS_DIR="$cb/projects" bash "$HOME/.config/tmux/claude-crab.sh" info aaaaaaaa-1111-2222-3333-444444444444 /Users/v/.claude)
+[ "$cinfo" = "$(printf 'TITLE:walkthrough-recovery\nIDLE:0s\nPROMPT:two\nPROMPT:three\nPROMPT:four')" ] && ok "crab: title, idle and the last three prompts" || fail "crab: info (got: $(printf '%s' "$cinfo" | tr '\n' '|'))"
+cname=$(CLAUDE_PROJECTS_DIR="$cb/projects" bash "$HOME/.config/tmux/claude-crab.sh" name aaaaaaaa-1111-2222-3333-444444444444 /Users/v/.claude)
+[ "$cname" = "walkthrough-recovery" ] && ok "crab: the pane title is the session's title" || fail "crab: name (got: $cname)"
+cbox=$(CLAUDE_PROJECTS_DIR="$cb/projects" bash "$HOME/.config/tmux/claude-crab.sh" box '~,,~' 'claude --resume aaaaaaaa --plugin-dir /Users/v/Projects/claude-victrix-mod/plugins/victrix' aaaaaaaa-1111-2222-3333-444444444444 /Users/v/.claude "parked as a background job — in another pane: claude stop 99ed114c, then Enter" | sed $'s/\e\\[[0-9;]*m//g')
+cw=$(printf '%s\n' "$cbox" | grep -v '└──' | python3 -I -c 'import sys; print(max(len(l.rstrip("\n")) for l in sys.stdin))')
+[ "$cw" -le 60 ] && ok "crab: box fits 60 cells ($cw); the fix line is never cut" || fail "crab: box is $cw cells wide"
+case "$cbox" in *'(\/) (~,,~) (\/)'*'❯ four'*'claude stop 99ed114c'*) ok "crab: claws, face, prompts and the fix line" ;; *) fail "crab: box content (got: $(printf '%s' "$cbox" | tr '\n' '|'))" ;; esac
+rm -rf "$cb"
 # tmux best-of-day keeper (lambda.sh keep_daily): today's copy must exist once a save has run today.
 check tmux-daily-keep test -s "$HOME/.local/share/tmux/resurrect/pinned/daily/tmux_resurrect_$(date +%Y%m%d).txt"
 
@@ -85,7 +122,7 @@ case "$burst" in *"${red}60%"*"stop for"*) ok "statusline:running dry renders λ
 # the endpoint's window (20 % over 3 d lands at 47 %), never the stale 95 % ---
 fixture="${TMPDIR:-/tmp}/selftest-usage-api.json"
 iso() { date -u -r "$1" +%Y-%m-%dT%H:%M:%S.000000+00:00; }
-printf '{"limits":[{"kind":"weekly_all","percent":20,"resets_at":"%s"},{"kind":"weekly_scoped","percent":35,"resets_at":"%s","scope":{"model":{"display_name":"Fable"}}}],"seven_day_breakdown":{"window_started_at":"%s"}}' "$(iso $((now + 345600)))" "$(iso $((now + 345600)))" "$(iso $((now - 259200)))" > "$fixture"
+printf '{"limits":[{"kind":"weekly_all","percent":20,"resets_at":"%s"},{"kind":"weekly_scoped","percent":35,"resets_at":"%s","scope":{"model":{"display_name":"Fable"}}}],"seven_day_breakdown":{"window_started_at":"%s"}}' "$(iso $((now + 345720)))" "$(iso $((now + 345720)))" "$(iso $((now - 259200)))" > "$fixture"   # four days plus two minutes: the render happens seconds later and must still read "4d"
 stale="${sample/\"used_percentage\":30,\"resets_at\":$((now + 388900))/\"used_percentage\":95,\"resets_at\":$((now - 259200))}"
 sline=$(printf '%s' "$stale" | COLUMNS=160 CLAUDE_USAGE_CACHE="$fixture" "$C/statusline.sh" | sed $'s/\e\\[[0-9;]*m//g')
 for tok in 'λ 20% (35%ᶠ)' 'τ 4d reset' 'δ 47%' 'to spare'; do

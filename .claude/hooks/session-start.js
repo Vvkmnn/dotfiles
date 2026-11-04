@@ -39,31 +39,15 @@ try {
 }
 
 // ============================================================================
-// tmux session mapping: save pane -> claude session ID for exact resume
-// Used by ~/.config/tmux/claude-session-restore.sh after reboot/crash
+// This pane's session id, as the pane option @claude_session (lib/pane-session.js), for the launcher's
+// exact resume; rewritten on every prompt. Across a reboot the option travels through resurrect's
+// save and restore hooks (~/.config/tmux/claude-panes-save.sh / -restore.sh), which replaced the old
+// append-only map ~/.config/tmux/claude_sessions (keyed by window index, which drifts) on 2026-11-04.
 // ============================================================================
 try {
-  if (process.env.TMUX) {
-    const { execFileSync } = require('child_process');
-    const sessionId = hookData ? hookData.session_id : null;
-    if (sessionId) {
-      const tmux = '/opt/homebrew/bin/tmux';
-      const tmuxSession = execFileSync(tmux, ['display-message', '-p', '#{session_name}']).toString().trim();
-      const tmuxWindow = execFileSync(tmux, ['display-message', '-p', '#{window_index}']).toString().trim();
-      const tmuxPath = execFileSync(tmux, ['display-message', '-p', '#{pane_current_path}']).toString().trim();
-      const key = `${tmuxSession}:${tmuxWindow}:${tmuxPath}`;
-      const mapFile = path.join(os.homedir(), '.config', 'tmux', 'claude_sessions');
-
-      // Append-only: atomic for short writes (<PIPE_BUF), no race between concurrent sessions
-      // Pruning happens in claude-session-restore.sh on reboot
-      fs.appendFileSync(mapFile, `${key} ${sessionId}\n`);
-      // And on the pane itself, for the launcher's exact resume while this tmux server lives
-      // (the map file above is for after a reboot). lib/pane-session.js; rewritten on every prompt.
-      require('./lib/pane-session').record(sessionId);
-    }
-  }
+  if (hookData && hookData.session_id) require('./lib/pane-session').record(hookData.session_id);
 } catch (err) {
-  // Silently fail - don't block session start
+  // Fail open - don't block session start
 }
 
 // ============================================================================

@@ -23,7 +23,14 @@ _context() {
   echo "$ctx"
 }
 
-# Read session JSONL for context: title, idle time, recent prompts
+# The box is drawn by ~/.config/tmux/claude-crab.sh (shared with `c` in ~/.functions since 2026-11-04):
+# the crab, the command Enter runs, folder • branch • idle, the title, the last three prompts.
+_prompt() {
+  bash "$HOME/.config/tmux/claude-crab.sh" box '~,,~' "$*" "${SESSION_ID:-}" "$_intended_cwd"
+}
+
+# ---- the former in-script reader and box, kept as the record of the E4 design; superseded above ----
+: <<'SUPERSEDED_BY_CLAUDE_CRAB'
 _session_info() {
   local sid="$1"
   [ -z "$sid" ] && return
@@ -109,6 +116,7 @@ _prompt() {
   echo -e "  \033[${color}m└──\033[0m Press Enter to resume, Ctrl+C for shell"
   echo ""
 }
+SUPERSEDED_BY_CLAUDE_CRAB
 
 # Look up session ID from hook-generated mapping file
 TMUX_SESSION=$(/opt/homebrew/bin/tmux display-message -p '#{session_name}' 2>/dev/null)

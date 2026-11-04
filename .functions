@@ -125,6 +125,34 @@
     done
   }
 
+  # the flags this pane was launched with. A resume restores the conversation but not --plugin-dir,
+  # --add-dir, --settings or --mcp-config (docs, sessions.md "What a resumed session restores"), so
+  # `c` with no arguments re-passes them. Written by the launcher only, never by a hook; zsh-quoted so
+  # spaces survive, read back with ${(@Q)${(z)...}}.
+  __claude_pane_args() {
+    [[ -n "$TMUX" && -n "$TMUX_PANE" ]] || return 1
+    "${CLAUDE_TMUX_BIN:-/opt/homebrew/bin/tmux}" show-options -pqv -t "$TMUX_PANE" @claude_args 2>/dev/null
+  }
+  __claude_save_args() {
+    [[ -n "$TMUX" && -n "$TMUX_PANE" && $# -gt 0 ]] || return 0
+    "${CLAUDE_TMUX_BIN:-/opt/homebrew/bin/tmux}" set-option -p -t "$TMUX_PANE" @claude_args "${(q-)@}" 2>/dev/null
+  }
+
+  # the session already open in another pane: two processes on one transcript interleave their messages
+  # or are refused (docs, sessions.md). Prints the live pane's "session:@window.%pane" from claude's
+  # registry when its pid is alive; nothing otherwise (fails open: a stale entry never blocks a resume).
+  __claude_live_elsewhere() {
+    local id="$1" f pid where
+    for f in "$HOME"/.claude/sessions/*.json(N); do
+      grep -q "\"sessionId\":\"$id\"" "$f" 2>/dev/null || continue
+      grep -q '"kind":"interactive"' "$f" 2>/dev/null || continue
+      pid=$(sed -n 's/.*"pid":\([0-9]*\).*/\1/p' "$f"); where=$(sed -n 's/.*"tmux":"\([^"]*\)".*/\1/p' "$f")
+      [[ -n "$pid" ]] && kill -0 "$pid" 2>/dev/null || continue
+      printf '%s' "${where:-pid $pid}"; return 0
+    done
+    return 1
+  }
+
   # internal wrapper: runs claude with idle detection + restart-on-idle loop
   # __claude_run MODE [ARGS...]  where MODE = continue | new | force
   __claude_run() {
@@ -144,13 +172,26 @@
     # 2026-11-02 and the owner's rule since is that sessions never die (walkthrough, station 1). The script
     # stays on disk, non-executable, as the record; nothing here starts it, whatever its mode.
     local _rapid=0   # consecutive sub-2s exits → crash-loop guard
+    (( $# )) && __claude_save_args "$@"   # this pane's flags, for a later `c` with none
 
     while true; do
       # continue = this pane's own session when the hook recorded one; force (cc) = claude's "most recent"
-      local _id=""
+      local _id="" _where=""
       [[ "$mode" == continue ]] && _id=$(__claude_pane_session)
+      if [[ -n "$_id" ]] && _where=$(__claude_live_elsewhere "$_id"); then
+        local _human; _human=$(/opt/homebrew/bin/tmux display-message -p -t "${_where##*.}" '#S:#I #W' 2>/dev/null)
+        bash "$HOME/.config/tmux/claude-crab.sh" box 'o,,o' "claude --resume ${_id%%-*}" "$_id" "$PWD" "open in ${_human:-$_where} — M-n jumps there, Enter retries"
+        read -r _ </dev/tty || break
+        continue
+      fi
+      # with no arguments, a resume carries the flags this pane was launched with
+      local -a _args; _args=("$@")
+      if [[ -n "$_id" && ${#_args} -eq 0 ]]; then
+        local _stored; _stored=$(__claude_pane_args)
+        [[ -n "$_stored" ]] && _args=("${(@Q)${(z)_stored}}")
+      fi
       case "$mode" in
-        continue) if [[ -n "$_id" ]]; then __claude_msg '-,,-' "resuming ${_id%%-*}..." "$gold"; else __claude_msg '-,,-' 'continuing...' "$gold"; fi ;;
+        continue) if [[ -n "$_id" ]]; then __claude_msg '-,,-' "resuming ${_id%%-*}${_args:+ ${_args[*]}}..." "$gold"; else __claude_msg '-,,-' 'continuing...' "$gold"; fi ;;
         new)      __claude_msg '°,,°' 'creating...' "$terra" ;;
         force)    __claude_msg '-,,-' 'continuing...' "$gold" ;;
       esac
@@ -163,7 +204,7 @@
       local _claude_exit=0 _start=$SECONDS
       case "$mode" in
         continue)
-          if [[ -n "$_id" ]]; then claude --resume "$_id" "$@"; else claude --continue "$@"; fi
+          if [[ -n "$_id" ]]; then claude --resume "$_id" "${_args[@]}"; else claude --continue "$@"; fi
           _claude_exit=$?
           ;;
         new)
@@ -193,25 +234,33 @@
       #      draining first + reading the real tty makes it block on an actual human keypress.
       if (( _claude_exit != 0 )); then
         [[ -t 0 && -t 1 ]] || break
+        # whatever mode started it, Enter resumes the session that just ran: its id is on the pane now
+        mode=continue
+        local _face='~,,~' _last='Press Enter to resume, Ctrl+C for shell' _parked
         if (( SECONDS - _start < 2 )); then
           # an instant exit on continue is claude refusing a parked job ("running in the background"):
-          # name the job and the one command that frees it, instead of a blind "press Enter" loop
-          local _parked _p; _parked=$(__claude_parked)
+          # the box's last line names the job and the one command that frees it, instead of a blind loop
+          _parked=$(__claude_parked)
           if [[ -n "$_parked" ]]; then
-            echo -e "\n${dim}(\/) (~_~) (\/)${r} this folder's last conversation is parked as a background job ${dim}— in another pane:${r}"
-            for _p in ${(f)_parked}; do echo "  claude stop ${_p%%-*}"; done
+            _face='o,,o'; _last="parked elsewhere — claude stop ${${(f)_parked}[1]%%-*}, then Enter"
           fi
           if (( ++_rapid >= 3 )); then
-            echo -e "\n${dim}(\/) (x_x) (\/)${r} claude keeps exiting immediately ${dim}— dropping to shell${r}"
+            echo -e "\n${dim}(\/) (x,,x) (\/)${r} claude keeps exiting immediately ${dim}— dropping to shell${r}"
             break
           fi
         else
           _rapid=0
         fi
-        echo -e "\n${dim}(\/) (~_~) (\/)${r} session ended ${dim}— press Enter to resume, Ctrl+C for shell${r}"
+        # the crab box (claude-crab.sh, shared with the reboot restore script): what Enter runs, where,
+        # the title, the last prompts; the pane's border title reads `↵ resume <name>` until Claude is back
+        local _sid _cmd; _sid="${_id:-$(__claude_pane_session 2>/dev/null)}"
+        _cmd="claude --resume ${_sid:+${_sid%%-*}}${_args:+ ${_args[*]}}"
+        bash "$HOME/.config/tmux/claude-crab.sh" box "$_face" "$_cmd" "${_sid:-}" "$PWD" "$_last"
+        [[ -n "$TMUX" && -n "$TMUX_PANE" ]] && /opt/homebrew/bin/tmux select-pane -t "$TMUX_PANE" -T "↵ resume $(bash "$HOME/.config/tmux/claude-crab.sh" name "${_sid:-}" "$PWD")" 2>/dev/null
         local _drain=0
         while (( _drain++ < 4096 )) && read -t 0 -k 1 -u 0 2>/dev/null; do :; done
         read -r _ </dev/tty || break
+        [[ -n "$TMUX" && -n "$TMUX_PANE" ]] && /opt/homebrew/bin/tmux select-pane -t "$TMUX_PANE" -T '' 2>/dev/null
         continue
       fi
 
