@@ -102,6 +102,29 @@
     (( ${#sessions} ))
   }
 
+  # the session this pane runs: hooks/lib/pane-session.js sets @claude_session on SessionStart and
+  # every prompt. Printed only with its transcript under this cwd, so a pane reused for another
+  # folder never resumes the old one. (2026-11-04: `--continue` resumed a parked job and stranded V.)
+  __claude_pane_session() {
+    [[ -n "$TMUX" && -n "$TMUX_PANE" ]] || return 1
+    local id; id=$("${CLAUDE_TMUX_BIN:-/opt/homebrew/bin/tmux}" show-options -pqv -t "$TMUX_PANE" @claude_session 2>/dev/null)
+    [[ "$id" =~ '^[0-9a-f-]{36}$' ]] || return 1   # a uuid, nothing else, before it reaches `claude --resume`
+    local enc="${PWD//\//-}"; enc="${enc//./-}"
+    [[ -s "$HOME/.claude/projects/$enc/$id.jsonl" ]] || return 1
+    printf '%s' "$id"
+  }
+
+  # parked background jobs for this cwd, from claude's own registry (~/.claude/sessions/*.json):
+  # `claude --continue` exits on one with "running in the background"; the launcher names the fix.
+  __claude_parked() {
+    local f
+    for f in "$HOME"/.claude/sessions/*.json(N); do
+      grep -q '"kind":"bg"' "$f" 2>/dev/null || continue
+      grep -q "\"cwd\":\"$PWD\"" "$f" 2>/dev/null || continue
+      sed -n 's/.*"sessionId":"\([^"]*\)".*/\1/p' "$f"
+    done
+  }
+
   # internal wrapper: runs claude with idle detection + restart-on-idle loop
   # __claude_run MODE [ARGS...]  where MODE = continue | new | force
   __claude_run() {
@@ -117,22 +140,22 @@
       tmux_session=$(/opt/homebrew/bin/tmux display-message -p '#{session_name}' 2>/dev/null)
       tmux_window=$(/opt/homebrew/bin/tmux display-message -p '#{window_index}' 2>/dev/null)
     fi
-    local checker="$HOME/.config/tmux/claude-idle-checker.sh"
+    # The idle killer (~/.config/tmux/claude-idle-checker.sh) is never armed: it reaped seven sessions on
+    # 2026-11-02 and the owner's rule since is that sessions never die (walkthrough, station 1). The script
+    # stays on disk, non-executable, as the record; nothing here starts it, whatever its mode.
     local _rapid=0   # consecutive sub-2s exits → crash-loop guard
 
     while true; do
+      # continue = this pane's own session when the hook recorded one; force (cc) = claude's "most recent"
+      local _id=""
+      [[ "$mode" == continue ]] && _id=$(__claude_pane_session)
       case "$mode" in
-        continue) __claude_msg '-,,-' 'continuing...' "$gold" ;;
+        continue) if [[ -n "$_id" ]]; then __claude_msg '-,,-' "resuming ${_id%%-*}..." "$gold"; else __claude_msg '-,,-' 'continuing...' "$gold"; fi ;;
         new)      __claude_msg '°,,°' 'creating...' "$terra" ;;
         force)    __claude_msg '-,,-' 'continuing...' "$gold" ;;
       esac
 
-      # Start idle checker in background (finds Claude via pgrep -P $$)
-      local _checker_pid=""
-      if [[ -x "$checker" ]]; then
-        "$checker" $$ "$tmux_session" "$tmux_window" "$PWD" "${CLAUDE_IDLE_THRESHOLD:-1800}" &
-        _checker_pid=$!
-      fi
+      local _checker_pid=""   # no idle checker (see above); the cleanup below stays a no-op
 
       # Run Claude in foreground (TUI requires it). Capture exit for ALL modes so
       # new/force get the same resume prompt as continue — previously only `continue`
@@ -140,7 +163,7 @@
       local _claude_exit=0 _start=$SECONDS
       case "$mode" in
         continue)
-          claude --continue "$@"
+          if [[ -n "$_id" ]]; then claude --resume "$_id" "$@"; else claude --continue "$@"; fi
           _claude_exit=$?
           ;;
         new)
@@ -171,6 +194,13 @@
       if (( _claude_exit != 0 )); then
         [[ -t 0 && -t 1 ]] || break
         if (( SECONDS - _start < 2 )); then
+          # an instant exit on continue is claude refusing a parked job ("running in the background"):
+          # name the job and the one command that frees it, instead of a blind "press Enter" loop
+          local _parked _p; _parked=$(__claude_parked)
+          if [[ -n "$_parked" ]]; then
+            echo -e "\n${dim}(\/) (~_~) (\/)${r} this folder's last conversation is parked as a background job ${dim}— in another pane:${r}"
+            for _p in ${(f)_parked}; do echo "  claude stop ${_p%%-*}"; done
+          fi
           if (( ++_rapid >= 3 )); then
             echo -e "\n${dim}(\/) (x_x) (\/)${r} claude keeps exiting immediately ${dim}— dropping to shell${r}"
             break

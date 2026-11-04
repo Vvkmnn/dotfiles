@@ -25,6 +25,15 @@ process.stdin.on('end', () => {
   try {
     const parts = [];
 
+    // The owner typed: this pane is no longer waiting. Clears the flag set by notification.js
+    // (statusline ॐ turns back to the vim color; tmux formats drop the red marker). Shared
+    // implementation in lib/waiting-flag.js: explicit pane target, status refresh, flag.log line.
+    require('./lib/waiting-flag').clear('UserPromptSubmit');
+
+    // This pane's session id, for the launcher's exact resume (lib/pane-session.js). Rewritten on
+    // every prompt because a /clear or a resume changes the id after SessionStart wrote it.
+    try { require('./lib/pane-session').record(JSON.parse(inputData).session_id); } catch { /* no id in the payload */ }
+
     // Git branch + dirty count (fast, local, silent on non-repos)
     try {
       const opts = { timeout: 500, stdio: ['ignore', 'pipe', 'ignore'], encoding: 'utf8' };

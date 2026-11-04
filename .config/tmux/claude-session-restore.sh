@@ -169,15 +169,9 @@ if [ -n "$SESSION_ID" ]; then
     fi
 fi
 
-# Idle checker: delegates to shared script (also used by c()/cl()/cc() in .functions).
-# Kills Claude if no user prompt for CLAUDE_IDLE_THRESHOLD seconds.
-# Runs as a background coprocess; self-terminates when Claude exits.
-_idle_checker() {
-    local threshold="${CLAUDE_IDLE_THRESHOLD:-1800}"
-    local checker="$HOME/.config/tmux/claude-idle-checker.sh"
-    [ -x "$checker" ] || return 0
-    "$checker" "$$" "$TMUX_SESSION" "$TMUX_WINDOW" "$_intended_cwd" "$threshold"
-}
+# No idle checker: claude-idle-checker.sh reaped seven sessions on 2026-11-02 and the owner's rule
+# since is that sessions never die (walkthrough, station 1). The script stays on disk, non-executable,
+# as the record; nothing here or in ~/.functions starts it, whatever its mode.
 
 /opt/homebrew/bin/tmux rename-window "claude" 2>/dev/null
 
@@ -205,9 +199,7 @@ while true; do
     [[ -d "$_intended_cwd" ]] && cd "$_intended_cwd" 2>/dev/null
     /opt/homebrew/bin/tmux set-window-option automatic-rename on 2>/dev/null
 
-    # Start idle checker in background
-    _idle_checker &
-    _checker_pid=$!
+    _checker_pid=""   # no idle checker (see above); the cleanup below stays a no-op
 
     # Pre-flight: only resume if the transcript is really there. A stale mapfile pointing at a
     # deleted/empty jsonl made `claude --resume` fail and then blind-fall to `claude --continue`,

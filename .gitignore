@@ -477,3 +477,6 @@ dotfiles.key
 
 # docker machine-state (regenerated; never config)
 .docker/.token_seed*
+
+# the hooks' shared code (waiting-flag.js, pane-session.js): required by the hooks, not a build artefact
+!.claude/hooks/lib/

@@ -57,6 +57,9 @@ try {
       // Append-only: atomic for short writes (<PIPE_BUF), no race between concurrent sessions
       // Pruning happens in claude-session-restore.sh on reboot
       fs.appendFileSync(mapFile, `${key} ${sessionId}\n`);
+      // And on the pane itself, for the launcher's exact resume while this tmux server lives
+      // (the map file above is for after a reboot). lib/pane-session.js; rewritten on every prompt.
+      require('./lib/pane-session').record(sessionId);
     }
   }
 } catch (err) {
