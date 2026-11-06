@@ -140,15 +140,25 @@
 
   # the session already open in another pane: two processes on one transcript interleave their messages
   # or are refused (docs, sessions.md). Prints the live pane's "session:@window.%pane" from claude's
-  # registry when its pid is alive; nothing otherwise (fails open: a stale entry never blocks a resume).
+  # registry, only when Claude is really running there. A registry file outlives its Claude (11-06: an
+  # entry named the very pane `c` was typed in, sitting at a shell prompt, and blocked it), so an entry
+  # counts only if its pane is another pane, that pane runs Claude, and its pid is Claude. Any check that
+  # cannot run counts as not live: a doubt resumes, it never blocks.
+  __claude_is_claude() { [[ "$1" =~ '^(claude|node|[0-9]+\.[0-9]+\.[0-9]+)$' ]]; }
   __claude_live_elsewhere() {
-    local id="$1" f pid where
+    local id="$1" f pid where pane cmd tmux_bin="${CLAUDE_TMUX_BIN:-/opt/homebrew/bin/tmux}"
     for f in "$HOME"/.claude/sessions/*.json(N); do
       grep -q "\"sessionId\":\"$id\"" "$f" 2>/dev/null || continue
       grep -q '"kind":"interactive"' "$f" 2>/dev/null || continue
       pid=$(sed -n 's/.*"pid":\([0-9]*\).*/\1/p' "$f"); where=$(sed -n 's/.*"tmux":"\([^"]*\)".*/\1/p' "$f")
-      [[ -n "$pid" ]] && kill -0 "$pid" 2>/dev/null || continue
-      printf '%s' "${where:-pid $pid}"; return 0
+      pane="${where##*.}"
+      [[ -n "$pid" && -n "$pane" && "$pane" == %* ]] || continue
+      [[ "$pane" != "${TMUX_PANE:-}" ]] || continue
+      cmd=$("$tmux_bin" display-message -p -t "$pane" '#{pane_current_command}' 2>/dev/null) || continue
+      __claude_is_claude "$cmd" || continue
+      cmd=$("${CLAUDE_PS_BIN:-ps}" -o comm= -p "$pid" 2>/dev/null) || continue
+      __claude_is_claude "${${cmd##*/}// /}" || continue
+      printf '%s' "$where"; return 0
     done
     return 1
   }
@@ -157,7 +167,8 @@
   # __claude_run MODE [ARGS...]  where MODE = continue | new | force
   __claude_run() {
     # Suppress [N] PID and [N]+ Done messages from background checker
-    setopt LOCAL_OPTIONS NO_MONITOR NO_NOTIFY 2>/dev/null
+    # TYPESET_SILENT: a `local x` re-run on the loop's next pass would print x's value (11-06: `_human=…`)
+    setopt LOCAL_OPTIONS NO_MONITOR NO_NOTIFY TYPESET_SILENT 2>/dev/null
     local mode="$1"; shift
     local gold='\033[38;5;214m' terra='\033[38;5;173m'
     local dim='\033[38;5;240m' r='\033[0m'

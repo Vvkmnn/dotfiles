@@ -38,7 +38,7 @@ printf '#!/bin/sh\ncase "$*" in *@claude_session) printf "aaaaaaaa-1111-2222-333
 echo '{}' > "$lt/home/.claude/projects/$enc/aaaaaaaa-1111-2222-3333-444444444444.jsonl"
 printf '{"pid":1,"sessionId":"bbbbbbbb-1111-2222-3333-444444444444","cwd":"%s","kind":"bg"}' "$C" > "$lt/home/.claude/sessions/1.json"
 printf '{"pid":2,"sessionId":"cccccccc-1111-2222-3333-444444444444","cwd":"%s","kind":"interactive"}' "$C" > "$lt/home/.claude/sessions/2.json"
-awk '/^  __claude_pane_session\(\) \{/,/^  \}/; /^  __claude_parked\(\) \{/,/^  \}/; /^  __claude_pane_args\(\) \{/,/^  \}/; /^  __claude_save_args\(\) \{/,/^  \}/; /^  __claude_live_elsewhere\(\) \{/,/^  \}/' "$HOME/.functions" > "$lt/fns.zsh"
+awk '/^  __claude_pane_session\(\) \{/,/^  \}/; /^  __claude_parked\(\) \{/,/^  \}/; /^  __claude_pane_args\(\) \{/,/^  \}/; /^  __claude_save_args\(\) \{/,/^  \}/; /^  __claude_live_elsewhere\(\) \{/,/^  \}/; /^  __claude_is_claude\(\)/' "$HOME/.functions" > "$lt/fns.zsh"
 lout=$(cd "$C" && HOME="$lt/home" TMUX=stub TMUX_PANE='%1' CLAUDE_TMUX_BIN="$lt/tmux" zsh -c "source '$lt/fns.zsh' && __claude_pane_session && echo && __claude_parked" 2>&1)
 [ "$(printf '%s' "$lout" | sed -n 1p)" = "aaaaaaaa-1111-2222-3333-444444444444" ] && ok "launcher: pane session resolved" || fail "launcher: pane session (got: $lout)"
 [ "$(printf '%s' "$lout" | sed -n 2p)" = "bbbbbbbb-1111-2222-3333-444444444444" ] && ok "launcher: parked job named, interactive one not" || fail "launcher: parked (got: $lout)"
@@ -48,12 +48,20 @@ lout2=$(cd "$C" && HOME="$lt/home" TMUX=stub TMUX_PANE='%1' CLAUDE_TMUX_BIN="$lt
 lout3=$(cd "$C" && HOME="$lt/home" TMUX=stub TMUX_PANE='%1' CLAUDE_TMUX_BIN="$lt/tmux" zsh -c "source '$lt/fns.zsh'; s=\$(__claude_pane_args); a=(\"\${(@Q)\${(z)s}}\"); print -r -- \${#a} \"\${a[2]}\"; __claude_save_args --add-dir '/a b' --model opus; cat '$lt/calls'" 2>&1)
 [ "$(printf '%s' "$lout3" | sed -n 1p)" = "2 /x y" ] && ok "launcher: saved flags read back as words" || fail "launcher: flags (got: $lout3)"
 case "$lout3" in *"set-option -p -t %1 @claude_args --add-dir '/a b' --model opus"*) ok "launcher: flags saved quoted on the pane" ;; *) fail "launcher: save (got: $lout3)" ;; esac
-# W2: a session whose registry entry has a live pid and a pane is "open elsewhere"; a dead pid is not
+# W2/W9: "open elsewhere" only when the entry's pane is another pane, that pane runs Claude, and the pid is
+# Claude. 11-06: a stale entry naming the very pane `c` was typed in blocked it; these cases pin that down.
 printf '{"pid":%s,"sessionId":"dddddddd-1111-2222-3333-444444444444","cwd":"%s","kind":"interactive","tmux":"2:@1.%%7"}' "$$" "$C" > "$lt/home/.claude/sessions/3.json"
-printf '{"pid":999999,"sessionId":"eeeeeeee-1111-2222-3333-444444444444","cwd":"%s","kind":"interactive","tmux":"2:@1.%%8"}' "$C" > "$lt/home/.claude/sessions/4.json"
-lout4=$(cd "$C" && HOME="$lt/home" zsh -c "source '$lt/fns.zsh'; __claude_live_elsewhere dddddddd-1111-2222-3333-444444444444; echo; __claude_live_elsewhere eeeeeeee-1111-2222-3333-444444444444 || echo free" 2>&1)
-[ "$(printf '%s' "$lout4" | sed -n 1p)" = "2:@1.%7" ] && ok "launcher: live session elsewhere named by pane" || fail "launcher: live elsewhere (got: $lout4)"
-[ "$(printf '%s' "$lout4" | sed -n 2p)" = "free" ] && ok "launcher: dead pid never blocks a resume" || fail "launcher: dead pid (got: $lout4)"
+printf '{"pid":%s,"sessionId":"eeeeeeee-1111-2222-3333-444444444444","cwd":"%s","kind":"interactive","tmux":"2:@1.%%8"}' "$$" "$C" > "$lt/home/.claude/sessions/4.json"
+printf '{"pid":%s,"sessionId":"ffffffff-1111-2222-3333-444444444444","cwd":"%s","kind":"interactive","tmux":"2:@1.%%9"}' "$$" "$C" > "$lt/home/.claude/sessions/5.json"
+printf '#!/bin/sh\ncase "$*" in *%%7*) echo 2.1.318;; *%%8*) echo zsh;; *%%9*) echo claude;; esac\n' > "$lt/tmux2"; chmod +x "$lt/tmux2"
+printf '#!/bin/sh\necho /usr/local/bin/claude\n' > "$lt/psclaude"; printf '#!/bin/sh\necho zsh\n' > "$lt/pszsh"; chmod +x "$lt/psclaude" "$lt/pszsh"
+le() { (cd "$C" && HOME="$lt/home" TMUX=stub TMUX_PANE="$1" CLAUDE_TMUX_BIN="$lt/tmux2" CLAUDE_PS_BIN="$lt/$2" zsh -c "source '$lt/fns.zsh'; __claude_live_elsewhere $3 || echo free" 2>&1); }
+[ "$(le %1 psclaude dddddddd-1111-2222-3333-444444444444)" = "2:@1.%7" ] && ok "launcher: Claude running in another pane is named" || fail "launcher: live elsewhere (got: $(le %1 psclaude dddddddd-1111-2222-3333-444444444444))"
+[ "$(le %7 psclaude dddddddd-1111-2222-3333-444444444444)" = "free" ] && ok "launcher: an entry naming this very pane never blocks (11-06)" || fail "launcher: own pane blocked"
+[ "$(le %1 psclaude eeeeeeee-1111-2222-3333-444444444444)" = "free" ] && ok "launcher: a pane at a shell prompt never blocks" || fail "launcher: zsh pane blocked"
+[ "$(le %1 pszsh ffffffff-1111-2222-3333-444444444444)" = "free" ] && ok "launcher: a pid that is not Claude never blocks" || fail "launcher: reused pid blocked"
+quiet=$(zsh -c 'f(){ setopt LOCAL_OPTIONS TYPESET_SILENT; local i; for i in 1 2; do local y; y=v$i; done; }; f' 2>&1)
+[ -z "$quiet" ] && grep -q 'TYPESET_SILENT' "$HOME/.functions" && ok "launcher: no local echo between boxes" || fail "launcher: local echo (got: $quiet)"
 rm -rf "$lt"
 # --- the reaper stays dead (it killed seven sessions on 2026-11-02): no live line in the launcher or the
 # restore script names claude-idle-checker, and the script itself is not executable ---
@@ -100,10 +108,14 @@ rm -rf "$cb"
 pk="${TMPDIR:-/tmp}/selftest-picker"; rm -rf "$pk"; mkdir -p "$pk"
 printf '{"pid":%s,"sessionId":"ffffffff-1111-2222-3333-444444444444","status":"waiting","tmux":"2:@1.%%9"}' "$$" > "$pk/a.json"
 printf '{"pid":999999,"sessionId":"99999999-1111-2222-3333-444444444444","status":"busy","tmux":"2:@1.%%3"}' > "$pk/b.json"
+# 11-06: a live pid whose pane sits at a shell prompt is a stale entry, never marked live
+printf '{"pid":%s,"sessionId":"88888888-1111-2222-3333-444444444444","status":"waiting","tmux":"2:@1.%%5"}' "$$" > "$pk/c.json"
+printf '#!/bin/sh\ncase "$*" in *%%9*) echo claude;; *) echo zsh;; esac\n' > "$pk/tmux"; chmod +x "$pk/tmux"; export CLAUDE_TMUX_BIN="$pk/tmux"
 pmarks=$(/opt/homebrew/bin/bash -c "source <(sed -n '/^registry_marks()/,/^}/p' \"$HOME/.config/fzf/clh.sh\"); REGISTRY=\"$pk\"; registry_marks")
 [ "$pmarks" = "$(printf 'MARK\tffffffff-1111-2222-3333-444444444444\t◐\t%%9')" ] && ok "picker: live session marked waiting with its pane, dead pid dropped" || fail "picker: marks (got: $(printf '%s' "$pmarks" | tr '\t' '|'))"
 plist=$(printf 'ffffffff-1111-2222-3333-444444444444\t%s\t%s\tslug\tmain\thello\n11111111-1111-2222-3333-444444444444\t%s\t/nowhere/work\tslug2\tmain\tbye\n' "$(date +%s)" "$C" "$(date +%s)" | /opt/homebrew/bin/bash -c "source <(sed -n '/^registry_marks()/,/^}/p; /^format_lines()/,/^}/p' \"$HOME/.config/fzf/clh.sh\"); REGISTRY=\"$pk\"; format_lines" 2>&1)
 case "$plist" in *$'\t◐  now'*$'\t   now'*) ok "picker: rows carry the mark, unmarked rows still list" ;; *) fail "picker: list marks (got: $(printf '%s' "$plist" | tr '\t\n' '|/'))" ;; esac
+unset CLAUDE_TMUX_BIN
 rm -rf "$pk"
 # tmux best-of-day keeper (lambda.sh keep_daily): today's copy must exist once a save has run today.
 check tmux-daily-keep test -s "$HOME/.local/share/tmux/resurrect/pinned/daily/tmux_resurrect_$(date +%Y%m%d).txt"

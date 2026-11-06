@@ -10,11 +10,16 @@ REGISTRY="${CLAUDE_SESSIONS_DIR:-$HOME/.claude/sessions}"   # override = selftes
 # so a dead pid counts as nothing). Prints: uuid, mark, pane  —  ● busy · ◐ waiting · ○ idle or shell.
 # Replaced the ~/.config/tmux/claude_sessions map on 2026-11-04 (retired with the resurrect hooks).
 registry_marks() {
-  local f sid pid status pane mark
+  local f sid pid status pane mark cmd
   for f in "$REGISTRY"/*.json; do
     [ -f "$f" ] || continue
     IFS=$'\t' read -r sid pid status pane < <(jq -r '[.sessionId, (.pid|tostring), (.status // ""), (.tmux // "")] | @tsv' "$f" 2>/dev/null) || continue
     [ -n "$sid" ] && [ -n "$pid" ] && kill -0 "$pid" 2>/dev/null || continue
+    # 11-06: an entry outlives its Claude, so a pane must still be running Claude to count as live
+    if [ -n "$pane" ]; then
+      cmd=$("${CLAUDE_TMUX_BIN:-/opt/homebrew/bin/tmux}" display-message -p -t "${pane##*.}" '#{pane_current_command}' 2>/dev/null) || continue
+      [[ "$cmd" =~ ^(claude|node|[0-9]+\.[0-9]+\.[0-9]+)$ ]] || continue
+    fi
     case "$status" in busy) mark='●' ;; waiting) mark='◐' ;; *) mark='○' ;; esac
     printf 'MARK\t%s\t%s\t%s\n' "$sid" "$mark" "${pane##*.}"   # tagged: awk tells these rows apart however many there are
   done
