@@ -117,8 +117,12 @@ right="${animal}#(~/.config/tmux/lambda.sh chip) #(~/.config/tmux/morbid_year al
 
 # --- window pills (glyphs stay strip-safe here; content has NO #() ) -------
 WLABEL="#{?#{m:[0-9]*,#{pane_current_command}},claude,#{?#{m:codex*,#{pane_current_command}},codex,#{pane_current_command}}}"
-wsf="#[fg=#2a2a37]${LCAP}#[bg=#2a2a37 fg=#dcd7ba] #I│${WLABEL}│#{b:pane_current_path} #[bg=default fg=#2a2a37]${RCAP}"
-wscf="#[fg=#e6c384]${LCAP}#[bg=#e6c384 fg=#1f1f28] #I│${WLABEL}│#{b:pane_current_path} #{?window_zoomed_flag, ${ZOOM} ,}#[bg=default fg=#e6c384]${RCAP}"
+# WAIT = red "?" before the label while a Claude pane in this window waits on the owner
+# (@claude_waiting, set by ~/.claude/hooks/notification.js, cleared by user-prompt-submit.js;
+# same flag drives the statusline ॐ? and the red pane border). Pure format, no fork.
+WAIT="#{?#{==:#{@claude_waiting},1},?,}"   # "?2|claude|dir" in the pill's own colors, no extra width
+wsf="#[fg=#2a2a37]${LCAP}#[bg=#2a2a37 fg=#dcd7ba] ${WAIT}#I│${WLABEL}│#{b:pane_current_path} #[bg=default fg=#2a2a37]${RCAP}"
+wscf="#[fg=#e6c384]${LCAP}#[bg=#e6c384 fg=#1f1f28] ${WAIT}#I│${WLABEL}│#{b:pane_current_path} #{?window_zoomed_flag, ${ZOOM} ,}#[bg=default fg=#e6c384]${RCAP}"
 # CRITICAL: the minimal plugin sets window-status-format from @minimal-tmux-window-status-format,
 # and its DEFAULT is the dangerous #(ps|grep|sed) ssh fork that crashed tmux. Setting it here
 # means the plugin bakes OUR safe rounded card instead — the dangerous default is never applied.

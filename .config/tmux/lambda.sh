@@ -45,7 +45,15 @@ readonly RESURRECT_DIR="${HOME}/.local/share/tmux/resurrect"
 readonly SAVE_SCRIPT="${HOME}/.config/tmux/plugins/tmux-resurrect/scripts/save.sh"
 readonly LOG="${HOME}/.local/state/tmux-save/save.jsonl"
 readonly SAVE_ERR="${HOME}/.local/state/tmux-save/save.stderr.log"  # last save.sh stderr, overwritten each run -- the LANG-empty-snapshot bug hid here because we were >/dev/null'ing it
-readonly KEEP=33     # self-contained high-fidelity backups retained (only distinct states kept)
+# Retention of layout files belongs to tmux-resurrect itself (@resurrect-delete-backup-after, age-based,
+# always keeps the newest 5 -- scripts/save.sh remove_old_backups). This script used to prune to a
+# COUNT of "distinct" files, but resurrect's dedupe is byte-for-byte and window flags + the `state`
+# line change on every focus switch, so the slots turned over in ~2 hours and took the only large
+# layout with them (2026-10-15). Now: resurrect ages out layouts, prune() only removes tarballs whose
+# layout is gone, and keep_daily() is the floor: the best snapshot of each calendar day survives in
+# pinned/daily/ for DAILY_KEEP_DAYS. Nothing under pinned/ is ever pruned.
+readonly DAILY_KEEP_DAYS=90
+readonly PINNED_DIR="${RESURRECT_DIR}/pinned"
 # The (N) gauge counts EVERY heavy process (RSS >= this), not just our agents -- claude, codex, a
 # ballooned node/MCP child, a browser, a build, anything that can drive the machine into the swap
 # storm that killed it. 100MB is an absolute "heavy" cut that holds across the 8-24GB fleet.
@@ -255,13 +263,35 @@ ts_of_txt() { local n="${1##*/}"; n="${n#tmux_resurrect_}"; echo "${n%.txt}"; }
 
 # retention: keep newest $KEEP snapshots + their per-save pane_contents; delete older pairs.
 prune() {
-	local old ots
-	# shellcheck disable=SC2012
-	ls -t "${RESURRECT_DIR}"/tmux_resurrect_*.txt 2>/dev/null | tail -n +"$(( KEEP + 1 ))" \
-		| while IFS= read -r old; do
-			ots="$(ts_of_txt "$old")"
-			rm -f "$old" "${RESURRECT_DIR}/pane_contents_${ots}.tar.gz"
-		done
+	local tgz ts
+	for tgz in "${RESURRECT_DIR}"/pane_contents_*.tar.gz; do
+		[ -e "$tgz" ] || continue                                   # no matches -> literal glob
+		ts="${tgz##*/pane_contents_}"; ts="${ts%.tar.gz}"
+		[ -e "${RESURRECT_DIR}/tmux_resurrect_${ts}.txt" ] || rm -f "$tgz"   # layout aged out by resurrect
+	done
+}
+
+# keep_daily: the floor under prune. Copies a verified snapshot (+ its pane contents) to
+# pinned/daily/<YYYYMMDD>.* when it is the first of its day or holds at least as many panes as the
+# day's current keep (most panes wins; ties go to the newer). Day = the snapshot's own local-time
+# stamp. Prints 1 if it copied, 0 if not. Daily keeps older than DAILY_KEEP_DAYS are removed here,
+# and nothing else in pinned/ is ever touched.
+keep_daily() {
+	local src="$1" ts day dst_txt dst_tgz have_panes new_panes
+	[ -s "$src" ] && grep -q '^pane' "$src" || { echo 0; return 0; }
+	ts="$(ts_of_txt "$src")"; day="${ts%%T*}"
+	case "$day" in [0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]) ;; *) echo 0; return 0 ;; esac
+	mkdir -p "${PINNED_DIR}/daily"
+	dst_txt="${PINNED_DIR}/daily/tmux_resurrect_${day}.txt"
+	dst_tgz="${PINNED_DIR}/daily/pane_contents_${day}.tar.gz"
+	new_panes="$(grep -c '^pane' "$src")"
+	have_panes=0; [ -s "$dst_txt" ] && have_panes="$(grep -c '^pane' "$dst_txt")"
+	if [ "$new_panes" -lt "$have_panes" ]; then echo 0; return 0; fi
+	cp -p "$src" "$dst_txt" || { echo 0; return 0; }
+	[ -f "${RESURRECT_DIR}/pane_contents_${ts}.tar.gz" ] && cp -p "${RESURRECT_DIR}/pane_contents_${ts}.tar.gz" "$dst_tgz"
+	find "${PINNED_DIR}/daily" -name 'tmux_resurrect_*.txt' -mtime +"$DAILY_KEEP_DAYS" -print0 2>/dev/null \
+		| while IFS= read -r -d '' old; do rm -f "$old" "${PINNED_DIR}/daily/pane_contents_$(ts_of_txt "$old").tar.gz"; done
+	echo 1
 }
 
 # ensure_last_valid: guarantee `last` points at a RESTORABLE snapshot. Self-heals a dangling or
@@ -327,6 +357,9 @@ mode_save() {
 
 	windows=$("$TMUX_BIN" list-windows -a 2>/dev/null | wc -l | tr -d ' ')
 	panes=$("$TMUX_BIN" list-panes -a 2>/dev/null | wc -l | tr -d ' ')
+	# keep BEFORE prune: the daily floor must be in place before anything can be deleted.
+	local kept=0
+	[ "$rc" -eq 0 ] && kept="$(keep_daily "$newfile")"
 	prune
 	count=$(snapshot_count)
 	# Compute the crash-risk gauge HERE (once per save), not in the chip: the chip renders every
@@ -337,8 +370,16 @@ mode_save() {
 	# `epoch` = the save's start second. The chip derives freshness from THIS, never from `last`'s
 	# mtime: resurrect only re-points `last` when the layout changed (files_differ), so on a static
 	# layout `last` stops advancing while saves keep succeeding -- epoch is the honest "last save" clock.
-	log_line "{\"ts\":\"$ts\",\"epoch\":$start,\"interval\":$interval,\"result\":\"$( [ "$rc" -eq 0 ] && echo ok || echo fail )\",\"rc\":$rc,\"verify\":\"$verify\",\"risk\":$risk,\"heavy\":$heavy,\"sessions\":$sessions,\"windows\":$windows,\"panes\":$panes,\"dur_s\":$dur,\"snapshots\":$count}"
+	log_line "{\"ts\":\"$ts\",\"epoch\":$start,\"interval\":$interval,\"result\":\"$( [ "$rc" -eq 0 ] && echo ok || echo fail )\",\"rc\":$rc,\"verify\":\"$verify\",\"risk\":$risk,\"heavy\":$heavy,\"sessions\":$sessions,\"windows\":$windows,\"panes\":$panes,\"dur_s\":$dur,\"snapshots\":$count,\"kept\":$kept}"
 	return "$rc"
+}
+
+# keep: run the daily keeper on `last` by hand (also what `save` does after every verified save).
+mode_keep() {
+	local target
+	target="$(readlink "${RESURRECT_DIR}/last" 2>/dev/null || true)"
+	[ -n "$target" ] || { echo "no last snapshot" >&2; return 1; }
+	keep_daily "${RESURRECT_DIR}/${target}"
 }
 
 # loop: the resident 7-second saver. launchd keeps ONE of these alive (KeepAlive); it saves, sleeps
@@ -357,5 +398,7 @@ case "${1:-save}" in
 	chip) mode_chip ;;
 	save) mode_save; exit $? ;;
 	loop) mode_loop ;;
-	*) echo "usage: ${0##*/} {save|loop|chip}" >&2; exit 2 ;;
+	keep) mode_keep; exit $? ;;
+	prune) prune; exit $? ;;
+	*) echo "usage: ${0##*/} {save|loop|chip|keep|prune}" >&2; exit 2 ;;
 esac

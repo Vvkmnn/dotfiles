@@ -11,6 +11,7 @@
 # on a timer to draw the tree, so it authenticates each peer ONCE on start (1Password then caches
 # until it locks) and every refresh after that rides a multiplexed socket (ssh ControlMaster in
 # ~/.ssh/config) — silent and instant. Nothing polls unless vw is on-screen and running.
+# (That ControlMaster block is not in ~/.ssh/config yet, so vw's live tree is switched off — see vw.)
 #
 # Transport is MOSH, not ssh/et. ssh is ephemeral (a drop SIGHUPs the remote shell + children) but
 # bootstraps mosh and carries the 1Password key. mosh is UDP/roaming: survives wifi↔cellular / sleep
@@ -801,11 +802,13 @@ vw() {
   # headless) when the passwordless pmset rule is present — sudo -n never prompts, so absent the rule
   # OR on battery, fall back to caffeinate, which lets macOS still force-sleep near empty (the battery
   # never burns down). Released the moment vw quits, so the machine sleeps normally the rest of the time.
+  # -d also holds the DISPLAY awake (the owner watches it; displaysleep is 1 min here), in both paths.
   local didsleep=0 caff=""
   if (( pf_ac || force )) && sudo -n pmset -a disablesleep 1 2>/dev/null; then
     didsleep=1
+    caffeinate -d & caff=$!
   else
-    caffeinate -im & caff=$!
+    caffeinate -dim & caff=$!
   fi
 
   # release on ANY exit — normal quit, ^C, terminal close, kill — while sudo creds are still cached.
@@ -813,7 +816,15 @@ vw() {
   local _rel='(( didsleep )) && sudo -n pmset -a disablesleep 0 2>/dev/null; [[ -n "$caff" ]] && kill "$caff" 2>/dev/null'
   trap "$_rel; return" INT HUP TERM
 
-  _fleet_pick                                        # the live navigator — blocks until you quit (esc/q)
+  # live navigator OFF: keep-awake only. _fleet_pick's refresher (_fleet_animate) ssh-polls every peer
+  # every 3s, and with no ControlMaster in ~/.ssh/config (ssh -G <peer> → `controlmaster false`) each
+  # poll is a fresh ssh, so 1Password re-prompts for the key nonstop. To restore: add ControlMaster auto /
+  # ControlPath ~/.ssh/cm-%C / ControlPersist 10m for the fleet hosts in ~/.ssh/config, confirm with
+  # `ssh -O check <peer>`, then swap the two lines below. While off, the singleton guard above can't see
+  # this vw (nothing binds the port), so a second vw stacks a second hold instead of taking over.
+  # _fleet_pick                                      # the live navigator — blocks until you quit (esc/q)
+  echo -e "$(get_colored_face) ${self} held awake for agents — any key (or ^C) to release."
+  read -rs -k 1
 
   trap - INT HUP TERM
   eval "$_rel"

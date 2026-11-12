@@ -135,7 +135,7 @@
       # llvm intel (legacy)
       path_prepend "/usr/local/opt/llvm/bin"
       # xcode sdk
-      export CPATH=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include
+      # export CPATH=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include
 
       # ───────────────────────────────────────────────────────────────── go ──
       # Clean-home pattern: ~/Local is for WORK/projects (visible); toolchain caches stay
@@ -238,3 +238,5 @@
   # xorg settings (causes bugs)
   # [ -f ~/.xprofile ] && . ~/.xprofile
 # └────────────────────────────────────────────────────────────────────────────┘
+
+export PATH="$HOME/.elan/bin:$PATH"
