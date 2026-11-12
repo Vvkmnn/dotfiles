@@ -300,7 +300,9 @@ machine-tune only when a real constraint forces it (never a fork). The loop:
 2. **Detect** true conflicts — `comm` the drifted files ∩ the incoming diff.
 3. **Merge into one** — understand WHY each side diverged (favor recent, learn from the old), synthesize
    best-of-both, verify both intents survived the auto-merge. A genuine per-host need → a minimal
-   in-config adjustment (`~/.ai/scale`, `$SSH_CONNECTION`-gate), never a fork.
+   in-config adjustment (`~/.ai/scale`, `$SSH_CONNECTION`-gate), never a fork. **Never run the merge
+   in `$HOME`**: dry-run with `merge-tree`, resolve in a throwaway clone, and let the home tree only
+   fast-forward (an in-place merge wrote conflict markers into the live `settings.json` on 2026-11-12).
 4. **Push + sync** — explicit `push origin v-macos`; `ssh -A` to sign pushes for headless boxes.
 5. **Don't clobber a live session** — flag another worker's WIP, never fold it silently.
 

@@ -32,6 +32,26 @@ the older side; it often encodes a reason/workaround). Synthesize both intents i
 constraint becomes a minimal in-config adjustment (`~/.ai/scale`, `$SSH_CONNECTION`-gate) — never a fork.
 Don't `git add -A` (a bare repo's `-A` = the whole home dir); add named files.
 
+### Never merge in the live tree (2026-11-12)
+The work tree is `$HOME`, so a conflicted `git merge` writes `<<<<<<<` markers straight into files in
+use. On 2026-11-12 a merge run in place put markers into `~/.claude/settings.json`; every Claude session
+that read it in that window lost its settings (statusline, theme, hooks). Merge in a throwaway clone and
+let the home tree only ever fast-forward:
+```bash
+D merge-tree --write-tree --name-only v-macos origin/v-macos        # dry run: lists conflicts, touches nothing
+W=~/.cache/dotfiles-merge; git clone --no-checkout ~/.dotfiles "$W" && cd "$W"
+git config filter.git-crypt.smudge cat; git config filter.git-crypt.clean cat; git config filter.git-crypt.required false
+git fetch ~/.dotfiles refs/remotes/origin/v-macos:refs/heads/github refs/heads/v-macos:refs/heads/local
+git checkout -b merge-fleet local && git merge --no-commit --no-ff github
+# resolve, then: jq empty settings.json · bash -n / zsh -n / node --check · no markers · commit
+D fetch "$W" merge-fleet:refs/heads/merge-fleet-<date> && D merge --ff-only merge-fleet-<date>
+```
+- The `cat` filters keep git-crypt files as ciphertext in the clone, so their blobs pass through
+  unchanged (check: `git cat-file blob :<path> | head -c 9` prints `GITCRYPT`).
+- A fast-forward writes each file once, in its final form, and refuses if an untracked file is in the way.
+- After a merge that moves a folder, look for untracked symlinks still pointing at the old path
+  (the theme move to `~/.config/theme` broke `~/.config/lazygit/config.yml` and `~/.config/yazi/theme.toml`).
+
 ## 4. Push + sync (the footguns)
 - **Explicit push:** `git push origin v-macos`. Bare `git push` + `push.default=matching` shoves dead
   per-machine branches → confusing "failed to push some refs". Set `push.default=simple` fleet-wide.
@@ -47,3 +67,5 @@ column names them). Commit it as its own honest scope, or leave it — never fol
 ## Traps log
 Grew from a real convergence (2026-07-14): cwd=git-dir trap · `-uall` timeout · `push.default=matching`
 · verify-both-intents-survived · abort-remote-merge-on-conflict · concurrent-editor flagging. Add each new one.
+2026-11-12: in-place merge wrote conflict markers into the live `settings.json` · untracked symlinks left
+dangling by a folder move.
