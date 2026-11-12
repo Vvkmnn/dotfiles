@@ -60,8 +60,11 @@ ctrl + cmd - return : open -Fn /Applications/Safari.app
 # ctrl + cmd - s : open -na /Applications/Safari.app/
 # ctrl + cmd - 0x27 : open -na /Applications/Safari.app/
 
-# Open Safari in private browsing (currently not working)
-ctrl + cmd - 0x29 : osascript -e 'tell application "Safari" to activate tell application "System Events" tell process "Safari" click menu item "New Private Window" of menu "File" of menu bar 1 end tell end tell'
+# Open Safari in private browsing — DISABLED: the osascript below is malformed (single run-on -e string,
+# missing tell/end tell) and never worked. Likely-working approach is Cmd+Shift+N via System Events
+# (untested — verify before enabling): osascript -e 'tell application "Safari" to activate' \
+#   -e 'tell application "System Events" to keystroke "n" using {command down, shift down}'
+# ctrl + cmd - 0x29 : osascript -e 'tell application "Safari" to activate tell application "System Events" tell process "Safari" click menu item "New Private Window" of menu "File" of menu bar 1 end tell end tell'
 
 # Open Zen Browser
 ctrl + cmd - z : open -n /Applications/Zen\ Browser.app/
@@ -154,14 +157,16 @@ ctrl + cmd - k : yabai -m space --focus next || yabai -m space --focus first
 # ctrl - up : yabai -m space --focus prev || yabai -m space --focus last
 # ctrl - down : yabai -m space --focus next || yabai -m space --focus first
 
-# Reorder spaces - move entire space left/right with wraparound
-ctrl + alt - left : idx=$(yabai -m query --spaces --space | jq '.index'); \
-    if [ "$idx" -eq 1 ]; then yabai -m space --move last; else yabai -m space --move prev; fi; \
-    sketchybar -m --trigger space_change
-ctrl + alt - right : idx=$(yabai -m query --spaces --space | jq '.index'); \
-    last=$(yabai -m query --spaces | jq 'map(select(."is-native-fullscreen" == false)) | last | .index'); \
-    if [ "$idx" -eq "$last" ]; then yabai -m space --move first; else yabai -m space --move next; fi; \
-    sketchybar -m --trigger space_change
+# Reorder spaces (move entire space left/right, wraparound) — DISABLED on Tahoe: `space --move` is a
+# scripting-addition-only op; in basic mode it errors "cannot move space due to an error with the
+# scripting-addition" (verified). Kept for reference; re-enable if SA support returns. Cf. yabai #2634.
+# ctrl + alt - left : idx=$(yabai -m query --spaces --space | jq '.index'); \
+#     if [ "$idx" -eq 1 ]; then yabai -m space --move last; else yabai -m space --move prev; fi; \
+#     sketchybar -m --trigger space_change
+# ctrl + alt - right : idx=$(yabai -m query --spaces --space | jq '.index'); \
+#     last=$(yabai -m query --spaces | jq 'map(select(."is-native-fullscreen" == false)) | last | .index'); \
+#     if [ "$idx" -eq "$last" ]; then yabai -m space --move first; else yabai -m space --move next; fi; \
+#     sketchybar -m --trigger space_change
 
 # Navigate spaces with wraparound (replaces macOS default ctrl-left/right)
 ctrl - left : yabai -m space --focus prev || yabai -m space --focus last

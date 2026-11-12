@@ -171,12 +171,8 @@
       [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
       # ───────────────────────────────────────── theme-system ──
-      # Theme docs: ~/.theme/README.md
-      # Active theme: ~/.theme/current
-      [ -f ~/.theme/palette.sh ] && . ~/.theme/palette.sh
-      [ -f ~/.theme/zsh/fzf.sh ] && . ~/.theme/zsh/fzf.sh
-      [ -f ~/.theme/zsh/p10k.zsh ] && . ~/.theme/zsh/p10k.zsh
-      [ -f ~/.theme/lf/colors.sh ] && . ~/.theme/lf/colors.sh
+      # ~/.theme = single entrypoint (palette + per-tool bits); assets in ~/.config/theme/
+      [ -f ~/.theme ] && . ~/.theme
 
       # ────────────────────────────────────────────────────────────── python ──
       # Python is managed by mise (~/.config/mise/config.toml) + uv. No global python

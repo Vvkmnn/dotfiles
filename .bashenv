@@ -1,1 +1,1 @@
-.rc
+.minimal

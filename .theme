@@ -1,0 +1,21 @@
+#!/usr/bin/env sh
+# ~/.theme — Kanagawa Wave entrypoint (a FILE, not a folder). Defines nothing itself;
+# it sources the palette + per-tool shell bits from ~/.config/theme/ (the asset folder),
+# so the whole theme is reachable from one home-level file. Sourced once by ~/.shell.
+#
+# Consumers — where Kanagawa Wave propagates (manifest / "where it's used"):
+#   shell/.fleet ← this file (sourced by ~/.shell)          $KANAGAWA_*  /  *_SGR
+#   tmux         ← ~/.config/theme/tmux/kanagawa-wave.conf   (tmux.conf:120)
+#   git/delta    ← ~/.config/theme/git/delta.gitconfig       (~/.gitconfig include)
+#   btop         ← ~/.config/theme/btop/kanagawa-wave.theme
+#   p10k·fzf·lf  ← ~/.config/theme/{zsh,lf}/…                (sourced below)
+#   yazi         ← ~/.config/theme/yazi/theme.toml
+#   ghostty      ← "theme = Kanagawa Wave"                   (own config, mirrors palette)
+#   nvim         ← tokyonight (separate — not this palette)
+# Active theme name lives in ~/.config/theme/current
+_THEME="$HOME/.config/theme"
+[ -f "$_THEME/palette.sh" ]   && . "$_THEME/palette.sh"
+[ -f "$_THEME/zsh/fzf.sh" ]   && . "$_THEME/zsh/fzf.sh"
+[ -f "$_THEME/zsh/p10k.zsh" ] && . "$_THEME/zsh/p10k.zsh"
+[ -f "$_THEME/lf/colors.sh" ] && . "$_THEME/lf/colors.sh"
+unset _THEME

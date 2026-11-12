@@ -14,6 +14,28 @@ export KANAGAWA_YELLOW="#e6c384"
 export KANAGAWA_ORANGE="#ff9e3b"
 export KANAGAWA_RED="#e82424"
 export KANAGAWA_PURPLE="#957fb8"
+
+# ANSI-SGR (truecolor foreground) forms — for shell scripts that PRINT color directly
+# (e.g. ~/.fleet's verbs). Derived from the hex above via _sgr() so the hex stays the
+# single source of truth. printf builds the ESC (the `sh` shebang rules out $'…').
+_sgr() { _h=${1#\#}; _g=${_h#??}; _g=${_g%??}; printf '\033[38;2;%d;%d;%dm' "0x${_h%????}" "0x$_g" "0x${_h#????}"; }
+export KANAGAWA_FG_SGR="$(_sgr "$KANAGAWA_FG")"
+export KANAGAWA_MUTED_SGR="$(_sgr "$KANAGAWA_MUTED")"
+export KANAGAWA_BORDER_SGR="$(_sgr "$KANAGAWA_BORDER")"
+export KANAGAWA_BLUE_SGR="$(_sgr "$KANAGAWA_BLUE")"
+export KANAGAWA_AQUA_SGR="$(_sgr "$KANAGAWA_AQUA")"
+export KANAGAWA_GREEN_SGR="$(_sgr "$KANAGAWA_GREEN")"
+export KANAGAWA_YELLOW_SGR="$(_sgr "$KANAGAWA_YELLOW")"
+export KANAGAWA_ORANGE_SGR="$(_sgr "$KANAGAWA_ORANGE")"
+export KANAGAWA_RED_SGR="$(_sgr "$KANAGAWA_RED")"
+export KANAGAWA_PURPLE_SGR="$(_sgr "$KANAGAWA_PURPLE")"
+export KANAGAWA_RESET="$(printf '\033[0m')"
+
+# Custom (non-Kanagawa) accents — off-palette values kept exact, under their own namespace
+# so the KANAGAWA_* set stays canonical Kanagawa Wave. _sgr() from above builds the escape.
+export CUSTOM_DIM="#72747c"          # .fleet's dim grey (a hair cooler than KANAGAWA_MUTED)
+export CUSTOM_DIM_SGR="$(_sgr "$CUSTOM_DIM")"
+
 export BAT_THEME="Kanagawa"
 
 # zsh-autosuggestions: pin explicit muted fg (was falling back to ANSI-8, only

@@ -39,6 +39,23 @@ One row in Claude's own footer, drawn by `~/.claude/mods/statusline` from `statu
 
 `ॐ Fᵀ⁺ high + thinking  ? 6 waiting · ψ 37% context  λ 33% (36%ᶠ)  τ 6d 9h reset  δ 375% stop for 5d 3h · π 26 files uncommitted on v-macos  $ 381 over 2h 40m`
 
+**Earlier legend (the July 2026 statusline, superseded on 2026-11-04 by the row above; kept for reference):**
+
+`ॐ Fᵀˣ ψ 36%¹ᴹ κ 94% μ 52% λ 38% 28% σ 2.2h 5.7h θ 4.2h¹·³ 1.4d π main +45 $ 484 τ`
+
+| Glyph | Reads as | Act when |
+|-------|----------|----------|
+| `ॐ` color | vim state: orange insert (typing = resting) · blue normal/escaped · gold visual | (replaces -- INSERT --) |
+| `F/O/S/H` + `ᵀ ᴹ ˣ ⁺ ⁻` | model, thinking, effort | wrong model for the task? `/model` |
+| `ψ %` (`¹ᴹ` = 1M session) | context used | >60% orange: wrap up or `/compact Focus on X` |
+| `κ %` | cache-hit efficiency | orange <70: cache breaking — early-context edits or >1h gaps. Cache reads DON'T count against rate limits (subscription sessions get 1-hour TTL) — κ is a quota multiplier |
+| `μ %` | weekly budget variance | red negative: overspent pace · gray >5: surplus, spend more |
+| `λ % %` | 5h / 7d quota used | red = near cap; Default will soften to Sonnet |
+| `θ h/d` + superscript | runway + pace ratio | red superscript >1.2: current pace exhausts quota before reset |
+| `$` | API-equivalent value extracted (dim) | higher = more out of the flat rate. It's a score, not a bill |
+| `¢` (orange, appears only when >0) | REAL usage-credit spend | post-2026-07-08 Fable sessions burn credits — this is actual money; refreshed by the usage-API fallback, carried forward between refreshes |
+| `τ` (tau) | telemetry heartbeat: dim = armed · gold = rate sample is fresh, a row just landed in `telemetry-<host>.jsonl` (~every 2min, every session at once) | never — cosmetic; absence means the ledger broke |
+
 | Glyph | Reads as | Source, freshness | Act when |
 |-------|----------|-------------------|----------|
 | `ॐ` | red = this pane waits on you and is idle; else vim colour (gold, orange insert, blue visual) | tmux pane flag from the hooks; footer's draft/working state | red: answer it |
@@ -53,13 +70,32 @@ One row in Claude's own footer, drawn by `~/.claude/mods/statusline` from `statu
 
 Sections shrink from the right (long · short · minimal), then drop `$`, π, τ, δ in that order; ॐ ? ψ λ are the floor. `statusline.sh demo` renders every state; the selftest asserts the tokens, the fit at seven widths, the running-dry colours, the endpoint fixture and the stale-week guard. Nothing is written to disk on the live path (`CLAUDE_STATUSLINE_STYLE=v3` keeps the old line and its ring).
 
-### Skills — reach-for map (19 owner skills)
+### Telemetry ledger (`~/.claude/status/telemetry-<host>.jsonl`)
+
+Private, append-only usage history — one raw JSON row per fresh haiku probe (~every 2–3 min). **Zero latency:** `_append_telemetry` bails on a single integer test (`rate_content_age < 40`) on ~80% of renders — no subprocess unless a probe just landed; then ts-dedup stops repeats. **Recycles the probe + this render's stdin — zero extra API calls.** **Self-contained:** carries Anthropic's own cost/usage numbers straight from stdin — no `ccusage`, no transcript re-parse. **Cross-fleet:** one file per machine (`telemetry-<host>.jsonl`, `host` in every row) so the ledgers sync via the dotfiles repo without merge conflicts — aggregate by globbing `telemetry-*.jsonl` across vBook/vNeo/mini. **Encrypted at rest** with git-crypt (`.gitattributes`: `.claude/status/telemetry-*.jsonl`) — usage patterns + project paths are personal; runtime caches (`rate_limit.json`, `weekly_activity.json`) stay gitignored. The `τ` glyph blinks gold on each write. Answers "true usage — how/when/where/what-model" and — via `u5`/`u7` ÷ `cost` — whether Anthropic's *limits* shift (there is **no absolute-limit header**; the ceiling can only be inferred). The "what/why" (topic per session) is derived on demand from transcripts joined by `sid` — no live capture, zero runtime cost.
+
+Row = a thin envelope around the two channels stored **exactly as received** — nothing dropped, flattened, or renamed (flatten at read time for analysis; you can't recover a field biased away at capture):
+
+| Key | Is |
+|-----|-----|
+| `v` | schema version (`1`) |
+| `ts` | probe fetch epoch — dedup + sort key (mirrors `rl._fetched_at`) |
+| `host` | machine short-hostname — cross-fleet join key |
+| `rl` | the **whole** `rate_limit.json`: `five_hour`/`seven_day` `{utilization, resets_at, status}` · `representative_claim` · `extra_usage` · `_fetched_at` · `_source` |
+| `in` | the **whole** statusline stdin payload verbatim: `session_id`, `cwd`, `model{}`, `workspace{}`, `version`, `output_style{}`, `cost{total_cost_usd, total_lines_added/removed, total_*_duration_ms}`, `context_window{used_percentage, context_window_size, current_usage{cache/input tokens}}`, `effort{}`, `thinking{}`, `vim{}`, `transcript_path`, `exceeds_200k_tokens`, + anything Claude Code adds later |
+
+Only `v`/`ts`/`host` are added; nothing received is dropped or renamed → **zero capture-time bias** (raw true data for perfect future analytics). The "what/why" (topic per session) joins from transcripts via `.in.session_id`.
+
+Status values: `allowed → allowed_warning → rejected`. Analysis (7×24 heatmap, per-project/model leaderboard, burn-rate, limit-drift detector) + a report skill are **deferred** — see plan `plans/the-stautsline-seems-like-starry-karp.md`; monthly rotation+gzip when the file grows (~30–50 MB/yr).
+
+### Skills — reach-for map (20 owner skills)
 
 | Situation | Say / use |
 |-----------|-----------|
 | Weekly maintenance, drift check, "Claude feels off" | `improve-claude` (phases: health/audit/analyze/refresh/cleanup/evolve/parity/cloud) |
 | Switch pricing mode or project model | `switch-claude` |
 | Research anything (tech or academic) | `research-topics` — routes to parallel agents or paper databases |
+| What did I spend tokens on / usage over time / cost per project·model·session | `analyze-usage` — jq recipes over the telemetry ledger |
 | Commit time | `craft-commit` (owns commits) → `draft-github` (PRs) |
 | Pre-commit verification | `verify-work` |
 | Fork/branch this conversation | `branch-claude` |
@@ -101,6 +137,60 @@ Subagents run in the **background by default** — keep working; results arrive.
 3. Subagents stay on subscription/cheap models — never let a Fable session fan out to Fable children
 4. `/effort` deliberately — don't stack max on tasks high handles
 5. Keep prompts 200K-sized unless the task truly needs the 1M window
+
+### Fable session hygiene + the two-file config model (2026-07-14)
+
+**Model default policy (2026-07-14): no `model` pin — take Anthropic's current default.**
+On Max **20x** the platform default is the right daily driver, so settings.json carries
+**no `model` key**. `opusplan` is only for a **cheaper plan** (Opus-plan + Sonnet-exec
+cost-saving) — not needed on 20x. **Per-project model** = set `model` in that project's
+`.claude/settings.json` (overrides global — how eve-temp gets Fable; pin opus/sonnet
+elsewhere as wanted). **`switchModelsOnFlag: false` is the standing "never switch me
+without asking" guarantee** — every flag becomes a pause you can fix ("edit + retry" /
+"send to Opus"), never a silent swap. (settings.json is strict JSON — no inline comments;
+**this note is the comment.**)
+
+**Staying on Fable.** Fable runs safety classifiers on *every request over all loaded
+context*; a hit routes to Opus and sticks (recover with `/model fable`, per-request).
+Documented trigger categories: offensive-cyber · bio/chem · reasoning-extraction ·
+frontier-ML (support article 15363606). False-positives on DevOps + a heavy loaded
+surface — the global offensive-security skills (semgrep/yara/fuzzing/threat-modeling/…)
+can trip it in *any* folder. **No setting pins Fable.** Three real levers:
+- `switchModelsOnFlag: false` (settings.json → synced) = **pause-and-ask** instead of
+  silent fallback ("edit + retry on Fable" / "send to Opus"). Set via `/config → MODEL &
+  OUTPUT`. Already on — THE anti-silent-kick fix.
+- Clean the surface: `--safe-mode` (all customizations off; also the diagnostic — if
+  Fable holds in safe-mode but not normally, the global skill surface is the culprit) ·
+  `--strict-mcp-config --mcp-config <f>` (only named MCPs) · a small no-imports folder.
+- `/model fable` to recover after any trip.
+
+**The two-file model (what syncs across the fleet):**
+| File | Holds | Syncs? |
+|------|-------|--------|
+| `~/.claude/settings.json` | documented keys (`model`, `editorMode`, `permissions`, `hooks`, `switchModelsOnFlag`, `askUserQuestionTimeout`, …) | **YES** — dotfiles-tracked; commit → push → `dotfiles pull` |
+| `~/.claude.json` | volatile local state (projects, auth, history) + some UI toggles (`externalEditorContext`, copy-on-select) | **NO** — gitignored, per-machine |
+
+`/config` writes documented settings to `settings.json` (sync) but UI/behavior toggles to
+`.claude.json` (local). Test which: toggle → `dotfiles status`; `settings.json` changed →
+syncs, else local-only. **Graceful `.claude.json` fleet-sync (deferred to the fleet-parity
+pass):** never copy the whole file (clobbers local state) — an idempotent `jq` script
+(dotfiles-tracked) that SETS only chosen pref keys per machine, safe to re-run.
+Enforce-keys, not file-copy.
+
+**External editor (nvim).** `Ctrl+G` (or readline `Ctrl+X Ctrl+E`) opens `$EDITOR` to
+compose; `externalEditorContext: true` (`.claude.json`, local, **read-once → restart the
+session to activate**) prepends the last reply as `#` comments, stripped on `:wq`. Needs
+`$EDITOR` in the *launch* env — put `export EDITOR=nvim` in `~/.zshenv`, not just `.zshrc`.
+
+**OPEN — the fleet copy problem.** Over mosh into the mini, clipboard actions (`/copy`,
+copy-on-select, `Ctrl+Shift+C`) land on the *mini*, not the local device — needs **OSC 52**
+passthrough (Ghostty writes it; tmux `set-clipboard on` + `allow-passthrough on`; mosh is
+the historical weak link). Own investigation, deferred to the fleet-parity pass.
+
+Commands worth knowing: `/copy [n]` (copy my reply; `w` = write to file) · `/btw`
+(side-question, no context pollution) · `/context` (usage grid) · `/rewind` / `Esc Esc`
+(roll back code + convo) · transcript `v` (open convo in nvim), `[` (dump to tmux
+scrollback for copy-mode search).
 
 ### Weekly Rhythm
 
@@ -234,7 +324,7 @@ All servers run through `mcp-proxy` gateway on `localhost:9090`. Each server is 
 **Machine-2 bootstrap (runtime trio):** the proxy needs three pieces beyond the git-crypt'd config:
 1. Binary: `~/.claude/mcp/bin/mcp-proxy` (7.4MB arm64, not tracked) — get via `go install github.com/TBXark/mcp-proxy@latest` then copy from `$GOPATH/bin`, or download the release binary from github.com/TBXark/mcp-proxy
 2. Wrapper: `mcp/bin/start-proxy.sh` ($HOME-relative since 2026-07-06 — port-cleanup + exec)
-3. LaunchAgent: install from the tracked template — `sed "s|__HOME__|$HOME|g" ~/.claude/mcp/com.claude.mcp-proxy.plist.template > ~/Library/LaunchAgents/com.claude.mcp-proxy.plist && launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.claude.mcp-proxy.plist`
+3. LaunchAgent: install from the tracked template (now in the central `~/.daemons/` registry) — `sed "s|__HOME__|$HOME|g" ~/.daemons/com.claude.mcp-proxy.plist.template > ~/Library/LaunchAgents/com.claude.mcp-proxy.plist && launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.claude.mcp-proxy.plist` — or just run `~/.ai/setup` (`s_services` installs every `~/.daemons/*.plist.template`)
 Then: git-crypt unlock (config.json), `claude /login`, re-add the 14 Claude-side entries with the Bearer header (see Auth above).
 
 ### Fleet Decision (2026-07-06, CLI-first)

@@ -1,8 +1,8 @@
 ---
 name: update-dotfiles
 author: Vvkmnn
-description: Use when user says "update dotfiles", "commit dotfiles", "sync dotfiles", "push dotfiles", "update docs and dotfiles", "add to docs and dotfiles", "docs and dotfiles", or asks to save/backup their config — and whenever Claude itself proposes updating dotfiles OR docs. Runs a DOCS-FIRST pass (accurate function docstrings/comments in the code you just changed, then relevant project docs — README/CHANGELOG/memory), THEN the dotfiles commit. Manages the bare git repo at ~/.dotfiles with logical commits, security checks, config discovery, and a plan-artifact/launch-daemon capture pass so recent machine-config work is reproducible on fresh machines.
-version: 0.5.0
+description: Use when user says "update dotfiles", "commit dotfiles", "sync dotfiles", "push dotfiles", "update docs and dotfiles", "add to docs and dotfiles", "docs and dotfiles", "converge the fleet", or asks to save/backup their config or reconcile machines that DRIFTED apart — and whenever Claude itself proposes updating dotfiles OR docs. Runs a DOCS-FIRST pass (accurate function docstrings/comments in the code you just changed, then relevant project docs — README/CHANGELOG/memory), THEN the dotfiles commit. Manages the bare git repo at ~/.dotfiles with logical commits, security checks, config discovery, a plan-artifact/launch-daemon capture pass, and FLEET CONVERGENCE (reconcile drift across machines back into the ONE shared v-macos set, best-of-both — same experience everywhere) so config is reproducible + consistent fleet-wide.
+version: 0.6.0
 ---
 
 # Dotfiles Update
@@ -13,25 +13,26 @@ version: 0.5.0
 **Remote:** `git@github.com:Vvkmnn/dotfiles.git`
 **Command:** `dotfiles` alias or `/usr/bin/git --git-dir=/Users/v/.dotfiles/ --work-tree=/Users/v`
 
-### Branches (one per machine)
+### Branch — ONE shared branch (converged 2026-07)
 
-| Branch | Machine | Notes |
-|--------|---------|-------|
-| `master` | — | Default/base, shared README |
-| `v-macos-macbook` | MacBook | **Current machine** |
-| `v-macos-studio` | Mac Studio | |
-| `v-macos` | Generic macOS | |
-| `v-debian` | Debian | |
-| `v-debian-wsl` | WSL | |
+The fleet runs a **single shared branch: `v-macos`** — same dotfiles, same experience on every Mac
+(neo · air · mini). The old per-machine branches (`v-macos-macbook`, `v-macos-studio`, `v-mac`,
+`v-macos-neo`) are **DEAD** — superseded, archive/delete candidates (owner approves each deletion).
+`master` = old default/base (separate call); `v-debian*` = other platform, kept.
 
-Always commit to the current branch. Never switch branches without asking.
+**Machine differences are NOT branches and NOT overrides — the default is one unified set.** Where a
+Mac genuinely *must* differ (headless mini has no 1P GUI; 8GB vs 24GB RAM; AU vs CA region), it's a
+**minimal in-config adjustment kept as small as possible** (`~/.ai/scale` for RAM/heap,
+`$SSH_CONNECTION`-gating for local-vs-forwarded agent, `machine_badge` for identity) — the reluctant
+exception, only when necessary. Everything else is identical everywhere. Commit to `v-macos`; set
+`push.default=simple`. See **Fleet Convergence** below for pulling drift back into the one set.
 
 ### What's Tracked (~1136 files)
 
 | Category | Scope | Key Files |
 |----------|-------|-----------|
 | Shell | `shell` | `.alias`, `.functions`, `.minimal`, `.profile`, `.rc`, `.shell`, `.bashrc`, `.zshrc`, `.zshenv`, `.zimrc`, `.p10k.zsh`, `.fishrc`, `.hushlogin` |
-| Claude Code | `claude` | `.claude/CLAUDE.md`, `README.md`, `docs/*` (CHANGELOG, CONFIG), `settings.json`, `keybindings.json`, `statusline.sh`, `rules/*`, `hooks/*`, `skills/*`, `agents/*`, `workflows/*`, `mcp/config.json` (encrypted), `mcp/bin/start-proxy.sh`, `mcp/com.claude.mcp-proxy.plist.template`, `.claudeignore`, `.gitignore` |
+| Claude Code | `claude` | `.claude/CLAUDE.md`, `README.md`, `docs/*` (CHANGELOG, CONFIG), `settings.json`, `keybindings.json`, `statusline.sh`, `rules/*`, `hooks/*`, `skills/*`, `agents/*`, `workflows/*`, `mcp/config.json` (encrypted), `mcp/bin/start-proxy.sh`, `.claudeignore`, `.gitignore` |
 | Karabiner | `karabiner` | `.config/karabiner/karabiner.json`, `KARABINER.md`, `scripts/*`, `assets/complex_modifications/*`, `automatic_backups/*` |
 | Sketchybar | `sketchybar` | `.config/sketchybar/sketchybarrc`, `plugins/*`, `helpers/*.swift` |
 | WM | `wm` | `.skhdrc`, `.yabairc`, `.config/yabai/*` |
@@ -63,11 +64,20 @@ sweep docs before the commit — the commit should capture accurate docs, not st
 2. **Project docs** — update whatever the change makes stale: a module README, `~/.claude/docs/CHANGELOG.md`,
    the project's memory (`~/.claude/projects/<slug>/memory/` + `MEMORY.md` index) for non-obvious learnings
    or hard-won gotchas, and `~/.github/README.md` tree counts if `.claude/` structure changed (see Phase 6).
-3. **Repo changelog** — add a terse entry to `~/.github/LOG.md` (the repo-wide dotfiles changelog, peer to
+3. **Repo changelog** — add an entry to `~/.github/LOG.md` (the repo-wide dotfiles changelog, peer to
    the Claude-config `.claude/docs/CHANGELOG.md`). Newest first, under a `## YYYY-MM-DD` heading (reuse
-   today's if it exists). One bullet per user-visible change across ANY scope — shell, terminal, wm, setup —
-   not just fleet; hard-won gotchas go in a `### notes` sub-list. Match its lowercase README tone. This entry
-   rides in the same commit as the change it documents (or the standalone `DOCS(dotfiles):` commit).
+   today's if it exists). Follow the format in its header: **bold-grouped bullets that carry the *why*
+   (the reasoning + roads-not-taken), not just the *what*** — the why is the expensive part to rediscover;
+   an optional `### why / decisions` block for the bigger calls; hard-won gotchas in a `### notes` sub-list.
+   One bullet per user-visible change across ANY scope — shell·terminal·wm·setup·fleet. Match its lowercase
+   README tone. **Name machines by chip + OS** (`m4` / `m3` / `a18`, macOS), never device nicknames or
+   hostnames (`vMiniM4` / `Neo` / `Air`) — this repo is public; only functional maps (`.fleet` / ssh `Host`)
+   and the owner's personal aliases keep real names. **REQUIRED: end every entry with a `**commits:**` line linking its SHAs**
+   (`github.com/Vvkmnn/dotfiles/commit/<sha>`, short-sha display) so the log is always one hop from the diff —
+   draw the SHAs from `dotfiles log`, and for multi-session machine-config work reconstruct the arc + SHAs
+   from the plan files (see Phase 5c). The entry rides in the same commit as the change it documents (or a
+   standalone `DOCS(dotfiles):` commit; add the `**commits:**` line in a tiny follow-up if the SHAs weren't
+   known at write time).
 4. **Then** proceed to the dotfiles commit below — the doc edits ride in the same logical commit(s) as the
    code they document (same scope), or their own `DOCS(scope):`/`CHORE(scope):` commit if standalone.
 
@@ -185,7 +195,7 @@ done
 - New apps in `~/.config/` not yet tracked
 - Changes to `~/Library/Application Support/` (VS Code, Cursor)
 - New shell dotfiles (`.tool-versions`, `.mise.toml`, etc.)
-- `~/Library/LaunchAgents/` — do NOT track auto-generated or third-party plists (Google/Alfred/brew/CleanMyMac/Steam) or a live hand-authored plist verbatim (its absolute `/Users/<you>/…` paths break a fresh install). DO capture each hand-authored **load-bearing** daemon (`com.user.*`, `com.claude.*` — e.g. the tmux `lambda.sh` save-loop) as a machine-agnostic **`.plist.template`** (paths → `$HOME`). See Phase 5c for the sweep that catches these.
+- `~/Library/LaunchAgents/` — do NOT track auto-generated or third-party plists (Google/Alfred/brew/CleanMyMac/Steam) or a live hand-authored plist verbatim (its absolute `/Users/<you>/…` paths break a fresh install). DO capture each hand-authored **load-bearing** daemon (`com.user.*`, `com.claude.*` — e.g. the tmux `lambda.sh` save-loop) as a machine-agnostic **`.plist.template`** (paths → `$HOME`) **in the central `~/.daemons/` registry** (see `~/.daemons/README.md`; `~/.ai/setup`'s `s_services` globs that one folder + adds a row to its map). See Phase 5c for the sweep that catches these.
 - Sketchybar `helpers/*.swift` sources (track source, not compiled binaries)
 
 **Ask:** "Found N untracked config files in [dirs]. Want to review them for tracking?"
@@ -253,8 +263,9 @@ plain `diff` surfaces — launchd daemons in `~/Library/LaunchAgents/`, standalo
      track the **script** + a machine-agnostic **`.plist.template`** (paths → `$HOME`), AND
      record the install step in `~/.ai/setup` so `setup-dotfiles` loads it on a new machine:
      ```bash
-     # repo renders the __HOME__ token at install time (see mcp/*.plist.template)
-     sed 's#__HOME__#'"$HOME"'#g' ~/.config/tmux/com.user.tmux-save.plist.template \
+     # daemon templates live centrally in ~/.daemons/ (see ~/.daemons/README.md); setup
+     # (s_services) globs that folder and renders the __HOME__ token at install time
+     sed 's#__HOME__#'"$HOME"'#g' ~/.daemons/com.user.tmux-save.plist.template \
        > ~/Library/LaunchAgents/com.user.tmux-save.plist
      launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.user.tmux-save.plist
      ```
@@ -278,6 +289,24 @@ dotfiles status
 **README staleness check:** If commits touched `.claude/` (rules, skills, hooks, mcp) or category structure changed, verify `~/.github/README.md` tree counts still match reality (10 rules, 29 skills, 6 hooks, 36 servers, ~1136 files). Suggest update if stale.
 
 Report: "Committed as [hashes]. Push with `dotfiles push`"
+
+## Fleet Convergence — pull drift back into the ONE shared set
+
+`v-macos` drifts because you work on different things on different machines. Converging is part of
+updating dotfiles: **always merge both machines' intent into one value — same experience everywhere;**
+machine-tune only when a real constraint forces it (never a fork). The loop:
+
+1. **Audit** every machine's git state (ahead/behind · dirty · active plans) — measure, don't ask.
+2. **Detect** true conflicts — `comm` the drifted files ∩ the incoming diff.
+3. **Merge into one** — understand WHY each side diverged (favor recent, learn from the old), synthesize
+   best-of-both, verify both intents survived the auto-merge. A genuine per-host need → a minimal
+   in-config adjustment (`~/.ai/scale`, `$SSH_CONNECTION`-gate), never a fork.
+4. **Push + sync** — explicit `push origin v-macos`; `ssh -A` to sign pushes for headless boxes.
+5. **Don't clobber a live session** — flag another worker's WIP, never fold it silently.
+
+**Three traps that WILL bite:** the bare-repo `cwd=git-dir` trap (always `git -C "$HOME"`), `git status
+-uall` (scans TCC home → hangs), `push.default=matching` (shoves dead branches). **Audit one-liner +
+all mechanics → `references/convergence.md`.**
 
 ## Commit Message Style
 
