@@ -715,6 +715,65 @@ PY
   codex doctor --summary 2>/dev/null || warn "codex doctor reported issues — run 'codex doctor --all'"
 }
 
+s_agents() {
+  say "agents — Agent-Reach + OpenCLI app + Chrome as Claude's browser (one approach, whole fleet)"
+  # Agent-Reach: the read-only agent layer over OpenCLI. Pinned release zip (the PyPI
+  # `agent-reach` is an unrelated package). `setup` installs the default channels
+  # (github youtube bilibili v2ex web) and links the skill into ~/.claude/skills.
+  local ar_ver="1.6.1"
+  local ar_zip="https://github.com/Panniantong/Agent-Reach/releases/download/v${ar_ver}/agent-reach.zip"
+  if command -v uv >/dev/null 2>&1; then
+    if agent-reach version 2>/dev/null | grep -q "\"${ar_ver}\""; then ok "agent-reach ${ar_ver}"
+    else uv tool install --force "$ar_zip" >/dev/null 2>&1 && agent-reach setup >/dev/null 2>&1 && ok "agent-reach ${ar_ver} installed + default channels + skill" || warn "agent-reach install failed — run: uv tool install --force $ar_zip && agent-reach setup"; fi
+  else warn "uv missing — run 'setup packages' first"; fi
+  # Login channels read through Eve's logins in the Claude Chrome profile (X, Reddit);
+  # `add` is idempotent and `browser setup` builds the headless browser it drives.
+  # 1.6.1 left that browser's venv unbuilt on the Air, so the fallback builds it by hand
+  # (cloakbrowser is the version its runtime/tools.py tests).
+  if command -v agent-reach >/dev/null 2>&1; then
+    local ar_venv="$HOME/.agent-reach/tools/cloakbrowser/venv"
+    [ -x "$ar_venv/bin/python" ] || { python3 -m venv --upgrade-deps "$ar_venv" >/dev/null 2>&1 && "$ar_venv/bin/pip" install -q cloakbrowser==0.6.3 >/dev/null 2>&1 && ok "agent-reach browser venv built" || warn "agent-reach browser venv failed — run: agent-reach browser setup"; }
+    local ch; for ch in twitter reddit; do agent-reach add "$ch" >/dev/null 2>&1 && ok "agent-reach channel $ch" || warn "agent-reach add $ch failed (needs Eve signed into $ch in Claude's Chrome)"; done
+  fi
+
+  # OpenCLI, two pieces with one owner each (verified 2026-11-02): the CLI is mise's
+  # `npm:@jackwener/opencli` pin in ~/.config/mise/config.toml (tracked; `mise install`
+  # in s_packages puts it on PATH ahead of /usr/local/bin); the app below owns the
+  # Browser Bridge daemon, the menu-bar status and Launch at login. The app's own shim at
+  # /usr/local/bin/opencli forwards to an older bundled CLI (1.8.6 in app 0.1.38) and is
+  # shadowed by the pin on purpose. No Homebrew cask exists; signed Developer ID pkg,
+  # pinned by hash.
+  local oc_ver="0.1.38" oc_sha="48da99a41cdccff40c1164b3d18c2968782f71ecae5d349772dab9da124d1802"
+  local oc_url="https://github.com/jackwener/opencli-website/releases/download/app-v${oc_ver}/OpenCLIApp_${oc_ver}_aarch64.pkg"
+  if [ -d /Applications/OpenCLIApp.app ]; then ok "OpenCLIApp present"
+  else
+    local pkg; pkg="$(mktemp -d)/OpenCLIApp.pkg"
+    if curl -fsSL --max-time 600 -o "$pkg" "$oc_url" && printf '%s  %s\n' "$oc_sha" "$pkg" | shasum -a 256 -c - >/dev/null 2>&1; then
+      need_sudo; sudo installer -pkg "$pkg" -target / >/dev/null 2>&1 && ok "OpenCLIApp ${oc_ver} installed (open it once: finish the wizard, Launch at login; the CLI stays mise's pin)" || warn "OpenCLIApp installer failed"
+    else warn "OpenCLIApp download or checksum failed — nothing installed"; fi
+    rm -f "$pkg"
+  fi
+  # /usr/local/bin/opencli must be the pinned npm tree itself: non-login shells (Agent-Reach's
+  # subprocesses) resolve it there, the app's shim is 1.8.6, and the mise shim fails
+  # Agent-Reach's package-layout check (needs daemon.js beside package.json).
+  local oc_bin; oc_bin="$(mise where npm:@jackwener/opencli 2>/dev/null)/bin/opencli"
+  if [ -x "$oc_bin" ]; then
+    if [ "$(readlink /usr/local/bin/opencli 2>/dev/null)" = "$oc_bin" ]; then ok "opencli → mise pin"
+    else need_sudo; sudo ln -sf "$oc_bin" /usr/local/bin/opencli && ok "opencli → mise pin (relinked)" || warn "opencli relink failed — run: sudo ln -sf $oc_bin /usr/local/bin/opencli"; fi
+  else warn "opencli pin missing — run 'mise install'"; fi
+
+  # Chrome is Claude's browser: one profile named Claude. Its two extensions and the
+  # password/autofill policy come from ~/.ai/vProfile.mobileconfig (mandatory channel;
+  # `defaults write` is recommended-level and ignored by the force-install list).
+  local chrome_dir="$HOME/Library/Application Support/Google/Chrome"
+  if [ -d "$chrome_dir/Claude" ]; then ok "Chrome profile 'Claude' present"
+  elif [ -d "/Applications/Google Chrome.app" ]; then
+    if pgrep -x "Google Chrome" >/dev/null 2>&1; then warn "quit Chrome, then re-run 'setup agents' to create the Claude profile (a running Chrome ignores launch flags)"
+    else open -na "Google Chrome" --args --profile-directory="Claude" --no-first-run >/dev/null 2>&1; ok "Chrome profile 'Claude' created — sign it into the Claude Google account (sync) and claude.ai"; fi
+  else warn "Google Chrome missing — run 'setup packages'"; fi
+  profiles list 2>/dev/null | grep -q 'xyz.vvkmnn.vprofile' && ok "vProfile installed (Chrome extensions + autofill policy active)" || warn "vProfile not installed — 'setup gate' opens it; Chrome extensions arrive only after it is installed"
+}
+
 s_gate() {
   # macOS won't let a script grant TCC, approve a system extension, install a
   # config profile, or hide notification previews — and it can't reliably verify
@@ -725,7 +784,7 @@ s_gate() {
   warn "Input Monitoring:    add skhd, Karabiner-Elements (karabiner_grabber)"
   warn "System extensions:   approve Karabiner, Mullvad, AdGuard when prompted"
   warn "Reduce Transparency: Accessibility ▸ Display — ON (solid/filled menu bar; TCC-blocks scripting)"
-  warn "vProfile:            install ~/.ai/vProfile.mobileconfig (notification sound OFF, visual only)"
+  warn "vProfile:            install ~/.ai/vProfile.mobileconfig (notification sound OFF; Chrome = Claude's browser: Browser Bridge + Claude in Chrome force-installed, passwords/autofill off)"
   warn "Codex/ChatGPT:       Notifications ON; Screen Recording/Appshots and Accessibility/Computer Use only when used"
   warn "Show previews:       Notifications ▸ Show previews → Never (hide content; not profile-able on macOS)"
   warn "Wallpaper:           set Aerial \"Shuffle Earth\" manually"
@@ -809,6 +868,7 @@ setup — bring this Mac to fleet parity (self-contained).   ~/.ai/setup [phase]
   macos      apply curated macOS defaults (sudo-free)
   remote     screen sharing + fast switching + remote power policy (sudo, opt-in)
   codex      merge safe Codex defaults + verify guidance files
+  agents     Agent-Reach (pinned) + OpenCLIApp (pinned pkg) + Chrome 'Claude' profile
   gitauth    GitHub/inter-Mac auth via 1Password SSH agent (one manual toggle)
   gate       open the manual TCC panes + checklist
   doctor     verify the machine (self-contained)
@@ -821,7 +881,7 @@ EOF
 
 # ── dispatch ──────────────────────────────────────────────────────────────────
 case "${1:-all}" in
-  all)            s_packages; s_fonts; s_services; s_macos; s_gitauth; s_codex; s_gate; s_doctor ;;
+  all)            s_packages; s_fonts; s_services; s_macos; s_gitauth; s_codex; s_agents; s_gate; s_doctor ;;
   packages)       s_packages ;;
   fonts)          s_fonts ;;
   services)       s_services ;;
@@ -829,6 +889,7 @@ case "${1:-all}" in
   macos)          s_macos ;;
   remote)         s_remote ;;
   codex)          s_codex ;;
+  agents)         s_agents ;;
   gitauth)        s_gitauth ;;
   gate)           s_gate ;;
   doctor|check)   s_doctor ;;

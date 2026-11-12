@@ -19,3 +19,5 @@ Library/Application Support/Code/**
 .cargo/registry/
 .cargo/.package-cache
 .rustup/
+
+**/.claude/.cc-writes/

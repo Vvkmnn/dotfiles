@@ -4,6 +4,7 @@ node = "lts"
 cmake = "latest"
 # opam = { version = "latest", asset_pattern = "opam-*-{gnu_arch}-{os}" }
 rust = "stable"   # mise-managed (core:rust → rustup under the hood); replaces the
+"npm:@jackwener/opencli" = "2.0.2"
                   # tracked .cargo/bin binaries + standalone rustup-with-no-toolchain
 
 [settings]

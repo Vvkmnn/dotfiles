@@ -102,13 +102,33 @@
         <dict><key>BundleIdentifier</key><string>software.micropixels.BatFi</string><key>SoundsEnabled</key><false/></dict>
       </array>
     </dict>
+    <dict>
+      <key>PayloadType</key><string>com.google.Chrome</string>
+      <key>PayloadVersion</key><integer>1</integer>
+      <key>PayloadIdentifier</key><string>xyz.vvkmnn.vprofile.chrome</string>
+      <key>PayloadUUID</key><string>A1B2C3D4-3333-4A10-9E00-000000000003</string>
+      <key>PayloadDisplayName</key><string>Chrome — Claude's browser: Browser Bridge + Claude in Chrome, no saved cards or addresses</string>
+      <key>ExtensionInstallForcelist</key>
+      <array>
+        <string>ildkmabpimmkaediidaifkhjpohdnifk;https://clients2.google.com/service/update2/crx</string>
+        <string>fcoeoabgfenejglbffodgkkbkcdhcgfn;https://clients2.google.com/service/update2/crx</string>
+      </array>
+      <key>ExtensionInstallBlocklist</key>
+      <array>
+        <string>fldmhceldgbpfpkbgopacenieobmligc</string>
+      </array>
+      <!-- password manager stays on: it holds only Eve's throwaway logins, synced through her Google account with a sync passphrase (owner on 1Password Individual, so no 1Password extension in Claude's Chrome) -->
+      <key>PasswordManagerEnabled</key><true/>
+      <key>AutofillCreditCardEnabled</key><false/>
+      <key>AutofillAddressEnabled</key><false/>
+    </dict>
   </array>
   <key>PayloadType</key><string>Configuration</string>
-  <key>PayloadVersion</key><integer>1</integer>
+  <key>PayloadVersion</key><integer>3</integer>
   <key>PayloadIdentifier</key><string>xyz.vvkmnn.vprofile</string>
   <key>PayloadUUID</key><string>A1B2C3D4-2222-4A10-9E00-000000000002</string>
   <key>PayloadDisplayName</key><string>vProfile</string>
-  <key>PayloadDescription</key><string>vProfile — one managed profile for the fleet. Notification sound OFF for all apps (banners/badges kept = visual only). Superset of fleet apps; entries for absent apps are inert. Remove anytime to restore manual control. NOTE: content-preview hiding is NOT profile-able on macOS — set System Settings > Notifications > Show previews > Never manually.</string>
+  <key>PayloadDescription</key><string>vProfile — one managed profile for the fleet. (1) Notification sound OFF for all apps (banners/badges kept = visual only); superset of fleet apps, entries for absent apps are inert. (2) Chrome is Claude's browser: OpenCLI Browser Bridge and Claude in Chrome force-installed in every profile, card/address autofill off, Chrome's password manager on for Eve's throwaway logins only (the owner's 1Password holds the record; its extension is never installed in Claude's profile). A plain `defaults write` sets these only at the recommended level, which the force-install list ignores, so the profile is the mandatory channel. Remove anytime to restore manual control. NOTE: content-preview hiding is NOT profile-able on macOS — set System Settings > Notifications > Show previews > Never manually.</string>
   <key>PayloadOrganization</key><string>vvkmnn</string>
   <key>PayloadScope</key><string>User</string>
   <key>PayloadRemovalDisallowed</key><false/>
