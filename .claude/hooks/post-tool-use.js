@@ -24,6 +24,7 @@ process.stdin.on('data', (chunk) => { inputData += chunk; });
 process.stdin.on('end', () => {
   try {
     const result = JSON.parse(inputData);
+    clearWaitingFlag(result.tool_name);
     const response = processToolResult(result);
     if (response && Object.keys(response).length > 0) {
       console.log(JSON.stringify(response));
@@ -34,6 +35,14 @@ process.stdin.on('end', () => {
     process.exit(0);
   }
 });
+
+// A tool ran, so Claude is working again: drop the "waiting on you" flag that notification.js
+// raised (statusline ? / window pill ? / red border). Covers approvals given by keypress, which
+// never pass through UserPromptSubmit. One shared implementation (lib/waiting-flag.js): explicit
+// pane target, status refresh, and a flag.log line naming the tool so a stale flag is traceable.
+function clearWaitingFlag(toolName) {
+  require('./lib/waiting-flag').clear(`PostToolUse:${toolName || '?'}`);
+}
 
 function context(text) {
   return {

@@ -30,6 +30,16 @@ from pathlib import Path
 # copied or persisted (ADR-029 discipline: ride logged-in sessions).
 BROWSER_CHAIN = ["chrome", "safari", "firefox"]
 
+# Only errors like these can be fixed by cookies. Anything else (a stale
+# extractor, a network error) would just trigger one macOS keychain prompt
+# per Chrome-cookie attempt for nothing, so we stop and report it instead.
+AUTH_ERROR_PATTERNS = re.compile(
+    r"sign in|log ?in|login required|private|age[- ]restrict|confirm your age"
+    r"|not a bot|members[- ]only|cookies|authenticat|rate-limit",
+    re.IGNORECASE,
+)
+STALE_HINT = "public video failing? yt-dlp may be outdated — brew upgrade yt-dlp"
+
 FRAME_WIDTH = 512  # px — enough for vision models, cheap to read
 MAX_FRAMES = 60
 
@@ -90,8 +100,12 @@ def download(url: str, out: Path, browser: str | None) -> tuple[Path | None, str
         if vids:
             (out / "meta.json").write_text(proc.stdout.splitlines()[-1] if proc.stdout else "{}")
             return vids[0], note
-        errs = [l for l in (proc.stderr or "").splitlines() if "ERROR" in l]
+        errs = [line for line in (proc.stderr or "").splitlines() if "ERROR" in line]
         last_err = errs[0] if errs else "unknown"
+        if cookies is None and not AUTH_ERROR_PATTERNS.search(last_err):
+            print(f"download failed (not an auth error, skipping cookies): {last_err}\n"
+                  f"{STALE_HINT}", file=sys.stderr)
+            return None, last_err
     print(f"download failed after all auth attempts: {last_err}", file=sys.stderr)
     return None, last_err
 

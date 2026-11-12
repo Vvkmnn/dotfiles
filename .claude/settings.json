@@ -1,6 +1,5 @@
 {
   "cleanupPeriodDays": 365,
-  "disableAgentView": true,
   "env": {
     "CLAUDE_CODE_PLUGIN_DIRS": "/Users/v/.claude/mods/statusline"
   },
@@ -476,7 +475,7 @@
     ],
     "defaultMode": "plan"
   },
-  "model": "opus",
+  "model": "fable",
   "hooks": {
     "UserPromptSubmit": [
       {
@@ -577,6 +576,7 @@
       }
     ]
   },
+  "disableAgentView": true,
   "subagentStatusLine": {
     "type": "command",
     "command": "~/.claude/subagent-statusline.sh"
@@ -659,8 +659,8 @@
     },
     "claude-victrix-mod": {
       "source": {
-        "source": "github",
-        "repo": "Vvkmnn/claude-victrix-mod"
+        "source": "directory",
+        "path": "/Users/v/Projects/claude-victrix-mod"
       }
     },
     "blender-agent-skills": {

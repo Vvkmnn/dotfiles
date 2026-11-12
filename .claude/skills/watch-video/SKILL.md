@@ -16,7 +16,11 @@ python3 ~/.claude/skills/watch-video/scripts/watch_video.py "<url-or-path>"
 Optional: `--browser chrome|safari|firefox` to force a cookie source. Default
 tries anonymous first, then Chrome → Safari → Firefox cookies (needed for
 Instagram saved posts / private content; yt-dlp reads the browser store
-directly, nothing is copied or persisted).
+directly, nothing is copied or persisted). The cookie chain only runs when the
+anonymous error looks auth-related (sign-in, private, age, bot-check,
+rate-limit) — each Chrome-cookie attempt costs a macOS keychain prompt.
+A public video failing with "not available" usually means a stale yt-dlp:
+`brew upgrade yt-dlp`, never approve keychain prompts to paper over it.
 
 ## Then
 

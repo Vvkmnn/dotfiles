@@ -1,194 +1,87 @@
 #!/usr/bin/env node
 
 /**
- * Enhanced Claude Code Notification Hook
+ * Claude Code Notification hook — one local emitter for "Claude is waiting on you".
  *
- * Triggered when Claude Code sends notifications:
- * 1. Claude needs permission to use a tool
- * 2. Prompt input has been idle for 60+ seconds
- *
- * Features:
- * - Rich contextual information (git repo, branch, project type)
- * - Duration tracking (time since prompt submitted)
- * - Click-to-navigate (Ghostty + tmux integration)
- * - Custom development tool icons (Ghostty priority)
- * - Enhanced location details
- * - No sound disturbance
+ * On permission_prompt / idle_prompt / agent_needs_input / elicitation_*:
+ *   1. set the tmux pane + window option @claude_waiting=1 — read by statusline.sh (ॐ turns red)
+ *      and by tmux.conf formats (red marker on the window/pane); cleared by user-prompt-submit.js
+ *   2. ring the bell on the pane tty (tmux bell-action any highlights the window)
+ *   3. send one macOS banner via terminal-notifier only when the window is NOT the one you are
+ *      looking at (no duplicate while you watch the pane). agent_completed → "Done".
+ * No emoji anywhere (house rule). Fails open: any error exits 0 and never blocks Claude.
  */
 
-const fs = require('fs');
-const path = require('path');
-const { exec } = require('child_process');
+const { execFile } = require('child_process');
+const { basename } = require('path');
+const { execFileSync } = require('child_process');
+const { raise } = require('./lib/waiting-flag');
 
-// Read JSON input from stdin
-let inputData = '';
+const TMUX = '/opt/homebrew/bin/tmux';
+// Every way Claude can be paused on the owner raises the flag (owner rule: "if Claude is paused
+// in any way I need to know visually from tmux, and notifications"). Stop = the turn finished
+// and Claude waits for the next instruction; quota_* = waiting on a usage-limit reset.
+const LABELS = {
+  permission_prompt: 'Permission',
+  idle_prompt: 'Waiting',
+  agent_needs_input: 'Agent input',
+  elicitation_dialog: 'Input',
+  elicitation_url_dialog: 'Input',
+  agent_completed: 'Agent done',
+  quota_auto_resume_fired: 'Usage limit',
+  quota_auto_resume_stale: 'Usage limit',
+  quota_auto_resume_disabled: 'Usage limit',
+  Stop: 'Done',
+};
+const WAITING = new Set(Object.keys(LABELS));
+
+let raw = '';
 process.stdin.setEncoding('utf8');
-process.stdin.on('data', (chunk) => {
-  inputData += chunk;
-});
-
+process.stdin.on('data', (c) => { raw += c; });
 process.stdin.on('end', () => {
-  try {
-    const hookInput = JSON.parse(inputData);
-    processHook(hookInput);
-  } catch (error) {
-    // Silently fail - don't block workflow
-    process.exit(0);
-  }
+  try { run(JSON.parse(raw)); } catch { process.exit(0); }
 });
 
-async function processHook(hookInput) {
-  console.error('Claude notification triggered');
-
-  const context = await gatherContext();
-  const eventType = hookInput.hook_event_name || 'Notification';
-  const notifType = hookInput.notification_type || '';
-
-  const subtitle = formatSubtitle(context, eventType, notifType);
-
-  // const dir = context.workingDir.replace(process.env.HOME, '~');
-  const message = hookInput.message || 'Claude needs your attention';
-
-  // Simple notification (click action broken on modern macOS)
-  // const title = "🤖 Claude Code";
-  const title = "Claude Code";
-  // Icon options - Ghostty has known icon caching issues on macOS
-  // -appIcon relies on private API, broken since Big Sur (terminal-notifier#283)
-  // -sender only works for system apps on macOS 26+, not custom bundles
-  // -contentImage shows inline image reliably — using clawd pixel-art mascot
-  const sender = '-sender "com.apple.Terminal"';
-  const icon = '-contentImage "$HOME/.claude/clawd.png"';
-  const notifyCmd = `terminal-notifier -title "${title}" -subtitle "${subtitle}" -message "${message}" ${sender} ${icon} -timeout 30`;
-
-  // Ring terminal bell for tmux window highlighting
-  // Get current pane's tty and write bell directly to it
-  exec(`/opt/homebrew/bin/tmux display-message -p '#{pane_tty}'`, (ttyError, ttyPath) => {
-    if (!ttyError && ttyPath) {
-      const tty = ttyPath.trim();
-      exec(`printf "\\a" > ${tty}`, (bellError) => {
-        if (bellError) {
-          console.error('❌ Bell to tty failed:', bellError);
-        }
-      });
-    }
-  });
-
-  exec(notifyCmd, (error) => {
-    if (error) {
-      console.error('❌ terminal-notifier failed, trying osascript:', error);
-      // Fallback to osascript (no sound)
-      const fallback = `osascript -e 'display notification "${message}" with title "${title}" subtitle "${subtitle}"'`;
-      exec(fallback, () => process.exit(0));
-    } else {
-      console.error('Notifications sent (bell + macOS)');
-      process.exit(0);
-    }
-  });
+function tmux(args) {
+  try { return execFileSync(TMUX, args, { encoding: 'utf8', timeout: 500, stdio: ['ignore', 'pipe', 'ignore'] }).trim(); }
+  catch { return ''; }
 }
 
-async function gatherContext() {
-  const context = {
-    workingDir: process.cwd(),
-    dirName: path.basename(process.cwd()),
-    tmuxInfo: await getTmuxInfo(),
-    gitInfo: await getGitInfo(),
-    projectType: await detectProjectType(),
-    timestamp: new Date().toLocaleTimeString()
-  };
+function run(hook) {
+  const type = hook.notification_type || hook.hook_event_name || '';
+  const label = LABELS[type] || 'Attention';
+  const inTmux = Boolean(process.env.TMUX);
 
-  return context;
-}
-
-
-function getTmuxInfo() {
-  return new Promise((resolve) => {
-    exec('/opt/homebrew/bin/tmux display-message -p "v#S|#I|#W"', (error, stdout) => {
-      if (error) {
-        const fallback = `${process.env.TMUX_SESSION || 'unknown'}:${process.env.TMUX_WINDOW || process.env.TMUX_PANE || 'unknown'}`;
-        resolve(fallback);
-      } else {
-        // Strip automatic-rename path suffix: "claude (~/.claude/hooks)" → "claude"
-        resolve(stdout.trim().replace(/\s*\(.*\)$/, ''));
-      }
-    });
-  });
-}
-
-function getGitInfo() {
-  return new Promise((resolve) => {
-    exec('git rev-parse --show-toplevel 2>/dev/null', (error, repoPath) => {
-      if (error) {
-        resolve({ isGitRepo: false });
-        return;
-      }
-      
-      const repoName = path.basename(repoPath.trim());
-      
-      exec('git branch --show-current 2>/dev/null', (branchError, branch) => {
-        const currentBranch = branchError ? 'unknown' : branch.trim();
-        
-        exec('git status --porcelain 2>/dev/null', (statusError, status) => {
-          const hasChanges = !statusError && status.trim().length > 0;
-          
-          resolve({
-            isGitRepo: true,
-            repoName,
-            branch: currentBranch,
-            hasChanges
-          });
-        });
-      });
-    });
-  });
-}
-
-function detectProjectType() {
-  return new Promise((resolve) => {
-    const projectFiles = [
-      { file: 'package.json', type: 'Node.js' },
-      { file: 'requirements.txt', type: 'Python' },
-      { file: 'Cargo.toml', type: 'Rust' },
-      { file: 'go.mod', type: 'Go' },
-      { file: 'pom.xml', type: 'Java' },
-      { file: 'Gemfile', type: 'Ruby' },
-      { file: 'composer.json', type: 'PHP' },
-      { file: '.sln', type: '.NET' }
-    ];
-    
-    for (const { file, type } of projectFiles) {
-      if (fs.existsSync(path.join(process.cwd(), file))) {
-        resolve(type);
-        return;
-      }
-    }
-    
-    resolve('Unknown');
-  });
-}
-
-function formatSubtitle(context, eventType, notifType) {
-  let prefix = '';
-  if (eventType === 'Stop') {
-    prefix = '✅ Complete';
-  } else if (notifType === 'permission_prompt') {
-    prefix = '⚠️ Permission';
-  } else if (notifType === 'idle_prompt') {
-    prefix = '⏸️ Waiting';
-  } else if (notifType === 'elicitation_dialog') {
-    prefix = '💬 Input';
-  } else {
-    prefix = '🔔 Attention';
+  if (inTmux && WAITING.has(type)) {
+    raise(type);   // pane + window option, explicit -t, status refresh, flag.log line (lib/waiting-flag.js)
+    const tty = tmux(['display-message', '-p', '-t', process.env.TMUX_PANE || '', '#{pane_tty}']);
+    if (tty) execFile('sh', ['-c', `printf '\\a' > ${tty}`], () => {});
   }
 
-  // Format: v7|8|hooks:main* (tmux session|index|folder:branch)
-  const tmux = context.tmuxInfo || '';
-  // Use session|index from tmux, folder name from cwd (not tmux window name which includes path)
-  const sessionIndex = tmux.replace(/\|[^|]*$/, '');
-  let location = `${sessionIndex}|${context.dirName}`;
-  if (context.gitInfo.isGitRepo) {
-    const status = context.gitInfo.hasChanges ? '*' : '';
-    location = `${sessionIndex}|${context.dirName}:${context.gitInfo.branch}${status}`;
-  }
+  // Banner only when the owner is not looking at this window.
+  const active = inTmux ? tmux(['display-message', '-p', '#{window_active}#{session_attached}']) : '';
+  const looking = active === '11';
+  if (looking) return process.exit(0);
 
-  return `${prefix} · ${location}`;
+  const where = inTmux ? tmux(['display-message', '-p', '#S|#I']) : '';
+  const branch = git(['branch', '--show-current']);
+  const dirty = git(['status', '--porcelain']) ? '*' : '';
+  const place = [where, basename(process.cwd()) + (branch ? `:${branch}${dirty}` : '')].filter(Boolean).join('|');
+  const message = hook.message || 'Claude needs your attention';
+
+  // terminal-notifier ≥ 3 (UserNotifications API): -contentImage attaches the clawd image;
+  // -sender/-appIcon are gone. The app needs a one-time Allow in System Settings → Notifications,
+  // granted from a GUI shell (a Background launchd session cannot request it).
+  execFile('terminal-notifier', [
+    '-title', 'Claude Code', '-subtitle', `${label} · ${place}`, '-message', message,
+    '-contentImage', `${process.env.HOME}/.claude/clawd.png`,
+  ], (err) => {
+    if (err) execFile('osascript', ['-e', `display notification "${message.replace(/"/g, '\\"')}" with title "Claude Code" subtitle "${label}"`], () => process.exit(0));
+    else process.exit(0);
+  });
+}
+
+function git(args) {
+  try { return execFileSync('git', args, { encoding: 'utf8', timeout: 500, stdio: ['ignore', 'pipe', 'ignore'] }).trim(); }
+  catch { return ''; }
 }

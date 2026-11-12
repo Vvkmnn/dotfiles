@@ -14,7 +14,7 @@ Policy: restrict custom agents to read-only unless editing is justified (only bu
 |-----------|-----------|-----|
 | 3+ independent areas to research | Yes | Parallel exploration, fresh contexts |
 | Context >50% used | Yes | Avoid context rot |
-| Domain expertise needed | Yes | security-reviewer, architect, debugger, paper-researcher |
+| Domain expertise needed | Yes | security-reviewer, architect, debugger, researcher |
 | Context-heavy ops (testing, docs) | Yes | Isolate token-hungry work |
 | Novel problem or persistent error | Yes | Research protocol — local/docs/online |
 | Simple targeted lookup | No | Direct tools faster |
@@ -28,7 +28,7 @@ Policy: restrict custom agents to read-only unless editing is justified (only bu
 | architect | opus | max | Deepest reasoning; advisory read-only |
 | code-reviewer / security-reviewer | sonnet | medium / high | Fast-pass gates; CE/trailofbits fleets for depth |
 | debugger | inherit | high | Fresh-context verifier beats self-critique |
-| paper-researcher | sonnet | high | background:true, writes results to file |
+| researcher | sonnet | high | background:true, permissionMode dontAsk (read-only, no plan-mode prompts); returns reports, main session saves |
 | Deterministic file search | haiku | low | built-in `Explore` inherits main capped at Opus (v2.1.198); our custom `explore` agent pins `model: haiku` to override it — cheap scans stay cheap |
 
 **AUTO-RE-DIAL on model/scope change (do this proactively, unprompted):** when the owner `/model`-switches mid-session, or a task's scope shifts, re-dial BOTH model-routing AND **effort** to the [Model Operating Matrix](../docs/CONFIG.md), and announce it ("on Fable now → routing subagents to Sonnet, effort high, treating this as credit spend").
@@ -142,7 +142,7 @@ Don't explore: tests, mocks, or deprecated code.
 | Bug with unclear cause | `debugger` agent (ours, fresh-context) or `debugging-toolkit:debugger` |
 | Test coverage gaps, TDD needed | `tdd-workflows:tdd-orchestrator` |
 | Novel library/tool/approach | `research-topics` skill (technical mode) |
-| Academic papers/literature/citations | `research-topics` skill (academic mode) → dispatches `paper-researcher` agent |
+| Any multi-source research (web, community, academic) | `research-topics` skill → dispatches `researcher` agents |
 | Pre-commit quality pass | `code-reviewer` agent (fast gate); CE reviewer fleet for depth |
 | Pre-push / security-sensitive changes | `security-reviewer` agent (OWASP gate); trailofbits skills for adversarial depth |
 | PR needs review | `code-review` skill or `compound-engineering:ce-code-review` |

@@ -138,7 +138,7 @@ Subagents run in the **background by default** — keep working; results arrive.
 | `attribution` | empty commit/pr | No attribution noise |
 | `alwaysThinkingEnabled` | true | Thinking on (Fable: always-on regardless) |
 | `editorMode` | vim | With ॐ statusline indicator |
-| `tui` | fullscreen | Flicker-free renderer |
+| `tui` | fullscreen | Flicker-free renderer; the conversation lives inside Claude, not in tmux scrollback (pane history is 0 rows), so the March tmux keys (`C-Space b`, `[`, `]`, `H`, `L`) see nothing. The jump is Claude's own: `Ctrl+o` then `{` / `}` prompt to prompt, `/` search, `[` hands the text to tmux scrollback until `q`. Owner 2026-11-04: keep fullscreen; mods' panes draw only there |
 | `voiceEnabled` | true | Hold-to-talk |
 | `cleanupPeriodDays` | 77 | Transcript retention |
 | `includeGitInstructions` | true | Native commit/PR guidance |

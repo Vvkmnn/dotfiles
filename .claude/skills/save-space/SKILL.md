@@ -10,8 +10,9 @@ Use this skill when disk usage exceeds 70% or you need to free up significant sp
 
 ## How to Run This Skill
 
-1. **Baseline** - Record starting `df` AND `diskutil apfs list` (both matter, see APFS section)
-2. **Blitz** - Run blitz mode first for instant 3-8GB (zero risk, no decisions)
+0. **Why is it recurring?** - If the owner is cleaning up repeatedly, find the grower before deleting anything (see "Recurring Loss" below). Cleanup without this just buys a day
+1. **Baseline** - Record starting `df` AND `diskutil apfs list` (both matter, see APFS section). Read the per-volume `Capacity Consumed` lines: Data, VM (swap), Preboot, System. Data alone can't explain the % if VM or Preboot is large
+2. **Blitz** - Run blitz mode first for instant 3-8GB. If other Claude sessions are running (`pgrep -x claude | wc -l` > 1), skip anything a live process may load: `~/.npm/_npx` (MCP servers), `~/.local/share/claude/versions`, browser caches of open browsers, `brew cleanup` (removes old kegs). Defer those to the pre-restart checklist
 3. **Assess** - Run assessment commands in parallel (they're independent). Include project dirs (Work/Projects/Dev) for backups and build artifacts
 4. **Propose** - Present a ranked table of targets >500MB with sizes and risk levels
 5. **Confirm** - Get user approval before deletions (especially sudo)
@@ -26,6 +27,27 @@ Use this skill when disk usage exceeds 70% or you need to free up significant sp
 **sudo commands**: Claude cannot run sudo. Provide the exact commands and tell the user to run them in their terminal.
 
 **Shell gotcha**: `find` may be aliased to `fd` (from Homebrew). Use `command find` for POSIX find behavior. Paths with brackets (e.g., `[Gmail].mbox`) need quoting — avoid glob expansion with `du -sh path/*`, use `command find path -maxdepth 1 -type d | while read d; do du -sh "$d"; done` instead.
+
+---
+
+## Recurring Loss (run first when space keeps vanishing)
+
+```bash
+sysctl -n kern.boottime          # days since restart
+sysctl vm.swapusage               # swap grows with uptime, freed only by restart
+diskutil apfs list | grep -E "Role|Capacity Consumed"   # VM / Preboot / Data split
+pgrep -x claude | wc -l           # long-lived parallel sessions hold swap
+df -h /System/Volumes/Data        # run twice ~10 min apart: still dropping = live writer
+```
+
+Then look for the live writer, in the background (slow): `command find ~/Library ~/.claude ~/.cache /private/var/folders -xdev -type f -mmin -30 -size +20M`.
+
+Known silent growers on this machine:
+- **Swap** (`VM` volume): 12-14GB after ~8 days uptime with many Claude sessions + Chrome. Fix: restart weekly
+- **Voice Memos iCloud sync**: `~/Library/Group Containers/group.com.apple.VoiceMemos.shared` (18GB, the whole library arrived in one minute). Fix: turn off Voice Memos in iCloud settings on the Mac; the iPhone keeps them. Never `rm` the container, and deleting in the app deletes everywhere
+- **Claude desktop VM**: `~/Library/Application Support/Claude/vm_bundles/claudevm.bundle/rootfs.img` (10GB). Only needed for Cowork/local agent mode. Quit Claude desktop before removing
+
+**Sandbox**: `ps`, `diskutil`, `sysctl vm.swapusage` and `tmutil` fail inside the Bash sandbox (DiskManagement / "operation not permitted"). They're read-only; rerun them with the sandbox disabled rather than skipping them. `du` over `~` takes 5+ minutes: run it with `run_in_background`, and don't stack several home-wide scans at once (they compete for disk I/O).
 
 ---
 
