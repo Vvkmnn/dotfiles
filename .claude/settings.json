@@ -742,7 +742,8 @@
       ],
       "allowUnixSockets": [
         "/private/tmp/tmux-501/default"
-      ]
+      ],
+      "allowLocalBinding": true
     },
     "filesystem": {
       "allowWrite": [
@@ -757,9 +758,11 @@
     },
     "enableWeakerNetworkIsolation": true,
     "excludedCommands": [
+      "agent-reach *",
       "colima *",
       "docker *",
       "mosh *",
+      "opencli *",
       "pbcopy",
       "scp *",
       "ssh *",
