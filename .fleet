@@ -211,7 +211,8 @@ _fleet_poll() {
 
 # ── vj — jump. No arg → auth-free picker. <host> → mosh into a fresh Ghostty window. The reveal
 #    probes path quality with tailscale/ping (auth-free); only the mosh open touches 1Password.
-#    No command is passed — the remote login shell autostarts a fresh tmux session itself.
+#    `vj <host>` offers the peer's tmux sessions to attach; `vj <host> <session>` attaches one directly;
+#    `vj <host> new` passes no command, so the remote login shell autostarts a fresh tmux session.
 vj() {
   if (( $# == 0 )); then
     local pick; pick=$(_fleet_menu) || return
@@ -246,19 +247,62 @@ vj() {
     fi
   fi
 
+  # ping can answer for a sleeper (see _fleet_reach), so the jump is gated on sshd itself. Each knock
+  # is also the wake trigger; a peer that still does not answer after three is off or off the network.
+  local up try sshd=0
+  for try in 1 2 3; do
+    if up=$(_fleet_reach "$name" 2); then host=$up; sshd=1; break; fi
+    (( try == 1 )) && printf "  ${dim}%s is not answering ssh — knocking to wake it…${R}\n" "$name"
+    (( try < 3 )) && sleep 2
+  done
+
   local chip; chip=$(_fleet_chip "$host")
-  if (( ! reach )); then
-    printf "  %s  ${bold}%s${R} ${dim}· asleep or off — \`vw\` on it, or wake it${R}\n" \
-      "$(get_colored_face)" "$host"
+  if (( ! sshd )); then
+    printf "  %s  ${bold}%s${R} ${dim}· asleep or off — run \`vw\` on it, or \`va %s\` from its home network${R}\n" \
+      "$(get_colored_face)" "$host" "$name"
     return 1
   fi
 
   local pathw; (( direct )) && pathw=direct || pathw=relay
   local badge="${blu}∿ mosh${R}"
 
+  # which tmux session: `vj <host> <session>` attaches it, `vj <host> new` starts a fresh one, and a
+  # bare `vj <host>` offers the peer's sessions (one ssh). No sessions, no fzf or a failed listing →
+  # a fresh session, started by the peer's login shell as before.
+  local sess="${2:-}" inner=""
+  if [[ -z "$sess" ]] && command -v fzf >/dev/null 2>&1; then
+    # the same round-trip also reads the peer's power and hold state, shown above the list, so you see
+    # "on battery, sleeps soon" or "not held" BEFORE relying on it.
+    local list state="" pick
+    # accept-new: a peer never ssh'd to from this machine has no known_hosts entry, and BatchMode would
+    # fail the listing silently; a CHANGED host key is still refused.
+    list=$(ssh -o ConnectTimeout=4 -o BatchMode=yes -o StrictHostKeyChecking=accept-new "$host" '
+      b=$(pmset -g batt 2>/dev/null); p=$(printf "%s" "$b" | grep -oE "[0-9]+%" | head -1)
+      s="battery $p"; printf "%s" "$b" | grep -q "AC Power" && s="on power $p"
+      r=$(printf "%s" "$b" | grep -oE "[0-9]+:[0-9]+" | head -1)
+      case "$s" in battery*) [ -n "$r" ] && s="$s, $r left";; esac
+      h="NOT held awake (sleeps when idle; run vw there)"; pmset -g 2>/dev/null | grep -qE "SleepDisabled[[:space:]]+1" && h="held awake"
+      echo "STATE|$s · $h"
+      tmux list-sessions -F "#{session_name}	#{session_name}  #{session_windows} windows#{?session_attached, · attached,}" 2>/dev/null' 2>/dev/null)
+    if [[ "$list" == STATE\|* ]]; then state=${${list%%$'\n'*}#STATE\|}; list=${list#*$'\n'}; [[ "$list" == STATE\|* ]] && list=""; fi
+    if [[ -n "$list" ]]; then
+      pick=$(print -r -- $'new\t+ new session\n'"$list" | fzf --ansi --delimiter=$'\t' --with-nth=2 \
+        --layout=reverse --height=40% --highlight-line --pointer='▶' --prompt='  ' --expect=ctrl-s \
+        --border-label="  ${name} · ${state:-sessions} " --border-label-pos=3 \
+        --header='  ⏎ attach · ^s screen share · esc cancel' --header-border=bottom \
+        --color 'bg+:#2d4f67,fg+:#c8c093,border:#54546d,label:#7aa89f,header:#54546d,pointer:#e46876') || return 1
+      if [[ "${pick%%$'\n'*}" == ctrl-s ]]; then vr "$name"; return; fi
+      sess=${${pick#*$'\n'}%%$'\t'*}
+    fi
+  fi
+  if [[ -n "$sess" && "$sess" != new ]]; then
+    local attach="exec tmux attach -t ${(q)sess}"
+    inner=" -- /bin/sh -lc ${(q)attach}"
+  fi
+
   # open the mosh window NOW, before the cosmetic settle (decoupled → 0 cost to the jump).
   open -na /Applications/Ghostty.app --args -e /bin/zsh -c \
-    "env -u TMUX -u TMUX_PANE mosh --ssh='ssh -o ConnectTimeout=4' --family=inet ${(q)host}"
+    "env -u TMUX -u TMUX_PANE mosh --ssh='ssh -o ConnectTimeout=4 -o StrictHostKeyChecking=accept-new' --family=inet ${(q)host}${inner}"
 
   local aqua="$KANAGAWA_AQUA_SGR" fr=(⠋ ⠙ ⠹ ⠸ ⠼ ⠴ ⠦ ⠧ ⠇ ⠏)
   tput civis 2>/dev/null
@@ -836,6 +880,96 @@ _vw_agent() {
   esac
 }
 
+# ── _fleet_pmset_rule — make sure vw may run pmset without a password, installing the sudoers rule
+#    itself when it is missing (one GUI password dialog via ~/.ai/ask-sudo, the same rule ~/.ai/setup
+#    writes). Without it `sudo -n pmset` fails and vw can only hold the machine while the lid is open.
+#    The rule is validated with visudo and removed again if it does not parse, so it cannot wedge sudo.
+#    The same dialog also switches sshd to key-only logins (a drop-in, checked with `sshd -t` and removed
+#    if it fails) — but only when ~/.ssh/authorized_keys already holds a key, so it can never lock the
+#    fleet out. Remote Login with passwords on, firewall off, is guessable on any shared Wi-Fi.
+_fleet_keyonly_conf=/etc/ssh/sshd_config.d/050-fleet-keyonly.conf
+_fleet_pmset_rule() {
+  local have_rule=0 want_ssh=0
+  sudo -n /usr/bin/pmset -g >/dev/null 2>&1 && have_rule=1
+  [[ ! -f $_fleet_keyonly_conf && -s "$HOME/.ssh/authorized_keys" ]] && want_ssh=1
+  (( have_rule && ! want_ssh )) && return 0
+  [[ -x "$HOME/.ai/ask-sudo" ]] || return $(( ! have_rule ))
+  ASKPASS_MSG="vw one-time setup: let this Mac stay awake with the lid closed (pmset without a password) and accept SSH logins by key only." \
+    SUDO_ASKPASS="$HOME/.ai/ask-sudo" sudo -A /bin/sh -c '
+      if [ ! -f "$2" ]; then
+        printf "%s ALL=(root) NOPASSWD: /usr/bin/pmset\n" "$1" > "$2" && chmod 0440 "$2"
+        visudo -cf "$2" >/dev/null 2>&1 || rm -f "$2"
+      fi
+      if [ "$4" = 1 ]; then
+        printf "PasswordAuthentication no\nKbdInteractiveAuthentication no\n" > "$3" && chmod 0644 "$3"
+        /usr/sbin/sshd -t >/dev/null 2>&1 || rm -f "$3"
+      fi' sh "$(id -un)" /etc/sudoers.d/pmset "$_fleet_keyonly_conf" "$want_ssh"
+  sudo -n /usr/bin/pmset -g >/dev/null 2>&1
+}
+
+# ── small probes shared by vw's watch loop ──────────────────────────────────────────────────────
+_fleet_lid_closed() { ioreg -r -k AppleClamshellState -d 4 2>/dev/null | grep -q '"AppleClamshellState" = Yes'; }
+_fleet_on_ac()      { pmset -g batt 2>/dev/null | grep -qi 'AC Power'; }
+_fleet_batt_pct()   { pmset -g batt 2>/dev/null | grep -Eo '[0-9]+%' | head -1 | tr -d '%'; }
+# someone is connected in from another machine (ssh shows its origin in parentheses; mosh has a server)
+_fleet_remote_in()  { who 2>/dev/null | grep -q '(' || pgrep -x mosh-server >/dev/null 2>&1; }
+
+# ── _fleet_tell — say one line to the owner wherever they are: every terminal attached to this
+#    machine's tmux (so a peer jumped in sees it), a local notification, and a small Taildrop note to
+#    each peer (auth-free, lands in its ~/Downloads). Best effort and never blocking: an unattended
+#    machine cannot ssh out (1Password needs a touch), so there is no stronger push than this.
+_fleet_tell() {
+  local msg="$1" self=${${HOST%%.*}:l} c f h
+  for c in ${(f)"$(command tmux list-clients -F '#{client_name}' 2>/dev/null)"}; do
+    command tmux display-message -c "$c" -d 10000 "vFleet · $msg" 2>/dev/null
+  done
+  osascript -e "display notification \"${msg//\"/}\" with title \"vFleet\"" >/dev/null 2>&1
+  local ts=${commands[tailscale]:-/Applications/Tailscale.app/Contents/MacOS/Tailscale}
+  for f in $_fleet_roster; do
+    h=$(_fleet_map "$f"); [[ ${h:l} == $self ]] && continue
+    ( print -r -- "$(date '+%Y-%m-%d %H:%M')  $msg" | perl -e 'alarm 10; exec @ARGV' \
+        "$ts" file cp --name "vfleet-${self}.txt" - "${h}:" >/dev/null 2>&1 & ) 2>/dev/null
+  done
+}
+
+# ── _fleet_ready — can a peer get INTO this machine right now? Local, auth-free checks of everything a
+#    jump needs, one line each, so a broken piece is named here instead of discovered from the far
+#    side. Returns the number of failed checks. Printed by vw on start; run it alone any time.
+_fleet_ready() {
+  local g="$KANAGAWA_AQUA_SGR" y=$'\e[38;5;179m' dim="$CUSTOM_DIM_SGR" R=$'\e[0m' bad=0
+  local ts=${commands[tailscale]:-/Applications/Tailscale.app/Contents/MacOS/Tailscale}
+  _fleet_ready_row() {             # <ok 0|1> <label> <fix when not ok>
+    if (( $1 )); then printf "  ${g}●${R} %s\n" "$2"; else printf "  ${y}○${R} %s ${dim}— %s${R}\n" "$2" "$3"; (( bad++ )); fi
+  }
+  nc -z -G 1 127.0.0.1 22 >/dev/null 2>&1
+  _fleet_ready_row $(( ! $? )) "Remote Login (ssh, mosh)" "System Settings › General › Sharing › Remote Login"
+  command -v mosh-server >/dev/null 2>&1
+  _fleet_ready_row $(( ! $? )) "mosh-server" "brew install mosh"
+  "$ts" ip -4 >/dev/null 2>&1
+  _fleet_ready_row $(( ! $? )) "Tailscale connected" "open Tailscale and sign in"
+  nc -z -G 1 127.0.0.1 5900 >/dev/null 2>&1
+  _fleet_ready_row $(( ! $? )) "Screen Sharing (vr)" "System Settings › General › Sharing › Screen Sharing"
+  [[ -s "$HOME/.ssh/authorized_keys" ]]
+  _fleet_ready_row $(( ! $? )) "fleet key authorized" "add the 1Password public key to ~/.ssh/authorized_keys"
+  _fleet_on_ac
+  _fleet_ready_row $(( ! $? )) "on power" "plug in — a lid-closed hold needs the charger"
+  [[ -f $_fleet_keyonly_conf ]]
+  _fleet_ready_row $(( ! $? )) "ssh by key only" "passwords still accepted — vw sets this up on its next start"
+  [[ "$(defaults read /Library/Preferences/com.apple.SoftwareUpdate AutomaticallyInstallMacOSUpdates 2>/dev/null)" != 1 ]]
+  _fleet_ready_row $(( ! $? )) "no automatic macOS restart" "an update restart stops at the FileVault login, unreachable — Software Update › Automatic Updates › off"
+  local free; free=$(df -g /System/Volumes/Data 2>/dev/null | awk 'NR==2{print $4}')
+  (( ${free:-0} >= 10 ))
+  _fleet_ready_row $(( ! $? )) "disk ${free:-?} GB free" "under 10 GB — swap can fill the disk and hang the machine"
+  local exp; exp=$("$ts" status --json 2>/dev/null | jq -r '.Self.KeyExpiry // empty' 2>/dev/null)
+  if [[ -n "$exp" ]]; then
+    local days=$(( ( $(date -j -u -f '%Y-%m-%dT%H:%M:%SZ' "$exp" +%s 2>/dev/null || echo 0) - $(date +%s) ) / 86400 ))
+    (( days >= 14 ))
+    _fleet_ready_row $(( ! $? )) "Tailscale key good for ${days} days" "expires soon — reauthenticate in Tailscale or it drops off the fleet"
+  fi
+  unfunction _fleet_ready_row
+  return $bad
+}
+
 vw() {
   [[ "$OSTYPE" != darwin* ]] && { echo "macOS only"; return 1; }
   command -v fzf >/dev/null 2>&1 || { print -u2 "  vwake needs fzf — brew install fzf"; return 2; }
@@ -846,15 +980,26 @@ vw() {
   # rather than refusing: kill whatever holds the port (its fzf — that closes the old picker, and the old
   # vw's EXIT trap releases its keep-awake), wait for the port to free, then start fresh here. Only if it
   # refuses to let go after 2s do we bail, so we never stack two keep-awakes or crash on a bound port.
-  local held; held=$(lsof -t -nP -iTCP:${_fleet_wake_port} -sTCP:LISTEN 2>/dev/null)
+  # With the navigator off, vw holds the port itself through a small listener child (started below),
+  # so the lock still exists. The takeover asks the OLD vw's shell to stop (TERM runs its release trap
+  # and returns to its prompt) and waits for the port to free BEFORE this vw takes the hold — the other
+  # order would let the old release switch sleep back on underneath the new hold.
+  local held; held=$(lsof -t -nP -iTCP:${_fleet_wake_port} -sTCP:LISTEN 2>/dev/null | head -1)
   if [[ -n "$held" ]]; then
-    kill ${=held} 2>/dev/null
-    local w; for w in {1..20}; do lsof -nP -iTCP:${_fleet_wake_port} -sTCP:LISTEN >/dev/null 2>&1 || break; sleep 0.1; done
+    local owner; owner=$(ps -o ppid= -p "$held" 2>/dev/null | tr -d ' ')
+    local otty; otty=$(ps -o tty= -p "${owner:-0}" 2>/dev/null | tr -d ' ')
+    local where; where=$(command tmux list-panes -a -F '#{pane_tty} #{session_name}:#{window_index}' 2>/dev/null | awk -v t="/dev/$otty" '$1==t{print $2; exit}')
+    echo -e "$(get_colored_face) replacing the vw already running${where:+ in tmux $where}."
+    if [[ -n "$owner" && "$owner" != 1 && "$owner" != $$ ]]; then kill -TERM "$owner" 2>/dev/null; else kill "$held" 2>/dev/null; fi
+    local w; for w in {1..30}; do lsof -nP -iTCP:${_fleet_wake_port} -sTCP:LISTEN >/dev/null 2>&1 || break; sleep 0.1; done
+    lsof -nP -iTCP:${_fleet_wake_port} -sTCP:LISTEN >/dev/null 2>&1 && kill "$held" 2>/dev/null
+    for w in {1..10}; do lsof -nP -iTCP:${_fleet_wake_port} -sTCP:LISTEN >/dev/null 2>&1 || break; sleep 0.1; done
     if lsof -nP -iTCP:${_fleet_wake_port} -sTCP:LISTEN >/dev/null 2>&1; then
-      echo -e "$(get_colored_face) vw's port ${_fleet_wake_port} is stuck held — quit the other picker by hand."
+      echo -e "$(get_colored_face) vw's port ${_fleet_wake_port} is stuck held — quit the other vw by hand."
       return 1
     fi
   fi
+  _fleet_ready
 
   # battery-floor pre-flight: don't hold a low battery awake unless it's an emergency (--force).
   local pf_pct pf_ac
@@ -870,18 +1015,29 @@ vw() {
   # OR on battery, fall back to caffeinate, which lets macOS still force-sleep near empty (the battery
   # never burns down). Released the moment vw quits, so the machine sleeps normally the rest of the time.
   # -d also holds the DISPLAY awake (the owner watches it; displaysleep is 1 min here), in both paths.
-  local didsleep=0 caff=""
-  if (( pf_ac || force )) && sudo -n pmset -a disablesleep 1 2>/dev/null; then
-    didsleep=1
-    caffeinate -d & caff=$!
-  else
-    caffeinate -dim & caff=$!
+  # The hard hold only counts once pmset REPORTS SleepDisabled 1 — a silent fallback used to print
+  # "held awake" while a lid close still slept the machine.
+  local didsleep=0 caff="" why="on battery"
+  if (( pf_ac || force )); then
+    why="no passwordless pmset rule"
+    if _fleet_pmset_rule && sudo -n pmset -a disablesleep 1 2>/dev/null \
+       && pmset -g | grep -qE 'SleepDisabled[[:space:]]+1'; then
+      didsleep=1
+    fi
   fi
+  # soft hold: one caffeinate for system+display (a lid close still sleeps). hard hold: disablesleep
+  # carries the system; the display caffeinate ($caff) is toggled with the lid by the watch loop, so a
+  # closed lid lets the panel sleep and the normal screen lock apply.
+  setopt local_options no_monitor no_notify
+  if (( didsleep )); then caffeinate -d & caff=$!; else caffeinate -dim & caff=$!; fi
+  # the singleton lock: a listener on vw's port, child of THIS shell so a newer vw can find its owner.
+  local lock=""; nc -lk 127.0.0.1 ${_fleet_wake_port} >/dev/null 2>&1 & lock=$!
+  local lpm_was=""                 # battery low-power setting to restore, once the loop has changed it
 
   # release on ANY exit — normal quit, ^C, terminal close, kill — while sudo creds are still cached.
-  # $_rel holds $caff/$didsleep literally (single-quoted) so they expand when it actually runs, not now.
-  local _rel='(( didsleep )) && sudo -n pmset -a disablesleep 0 2>/dev/null; [[ -n "$caff" ]] && kill "$caff" 2>/dev/null'
-  trap "$_rel; return" INT HUP TERM
+  # $_rel holds its variables literally (single-quoted) so they expand when it actually runs, not now.
+  local _rel='(( didsleep )) && sudo -n pmset -a disablesleep 0 2>/dev/null; [[ -n "$lpm_was" ]] && sudo -n pmset -b lowpowermode "$lpm_was" 2>/dev/null; [[ -n "$caff" ]] && kill "$caff" 2>/dev/null; [[ -n "$lock" ]] && kill "$lock" 2>/dev/null'
+  trap "$_rel; print -r -- '  vw released (interrupted or replaced by a newer vw).'; return" INT HUP TERM
 
   # live navigator OFF: keep-awake only. _fleet_pick's refresher (_fleet_animate) ssh-polls every peer
   # every 3s, and with no ControlMaster in ~/.ssh/config (ssh -G <peer> → `controlmaster false`) each
@@ -890,12 +1046,97 @@ vw() {
   # `ssh -O check <peer>`, then swap the two lines below. While off, the singleton guard above can't see
   # this vw (nothing binds the port), so a second vw stacks a second hold instead of taking over.
   # _fleet_pick                                      # the live navigator — blocks until you quit (esc/q)
-  echo -e "$(get_colored_face) ${self} held awake for agents — any key (or ^C) to release."
-  read -rs -k 1
+  if (( didsleep )); then
+    echo -e "$(get_colored_face) ${self} held awake, lid may close — any key (or ^C) to release."
+  else
+    echo -e "$(get_colored_face) ${self} held awake ONLY while the lid stays open (${why}) — any key (or ^C) to release."
+  fi
+
+  # The watch loop: wait for a key, waking every $tick seconds to keep the hold safe for the machine
+  # and honest to the fleet. Uptime first — it only lets go when holding on would cost the battery:
+  #   on power               hold, lid open or closed
+  #   unplugged              hold down to the floor (low power mode on to stretch it), then release
+  #   unplugged + lid closed release after 2 min (it is being carried)
+  #   hot + lid closed       warn at 1 min, release at 5
+  # --force skips every release. Each change of state is announced with _fleet_tell, including the
+  # predicted time it will sleep. All locals are declared up here: `local x` repeated inside a zsh
+  # loop prints the variable.
+  local key tick=15 started=$SECONDS asked=$SECONDS ask_every=$(( ${VW_ASK_HOURS:-4} * 3600 ))
+  local was_ac=$pf_ac ac lid rem left lim ans closed_unplugged=0 hot=0 warned=0 reason="" here=""
+  [[ -n "$TMUX" ]] && here=$(command tmux display-message -p '#{session_name}:#{window_index}' 2>/dev/null)
+  while ! read -rs -k 1 -t $tick key; do
+    [[ -t 0 ]] || sleep $tick      # no terminal: read fails at once, so pace the loop here
+    ac=0; lid=0; _fleet_on_ac && ac=1; _fleet_lid_closed && lid=1
+
+    if (( didsleep )); then        # the display follows the lid
+      if (( lid )) && [[ -n "$caff" ]]; then kill "$caff" 2>/dev/null; caff=""
+      elif (( ! lid )) && [[ -z "$caff" ]]; then caffeinate -d & caff=$!
+      fi
+    fi
+
+    if (( ac )); then
+      if (( ! was_ac )); then
+        was_ac=1; warned=0; closed_unplugged=0
+        [[ -n "$lpm_was" ]] && { sudo -n pmset -b lowpowermode "$lpm_was" 2>/dev/null; lpm_was=""; }
+        _fleet_tell "${self} is back on power — holding."
+      fi
+    else
+      pf_pct=$(_fleet_batt_pct)
+      rem=$(pmset -g batt | grep -oE '[0-9]+:[0-9]+' | head -1)
+      left=-1                      # minutes until the floor, from macOS's own remaining-time estimate
+      if [[ -n "$rem" && -n "$pf_pct" ]] && (( pf_pct > floor )); then
+        left=$(( (10#${rem%%:*} * 60 + 10#${rem##*:}) * (pf_pct - floor) / pf_pct ))
+      fi
+      if (( was_ac )); then
+        was_ac=0
+        if (( didsleep )) && [[ -z "$lpm_was" ]]; then
+          lpm_was=$(pmset -g custom | awk '/^Battery Power/{b=1} /^AC Power/{b=0} b && /lowpowermode/{print $2; exit}')
+          sudo -n pmset -b lowpowermode 1 2>/dev/null || lpm_was=""
+        fi
+        if (( left >= 0 )); then
+          _fleet_tell "${self} is on battery at ${pf_pct}% — sleeps at ${floor}% in about ${left} min ($(date -v+${left}M +%H:%M))."
+        else
+          _fleet_tell "${self} is on battery at ${pf_pct}% — sleeps at ${floor}%."
+        fi
+      fi
+      if (( ! force )); then
+        if [[ -n "$pf_pct" ]] && (( pf_pct <= floor )); then reason="battery ${pf_pct}% reached the ${floor}% floor"; break; fi
+        if (( left >= 0 && left <= 15 && ! warned )); then
+          warned=1; _fleet_tell "${self} sleeps in about ${left} min (battery ${pf_pct}%, floor ${floor}%)."
+        fi
+        if (( lid )); then
+          (( closed_unplugged += tick ))
+          if (( closed_unplugged >= 120 )); then reason="lid closed and unplugged for 2 minutes"; break; fi
+        else
+          closed_unplugged=0
+        fi
+      fi
+    fi
+
+    lim=$(pmset -g therm 2>/dev/null | grep -oE 'CPU_Speed_Limit *= *[0-9]+' | grep -oE '[0-9]+$')
+    if (( lid )) && [[ -n "$lim" ]] && (( lim < 100 )); then
+      (( hot += tick ))
+      (( hot == 60 )) && _fleet_tell "${self} is running hot with the lid closed — it releases in 4 min if that continues."
+      if (( hot >= 300 && ! force )); then reason="running hot with the lid closed"; break; fi
+    else
+      hot=0
+    fi
+
+    # still wanted? Ask only when the owner is plausibly AT the machine (lid open, nobody connected in);
+    # no answer keeps the hold, so being away for days can never drop the fleet's way in.
+    if (( SECONDS - asked >= ask_every )); then
+      asked=$SECONDS
+      if (( ! lid )) && ! _fleet_remote_in; then
+        ans=$(osascript -e "display dialog \"${self} has been held awake for $(( (SECONDS - started) / 3600 ))h by vw${here:+ in tmux $here}. Keep it?\" buttons {\"Release\", \"Keep\"} default button \"Keep\" giving up after 60 with title \"vFleet\"" 2>/dev/null)
+        if [[ "$ans" == *"button returned:Release"* ]]; then reason="released from the reminder"; break; fi
+      fi
+    fi
+  done
 
   trap - INT HUP TERM
   eval "$_rel"
-  echo -e "$(get_colored_face) ${self} released — back to a normal laptop."
+  [[ -n "$reason" ]] && _fleet_tell "${self} released its hold: ${reason}. It sleeps when idle now."
+  echo -e "$(get_colored_face) ${self} released${reason:+ ($reason)} — back to a normal laptop."
 }
 
 # ── tab-completion — friendly + chip aliases, plus live Tailscale hostnames, for the host-taking

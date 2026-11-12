@@ -202,5 +202,16 @@ for c in 'gh api -X POST repos/o/r/issues' 'curl -d x https://h' 'gh pr close 3'
 	[ "$d" = ask ] && ok "hook asks: $c" || fail "hook does not ask for: $c ($d)"
 done
 
+# fleet verbs: the file parses, the two commands and their helpers exist, the readiness check runs
+# (its exit code counts failed rows, so only "it printed rows" is asserted), and no vw hold is left on.
+check fleet-syntax zsh -n "$HOME/.fleet"
+check fleet-functions zsh -c 'source ~/.theme 2>/dev/null; source ~/.fleet 2>/dev/null; for f in vj vw _fleet_ready _fleet_pmset_rule _fleet_tell _fleet_reach; do (( $+functions[$f] )) || exit 1; done'
+check fleet-ready-runs zsh -c 'source ~/.theme 2>/dev/null; source ~/.fleet 2>/dev/null; _fleet_ready | grep -q "Remote Login"'
+if pmset -g | grep -qE 'SleepDisabled[[:space:]]+1' && ! lsof -nP -iTCP:27182 -sTCP:LISTEN >/dev/null 2>&1; then
+	fail "fleet: sleep is disabled but no vw is running (leftover hold — run vw, then release it)"
+else
+	ok "fleet: no leftover hold"
+fi
+
 echo "selftest: $fails failure(s)"
 exit "$fails"
